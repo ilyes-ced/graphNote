@@ -8,6 +8,7 @@
         width: 100%;
         height: 50px;
         border: 1px solid red;
+        background-color: aquamarine;
 
         display: flex;
         justify-content: center;
