@@ -5,9 +5,9 @@
 
 <style>
     main {
-        background-color: aquamarine;
+        background-color: var(--surface-color-1);
         height: 100%;
         width: 50px;
-        border: 1px solid red;
+        border-right: 1px solid var(--surface-color-2);
     }
 </style>

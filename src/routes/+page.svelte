@@ -1,11 +1,14 @@
 <script lang="ts">
+  import Sidebar from "../components/Sidebar.svelte";
+  import Topbar from "../components/Topbar.svelte";
+  import InPlaceEdit from "../components/InPlaceEdit.svelte";
   import { createDraggable, utils } from "animejs";
   import { onMount } from "svelte";
 
   onMount(() => {
     const dra_params = {
       container: "#canvas_container",
-      snap: 20,
+      snap: 10,
       releaseStiffness: 40,
       releaseEase: "out(3)",
       // doesnt let it move out of container
@@ -47,25 +50,23 @@
     };
     blocks.forEach((block) => {
       const dra = createDraggable("#" + block.id, dra_params);
-      //console.log(dra);
+      dra.stop();
+      console.log(dra);
     });
   });
 
-  import Sidebar from "../components/Sidebar.svelte";
-  import Topbar from "../components/Topbar.svelte";
+  const submit = (block_id: string) => {
+    return ({ detail: newValue }) => {
+      alert("sumited new value: ", newValue);
+      // IRL: POST value to server here
 
-  const dragStartHandler = (e: MouseEvent) => {
-    console.log("****************");
-    console.log((e.currentTarget as HTMLElement).id);
+      const index = blocks.findIndex((block) => block.id === block_id);
+      blocks[index].text = newValue;
 
-    // hide when dra starts
-    // const index = blocks.findIndex((block) => block.id === e.currentTarget.id);
-    // blocks[index].dragging = true;
-  };
-  const dropHandler = (e: MouseEvent) => {
-    console.log("/////////////////////////");
-    console.log(e.offsetX);
-    console.log(e.offsetY);
+      console.log(blocks[index]);
+
+      console.log(`updated ${block_id}, new value is: "${newValue}"`);
+    };
   };
 
   interface block {
@@ -79,18 +80,18 @@
   let blocks: block[] = [
     {
       id: "block_0",
+      posX: 300,
+      posY: 300,
+      text: "testtest tes",
+      dragging: false,
+    },
+    {
+      id: "block_1",
       posX: 100,
       posY: 100,
       text: "testtest tes",
       dragging: false,
     },
-    //{
-    //  id: "block_1",
-    //  posX: 100,
-    //  posY: 100,
-    //  text: "testtest tes",
-    //  dragging: false,
-    //},
     //{
     //  id: "block_2",
     //  posX: 200,
@@ -127,17 +128,19 @@
     <Topbar />
     <div id="cont2">
       <Sidebar />
-      <div id="canvas_container" on:dragend={dropHandler} role="region">
-        {#each blocks as block, i}
+      <div id="canvas_container" role="region">
+        {#each blocks as block}
           <div
             id={block.id}
-            class="block {block.dragging ? 'dragging' : ''}"
+            class="block_container {block.dragging ? 'dragging' : ''}"
             draggable="true"
-            on:dragstart={dragStartHandler}
             role="region"
             style="transform: translateX({block.posX}px) translateY({block.posY}px);"
           >
-            {block.text}
+            <div class="block">
+              <in-place-edit value={block.text} submit={submit(block.id)}>
+              </in-place-edit>
+            </div>
           </div>
         {/each}
       </div>
@@ -162,31 +165,30 @@
   main {
     width: 100%;
     height: 100%;
-    background-color: #fe961f;
+    background-color: var(--container-background-color);
   }
   #canvas_container {
+    background-color: var(--surface-color-1);
     width: 100%;
     height: 100%;
-    background-color: #66ff66;
-    border: 1px solid red;
-  }
-  #test_id {
-    background-color: #655f66;
-    border: 1px solid lightskyblue;
-    padding: 10px;
-  }
-
-  .dragging {
-    display: none;
+    /* for grid pattern */
+    background-image: radial-gradient(
+      var(--surface-color-2) 1px,
+      transparent 1px
+    );
+    background-size: 10px 10px;
   }
 
-  .block {
-    background-color: #655f66;
-    border: 1px solid red;
-
-    width: 80px;
+  .block_container {
+    padding: 5px;
+    min-width: 300px;
+    width: 300px;
     height: 80px;
-
+  }
+  .block {
+    background-color: var(--tone-color-1);
+    width: 100%;
+    height: 100%;
     overflow: hidden;
   }
 </style>
