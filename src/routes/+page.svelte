@@ -2,6 +2,7 @@
   import Sidebar from "../components/Sidebar.svelte";
   import Topbar from "../components/Topbar.svelte";
   import InPlaceEdit from "../components/InPlaceEdit.svelte";
+  import Column from "../components/blocks/Column.svelte";
   import { createDraggable, utils } from "animejs";
   import { onMount } from "svelte";
   interface block {
@@ -84,8 +85,9 @@
         console.log(y);
 
         const index = blocks.findIndex((block) => block.id === e.$target.id);
-        blocks[index].posX = x;
-        blocks[index].posY = y;
+        // TODO: for this part make not update the object but the JSON file
+        // blocks[index].posX = x;
+        // blocks[index].posY = y;
       },
     };
     blocks.forEach((block) => {
@@ -117,6 +119,7 @@
       <Sidebar />
       <div id="canvas_container_wrapper" role="region">
         <div id="canvas_container">
+          <Column />
           {#each blocks as block}
             <div
               id={block.id}
@@ -175,7 +178,8 @@
   }
 
   .block_container {
-    padding: 5px;
+    /* 1 or 5 is best i think maybe make it use editable */
+    padding: 1px;
     min-width: 300px;
     width: 300px;
     height: 80px;

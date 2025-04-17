@@ -2,13 +2,28 @@
     import Svg from "./blocks/Svg.svelte";
 
     let icons = [
-        "note",
-        "todo",
-        "arrow",
-        "board",
-        "column",
-        "comment",
-        "table",
+        // basic blocks
+        { name: "note", width: 32, height: 24 },
+        { name: "todo", width: 32, height: 24 },
+        { name: "comment", width: 32, height: 24 },
+        { name: "table", width: 32, height: 24 },
+        { name: "url", width: 32, height: 24 },
+
+        // layout blocks
+        { name: "arrow", width: 32, height: 32 },
+        { name: "board", width: 32, height: 32 },
+        { name: "column", width: 32, height: 32 },
+
+        // text
+        { name: "code", width: 24, height: 24 },
+        { name: "document", width: 26, height: 32 },
+        { name: "upload", width: 32, height: 32 },
+
+        // artistic maybe
+        { name: "drawing", width: 32, height: 32 },
+        { name: "sketch", width: 32, height: 24 },
+        { name: "color", width: 28, height: 32 },
+        { name: "image", width: 32, height: 32 },
     ];
 </script>
 
@@ -16,9 +31,14 @@
     <div id="icon_container">
         {#each icons as icon}
             <div class="icon">
-                <Svg width="32" height="24" classes="test" icon_name={icon} />
+                <Svg
+                    width={icon.width}
+                    height={icon.height}
+                    classes=""
+                    icon_name={icon.name}
+                />
                 <div class="space"></div>
-                <span>{icon}</span>
+                <span>{icon.name}</span>
             </div>
         {/each}
     </div>

@@ -271,3 +271,24 @@ photo;
         </path>
     </g>
 </svg>
+
+
+
+
+code:
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+
+upload:
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" class="Icon toolbar-upload">
+<g fill="none" fill-rule="evenodd"><rect width="32" height="32" fill="#FFF" rx="4"></rect><path fill="#E6E6E6" d="M18.586 6a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V24a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h8.586zM17 7.5h-7a.5.5 0 0 0-.5.5v16a.5.5 0 0 0 .5.5h12a.5.5 0 0 0 .5-.5V13h-4.75a.75.75 0 0 1-.743-.648L17 12.25V7.5zm5.379 4L18.5 7.622V11.5h3.879z"></path></g>
+</svg>
+
+
+
+
+
