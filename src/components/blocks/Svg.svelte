@@ -285,6 +285,13 @@
                 </g>
             `,
         },
+        collapse: {
+            width: width,
+            height: height,
+            svg: `
+                <path fill="#fff" fill-opacity="1" fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1 0-1h7a.5.5 0 0 1 .5.5z"></path>
+            `,
+        },
     } as const;
 
     let display_icon = icons[icon_name];

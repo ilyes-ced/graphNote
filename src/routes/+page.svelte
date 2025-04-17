@@ -1,8 +1,8 @@
 <script lang="ts">
   import Sidebar from "../components/Sidebar.svelte";
   import Topbar from "../components/Topbar.svelte";
-  import InPlaceEdit from "../components/InPlaceEdit.svelte";
   import Column from "../components/blocks/Column.svelte";
+  import InPlaceEdit from "../components/InPlaceEdit.svelte";
   import { createDraggable, utils } from "animejs";
   import { onMount } from "svelte";
   interface block {
@@ -62,7 +62,7 @@
     const dra_params = {
       container: "#canvas_container",
       snap: 10,
-      releaseStiffness: 40,
+      releaseStiffness: 1000,
       releaseEase: "out(3)",
       // doesnt let it move out of container
       containerFriction: 1,
@@ -77,13 +77,6 @@
       onRelease: () => {},
       // when animation settles we et the translateX/translateY for the new values for posX/posY
       onSettle: (e: any) => {
-        console.log(e.$target.style);
-        console.log(e.$target.style.transform);
-        console.log(e.$target.style.transform.match(/\d+/g));
-        const [x, y] = e.$target.style.transform.match(/\d+/g);
-        console.log(x);
-        console.log(y);
-
         const index = blocks.findIndex((block) => block.id === e.$target.id);
         // TODO: for this part make not update the object but the JSON file
         // blocks[index].posX = x;
@@ -95,6 +88,7 @@
       dra.stop();
       console.log(dra);
     });
+    const ff = createDraggable("#column_1", dra_params);
   });
 
   const submit = (block_id: string) => {
@@ -119,11 +113,20 @@
       <Sidebar />
       <div id="canvas_container_wrapper" role="region">
         <div id="canvas_container">
-          <Column />
+          <!-- for testin remove later -->
+          <div
+            id="column_1"
+            style="transform: translateX(100px) translateY(100px); 
+        width: 300px;
+        min-width: 300px;
+        max-width: 300px;"
+          >
+            <Column />
+          </div>
           {#each blocks as block}
             <div
               id={block.id}
-              class="block_container {block.dragging ? 'dragging' : ''}"
+              class="block_container"
               draggable="true"
               role="region"
               style="transform: translateX({block.posX}px) translateY({block.posY}px);"
