@@ -57,7 +57,8 @@
     //  dragging: false,
     //},
   ];
-
+  let canvas_container;
+  let canvas_container_scale = 1.0;
   onMount(() => {
     const dra_params = {
       container: "#canvas_container",
@@ -104,6 +105,18 @@
       console.log(`updated ${block_id}, new value is: "${newValue}"`);
     };
   };
+  const scrolHandle = (e) => {
+    e.preventDefault();
+    if (e.ctrlKey == true) {
+      if (e.deltaY > 0) {
+        if (canvas_container_scale >= 1.1)
+          canvas_container_scale = canvas_container_scale - 0.1;
+      } else {
+        canvas_container_scale = canvas_container_scale + 0.1;
+      }
+      canvas_container.style = `transform: scale(${canvas_container_scale});`;
+    }
+  };
 </script>
 
 <main class="container">
@@ -111,15 +124,16 @@
     <Topbar />
     <div id="cont2">
       <Sidebar />
-      <div id="canvas_container_wrapper" role="region">
-        <div id="canvas_container">
+      <div
+        id="canvas_container_wrapper"
+        role="region"
+        on:wheel|passive={scrolHandle}
+      >
+        <div id="canvas_container" bind:this={canvas_container}>
           <!-- for testin remove later -->
           <div
             id="column_1"
-            style="transform: translateX(100px) translateY(100px); 
-        width: 300px;
-        min-width: 300px;
-        max-width: 300px;"
+            style="transform: translateX(100px) translateY(100px); width: 300px;min-width: 300px;max-width: 300px;"
           >
             <Column />
           </div>
@@ -168,8 +182,8 @@
     height: 100%;
   }
   #canvas_container {
-    min-width: 100%;
-    min-height: 100%;
+    width: 100%;
+    height: 100%;
     background-color: var(--surface-color-1);
     /* for grid pattern */
     background-image: radial-gradient(
@@ -178,6 +192,7 @@
     );
     background-size: 10px 10px;
     overflow: scroll;
+    transform-origin: 0% 0% 0px;
   }
 
   .block_container {

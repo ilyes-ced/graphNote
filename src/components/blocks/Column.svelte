@@ -15,6 +15,7 @@
         <div class="title">title</div>
         <div class="column_info">column info (numer of items inside)</div>
     </div>
+
     {#each items_inside as item, i}
         <div class="container"></div>
         {#if i != items_inside.length - 1}
@@ -42,6 +43,7 @@
         background-color: var(--surface-color-1);
         width: 100%;
         min-height: 50px;
+        break-after: column;
     }
 
     .spacer {
