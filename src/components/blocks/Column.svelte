@@ -1,9 +1,10 @@
 <script lang="ts">
     let items_inside = [0, 0, 0, 0, 0, 0, 0, 0];
     import Svg from "./Svg.svelte";
+    let { block } = $props();
 </script>
 
-<div class="column">
+<div class="column" id={block.id}>
     <!--hide it unless the column is hovered-->
     <div class="collapse_icon_container">
         <div class="collapse_icon">
@@ -12,7 +13,9 @@
     </div>
 
     <div class="text_container">
-        <div class="title">title</div>
+        <div class="title">
+            <in-place-edit value={block.title}></in-place-edit>
+        </div>
         <div class="column_info">column info (numer of items inside)</div>
     </div>
 

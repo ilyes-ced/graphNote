@@ -2,34 +2,29 @@
   import Sidebar from "../components/Sidebar.svelte";
   import Topbar from "../components/Topbar.svelte";
   import Column from "../components/blocks/Column.svelte";
+  import Note from "../components/blocks/Note.svelte";
   import InPlaceEdit from "../components/InPlaceEdit.svelte";
-  import { createDraggable, utils } from "animejs";
+  import { createDraggable } from "animejs";
+  import { Block_type } from "./types";
+  import type { Block } from "./types";
   import { onMount } from "svelte";
-  interface block {
-    id: string;
-    posX: number;
-    posY: number;
-    text: string;
-    dragging: boolean;
-  }
 
-  let blocks: block[] = [
+  let blocks: Block[] = [
     {
       id: "block_0",
+      type: Block_type.Note,
       posX: 300,
       posY: 300,
-      text: "testtest tes",
-      dragging: false,
     },
     {
       id: "block_1",
+      type: Block_type.Column,
       posX: 100,
       posY: 100,
-      text: "testtest tes",
-      dragging: false,
     },
     //{
     //  id: "block_2",
+    // type: "note",
     //  posX: 200,
     //  posY: 200,
     //  text: "testtest tes",
@@ -37,6 +32,7 @@
     //},
     //{
     //  id: "block_3",
+    // type: "note",
     //  posX: 100,
     //  posY: 0,
     //  text: "testtest tes",
@@ -44,6 +40,7 @@
     //},
     //{
     //  id: "block_4",
+    // type: "note",
     //  posX: 0,
     //  posY: 100,
     //  text: "testtest tes",
@@ -51,13 +48,16 @@
     //},
     //{
     //  id: "block_5",
+    // type: "note",
     //  posX: 400,
     //  posY: 400,
     //  text: "testtest tes",
     //  dragging: false,
     //},
   ];
-  let canvas_container;
+
+  let scrollable_area, canvas_container, canvas_container_wrapper;
+
   let canvas_container_scale = 1.0;
   onMount(() => {
     const dra_params = {
@@ -105,7 +105,11 @@
       console.log(`updated ${block_id}, new value is: "${newValue}"`);
     };
   };
-  const scrolHandle = (e) => {
+  const scrolHandle = (e: {
+    preventDefault: () => void;
+    ctrlKey: boolean;
+    deltaY: number;
+  }) => {
     e.preventDefault();
     if (e.ctrlKey == true) {
       if (e.deltaY > 0) {
@@ -115,6 +119,12 @@
         canvas_container_scale = canvas_container_scale + 0.1;
       }
       canvas_container.style = `transform: scale(${canvas_container_scale});`;
+      canvas_container.style = `transform: scale(${canvas_container_scale});`;
+
+      // not sure is needed
+      // make the scrollale area div with its size * scale
+      // scrollable_area.style.width = `${canvas_container_wrapper.offsetWidth * canvas_container_scale}px`;
+      // scrollable_area.style.height = `${canvas_container_wrapper.offsetHeight * canvas_container_scale}px`;
     }
   };
 </script>
@@ -129,28 +139,44 @@
         role="region"
         on:wheel|passive={scrolHandle}
       >
-        <div id="canvas_container" bind:this={canvas_container}>
-          <!-- for testin remove later -->
-          <div
-            id="column_1"
-            style="transform: translateX(100px) translateY(100px); width: 300px;min-width: 300px;max-width: 300px;"
-          >
-            <Column />
-          </div>
-          {#each blocks as block}
+        <div id="scrollable_area" bind:this={scrollable_area}>
+          <div id="canvas_container" bind:this={canvas_container}>
+            <!-- for testin remove later 
             <div
-              id={block.id}
-              class="block_container"
-              draggable="true"
-              role="region"
-              style="transform: translateX({block.posX}px) translateY({block.posY}px);"
+              id="column_1"
+              style="transform: translateX(100px) translateY(100px); width: 300px;min-width: 300px;max-width: 300px;"
             >
-              <div class="block">
-                <in-place-edit value={block.text} submit={submit(block.id)}>
-                </in-place-edit>
-              </div>
+              <Column
+                title="test title"
+                block_id="column_1"
+                submit={submit("column_1")}
+              />
             </div>
-          {/each}
+            {#each blocks as block}
+              <div
+                id={block.id}
+                class="block_container"
+                draggable="true"
+                role="region"
+                style="transform: translateX({block.posX}px) translateY({block.posY}px);"
+              >
+                <div class="block">
+                  <in-place-edit value={block.text} submit={submit(block.id)}>
+                  </in-place-edit>
+                </div>
+              </div>
+            {/each}
+          -->
+            {#each blocks as block}
+              {#if block.type == Block_type.Note}
+                <Note {block} />
+              {:else if block.type == Block_type.Column}
+                <Column {block} />
+              {:else}
+                <div>ffezf npm_config_frozen_lockfile</div>
+              {/if}
+            {/each}
+          </div>
         </div>
       </div>
     </div>
@@ -181,6 +207,12 @@
     width: 100%;
     height: 100%;
   }
+  #scrollable_area {
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+  }
+
   #canvas_container {
     width: 100%;
     height: 100%;
@@ -191,7 +223,6 @@
       transparent 1px
     );
     background-size: 10px 10px;
-    overflow: scroll;
     transform-origin: 0% 0% 0px;
   }
 
