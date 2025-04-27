@@ -46,10 +46,11 @@
 
 <style>
     main {
-        background-color: var(--surface-color-1);
+        background-color: var(--bg);
         height: 100%;
         width: 50px;
-        border-right: 1px solid var(--surface-color-2);
+        border-right: 1px solid var(--bg2);
+        overflow: hidden;
     }
 
     #icon_container {

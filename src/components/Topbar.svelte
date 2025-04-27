@@ -9,8 +9,8 @@
         width: 100%;
         height: 50px;
         min-height: 50px;
-        background-color: var(--surface-color-1);
-        border-bottom: 1px solid var(--surface-color-2);
+        background-color: var(--bg);
+        border-bottom: 1px solid var(--border);
 
         padding-left: 25px;
         padding-right: 25px;

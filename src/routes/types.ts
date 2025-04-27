@@ -4,29 +4,6 @@ type HEX = `#${string}`;
 type Color = RGB | RGBA | HEX;
 
 
-interface Block {
-    id: string;
-    type: Block_type;
-    posX: number;
-    posY: number;
-    // width + heiht
-}
-
-
-
-
-
-interface Note {
-    text: string, // rich text
-    bg_color?: Color,
-    top_strip_color?: string,
-}
-
-
-interface Note { }
-
-
-
 
 enum Block_type {
     Note,
@@ -51,6 +28,71 @@ enum Block_type {
 
 
 
+interface Block {
+    id: string;
+    type: Block_type;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color?: Color
+    top_strip_color?: Color;
+}
+
+
+
+
+
+interface Note extends Block {
+    text: string, // rich text maye json
+}
+
+interface Comment extends Block {
+    comment: string,
+}
+
+interface Url extends Block {
+    url: string,
+}
+interface Todo extends Block {
+    // [ ] text
+    // [x] text
+    tasks: { text: string, check: boolean }[],
+}
+interface Table extends Block {
+    // maye fix it later
+    rows: string[][],
+}
+
+
+
+
+
+
+
+
+type BlockUnion = Note | Comment | Url | Todo | Table;
+
+interface Column extends Block {
+    title: string,
+    children: BlockUnion[]
+}
+
+
+
+
+
+
+
 
 export { Block_type };
-export type { Block };
+export type {
+    Block,
+    Note,
+    Comment,
+    Url,
+    Todo,
+    Table,
+    Column,
+    BlockUnion
+};

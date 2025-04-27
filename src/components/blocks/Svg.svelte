@@ -2,22 +2,22 @@
     let { width, height, icon_name, classes } = $props();
 
     let icon_bg = getComputedStyle(document.documentElement)
-        .getPropertyValue("--tone-color-1")
+        .getPropertyValue("--yellow")
         .trim();
     let icon_hint1 = getComputedStyle(document.documentElement)
-        .getPropertyValue("--primary-color-1")
+        .getPropertyValue("--blue")
         .trim();
     let icon_hint2 = getComputedStyle(document.documentElement)
-        .getPropertyValue("--primary-color-2")
+        .getPropertyValue("--yellow")
         .trim();
     let icon_hint3 = getComputedStyle(document.documentElement)
-        .getPropertyValue("--primary-color-3")
+        .getPropertyValue("--green")
         .trim();
     let icon_hint4 = getComputedStyle(document.documentElement)
-        .getPropertyValue("--primary-color-4")
+        .getPropertyValue("--red")
         .trim();
     let icon_txt = getComputedStyle(document.documentElement)
-        .getPropertyValue("--text-color-1")
+        .getPropertyValue("--fg")
         .trim();
 
     let icons = {

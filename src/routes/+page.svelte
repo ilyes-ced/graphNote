@@ -6,21 +6,58 @@
   import InPlaceEdit from "../components/InPlaceEdit.svelte";
   import { createDraggable } from "animejs";
   import { Block_type } from "./types";
-  import type { Block } from "./types";
+  import type { Block, BlockUnion } from "./types";
   import { onMount } from "svelte";
 
-  let blocks: Block[] = [
+  let blocks: BlockUnion[] = [
     {
       id: "block_0",
       type: Block_type.Note,
-      posX: 300,
-      posY: 300,
+      x: 0,
+      y: 0,
+      width: 300,
+      height: 0,
+      color: "#ff00ff",
+      top_strip_color: "#ff00ff",
+
+      text: "test inner text for the note",
     },
     {
       id: "block_1",
       type: Block_type.Column,
-      posX: 100,
-      posY: 100,
+      x: 300,
+      y: 300,
+      width: 300,
+      height: 0,
+      color: "#ff00ff",
+      top_strip_color: "#ff00ff",
+      title: "title for the column",
+      children: [
+        {
+          id: "block_0",
+          type: Block_type.Note,
+          x: 300,
+          y: 300,
+          width: 300,
+          height: 0,
+          color: "#ff00ff",
+          top_strip_color: "#ff00ff",
+
+          text: "test inner text for the note",
+        },
+        {
+          id: "block_0",
+          type: Block_type.Note,
+          x: 300,
+          y: 300,
+          width: 300,
+          height: 0,
+          color: "#ff00ff",
+          top_strip_color: "#ff00ff",
+
+          text: "test inner text for the note2",
+        },
+      ],
     },
     //{
     //  id: "block_2",
@@ -118,8 +155,8 @@
       } else {
         canvas_container_scale = canvas_container_scale + 0.1;
       }
-      canvas_container.style = `transform: scale(${canvas_container_scale});`;
-      canvas_container.style = `transform: scale(${canvas_container_scale});`;
+
+      canvas_container.style = `transform: scale(${canvas_container_scale});  transform-origin: ${e.clientX}px ${e.clientY}px;`;
 
       // not sure is needed
       // make the scrollale area div with its size * scale
@@ -169,9 +206,9 @@
           -->
             {#each blocks as block}
               {#if block.type == Block_type.Note}
-                <Note {block} />
+                <Note {block} edit_func={submit(block.id)} />
               {:else if block.type == Block_type.Column}
-                <Column {block} />
+                <Column {block} edit_func={submit(block.id)} />
               {:else}
                 <div>ffezf npm_config_frozen_lockfile</div>
               {/if}
@@ -200,7 +237,7 @@
   main {
     width: 100%;
     height: 100%;
-    background-color: var(--container-background-color);
+    background-color: var(--bg);
   }
   #canvas_container_wrapper {
     background-color: red;
@@ -216,14 +253,11 @@
   #canvas_container {
     width: 100%;
     height: 100%;
-    background-color: var(--surface-color-1);
+    background-color: var(--bg);
     /* for grid pattern */
-    background-image: radial-gradient(
-      var(--surface-color-2) 1px,
-      transparent 1px
-    );
+    background-image: radial-gradient(var(--bg2) 1px, transparent 1px);
     background-size: 10px 10px;
-    transform-origin: 0% 0% 0px;
+    transform-origin: 0px 0px;
   }
 
   .block_container {
@@ -234,7 +268,7 @@
     height: 80px;
   }
   .block {
-    background-color: var(--tone-color-1);
+    background-color: var(--bg2);
     width: 100%;
     height: 100%;
     overflow: hidden;

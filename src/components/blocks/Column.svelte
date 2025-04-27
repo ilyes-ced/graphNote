@@ -1,38 +1,58 @@
 <script lang="ts">
-    let items_inside = [0, 0, 0, 0, 0, 0, 0, 0];
     import Svg from "./Svg.svelte";
-    let { block } = $props();
+    let { block, edit_func } = $props();
+    import { Block_type } from "../../routes/types";
+    import type { Block, BlockUnion } from "../../routes/types";
+    import Note from "./Note.svelte";
+
+    let children_visible = $state(false);
+
+    const change_vis = () => {
+        children_visible = !children_visible;
+    };
 </script>
 
-<div class="column" id={block.id}>
-    <!--hide it unless the column is hovered-->
-    <div class="collapse_icon_container">
-        <div class="collapse_icon">
-            <Svg width="16" height="16" classes="" icon_name="collapse" />
+<div class="block_container" id={block.id}>
+    <div class="column">
+        <!--hide it unless the column is hovered-->
+        <div class="collapse_icon_container" on:click={change_vis}>
+            <div class="collapse_icon">
+                <Svg width="16" height="16" classes="" icon_name="collapse" />
+            </div>
+        </div>
+
+        <div class="text_container">
+            <div class="title">
+                <in-place-edit value={block.title}></in-place-edit>
+            </div>
+            <div class="column_info">column info (number of items inside)</div>
+        </div>
+
+        <div class={children_visible ? "" : "hide_children"}>
+            {#each block.children as child, i}
+                {#if child.type == Block_type.Note}
+                    <Note block={child} {edit_func} />
+                {:else}
+                    <div>error</div>
+                {/if}
+                {#if i != block.children.length - 1}
+                    <div class="spacer"></div>
+                {/if}
+            {/each}
         </div>
     </div>
-
-    <div class="text_container">
-        <div class="title">
-            <in-place-edit value={block.title}></in-place-edit>
-        </div>
-        <div class="column_info">column info (numer of items inside)</div>
-    </div>
-
-    {#each items_inside as item, i}
-        <div class="container"></div>
-        {#if i != items_inside.length - 1}
-            <div class="spacer"></div>
-        {/if}
-    {/each}
 </div>
 
 <style>
+    .block_container {
+        /* 1 or 5 is best i think maybe make it use editable */
+        padding: 5px;
+        border: 1px solid red;
+        max-width: 300px;
+    }
     .column {
         position: relative;
-        background-color: var(--surface-color-2);
-        width: 300px;
-        min-width: 300px;
+        background-color: var(--bg2);
         max-width: 300px;
         padding: 7.5px;
         padding-top: 10px;
@@ -43,7 +63,7 @@
     }
 
     .container {
-        background-color: var(--surface-color-1);
+        background-color: var(--bg);
         width: 100%;
         min-height: 50px;
         break-after: column;
@@ -51,7 +71,7 @@
 
     .spacer {
         height: 7.5px;
-        background-color: var(--surface-color-2);
+        background-color: var(--bg2);
     }
 
     .collapse_icon_container {
@@ -60,12 +80,12 @@
         top: 5px;
         width: 16px;
         height: 16px;
+        transition: all 0.2s ease-in;
     }
     .collapse_icon_container:hover {
-        background-color: yellow;
+        background-color: aqua;
     }
     .collapse_icon {
-        background-color: aqua;
         width: 16px;
         height: 16px;
     }
@@ -78,5 +98,8 @@
     }
     .title {
         font-size: 16px;
+    }
+    .hide_children {
+        display: none;
     }
 </style>
