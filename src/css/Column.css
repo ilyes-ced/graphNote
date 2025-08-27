@@ -1,0 +1,8 @@
+.column{
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--active);
+    border: 1px solid var(--border);
+
+}
