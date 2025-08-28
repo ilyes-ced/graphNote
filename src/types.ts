@@ -37,8 +37,15 @@ interface Block {
   top_strip_color?: Color;
 }
 
+interface ChildBlock {
+  id: string;
+  type: Block_type;
+  index: number;
+  color?: Color;
+}
+
 interface Note extends Block {
-  text: string; // rich text maye json
+  text: string; // rich text maybe json
 }
 
 interface Comment extends Block {
@@ -66,4 +73,14 @@ interface Column extends Block {
 type BlockUnion = Note | Comment | Url | Todo | Table | Column;
 
 export { Block_type };
-export type { Block, Note, Comment, Url, Todo, Table, Column, BlockUnion };
+export type {
+  Block,
+  ChildBlock,
+  Note,
+  Comment,
+  Url,
+  Todo,
+  Table,
+  Column,
+  BlockUnion,
+};

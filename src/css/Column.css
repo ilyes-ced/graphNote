@@ -1,14 +1,18 @@
 .column {
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-
   text-align: center;
-
   background-color: var(--active);
   border: 1px solid var(--bg);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
   padding: 5px 5px 5px 5px;
+}
+
+.top_strip {
+  width: 100%;
+  height: 4px;
 }
 
 .children_container {

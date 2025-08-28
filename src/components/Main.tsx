@@ -1,9 +1,11 @@
-import { For, onMount } from "solid-js";
+import { createSignal, For, Match, onMount, Switch } from "solid-js";
 import Column from "./blocks/Column.tsx";
 import { BlockUnion, Block_type } from "../types";
 ////////////////////////////////////////////////////////////////////////
 
 import { createDraggable } from "animejs";
+import Note from "./blocks/Note.tsx";
+import Todo from "./blocks/Todo.tsx";
 
 const draggable_params = {
   container: "#main",
@@ -23,7 +25,8 @@ const draggable_params = {
   onRelease: () => {},
   // when animation settles we et the translateX/translateY for the new values for posX/posY
   onSettle: (e: any) => {
-    const index = blocks.findIndex((block) => block.id === e.$target.id);
+    const index = blocks().findIndex((block) => block.id === e.$target.id);
+
     // TODO: for this part make not update the object but the JSON file
     // blocks[index].posX = x;
     // blocks[index].posY = y;
@@ -32,10 +35,10 @@ const draggable_params = {
 
 ////////////////////////////////////////////////////////////////////////
 //? some default blocks
-let blocks: BlockUnion[] = [
+let init_blocks: BlockUnion[] = [
   {
     id: "block_0",
-    type: Block_type.Note,
+    type: Block_type.Column,
     x: 0,
     y: 0,
     width: 300,
@@ -53,7 +56,7 @@ let blocks: BlockUnion[] = [
     width: 300,
     color: "#ff0000",
     top_strip_color: "#00f0ff",
-    title: "title for the column has children",
+    title: "title for the column has some test children",
     children: [
       {
         id: "block_2",
@@ -79,8 +82,49 @@ let blocks: BlockUnion[] = [
       },
     ],
   },
+
+  {
+    id: "block_4",
+    type: Block_type.Note,
+    x: 700,
+    y: 700,
+    width: 300,
+    color: "#4f006f",
+    title: "test test",
+
+    text: "test inner text for the note",
+  },
+  {
+    id: "block_5",
+    type: Block_type.Todo,
+    x: 800,
+    y: 600,
+    width: 300,
+    color: "#4f006f",
+    title: "test test",
+    tasks: [
+      {
+        text: "test 000",
+        check: false,
+      },
+      {
+        text: "test 111",
+        check: true,
+      },
+      {
+        text: "test 222",
+        check: true,
+      },
+      {
+        text: "test 333",
+        check: false,
+      },
+    ],
+  },
 ];
-////////////////////////////////////////////////////////////////////////
+const [blocks, setBlocks] = createSignal(init_blocks);
+
+//////////////////////////////////////////////////
 //? generate random blocks
 // for (let i = 0; i < 100; i++) {
 //   let x = Math.floor(Math.random() * 100);
@@ -104,14 +148,47 @@ let blocks: BlockUnion[] = [
 
 export default () => {
   onMount(() => {
-    blocks.forEach((block) => {
+    blocks().forEach((block) => {
       createDraggable("#" + block.id, draggable_params);
     });
   });
 
+  const check_task = (block_id: string, task_index: number) => {
+    console.log("recieved click: ", block_id, " ", task_index);
+    setBlocks((prev) =>
+      prev.map((block) => {
+        if (block.id === block_id && block.type === Block_type.Todo) {
+          const updatedTasks = block.tasks?.map((task, index) => {
+            if (index === task_index) {
+              return { ...task, check: !task.check };
+            }
+            return task;
+          });
+
+          return { ...block, tasks: updatedTasks };
+        }
+        return block;
+      })
+    );
+  };
+
   return (
     <div id="main" style={{ position: "relative", overflow: "scroll" }}>
-      <For each={blocks}>{(item, index) => <Column {...item} />}</For>
+      <For each={blocks()}>
+        {(block, index) => (
+          <Switch fallback={<div>Not Found</div>}>
+            <Match when={block.type === Block_type.Column}>
+              <Column {...block} />
+            </Match>
+            <Match when={block.type === Block_type.Note}>
+              <Note {...block} />
+            </Match>
+            <Match when={block.type === Block_type.Todo}>
+              <Todo {...block} check_task={check_task} />
+            </Match>
+          </Switch>
+        )}
+      </For>
     </div>
   );
 };
