@@ -1,8 +1,39 @@
-.column{
-    width: 250px;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--active);
-    border: 1px solid var(--border);
+.column {
+  position: relative;
 
+  display: flex;
+  flex-direction: column;
+
+  text-align: center;
+
+  background-color: var(--active);
+  border: 1px solid var(--bg);
+  padding: 5px 5px 5px 5px;
+}
+
+.children_container {
+  background-color: var(--bg);
+  height: 65px;
+  width: 100%;
+}
+
+.collapse_icon {
+  align-self: end;
+  width: 16px;
+  height: 16px;
+}
+.collapse_icon:hover {
+  background-color: var(--bg);
+  border: solid 1px var(--border);
+  cursor: pointer;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bolder;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  margin-bottom: 15px;
 }

@@ -14,6 +14,10 @@
   --border: #ffffff90;
   --active: #ff4800;
   --inactive: #ffffff60;
+
+
+  --df_block_color: #261462;
+
 }
 
 *,
@@ -76,13 +80,13 @@ body,
   background-color: var(--bg2);
 
   /* for grid pattern */
-  --s: 100px; /* control the size*/
+  --s: 50px; /* control the size*/
   --c1: #ffffff10;
-  --c2: #0b061b;
+  --c2: #00000000;
   
   --_g: #0000 90deg,var(--c1) 0;
   background: 
-    conic-gradient(from 90deg at 2px 2px,var(--_g)),
+    conic-gradient(from 90deg at 1px 1px,var(--_g)),
     conic-gradient(from 90deg at 1px 1px,var(--_g)),
     var(--c2);
   background-size: var(--s) var(--s), calc(var(--s)/5) calc(var(--s)/5);

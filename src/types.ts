@@ -29,8 +29,10 @@ interface Block {
   type: Block_type;
   x: number;
   y: number;
-  width: number;
-  height: number;
+  //? can be decided by the user
+  width?: number;
+  //? height depends on content shouldnt be user controlled
+  //height?: number;
   color?: Color;
   top_strip_color?: Color;
 }

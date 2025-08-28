@@ -7,7 +7,7 @@ import { createDraggable } from "animejs";
 
 const draggable_params = {
   container: "#main",
-  snap: 25,
+  snap: 10,
   releaseStiffness: 1000,
   releaseEase: "out(3)",
   // doesnt let it move out of container
@@ -31,6 +31,7 @@ const draggable_params = {
 };
 
 ////////////////////////////////////////////////////////////////////////
+//? some default blocks
 let blocks: BlockUnion[] = [
   {
     id: "block_0",
@@ -38,9 +39,9 @@ let blocks: BlockUnion[] = [
     x: 0,
     y: 0,
     width: 300,
-    height: 0,
     color: "#ff00ff",
-    top_strip_color: "#ff00ff",
+    top_strip_color: "#234587",
+    title: "test test",
 
     text: "test inner text for the note",
   },
@@ -50,83 +51,66 @@ let blocks: BlockUnion[] = [
     x: 300,
     y: 300,
     width: 300,
-    height: 0,
-    color: "#ff00ff",
-    top_strip_color: "#ff00ff",
-    title: "title for the column",
+    color: "#ff0000",
+    top_strip_color: "#00f0ff",
+    title: "title for the column has children",
     children: [
       {
-        id: "block_0",
+        id: "block_2",
         type: Block_type.Note,
-        x: 300,
-        y: 300,
+        x: 200,
+        y: 200,
         width: 300,
-        height: 0,
-        color: "#ff00ff",
-        top_strip_color: "#ff00ff",
+        color: "#00f0f0",
+        top_strip_color: "#f57090",
 
         text: "test inner text for the note",
       },
       {
-        id: "block_0",
+        id: "block_3",
         type: Block_type.Note,
-        x: 300,
-        y: 300,
+        x: 400,
+        y: 400,
         width: 300,
-        height: 0,
-        color: "#ff00ff",
-        top_strip_color: "#ff00ff",
+        color: "#707990",
+        top_strip_color: "#934573",
 
         text: "test inner text for the note2",
       },
     ],
   },
-  //{
-  //  id: "block_2",
-  // type: "note",
-  //  posX: 200,
-  //  posY: 200,
-  //  text: "testtest tes",
-  //  dragging: false,
-  //},
-  //{
-  //  id: "block_3",
-  // type: "note",
-  //  posX: 100,
-  //  posY: 0,
-  //  text: "testtest tes",
-  //  dragging: false,
-  //},
-  //{
-  //  id: "block_4",
-  // type: "note",
-  //  posX: 0,
-  //  posY: 100,
-  //  text: "testtest tes",
-  //  dragging: false,
-  //},
-  //{
-  //  id: "block_5",
-  // type: "note",
-  //  posX: 400,
-  //  posY: 400,
-  //  text: "testtest tes",
-  //  dragging: false,
-  //},
 ];
+////////////////////////////////////////////////////////////////////////
+//? generate random blocks
+// for (let i = 0; i < 100; i++) {
+//   let x = Math.floor(Math.random() * 100);
+//   let y = Math.floor(Math.random() * 100);
+//
+//   blocks.push({
+//     id: `block_${i}`,
+//     type: Block_type.Note,
+//     x: x,
+//     y: y,
+//     width: 300,
+//     height: 100 + Math.floor(Math.random() * 200),
+//     color: "#f0ff0f",
+//     top_strip_color: "#f060ff",
+//     text: "test",
+//   });
+//
+//   console.log(`block_${i}: ${x} ${y}`);
+// }
 ////////////////////////////////////////////////////////////////////////
 
 export default () => {
   onMount(() => {
     blocks.forEach((block) => {
-      console.log(block.id);
-      const graggable = createDraggable("#" + block.id, draggable_params);
-      console.log(graggable);
+      createDraggable("#" + block.id, draggable_params);
     });
   });
 
   return (
-    <div id="main">
+    <div id="main" style={{ position: "relative", overflow: "scroll" }}>
       <For each={blocks}>{(item, index) => <Column {...item} />}</For>
     </div>
   );

@@ -1,4 +1,5 @@
 import { For } from "solid-js";
+import Svg from "./blocks/Svg";
 
 export default () => {
   let icons = [
@@ -29,7 +30,18 @@ export default () => {
   return (
     <div id="sidebar">
       <For each={icons} fallback={<div>Loading...</div>}>
-        {(icon) => <div>{icon.name}</div>}
+        {(icon) => (
+          <div class="icon">
+            <Svg
+              width={icon.width}
+              height={icon.height}
+              classes=""
+              icon_name={icon.name}
+            />
+            <div class="space"></div>
+            <span>{icon.name}</span>
+          </div>
+        )}
       </For>{" "}
     </div>
   );
