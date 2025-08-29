@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 import Svg from "./blocks/Svg";
+import "../css/Sidebar.css";
 
 export default () => {
   let icons = [
