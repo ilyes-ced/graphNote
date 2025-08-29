@@ -4,18 +4,22 @@ import { Todo as TodoType } from "../../types";
 
 type TodoProps = TodoType & {
   check_task?: (block_id: string, task_index: number) => void;
+  is_child: boolean;
 };
 
 export default (block: TodoProps) => {
+  console.log("from inside the todo nested : ", block.is_child);
   return (
     <div
-      class="todo block"
+      class={block.is_child ? "todo child_block" : "todo block"}
       id={block.id}
       style={{
-        width: block.width + "px",
-        background: block.color,
-        position: "absolute",
-        transform: `translateX(${block.x}px) translateY(${block.y}px)`,
+        width: block.is_child ? "100%" : block.width + "px",
+        background: block.color ? block.color : "var(--default-bg-color)", // doesnt work the var()
+        position: block.is_child ? "static" : "absolute",
+        transform: block.is_child
+          ? ""
+          : `translateX(${block.x}px) translateY(${block.y}px)`,
       }}
     >
       <Show when={block.top_strip_color}>

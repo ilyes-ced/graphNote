@@ -2,16 +2,24 @@ import { Show } from "solid-js";
 import "../../css/Note.css";
 import { Note } from "../../types";
 
-export default (block: Note) => {
+type NoteProps = Note & {
+  is_child?: boolean; // add it here
+};
+
+export default (block: NoteProps) => {
+  console.log("from inside the note nested : ", block.is_child);
+
   return (
     <div
-      class="note block"
+      class={block.is_child ? "note child_block" : "note block"}
       id={block.id}
       style={{
-        width: block.width + "px",
-        background: block.color ? block.color : "var(--default-bg-color)",
-        position: "absolute",
-        transform: `translateX(${block.x}px) translateY(${block.y}px)`,
+        width: block.is_child ? "100%" : block.width + "px",
+        background: block.color ? block.color : "var(--default-bg-color)", // doesnt work the var()
+        position: block.is_child ? "static" : "absolute",
+        transform: block.is_child
+          ? ""
+          : `translateX(${block.x}px) translateY(${block.y}px)`,
       }}
     >
       <Show when={block.top_strip_color}>

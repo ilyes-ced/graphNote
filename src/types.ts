@@ -46,30 +46,30 @@ interface ChildBlock {
   color?: Color;
 }
 
-interface Note extends Block {
+interface Note extends Block, ChildBlock {
   text: string; // rich text maybe json
 }
 
-interface Comment extends Block {
+interface Comment extends Block, ChildBlock {
   comment: string;
 }
 
-interface Url extends Block {
+interface Url extends Block, ChildBlock {
   url: string;
 }
-interface Todo extends Block {
+interface Todo extends Block, ChildBlock {
   // [ ] text
   // [x] text
   tasks: Task[];
 }
-interface Table extends Block {
+interface Table extends Block, ChildBlock {
   // maye fix it later
   rows: string[][];
 }
 
-interface Column extends Block {
+interface Column extends Block, ChildBlock {
   title: string;
-  children: BlockUnion[];
+  children: ChildBlock[];
 }
 
 type BlockUnion = Note | Comment | Url | Todo | Table | Column;

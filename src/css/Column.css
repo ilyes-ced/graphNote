@@ -13,7 +13,7 @@
   height: 4px;
 }
 
-.children_container {
+.empty_children_container {
   background-color: var(--bg);
   height: 65px;
   width: 100%;
@@ -38,4 +38,16 @@
 
 .subtitle {
   margin-bottom: 15px;
+}
+
+.children_container{
+  display: flex;
+  flex-direction: column;
+}
+.children_container >*{
+  width: 100%;
+}
+.column_spacer{
+  padding-top: 5px;
+  background-color: transparent;
 }
