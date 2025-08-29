@@ -3,6 +3,8 @@ type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
 type HEX = `#${string}`;
 type Color = RGB | RGBA | HEX;
 
+type Task = { text: string; check: boolean; children: Task[] };
+
 enum Block_type {
   Note,
   Comment,
@@ -58,7 +60,7 @@ interface Url extends Block {
 interface Todo extends Block {
   // [ ] text
   // [x] text
-  tasks: { text: string; check: boolean }[];
+  tasks: Task[];
 }
 interface Table extends Block {
   // maye fix it later
@@ -83,4 +85,5 @@ export type {
   Table,
   Column,
   BlockUnion,
+  Task,
 };

@@ -5,11 +5,11 @@ import { Note } from "../../types";
 export default (block: Note) => {
   return (
     <div
-      class="note"
+      class="note block"
       id={block.id}
       style={{
         width: block.width + "px",
-        background: block.color,
+        background: block.color ? block.color : "var(--default-bg-color)",
         position: "absolute",
         transform: `translateX(${block.x}px) translateY(${block.y}px)`,
       }}

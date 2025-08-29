@@ -9,7 +9,7 @@ type TodoProps = TodoType & {
 export default (block: TodoProps) => {
   return (
     <div
-      class="todo"
+      class="todo block"
       id={block.id}
       style={{
         width: block.width + "px",
@@ -25,31 +25,38 @@ export default (block: TodoProps) => {
         ></div>
       </Show>
 
-      <ul id="myUL">
-        <For each={block.tasks} fallback={<div>Loading...</div>}>
-          {(item, index) => (
-            <div
-              class="checkbox-div"
-              onClick={() => {
-                console.log("launching click: ", block.id, " ", index());
+      <For each={block.tasks} fallback={<div>Loading...</div>}>
+        {(item, index) => (
+          <div
+            class="checkbox-div"
+            onClick={() => {
+              console.log("launching click: ", block.id, " ", index());
 
-                block.check_task?.(block.id, index());
-              }}
-            >
+              block.check_task?.(block.id, index());
+            }}
+          >
+            <label class="checkbox">
               <input
-                onClick={(e) => console.log("e.currentTarget")}
+                class="checkbox__trigger visuallyhidden"
                 type="checkbox"
-                name={"task_" + index}
                 checked={item.check ? true : false}
               />
-              <label class="cbx" for={"task_" + index}></label>
-              <label class="lbl" for={"task_" + index}>
-                {item.text}
-              </label>
-            </div>
-          )}
-        </For>
-      </ul>
+              <span class="checkbox__symbol">
+                <svg
+                  aria-hidden="true"
+                  class="icon-checkbox"
+                  width="28px"
+                  height="28px"
+                  viewBox="0 0 28 28"
+                >
+                  <path d="M4 14l8 7L24 7"></path>
+                </svg>
+              </span>
+              <p class="checkbox__textwrapper">{item.text}</p>
+            </label>
+          </div>
+        )}
+      </For>
     </div>
   );
 };

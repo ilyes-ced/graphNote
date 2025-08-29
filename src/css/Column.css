@@ -1,6 +1,5 @@
 .column {
   text-align: center;
-  background-color: var(--active);
   border: 1px solid var(--bg);
 }
 

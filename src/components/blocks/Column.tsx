@@ -6,12 +6,11 @@ import Svg from "./Svg";
 export default (block: Column) => {
   return (
     <div
-      class="column"
+      class="column block"
       id={block.id}
       style={{
         width: block.width + "px",
-        background: block.color,
-        position: "absolute",
+        background: block.color, //? if this doesnt exist, .block in App.css will take care of it
         transform: `translateX(${block.x}px) translateY(${block.y}px)`,
       }}
     >
