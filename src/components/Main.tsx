@@ -4,6 +4,10 @@ import { createStore } from "solid-js/store";
 import Column from "./blocks/Column.tsx";
 import { BlockUnion, Block_type, Task } from "../types";
 
+import { createDraggable } from "animejs";
+import Note from "./blocks/Note.tsx";
+import Todo from "./blocks/Todo.tsx";
+
 import {
   BaseDirectory,
   writeTextFile,
@@ -11,9 +15,12 @@ import {
 } from "@tauri-apps/plugin-fs";
 ////////////////////////////////////////////////////////////////////////
 
-import { createDraggable } from "animejs";
-import Note from "./blocks/Note.tsx";
-import Todo from "./blocks/Todo.tsx";
+const [scale, setScale] = createSignal(1.0);
+const [position, setPosition] = createSignal({ x: 0, y: 0 });
+const [isDragging, setIsDragging] = createSignal(false);
+let lastMouse = { x: 0, y: 0 };
+
+////////////////////////////////////////////////////////////////////////
 
 const draggable_params = {
   container: "#main",
@@ -29,16 +36,16 @@ const draggable_params = {
   onGrab: (e: any) => {
     console.log("grabbed: ", e.$target.id);
   },
-  onDrag: () => {
+  onDrag: (e: any) => {
     // updates every move
+    const s = scale();
+    e.x = e.x / s;
+    e.y = e.y / s;
   },
   onRelease: () => {},
   // when animation settles we et the translateX/translateY for the new values for posX/posY
   onSettle: (e: any) => {
     //? moving the blocks around, update the data object and save to file
-    console.log("moving: ", e);
-    console.log("moving: ", e.x);
-    console.log("moving: ", e.y);
 
     const index = blocks.findIndex((block) => block.id === e.$target.id);
     if (index === -1) return;
@@ -201,6 +208,44 @@ const loadBlocks = async () => {
   setBlocks(init_blocks);
 };
 
+////////////////////////////////////////////////////////////////////////
+const resize = async (e: WheelEvent) => {
+  console.log(e);
+
+  if (e.ctrlKey) {
+    if (e.deltaY > 0) {
+      if (scale() >= 0.7) setScale(scale() - 0.1);
+    } else {
+      setScale(scale() + 0.1);
+    }
+  }
+};
+
+const handleMouseDown = (e: MouseEvent) => {
+  if (e.which === 2) {
+    // Middle click
+    e.preventDefault();
+    setIsDragging(true);
+    lastMouse = { x: e.clientX, y: e.clientY };
+  }
+};
+
+const handleMouseMove = (e: MouseEvent) => {
+  if (isDragging()) {
+    const dx = e.clientX - lastMouse.x;
+    const dy = e.clientY - lastMouse.y;
+    setPosition((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+    lastMouse = { x: e.clientX, y: e.clientY };
+  }
+};
+
+const handleMouseUp = (e: MouseEvent) => {
+  if (e.button === 1) {
+    setIsDragging(false);
+  }
+};
+////////////////////////////////////////////////////////////////////////
+
 export default () => {
   onMount(async () => {
     await loadBlocks();
@@ -232,23 +277,45 @@ export default () => {
   };
 
   return (
-    <div id="main" style={{ position: "relative", overflow: "scroll" }}>
-      <For each={blocks}>
-        {(block, index) => (
-          <Switch fallback={<div>Not Found</div>}>
-            <Match when={block.type === Block_type.Column}>
-              <Column {...block} />
-            </Match>
-            <Match when={block.type === Block_type.Note}>
-              <Note {...block} />
-            </Match>
-            <Match when={block.type === Block_type.Todo}>
-              <Todo {...block} check_task={check_task} />
-            </Match>
-          </Switch>
-        )}
-      </For>
-      <div style={{ top: "500px" }}>{JSON.stringify(blocks, null, 2)}</div>
+    <div
+      id="main_wrapper"
+      onwheel={resize}
+      onmousedown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
+      <div id="transform_wrapper">
+        <div
+          id="main"
+          style={{
+            position: "relative",
+            transform: `translate(${position().x}px, ${
+              position().y
+            }px) scale(${scale()})`,
+            "transform-origin": "center center",
+            transition: isDragging() ? "none" : "transform 0.1s ease",
+            display: "flex",
+            "align-items": "center",
+            "justify-content": "center",
+          }}
+        >
+          <For each={blocks}>
+            {(block, index) => (
+              <Switch fallback={<div>Not Found</div>}>
+                <Match when={block.type === Block_type.Column}>
+                  <Column {...block} />
+                </Match>
+                <Match when={block.type === Block_type.Note}>
+                  <Note {...block} />
+                </Match>
+                <Match when={block.type === Block_type.Todo}>
+                  <Todo {...block} check_task={check_task} />
+                </Match>
+              </Switch>
+            )}
+          </For>
+        </div>
+      </div>
     </div>
   );
 };

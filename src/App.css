@@ -1,8 +1,7 @@
 :root {
   --bg: #0b061b;
-  --bg2: #0b061b;
+  --bg2: #4121a8;
   --fg: #ffffff;
-
 
   /*
   #2b00e8
@@ -10,16 +9,17 @@
   #0b061b
   */
 
-  
   --border: #ffffff90;
   --active: #ff4800;
   --inactive: #ffffff60;
 
-
   --df_block_color: #2b00e8;
-
 }
-
+div {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
 *,
 *::before,
 *::after {
@@ -66,6 +66,7 @@ body,
   width: 100%;
   height: 50px;
   border-bottom: 2px solid var(--border);
+  background-color: var(--bg2);
 }
 
 #sidebar {
@@ -73,27 +74,38 @@ body,
   height: 100%;
   border-right: 2px solid var(--border);
 }
-
-#main {
+/********************************************************/
+#main_wrapper {
   width: 100%;
   height: 100%;
-  background-color: var(--bg2);
+  overflow: auto;
+  position: relative;
+}
+#transform_wrapper {
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  will-change: transform;
+  /* transform applied dynamically from SolidJS */
+}
+#main {
+  position: relative;
+  border: solid 2px red;
+  width: 100%;
+  height: 100%;
 
   /* for grid pattern */
   --s: 50px; /* control the size*/
   --c1: #ffffff10;
   --c2: #00000000;
-  
-  --_g: #0000 90deg,var(--c1) 0;
-  background: 
-    conic-gradient(from 90deg at 1px 1px,var(--_g)),
-    conic-gradient(from 90deg at 1px 1px,var(--_g)),
-    var(--c2);
-  background-size: var(--s) var(--s), calc(var(--s)/5) calc(var(--s)/5);
+
+  --_g: #0000 90deg, var(--c1) 0;
+  background: conic-gradient(from 90deg at 1px 1px, var(--_g)),
+    conic-gradient(from 90deg at 1px 1px, var(--_g)), var(--c2);
+  background-size: var(--s) var(--s), calc(var(--s) / 5) calc(var(--s) / 5);
 }
-
-
-
+/********************************************************/
 .block {
   background-color: var(--df_block_color);
+  border: 1px solid var(--bg);
 }

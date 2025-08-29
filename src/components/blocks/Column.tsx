@@ -1,4 +1,4 @@
-import { Show } from "solid-js";
+import { onMount, Show } from "solid-js";
 import "../../css/Column.css";
 import { Column } from "../../types";
 import Svg from "./Svg";
@@ -12,6 +12,7 @@ export default (block: Column) => {
         width: block.width + "px",
         background: block.color, //? if this doesnt exist, .block in App.css will take care of it
         transform: `translateX(${block.x}px) translateY(${block.y}px)`,
+        resize: "vertical",
       }}
     >
       <Show when={block.top_strip_color}>
