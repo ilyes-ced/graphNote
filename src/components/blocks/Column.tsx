@@ -27,8 +27,8 @@ export default (block: ColumnProps) => {
       style={{
         width: block.width + "px",
         background: block.color, //? if this doesnt exist, .block in App.css will take care of it
-        transform: `translateX(${block.x}px) translateY(${block.y}px)`,
-        resize: "vertical",
+        top: `${block.x}px`,
+        left: `${block.y}px`,
       }}
     >
       <Show when={block.top_strip_color}>
