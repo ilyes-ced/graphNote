@@ -1,25 +1,29 @@
-import { For, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
+import { SetStoreFunction } from "solid-js/store";
+import { BlockUnion, Todo as TodoType } from "../../types";
+import { useDraggableBlock } from "../../shared/useDraggableBlock";
 import "../../css/Todo.css";
-import { Todo as TodoType } from "../../types";
+import { updateTasks } from "../../shared/update";
 
 type TodoProps = TodoType & {
-  check_task?: (block_id: string, task_index: number) => void;
   is_child?: boolean;
+  setBlocks: SetStoreFunction<BlockUnion[]>;
 };
 
 export default (block: TodoProps) => {
-  console.log("from inside the todo nested : ", block.is_child);
+  const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
+    null
+  );
+  useDraggableBlock(draggableRef, block, block.setBlocks);
+
   return (
     <div
+      ref={setDraggableRef}
       class={block.is_child ? "todo child_block" : "todo block"}
       id={block.id}
       style={{
         width: block.is_child ? "100%" : block.width + "px",
         background: block.color ? block.color : "var(--default-bg-color)", // doesnt work the var()
-
-        transform: block.is_child
-          ? ""
-          : `translateX(${block.x}px) translateY(${block.y}px)`,
 
         // position: block.is_child ? "static" : "absolute",
         // top: `${block.x}px`,
@@ -40,7 +44,7 @@ export default (block: TodoProps) => {
             onClick={() => {
               console.log("launching click: ", block.id, " ", index());
 
-              block.check_task?.(block.id, index());
+              updateTasks?.(block.id, index(), block.setBlocks);
             }}
           >
             <label class="checkbox">

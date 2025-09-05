@@ -1,37 +1,30 @@
-import { Show, For, Match, onMount, Switch } from "solid-js";
+import { Show, For, Match, Switch, createSignal } from "solid-js";
 import "../../css/Column.css";
-import { Block_type, Column } from "../../types";
+import { Block_type, BlockUnion, Column } from "../../types";
 import Svg from "./Svg";
 import Note from "./Note";
 import Todo from "./Todo";
+import { SetStoreFunction } from "solid-js/store";
+import { useDraggableBlock } from "../../shared/useDraggableBlock";
 
 type ColumnProps = Column & {
   check_task?: (block_id: string, task_index: number) => void;
+  setBlocks: SetStoreFunction<BlockUnion[]>;
 };
 export default (block: ColumnProps) => {
-  let column: HTMLDivElement;
-  let extra_space = 0;
-
-  onMount(() => {
-    console.log("================");
-    console.log(column.offsetHeight);
-    console.log(10 - (column.offsetHeight % 10));
-    extra_space = 10 - (column.offsetHeight % 10);
-  });
+  const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
+    null
+  );
+  useDraggableBlock(draggableRef, block, block.setBlocks);
 
   return (
     <div
-      ref={column}
+      ref={setDraggableRef}
       class="column block"
       id={block.id}
       style={{
         width: block.width + "px",
         background: block.color, //? if this doesnt exist, .block in App.css will take care of it
-
-        transform: `translateX(${block.x}px) translateY(${block.y}px)`,
-
-        // top: `${block.x}px`,
-        // left: `${block.y}px`,
       }}
     >
       <Show when={block.top_strip_color}>
@@ -51,15 +44,7 @@ export default (block: ColumnProps) => {
         <div class="children_container">
           <Show
             when={block.children && block.children.length > 0}
-            fallback={
-              <div
-                style={{
-                  "margin-bottom": extra_space / 2 + "px",
-                  "margin-top": extra_space / 2 + "px",
-                }}
-                class="empty_children_container"
-              ></div>
-            }
+            fallback={<div class="empty_children_container"></div>}
           >
             <For each={block.children}>
               {(child_block, index) => (
@@ -71,7 +56,7 @@ export default (block: ColumnProps) => {
                     <Match when={child_block.type === Block_type.Todo}>
                       <Todo
                         {...child_block}
-                        check_task={child_block.check_task}
+                        setBlocks={block.setBlocks}
                         is_child={true}
                       />
                     </Match>

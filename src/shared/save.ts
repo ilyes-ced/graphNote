@@ -6,7 +6,7 @@ import {
 import { BlockUnion } from "../types";
 
 //? saves the JSON object as file
-// TODO: make debounce for disk write operation, to avoid writing too much to disk
+// TODO: make debounce for disk write operation
 async function writeJSON(blocks: BlockUnion[]) {
   const json = JSON.stringify(blocks, null, 2);
 
@@ -29,5 +29,3 @@ async function readJSON(): Promise<BlockUnion[] | null> {
     return null;
   }
 }
-
-export { writeJSON, readJSON };
