@@ -3,7 +3,7 @@ import { createSignal, For, Match, onMount, Switch } from "solid-js";
 import Column from "./blocks/Column.tsx";
 import { BlockUnion, Block_type, Task } from "../types";
 
-import { createDraggable } from "animejs";
+import { createDraggable, utils } from "animejs";
 import Note from "./blocks/Note.tsx";
 import Todo from "./blocks/Todo.tsx";
 
@@ -50,27 +50,16 @@ const draggable_params = {
   onSettle: (e: any) => {
     //? moving the blocks around, update the data object and save to file
     // todo: get the values, set the x and y to those values then reset the translate values to 0
-    console.log("//////////");
     const translatex = e.x;
     const translatey = e.y;
-    e.$target.style.transform = "translateX(0px) translateY(0px)";
-
-    console.log("translate values", translatex, translatey);
-    const block = blocks.find((b) => b.id === e.$target.id);
-    if (block) {
-      const x = block.x;
-      const y = block.y;
-      console.log("Position:", x, y);
-      console.log("updated Position:", x + translatex, y + translatey);
-    }
-    console.log("//////////");
+    const target = e.$target;
 
     setBlocks(
-      (b) => b.id === e.$target.id,
+      (b) => b.id === target.id,
       (b) => ({
         ...b,
-        x: b.x + translatey,
-        y: b.y + translatex,
+        x: translatex,
+        y: translatey,
       })
     );
 
@@ -191,40 +180,36 @@ export default () => {
       onmousedown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      style={{
+        transform: `translate(${position().x}px, ${
+          position().y
+        }px) scale(${scale()})`,
+        "transform-origin": "top left",
+        transition: isDragging() ? "none" : "transform 0.1s ease",
+        width: "fit-content",
+        height: "fit-content",
+      }}
     >
-      <div
-        ref={main}
-        id="main"
-        style={{
-          position: "relative",
-          transform: `translate(${position().x}px, ${
-            position().y
-          }px) scale(${scale()})`,
-          "transform-origin": "center center",
+      <div>
+        <div ref={main} id="main">
+          <div id="grid"></div>
 
-          transition: isDragging() ? "none" : "transform 0.1s ease",
-          display: "flex",
-          "align-items": "center",
-          "justify-content": "center",
-        }}
-      >
-        <div id="grid"></div>
-
-        <For each={blocks}>
-          {(block, index) => (
-            <Switch fallback={<div>Not Found</div>}>
-              <Match when={block.type === Block_type.Column}>
-                <Column {...block} />
-              </Match>
-              <Match when={block.type === Block_type.Note}>
-                <Note {...block} />
-              </Match>
-              <Match when={block.type === Block_type.Todo}>
-                <Todo {...block} check_task={check_task} />
-              </Match>
-            </Switch>
-          )}
-        </For>
+          <For each={blocks}>
+            {(block) => (
+              <Switch fallback={<div>Not Found</div>}>
+                <Match when={block.type === Block_type.Column}>
+                  <Column {...block} />
+                </Match>
+                <Match when={block.type === Block_type.Note}>
+                  <Note {...block} />
+                </Match>
+                <Match when={block.type === Block_type.Todo}>
+                  <Todo {...block} check_task={check_task} />
+                </Match>
+              </Switch>
+            )}
+          </For>
+        </div>
       </div>
     </div>
   );

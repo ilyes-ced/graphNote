@@ -16,10 +16,14 @@ export default (block: NoteProps) => {
       style={{
         width: block.is_child ? "100%" : block.width + "px",
         background: block.color ? block.color : "var(--default-bg-color)", // doesnt work the var()
-        position: block.is_child ? "static" : "absolute",
 
-        top: `${block.x}px`,
-        left: `${block.y}px`,
+        transform: block.is_child
+          ? ""
+          : `translateX(${block.x}px) translateY(${block.y}px)`,
+
+        // position: block.is_child ? "static" : "absolute",
+        // top: `${block.x}px`,
+        // left: `${block.y}px`,
       }}
     >
       <Show when={block.top_strip_color}>
