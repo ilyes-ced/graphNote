@@ -13,11 +13,12 @@ export default (block: NoteProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  useDraggableBlock(draggableRef, block, block.setBlocks);
-
+  if (!block.is_child) {
+    useDraggableBlock(draggableRef, block, block.setBlocks);
+  }
   return (
     <div
-      ref={setDraggableRef}
+      ref={block.is_child ? undefined : setDraggableRef}
       class={block.is_child ? "note child_block" : "note block"}
       id={block.id}
       style={{

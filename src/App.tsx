@@ -7,12 +7,7 @@ function App() {
   return (
     <div id="app">
       <TopBar />
-      <div
-        id="center"
-        style={{
-          overflow: "hidden",
-        }}
-      >
+      <div id="center">
         <SideBar />
         <Main />
       </div>

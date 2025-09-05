@@ -2,15 +2,13 @@ import { SetStoreFunction } from "solid-js/store";
 import { Block_type, BlockUnion, Task } from "../types";
 import { writeJSON } from "../components/save";
 
+// probably uneeded as it is done in useDraggableBlock.ts
 const updateBlockPos = async (
   id: string,
   x: number,
   y: number,
   setBlocks: SetStoreFunction<BlockUnion[]>
 ) => {
-  //? moving the blocks around, update the data object and save to file
-  // todo: get the values, set the x and y to those values then reset the translate values to 0
-
   setBlocks(
     (block) => block.id === id,
     (block) => ({
@@ -19,14 +17,8 @@ const updateBlockPos = async (
       y: y,
     })
   );
-  // Get the updated version AFTER setBlocks and write it
-  setTimeout(() => {
-    // Capture latest snapshot
-    setBlocks((current) => {
-      writeJSON(current);
-      return current;
-    });
-  }, 0);
+
+  save(setBlocks);
 };
 
 const updateTasks = (
@@ -50,9 +42,13 @@ const updateTasks = (
       return block;
     })
   );
-  // Get the updated version AFTER setBlocks and write it
+
+  save(setBlocks);
+};
+
+const save = (setBlocks: SetStoreFunction<BlockUnion[]>) => {
+  // save from setBlocks instead of gettign blocks()
   setTimeout(() => {
-    // Capture latest snapshot
     setBlocks((current) => {
       writeJSON(current);
       return current;

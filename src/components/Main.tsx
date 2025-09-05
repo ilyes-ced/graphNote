@@ -25,7 +25,6 @@ const [blocks, setBlocks] = createStore<BlockUnion[]>([]);
 const loadBlocks = async () => {
   const init_blocks = await readJSON();
 
-  console.log(init_blocks);
   if (!init_blocks) return;
 
   setBlocks(init_blocks);
@@ -82,34 +81,35 @@ export default () => {
       onmousedown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      style={{
-        transform: `translate(${position().x}px, ${
-          position().y
-        }px) scale(${scale()})`,
-        "transform-origin": "top left",
-        transition: isDragging() ? "none" : "transform 0.1s ease",
-      }}
     >
-      <div>
-        <div ref={main} id="main">
-          <div id="grid"></div>
+      <div
+        ref={main}
+        id="main"
+        style={{
+          transform: `translate(${position().x}px, ${
+            position().y
+          }px) scale(${scale()})`,
+          "transform-origin": "top left",
+          transition: isDragging() ? "none" : "transform 0.1s ease",
+        }}
+      >
+        <div id="grid"></div>
 
-          <For each={blocks}>
-            {(block) => (
-              <Switch fallback={<div>Not Found</div>}>
-                <Match when={block.type === Block_type.Column}>
-                  <Column {...block} setBlocks={setBlocks} />
-                </Match>
-                <Match when={block.type === Block_type.Note}>
-                  <Note {...block} setBlocks={setBlocks} />
-                </Match>
-                <Match when={block.type === Block_type.Todo}>
-                  <Todo {...block} setBlocks={setBlocks} />
-                </Match>
-              </Switch>
-            )}
-          </For>
-        </div>
+        <For each={blocks}>
+          {(block) => (
+            <Switch fallback={<div>Not Found</div>}>
+              <Match when={block.type === Block_type.Column}>
+                <Column {...block} setBlocks={setBlocks} />
+              </Match>
+              <Match when={block.type === Block_type.Note}>
+                <Note {...block} setBlocks={setBlocks} />
+              </Match>
+              <Match when={block.type === Block_type.Todo}>
+                <Todo {...block} setBlocks={setBlocks} />
+              </Match>
+            </Switch>
+          )}
+        </For>
       </div>
     </div>
   );
