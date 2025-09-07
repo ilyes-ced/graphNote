@@ -12,6 +12,6 @@
   z-index: 0;
 }
 
-#background {
-  background-color: var(--active);
+#viewport {
+  border: 1px solid red;
 }

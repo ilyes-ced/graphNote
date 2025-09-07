@@ -7,14 +7,25 @@ interface GlobalStore {
   height: number;
   panZoom: number | null;
   snapGrid: [number, number] | null;
+
+  viewport: {
+    x: number;
+    y: number;
+    scale: number;
+  };
 }
 
-const [blocks, setBlocks] = createStore<GlobalStore>({
+const [store, setStore] = createStore<GlobalStore>({
   nodes: [],
   width: 1000,
   height: 1000,
   panZoom: null,
   snapGrid: null,
+  viewport: {
+    x: 0,
+    y: 0,
+    scale: 1,
+  },
 });
 
-export { blocks, setBlocks };
+export { store, setStore };

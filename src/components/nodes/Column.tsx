@@ -5,7 +5,7 @@ import Svg from "./Svg";
 import Note from "./Note";
 import Todo from "./Todo";
 import { SetStoreFunction } from "solid-js/store";
-import { useDraggableBlock } from "../../shared/useDraggableBlock";
+import { useDraggableNode } from "../../shared/useDraggableNode";
 
 type ColumnProps = Column & {
   check_task?: (block_id: string, task_index: number) => void;
@@ -15,7 +15,7 @@ export default (block: ColumnProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  useDraggableBlock(draggableRef, block, block.setBlocks);
+  useDraggableNode(draggableRef, block, block.setBlocks);
 
   return (
     <div

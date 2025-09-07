@@ -1,9 +1,3 @@
-import Zoom from "./Zoom";
-
-export default () => {
-  return (
-    <div id="keyhandler">
-      <Zoom />
-    </div>
-  );
+export default (props: any) => {
+  return <div id="keyhandler">{props.children}</div>;
 };

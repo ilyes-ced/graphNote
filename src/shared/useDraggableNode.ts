@@ -9,9 +9,8 @@ import {
   position,
   useDraggable,
 } from "@neodrag/solid";
-import { SetStoreFunction } from "solid-js/store";
-import { BlockUnion } from "../types";
 import { writeJSON } from "./save";
+import { store, setStore } from "../components/store";
 
 function customBounds(): [[x1: number, y1: number], [x2: number, y2: number]] {
   // get the parent boundries and adjust them with the scaling
@@ -46,7 +45,7 @@ function customBounds(): [[x1: number, y1: number], [x2: number, y2: number]] {
   ];
 }
 
-export function useDraggableBlock(
+function useDraggableNode(
   ref: () => HTMLElement | null,
   block: { id: string; x: number; y: number }
 ) {
@@ -65,13 +64,13 @@ export function useDraggableBlock(
         console.log(data.offset.y);
       },
       onDragEnd: (data) => {
-        setBlocks((b) => b.id === block.id, "x", data.offset.x);
-        setBlocks((b) => b.id === block.id, "y", data.offset.y);
+        setStore("nodes", (b) => b.id === block.id, "x", data.offset.x);
+        setStore("nodes", (b) => b.id === block.id, "y", data.offset.y);
 
-        // Get the updated version AFTER setBlocks and write it
+        // Get the updated version AFTER setStore ,and write it
         setTimeout(() => {
           // Capture latest snapshot
-          setBlocks((current) => {
+          setStore("nodes", (current) => {
             writeJSON(current);
             return current;
           });
@@ -80,3 +79,38 @@ export function useDraggableBlock(
     }),
   ]);
 }
+
+function useDraggableCanvas(ref: () => HTMLElement | null) {
+  useDraggable(ref, [
+    axis(null),
+    grid([1, 1]),
+    position({ default: { x: store.viewport.x, y: store.viewport.y } }),
+    events({
+      onDrag: (data) => {
+        setStore("viewport", "x", data.offset.x);
+        setStore("viewport", "y", data.offset.y);
+      },
+
+      onDragEnd: (data) => {
+        // console.log("BEFORE updating");
+        // console.log(store.viewport);
+        // console.log(data);
+        // setStore("viewport", "x", data.offset.x);
+        // setStore("viewport", "y", data.offset.y);
+        // console.log("AFTER updating");
+        // console.log(store.viewport);
+
+        // Get the updated version AFTER setStore ,and write it
+        setTimeout(() => {
+          // Capture latest snapshot
+          setStore("nodes", (current) => {
+            writeJSON(current);
+            return current;
+          });
+        }, 0);
+      },
+    }),
+  ]);
+}
+
+export { useDraggableNode, useDraggableCanvas };

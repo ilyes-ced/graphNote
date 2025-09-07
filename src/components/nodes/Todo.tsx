@@ -1,7 +1,7 @@
 import { createSignal, For, Show } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
 import { BlockUnion, Todo as TodoType } from "../../types";
-import { useDraggableBlock } from "../../shared/useDraggableBlock";
+import { useDraggableNode } from "../../shared/useDraggableNode";
 import "../../css/Todo.css";
 import { updateTasks } from "../../shared/update";
 
@@ -13,7 +13,7 @@ export default (block: TodoProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  useDraggableBlock(draggableRef, block);
+  useDraggableNode(draggableRef, block);
 
   return (
     <div

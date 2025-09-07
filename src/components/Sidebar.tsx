@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import Svg from "./blocks/Svg";
+import Svg from "./nodes/Svg";
 import "../css/Sidebar.css";
 
 export default () => {

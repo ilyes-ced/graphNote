@@ -1,20 +1,20 @@
 import { onMount } from "solid-js";
-import { setBlocks } from "./store";
+import { setStore } from "./store";
 import { readJSON } from "./save.ts";
 import Wrapper from "./core/Wrapper.tsx";
 
-const loadBlocks = async () => {
-  const init_blocks = await readJSON();
-  console.log(init_blocks);
-  console.log("init_blocks:", init_blocks, Array.isArray(init_blocks));
-  if (init_blocks) {
-    setBlocks("nodes", init_blocks);
+const loadNodes = async () => {
+  const init_nodes = await readJSON();
+  console.log(init_nodes);
+  console.log("init_nodes:", init_nodes, Array.isArray(init_nodes));
+  if (init_nodes) {
+    setStore("nodes", init_nodes);
   }
 };
 
 export default () => {
   onMount(async () => {
-    await loadBlocks();
+    await loadNodes();
   });
 
   return (

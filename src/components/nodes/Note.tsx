@@ -2,7 +2,7 @@ import { createSignal, Show } from "solid-js";
 import "../../css/Note.css";
 import { BlockUnion, Note } from "../../types";
 import { SetStoreFunction } from "solid-js/store";
-import { useDraggableBlock } from "../../shared/useDraggableBlock";
+import { useDraggableNode } from "../../shared/useDraggableNode";
 
 type NoteProps = Note & {
   is_child?: boolean; // add it here
@@ -13,7 +13,7 @@ export default (block: NoteProps) => {
     null
   );
   if (!block.is_child) {
-    useDraggableBlock(draggableRef, block);
+    useDraggableNode(draggableRef, block);
   }
   return (
     <div
