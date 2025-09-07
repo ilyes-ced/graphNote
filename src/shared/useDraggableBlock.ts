@@ -11,7 +11,7 @@ import {
 } from "@neodrag/solid";
 import { SetStoreFunction } from "solid-js/store";
 import { BlockUnion } from "../types";
-import { writeJSON } from "../components/save";
+import { writeJSON } from "./save";
 
 function customBounds(): [[x1: number, y1: number], [x2: number, y2: number]] {
   // get the parent boundries and adjust them with the scaling
@@ -48,8 +48,7 @@ function customBounds(): [[x1: number, y1: number], [x2: number, y2: number]] {
 
 export function useDraggableBlock(
   ref: () => HTMLElement | null,
-  block: { id: string; x: number; y: number },
-  setBlocks: SetStoreFunction<BlockUnion[]>
+  block: { id: string; x: number; y: number }
 ) {
   useDraggable(ref, [
     axis(null),
@@ -60,6 +59,11 @@ export function useDraggableBlock(
       block: ControlFrom.selector(".child_block"),
     }),
     events({
+      onDrag: (data) => {
+        // check pan
+        console.log(data.offset.x);
+        console.log(data.offset.y);
+      },
       onDragEnd: (data) => {
         setBlocks((b) => b.id === block.id, "x", data.offset.x);
         setBlocks((b) => b.id === block.id, "y", data.offset.y);

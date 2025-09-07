@@ -29,3 +29,5 @@ async function readJSON(): Promise<BlockUnion[] | null> {
     return null;
   }
 }
+
+export { writeJSON, readJSON };

@@ -6,7 +6,6 @@ import { useDraggableBlock } from "../../shared/useDraggableBlock";
 
 type NoteProps = Note & {
   is_child?: boolean; // add it here
-  setBlocks: SetStoreFunction<BlockUnion[]>;
 };
 
 export default (block: NoteProps) => {
@@ -14,7 +13,7 @@ export default (block: NoteProps) => {
     null
   );
   if (!block.is_child) {
-    useDraggableBlock(draggableRef, block, block.setBlocks);
+    useDraggableBlock(draggableRef, block);
   }
   return (
     <div

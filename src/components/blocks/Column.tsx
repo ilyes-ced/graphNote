@@ -54,11 +54,7 @@ export default (block: ColumnProps) => {
                       <Note {...child_block} is_child={true} />
                     </Match>
                     <Match when={child_block.type === Block_type.Todo}>
-                      <Todo
-                        {...child_block}
-                        setBlocks={block.setBlocks}
-                        is_child={true}
-                      />
+                      <Todo {...child_block} is_child={true} />
                     </Match>
                   </Switch>
 

@@ -1,116 +1,45 @@
-import { createSignal, For, Match, onMount, Switch } from "solid-js";
-import { createStore } from "solid-js/store";
-
-import Column from "./blocks/Column.tsx";
-import Note from "./blocks/Note.tsx";
-import Todo from "./blocks/Todo.tsx";
-
-import { BlockUnion, Block_type, Task } from "../types";
-
-import { readJSON, writeJSON } from "./save.ts";
-
-////////////////////////////////////////////////////////////////////////
-
-const [scale, setScale] = createSignal(1.0);
-const [position, setPosition] = createSignal({ x: 0, y: 0 });
-const [isDragging, setIsDragging] = createSignal(false);
-
-let lastMouse = { x: 0, y: 0 };
-let main: HTMLDivElement | undefined = undefined;
-
-const [blocks, setBlocks] = createStore<BlockUnion[]>([]);
-
-////////////////////////////////////////////////////////////////////////
+import { onMount } from "solid-js";
+import { setBlocks } from "./store";
+import { readJSON } from "./save.ts";
+import Wrapper from "./core/Wrapper.tsx";
 
 const loadBlocks = async () => {
   const init_blocks = await readJSON();
-
-  if (!init_blocks) return;
-
-  setBlocks(init_blocks);
-};
-
-////////////////////////////////////////////////////////////////////////
-const handleWheel = async (e: WheelEvent) => {
-  if (e.ctrlKey) {
-    e.preventDefault();
-    if (e.deltaY > 0) {
-      if (scale() >= 0.7) setScale(scale() - 0.1);
-    } else {
-      setScale(scale() + 0.1);
-    }
+  console.log(init_blocks);
+  console.log("init_blocks:", init_blocks, Array.isArray(init_blocks));
+  if (init_blocks) {
+    setBlocks("nodes", init_blocks);
   }
 };
-
-const handleMouseDown = (e: MouseEvent) => {
-  if (e.which === 2) {
-    // Middle click
-    e.preventDefault();
-    setIsDragging(true);
-    lastMouse = { x: e.clientX, y: e.clientY };
-  }
-};
-
-const handleMouseMove = (e: MouseEvent) => {
-  if (isDragging()) {
-    const dx = e.clientX - lastMouse.x;
-    const dy = e.clientY - lastMouse.y;
-    setPosition((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
-    lastMouse = { x: e.clientX, y: e.clientY };
-  }
-};
-
-const handleMouseUp = (e: MouseEvent) => {
-  if (e.button === 1) {
-    setIsDragging(false);
-  }
-};
-////////////////////////////////////////////////////////////////////////
 
 export default () => {
   onMount(async () => {
     await loadBlocks();
-
-    //setPosition({ x: -main.clientWidth / 2, y: -main.clientHeight / 2 });
   });
 
   return (
-    <div
-      id="main_wrapper"
-      onwheel={handleWheel}
-      onmousedown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-      <div
-        ref={main}
-        id="main"
-        style={{
-          transform: `translate(${position().x}px, ${
-            position().y
-          }px) scale(${scale()})`,
-          "transform-origin": "top left",
-          transition: isDragging() ? "none" : "transform 0.1s ease",
-        }}
-      >
-        <div id="grid"></div>
-
-        <For each={blocks}>
-          {(block) => (
-            <Switch fallback={<div>Not Found</div>}>
-              <Match when={block.type === Block_type.Column}>
-                <Column {...block} setBlocks={setBlocks} />
-              </Match>
-              <Match when={block.type === Block_type.Note}>
-                <Note {...block} setBlocks={setBlocks} />
-              </Match>
-              <Match when={block.type === Block_type.Todo}>
-                <Todo {...block} setBlocks={setBlocks} />
-              </Match>
-            </Switch>
-          )}
-        </For>
-      </div>
+    <div id="main">
+      <Wrapper />
     </div>
   );
 };
+
+/*
+    <div id="main">
+      <For each={blocks.nodes}>
+        {(block) => (
+          <Switch fallback={<div>Not Found</div>}>
+            <Match when={block.type === Block_type.Column}>
+              <Column {...block} />
+            </Match>
+            <Match when={block.type === Block_type.Note}>
+              <Note {...block} />
+            </Match>
+            <Match when={block.type === Block_type.Todo}>
+              <Todo {...block} />
+            </Match>
+          </Switch>
+        )}
+      </For>
+    </div>
+*/

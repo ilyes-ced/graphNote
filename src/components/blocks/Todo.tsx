@@ -7,14 +7,13 @@ import { updateTasks } from "../../shared/update";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
-  setBlocks: SetStoreFunction<BlockUnion[]>;
 };
 
 export default (block: TodoProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  useDraggableBlock(draggableRef, block, block.setBlocks);
+  useDraggableBlock(draggableRef, block);
 
   return (
     <div
@@ -43,8 +42,7 @@ export default (block: TodoProps) => {
             class="checkbox-div"
             onClick={() => {
               console.log("launching click: ", block.id, " ", index());
-
-              updateTasks?.(block.id, index(), block.setBlocks);
+              // todo: update tasks here
             }}
           >
             <label class="checkbox">
