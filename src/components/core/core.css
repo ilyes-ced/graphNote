@@ -15,3 +15,27 @@
 #viewport {
   border: 1px solid red;
 }
+
+#pan {
+  border: 1px solid green;
+}
+
+#zoom {
+  border: 1px solid blue;
+}
+
+#viewport-content {
+  background-image: radial-gradient(#666 1px, transparent 0);
+  background-size: 10px 10px;
+  background-position: -20px -20px;
+}
+
+.node {
+  position: absolute;
+  background-color: var(--df_block_color);
+  border: 1px solid var(--bg);
+}
+
+.child_container_hover:hover {
+  background-color: red !important;
+}

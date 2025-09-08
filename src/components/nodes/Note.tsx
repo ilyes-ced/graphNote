@@ -1,38 +1,38 @@
 import { createSignal, Show } from "solid-js";
 import "../../css/Note.css";
-import { BlockUnion, Note } from "../../types";
-import { SetStoreFunction } from "solid-js/store";
+import { Note } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 
 type NoteProps = Note & {
   is_child?: boolean; // add it here
 };
 
-export default (block: NoteProps) => {
+export default (node: NoteProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  if (!block.is_child) {
-    useDraggableNode(draggableRef, block);
+  if (!node.is_child) {
+    useDraggableNode(draggableRef, node);
   }
   return (
     <div
-      ref={block.is_child ? undefined : setDraggableRef}
-      class={block.is_child ? "note child_block" : "note block"}
-      id={block.id}
+      ref={node.is_child ? undefined : setDraggableRef}
+      class={node.is_child ? "note child_node" : "note node"}
+      id={node.id}
       style={{
-        width: block.is_child ? "100%" : block.width + "px",
-        background: block.color ? block.color : "var(--default-bg-color)", // doesnt work the var()
+        width: node.is_child ? "100%" : node.width + "px",
+        background: node.color ? node.color : "var(--default-bg-color)", // doesnt work the var()
+        "z-index": node.zIndex,
       }}
     >
-      <Show when={block.top_strip_color}>
+      <Show when={node.top_strip_color}>
         <div
           class="top_strip"
-          style={{ background: block.top_strip_color }}
+          style={{ background: node.top_strip_color }}
         ></div>
       </Show>
 
-      <div class="note_text">{block.text}</div>
+      <div class="note_text">{node.text}</div>
     </div>
   );
 };

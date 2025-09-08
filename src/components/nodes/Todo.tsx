@@ -1,47 +1,45 @@
 import { createSignal, For, Show } from "solid-js";
-import { SetStoreFunction } from "solid-js/store";
-import { BlockUnion, Todo as TodoType } from "../../types";
+import { Todo as TodoType } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 import "../../css/Todo.css";
-import { updateTasks } from "../../shared/update";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
 };
 
-export default (block: TodoProps) => {
+export default (node: TodoProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  useDraggableNode(draggableRef, block);
+  useDraggableNode(draggableRef, node);
 
   return (
     <div
       ref={setDraggableRef}
-      class={block.is_child ? "todo child_block" : "todo block"}
-      id={block.id}
+      class={node.is_child ? "todo child_node" : "todo node"}
+      id={node.id}
       style={{
-        width: block.is_child ? "100%" : block.width + "px",
-        background: block.color ? block.color : "var(--default-bg-color)", // doesnt work the var()
-
-        // position: block.is_child ? "static" : "absolute",
-        // top: `${block.x}px`,
-        // left: `${block.y}px`,
+        width: node.is_child ? "100%" : node.width + "px",
+        background: node.color ? node.color : "var(--default-bg-color)", // doesnt work the var()
+        "z-index": node.zIndex,
+        // position: node.is_child ? "static" : "absolute",
+        // top: `${node.x}px`,
+        // left: `${node.y}px`,
       }}
     >
-      <Show when={block.top_strip_color}>
+      <Show when={node.top_strip_color}>
         <div
           class="top_strip"
-          style={{ background: block.top_strip_color }}
+          style={{ background: node.top_strip_color }}
         ></div>
       </Show>
 
-      <For each={block.tasks} fallback={<div>Loading...</div>}>
+      <For each={node.tasks} fallback={<div>Loading...</div>}>
         {(item, index) => (
           <div
             class="checkbox-div"
             onClick={() => {
-              console.log("launching click: ", block.id, " ", index());
+              console.log("launching click: ", node.id, " ", index());
               // todo: update tasks here
             }}
           >

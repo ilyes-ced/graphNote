@@ -118,9 +118,3 @@ body,
 }
 
 /********************************************************/
-
-.block {
-  position: absolute;
-  background-color: var(--df_block_color);
-  border: 1px solid var(--bg);
-}

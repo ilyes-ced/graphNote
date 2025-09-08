@@ -1,3 +1,4 @@
+import Background from "./Background";
 import KeyHandler from "./KeyHandler";
 import Nodes from "./Nodes";
 import Pan from "./Pan";

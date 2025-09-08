@@ -7,6 +7,7 @@ import {
   events,
   grid,
   position,
+  threshold,
   useDraggable,
 } from "@neodrag/solid";
 import { writeJSON } from "./save";
@@ -15,57 +16,66 @@ import { store, setStore } from "../components/store";
 function customBounds(): [[x1: number, y1: number], [x2: number, y2: number]] {
   // get the parent boundries and adjust them with the scaling
 
-  const parent = document.getElementById("main");
+  const parent = document.getElementById("viewport-content");
 
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
-  const radius = 200;
+  const scale = store.viewport.scale || 1;
+  const panX = store.viewport.x;
+  const panY = store.viewport.y;
 
-  console.log(parent);
-  console.log(parent?.offsetTop);
-  console.log(parent?.offsetLeft);
-  console.log(parent?.offsetHeight);
-  console.log(parent?.offsetWidth);
+  const rect = parent.getBoundingClientRect();
 
-  console.log("===========");
+  const width = rect.width / scale;
+  const height = rect.height / scale;
 
-  console.log(parent?.clientTop);
-  console.log(parent?.clientLeft);
-  console.log(parent?.clientWidth);
-  console.log(parent?.clientHeight);
-
-  console.log(
-    [centerX - radius, centerY - radius],
-    [centerX + radius, centerY + radius]
-  );
+  console.log([
+    [-panX / scale, -panY / scale],
+    [width, height],
+  ]);
 
   return [
-    [parent?.clientTop || 0, parent?.clientWidth || 0],
-    [parent?.clientLeft || 0, parent?.clientHeight || 0],
+    [-panX / scale, -panY / scale],
+    [width, height],
   ];
 }
 
 function useDraggableNode(
   ref: () => HTMLElement | null,
-  block: { id: string; x: number; y: number }
+  node: { id: string; x: number; y: number }
 ) {
   useDraggable(ref, [
     axis(null),
-    //bounds(customBounds),
+    // still glitchy
+    bounds(BoundsFrom.parent()),
     grid([10, 10]),
-    position({ default: { x: block.x, y: block.y } }),
+    // threshold({ distance: 50 }),
+    position({ default: { x: node.x, y: node.y } }),
     controls({
       block: ControlFrom.selector(".child_block"),
     }),
     events({
+      onDragStart: (data) => {
+        //? increased the z-index, to +1 of the highest
+        const max_z_ndex = Math.max(...store.nodes.map((o) => o.zIndex));
+        setStore("nodes", (b) => b.id === node.id, "zIndex", max_z_ndex + 2);
+
+        setStore("dragging", node.id);
+      },
+
+      // todo: on drag if position of x or y is 0 lock the cooresponding border
+      // todo: when either is
       onDrag: (data) => {
-        // check pan
-        console.log(data.offset.x);
-        console.log(data.offset.y);
+        const elem = document.elementFromPoint(data.offset.x, data.offset.y);
+        if (elem && elem.closest(".empty_children_container")) {
+          console.log("emtpy chioldren ", true);
+        } else {
+          console.log("emtpy chioldren ", false);
+        }
       },
       onDragEnd: (data) => {
-        setStore("nodes", (b) => b.id === block.id, "x", data.offset.x);
-        setStore("nodes", (b) => b.id === block.id, "y", data.offset.y);
+        setStore("dragging", null);
+
+        setStore("nodes", (b) => b.id === node.id, "x", data.offset.x);
+        setStore("nodes", (b) => b.id === node.id, "y", data.offset.y);
 
         // Get the updated version AFTER setStore ,and write it
         setTimeout(() => {
@@ -83,22 +93,14 @@ function useDraggableNode(
 function useDraggableCanvas(ref: () => HTMLElement | null) {
   useDraggable(ref, [
     axis(null),
-    grid([1, 1]),
-    position({ default: { x: store.viewport.x, y: store.viewport.y } }),
+    grid([10, 10]),
+    position({ default: { x: 0, y: 0 } }),
     events({
-      onDrag: (data) => {
-        setStore("viewport", "x", data.offset.x);
-        setStore("viewport", "y", data.offset.y);
-      },
+      onDrag: (data) => {},
 
       onDragEnd: (data) => {
-        // console.log("BEFORE updating");
-        // console.log(store.viewport);
-        // console.log(data);
-        // setStore("viewport", "x", data.offset.x);
-        // setStore("viewport", "y", data.offset.y);
-        // console.log("AFTER updating");
-        // console.log(store.viewport);
+        setStore("viewport", "x", data.offset.x);
+        setStore("viewport", "y", data.offset.y);
 
         // Get the updated version AFTER setStore ,and write it
         setTimeout(() => {

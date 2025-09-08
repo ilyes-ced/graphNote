@@ -5,7 +5,7 @@ type Color = RGB | RGBA | HEX;
 
 type Task = { text: string; check: boolean; children: Task[] };
 
-enum Block_type {
+enum NodeType {
   Note,
   Comment,
   Todo,
@@ -26,9 +26,12 @@ enum Block_type {
   Image,
 }
 
-interface Block {
+interface BaseNode {
   id: string;
-  type: Block_type;
+  type: NodeType;
+}
+
+interface Node extends BaseNode {
   x: number;
   y: number;
   //? can be decided by the user
@@ -37,53 +40,54 @@ interface Block {
   //height?: number;
   color?: Color;
   top_strip_color?: Color;
+  zIndex?: number;
 }
 
-interface ChildBlock {
+interface ChildNode extends BaseNode {
   id: string;
-  type: Block_type;
+  type: NodeType;
   index: number;
   color?: Color;
 }
 
-interface Note extends Block, ChildBlock {
+interface Note extends Node, ChildNode {
   text: string; // rich text maybe json
 }
 
-interface Comment extends Block, ChildBlock {
+interface Comment extends Node, ChildNode {
   comment: string;
 }
 
-interface Url extends Block, ChildBlock {
+interface Url extends Node, ChildNode {
   url: string;
 }
-interface Todo extends Block, ChildBlock {
+interface Todo extends Node, ChildNode {
   // [ ] text
   // [x] text
   tasks: Task[];
 }
-interface Table extends Block, ChildBlock {
+interface Table extends Node, ChildNode {
   // maye fix it later
   rows: string[][];
 }
 
-interface Column extends Block, ChildBlock {
+interface Column extends Node, ChildNode {
   title: string;
-  children: ChildBlock[];
+  children: ChildNode[];
 }
 
-type BlockUnion = Note | Comment | Url | Todo | Table | Column;
+type NodeUnion = Note | Comment | Url | Todo | Table | Column;
 
-export { Block_type };
+export { NodeType };
 export type {
-  Block,
-  ChildBlock,
+  Node,
+  ChildNode,
   Note,
   Comment,
   Url,
   Todo,
   Table,
   Column,
-  BlockUnion,
+  NodeUnion,
   Task,
 };

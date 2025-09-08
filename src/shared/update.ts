@@ -1,5 +1,5 @@
 import { SetStoreFunction } from "solid-js/store";
-import { Block_type, BlockUnion, Task } from "../types";
+import { NodeType, NodeUnion, Task } from "../types";
 import { writeJSON } from "../components/save";
 
 // probably uneeded as it is done in useDraggableBlock.ts
@@ -7,7 +7,7 @@ const updateBlockPos = async (
   id: string,
   x: number,
   y: number,
-  setBlocks: SetStoreFunction<BlockUnion[]>
+  setBlocks: SetStoreFunction<NodeUnion[]>
 ) => {
   setBlocks(
     (block) => block.id === id,
@@ -24,12 +24,12 @@ const updateBlockPos = async (
 const updateTasks = (
   block_id: string,
   task_index: number,
-  setBlocks: SetStoreFunction<BlockUnion[]>
+  setBlocks: SetStoreFunction<NodeUnion[]>
 ) => {
   console.log("recieved click: ", block_id, " ", task_index);
   setBlocks((prev) =>
     prev.map((block) => {
-      if (block.id === block_id && block.type === Block_type.Todo) {
+      if (block.id === block_id && block.type === NodeType.Todo) {
         const updatedTasks = block.tasks?.map((task: Task, index: number) => {
           if (index === task_index) {
             return { ...task, check: !task.check };
@@ -46,7 +46,7 @@ const updateTasks = (
   save(setBlocks);
 };
 
-const save = (setBlocks: SetStoreFunction<BlockUnion[]>) => {
+const save = (setBlocks: SetStoreFunction<NodeUnion[]>) => {
   // save from setBlocks instead of gettign blocks()
   setTimeout(() => {
     setBlocks((current) => {
