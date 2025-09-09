@@ -6,6 +6,8 @@ import Note from "./Note";
 import Todo from "./Todo";
 import { SetStoreFunction } from "solid-js/store";
 import { useDraggableNode } from "../../shared/useDraggableNode";
+import Url from "./Url";
+import Board from "./Board";
 
 type ColumnProps = Column & {
   check_task?: (node_id: string, task_index: number) => void;
@@ -42,7 +44,7 @@ export default (node: ColumnProps) => {
         <div class="title">{node.title}</div>
         <div class="subtitle">subtitle</div>
 
-        <div class="children_container">
+        <div class="children_container" style={{ position: "relative" }}>
           <Show
             when={node.children && node.children.length > 0}
             fallback={<div class="empty_children_container"></div>}
@@ -56,6 +58,12 @@ export default (node: ColumnProps) => {
                     </Match>
                     <Match when={child_node.type === NodeType.Todo}>
                       <Todo {...child_node} is_child={true} />
+                    </Match>
+                    <Match when={child_node.type === NodeType.Url}>
+                      <Url {...child_node} is_child={true} />
+                    </Match>
+                    <Match when={child_node.type === NodeType.Board}>
+                      <Board {...child_node} is_child={true} />
                     </Match>
                   </Switch>
 

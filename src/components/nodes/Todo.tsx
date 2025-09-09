@@ -11,7 +11,8 @@ export default (node: TodoProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  useDraggableNode(draggableRef, node);
+
+  useDraggableNode(draggableRef, node, node.is_child);
 
   return (
     <div
@@ -20,11 +21,8 @@ export default (node: TodoProps) => {
       id={node.id}
       style={{
         width: node.is_child ? "100%" : node.width + "px",
-        background: node.color ? node.color : "var(--default-bg-color)", // doesnt work the var()
+        background: node.color ? node.color : "var(--default-bg-color)",
         "z-index": node.zIndex,
-        // position: node.is_child ? "static" : "absolute",
-        // top: `${node.x}px`,
-        // left: `${node.y}px`,
       }}
     >
       <Show when={node.top_strip_color}>

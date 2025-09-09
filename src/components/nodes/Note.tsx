@@ -4,16 +4,17 @@ import { Note } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 
 type NoteProps = Note & {
-  is_child?: boolean; // add it here
+  is_child?: boolean;
 };
 
 export default (node: NoteProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-  if (!node.is_child) {
-    useDraggableNode(draggableRef, node);
-  }
+
+  useDraggableNode(draggableRef, node, node.is_child);
+
+  //Todo: remove this later it causes it to be undraggable in the ref={}
   return (
     <div
       ref={node.is_child ? undefined : setDraggableRef}
@@ -21,7 +22,7 @@ export default (node: NoteProps) => {
       id={node.id}
       style={{
         width: node.is_child ? "100%" : node.width + "px",
-        background: node.color ? node.color : "var(--default-bg-color)", // doesnt work the var()
+        background: node.color ? node.color : "var(--default-bg-color)",
         "z-index": node.zIndex,
       }}
     >

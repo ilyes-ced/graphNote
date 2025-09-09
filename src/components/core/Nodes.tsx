@@ -4,21 +4,29 @@ import { NodeType } from "../../types";
 import Column from "../nodes/Column";
 import Note from "../nodes/Note";
 import Todo from "../nodes/Todo";
+import Url from "../nodes/Url";
+import Board from "../nodes/Board";
 
 export default () => {
   return (
     <div id="nodes">
       <For each={store.nodes}>
-        {(block) => (
+        {(node) => (
           <Switch fallback={<div>Not Found</div>}>
-            <Match when={block.type === NodeType.Column}>
-              <Column {...block} />
+            <Match when={node.type === NodeType.Column}>
+              <Column {...node} />
             </Match>
-            <Match when={block.type === NodeType.Note}>
-              <Note {...block} />
+            <Match when={node.type === NodeType.Note}>
+              <Note {...node} />
             </Match>
-            <Match when={block.type === NodeType.Todo}>
-              <Todo {...block} />
+            <Match when={node.type === NodeType.Todo}>
+              <Todo {...node} />
+            </Match>
+            <Match when={node.type === NodeType.Url}>
+              <Url {...node} />
+            </Match>
+            <Match when={node.type === NodeType.Board}>
+              <Board {...node} />
             </Match>
           </Switch>
         )}

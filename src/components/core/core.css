@@ -13,29 +13,35 @@
 }
 
 #viewport {
-  border: 1px solid red;
 }
 
 #pan {
-  border: 1px solid green;
 }
 
 #zoom {
-  border: 1px solid blue;
 }
 
 #viewport-content {
-  background-image: radial-gradient(#666 1px, transparent 0);
+  background-image: radial-gradient(#88888830 1px, transparent 0);
   background-size: 10px 10px;
   background-position: -20px -20px;
 }
 
+.top_strip {
+  width: 100%;
+  height: 4px;
+}
+
 .node {
   position: absolute;
+}
+
+.child_node,
+.node:not(.board) {
   background-color: var(--df_block_color);
   border: 1px solid var(--bg);
 }
 
-.child_container_hover:hover {
-  background-color: red !important;
+.child_container_hover {
+  border: 2px dashed white;
 }

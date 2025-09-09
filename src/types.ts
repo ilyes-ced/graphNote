@@ -76,6 +76,12 @@ interface Column extends Node, ChildNode {
   children: ChildNode[];
 }
 
+interface Board extends Node, ChildNode {
+  name: string;
+  icon_path: string;
+  nodes: NodeUnion[];
+}
+
 type NodeUnion = Note | Comment | Url | Todo | Table | Column;
 
 export { NodeType };
@@ -90,4 +96,5 @@ export type {
   Column,
   NodeUnion,
   Task,
+  Board,
 };
