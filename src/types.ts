@@ -60,15 +60,19 @@ interface Comment extends Node, ChildNode {
 
 interface Url extends Node, ChildNode {
   url: string;
+  description?: string;
 }
 interface Todo extends Node, ChildNode {
+  title?: string;
   // [ ] text
   // [x] text
   tasks: Task[];
 }
 interface Table extends Node, ChildNode {
   // maye fix it later
-  rows: string[][];
+  data: string | number[][];
+  description?: string;
+  title?: string;
 }
 
 interface Column extends Node, ChildNode {

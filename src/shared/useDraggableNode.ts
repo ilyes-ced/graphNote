@@ -95,6 +95,7 @@ function useDraggableNode(
     axis(null),
     // still glitchy
     bounds(BoundsFrom.parent()),
+    // remove later and snap manually, with animation
     grid([10, 10]),
     //* set if is a child node
     threshold(is_child ? { distance: 10 } : { distance: 0 }),

@@ -6,6 +6,7 @@ import Note from "../nodes/Note";
 import Todo from "../nodes/Todo";
 import Url from "../nodes/Url";
 import Board from "../nodes/Board";
+import Table from "../nodes/Table";
 
 export default () => {
   return (
@@ -27,6 +28,9 @@ export default () => {
             </Match>
             <Match when={node.type === NodeType.Board}>
               <Board {...node} />
+            </Match>
+            <Match when={node.type === NodeType.Table}>
+              <Table {...node} />
             </Match>
           </Switch>
         )}

@@ -38,25 +38,26 @@
 
 .child_node,
 .node:not(.board) {
-  background-color: var(--df_block_color);
+  background-color: #151515;
   border: 1px solid var(--bg);
 }
 
 .child_container_hover {
-  border: 2px dashed white;
+  border: 2px dashed white !important;
 }
 
 #minimap {
   position: absolute;
   bottom: 10px;
   right: 10px;
-
+  width: 240px;
+  height: 135px;
+}
+#minimap > * {
   border-radius: 10px;
   border: 1px solid #88888820;
-
   background-color: #88888810;
-  width: 160px;
-  height: 90px;
+  z-index: 1000;
 }
 
 #controls {
@@ -67,11 +68,16 @@
   position: absolute;
   bottom: 10px;
   left: 10px;
+  z-index: 1000;
 }
 #controls > * {
   background-color: #88888810;
   border: 1px solid #88888820;
   padding: 5px 10px 5px 10px;
+}
+/* not working not sure why */
+#controls > div:hover {
+  background-color: #88888890;
 }
 #controls > :first-child {
   border-radius: 10px 0px 0px 10px;
