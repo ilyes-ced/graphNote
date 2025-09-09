@@ -1,5 +1,6 @@
-import Background from "./Background";
+import Controls from "./Controls";
 import KeyHandler from "./KeyHandler";
+import MiniMap from "./MiniMap";
 import Nodes from "./Nodes";
 import Pan from "./Pan";
 import ViewPort from "./ViewPort";
@@ -27,6 +28,8 @@ export default () => {
             <ViewPort>
               <Nodes />
             </ViewPort>
+            <MiniMap />
+            <Controls />
           </Pan>
         </Zoom>
       </KeyHandler>

@@ -32,6 +32,10 @@
 .board_content {
   color: grey;
 }
+.board_content_child {
+  color: grey;
+  align-self: flex-start;
+}
 
 .text_container {
   display: flex;

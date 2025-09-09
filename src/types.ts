@@ -82,7 +82,7 @@ interface Board extends Node, ChildNode {
   nodes: NodeUnion[];
 }
 
-type NodeUnion = Note | Comment | Url | Todo | Table | Column;
+type NodeUnion = Note | Comment | Url | Todo | Table | Column | Board;
 
 export { NodeType };
 export type {

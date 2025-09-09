@@ -14,11 +14,23 @@ export default (node: BoardProps) => {
 
   useDraggableNode(draggableRef, node, node.is_child);
 
-  const iconType = (icon: string): boolean => {
-    console.log(icon);
-    console.log(icon.split(".")[-1]);
+  const iconType = (icon_path: string): "svg" | "img" => {
+    console.log(icon_path);
+    console.log();
 
-    return true;
+    switch (icon_path.split(".").slice(-1)[0]) {
+      case "svg":
+        return "svg";
+      case "png":
+        return "img";
+      case "jpg":
+        return "img";
+      case "jpeg":
+        return "img";
+
+      default:
+        return "img";
+    }
   };
 
   //Todo: remove this later it causes it to be undraggable in the ref={}
@@ -28,7 +40,7 @@ export default (node: BoardProps) => {
       class={node.is_child ? "board child_node" : "board node"}
       id={node.id}
       style={{
-        background: "transparent",
+        background: "#00000000",
         width: node.is_child ? "100%" : "60px",
         "z-index": node.zIndex,
         "border-radius": node.is_child ? "" : "15px",
@@ -41,11 +53,10 @@ export default (node: BoardProps) => {
           width: node.is_child ? "50px" : "60px",
           height: node.is_child ? "50px" : "60px",
           "margin-right": node.is_child ? "10px" : "",
-          "border-radius": node.is_child ? "" : "15px",
+          "border-radius": node.is_child ? "10px" : "15px",
         }}
       >
-        {iconType(node.icon)}
-        {node.icon}
+        {node.icon_path}
       </div>
       <div class="text_container">
         <div
@@ -56,7 +67,14 @@ export default (node: BoardProps) => {
         >
           {node.name}
         </div>
-        <div class="board_content">content</div>
+        <div
+          classList={{
+            board_content: !node.is_child,
+            board_content_child: node.is_child,
+          }}
+        >
+          content
+        </div>
       </div>
     </div>
   );
