@@ -18,7 +18,7 @@ export default () => {
   });
 
   return (
-    <div id="main" class="relative w-[calc(100%-50px)] h-full overflow-hidden">
+    <div id="main" class="relative w-[calc(100%-50px)] h-full overflow-hidden ">
       <Wrapper />
     </div>
   );

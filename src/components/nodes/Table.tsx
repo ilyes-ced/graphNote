@@ -19,7 +19,11 @@ export default (node: TableProps) => {
   return (
     <div
       ref={node.is_child ? undefined : setDraggableRef}
-      class={node.is_child ? "table child_node" : "table node"}
+      class="table"
+      classList={{
+        "child_node w-full": node.is_child,
+        node: !node.is_child,
+      }}
       id={node.id}
       style={{
         width: node.is_child ? "100%" : node.width + "px",

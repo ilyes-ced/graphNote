@@ -1,5 +1,4 @@
 import { Show, For, Match, Switch, createSignal } from "solid-js";
-import "../../css/Column.css";
 import { NodeType, NodeUnion, Column } from "../../types";
 import Svg from "./Svg";
 import Note from "./Note";
@@ -22,7 +21,7 @@ export default (node: ColumnProps) => {
   return (
     <div
       ref={setDraggableRef}
-      class="column node"
+      class="column node text-center"
       id={node.id}
       style={{
         width: node.width + "px",
@@ -37,17 +36,22 @@ export default (node: ColumnProps) => {
         ></div>
       </Show>
 
-      <div class="content">
-        <div class="collapse_icon">
+      <div class="content flex flex-col p-[5px]">
+        <div class="collapse_icon self-end w-6 h-6 collapse_icon hover:bg-amber-400 hover:border hover:border-green-500 hover:cursor-pointer flex justify-center items-center">
           <Svg width={16} height={16} classes="" icon_name={"collapse"} />
         </div>
-        <div class="title">{node.title}</div>
-        <div class="subtitle">subtitle</div>
+        <div class="title text-base font-extrabold mb-2">{node.title}</div>
+        <div class="subtitle mb-4">subtitle</div>
 
-        <div class="children_container" style={{ position: "relative" }}>
+        <div
+          class="children_container flex flex-col"
+          style={{ position: "relative" }}
+        >
           <Show
             when={node.children && node.children.length > 0}
-            fallback={<div class="empty_children_container"></div>}
+            fallback={
+              <div class="empty_children_container bg-gree-300 h-[65px] w-full"></div>
+            }
           >
             <For each={node.children}>
               {(child_node, index) => (
@@ -68,7 +72,7 @@ export default (node: ColumnProps) => {
                   </Switch>
 
                   <Show when={index() < node.children.length - 1}>
-                    <div class="column_spacer"></div>
+                    <div class="column_spacer pt-[5px] bg-transparent"></div>
                   </Show>
                 </>
               )}

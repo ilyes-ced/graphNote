@@ -18,7 +18,7 @@ export default (node: TodoProps) => {
       ref={setDraggableRef}
       class="todo p-5"
       classList={{
-        child_node: node.is_child,
+        "child_node w-full": node.is_child,
         node: !node.is_child,
       }}
       id={node.id}

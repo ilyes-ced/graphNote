@@ -26,7 +26,11 @@ export default (node: UrlProps) => {
   return (
     <div
       ref={node.is_child ? undefined : setDraggableRef}
-      class={node.is_child ? "url child_node" : "url node"}
+      class="url"
+      classList={{
+        "child_node w-full": node.is_child,
+        node: !node.is_child,
+      }}
       id={node.id}
       style={{
         width: node.is_child ? "100%" : node.width + "px",

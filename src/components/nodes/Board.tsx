@@ -36,10 +36,11 @@ export default (node: BoardProps) => {
   return (
     <div
       ref={node.is_child ? undefined : setDraggableRef}
-      class="board"
+      class="board flex flex-col justify-center items-center"
       classList={{
         child_node: node.is_child,
         node: !node.is_child,
+        "flex flex-row justify-start p-2 pl-2.5": node.is_child,
       }}
       id={node.id}
       style={{
@@ -50,7 +51,7 @@ export default (node: BoardProps) => {
       }}
     >
       <div
-        class="board_icon"
+        class="board_icon flex flex-col justify-center items-center"
         style={{
           background: node.color ? node.color : "var(--default-bg-color)",
           width: node.is_child ? "50px" : "60px",
@@ -61,19 +62,19 @@ export default (node: BoardProps) => {
       >
         {node.icon_path}
       </div>
-      <div class="text_container">
+      <div class="text_container flex flex-col justify-center items-center">
         <div
           classList={{
-            board_text: !node.is_child,
-            board_text_child: node.is_child,
+            "board_text mt-2.5 mb-1.5 text-nowrap": !node.is_child,
+            "board_text_child self-start mb-1.5": node.is_child,
           }}
         >
           {node.name}
         </div>
         <div
           classList={{
-            board_content: !node.is_child,
-            board_content_child: node.is_child,
+            "board_content text-grey": !node.is_child,
+            "board_content_child text-grey self-start": node.is_child,
           }}
         >
           content
@@ -82,52 +83,3 @@ export default (node: BoardProps) => {
     </div>
   );
 };
-
-/*
-
-.board {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.board.child_node {
-  flex-direction: row;
-  justify-content: start;
-  padding: 5px;
-  padding-left: 10px;
-}
-
-.board_icon {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.board_text {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-.board_text_child {
-  align-self: flex-start;
-  margin-bottom: 5px;
-}
-
-.board_content {
-  color: grey;
-}
-.board_content_child {
-  color: grey;
-  align-self: flex-start;
-}
-
-.text_container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-*/

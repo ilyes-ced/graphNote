@@ -1,6 +1,5 @@
 import { For } from "solid-js";
 import Svg from "./nodes/Svg";
-import "../css/Sidebar.css";
 
 export default () => {
   let icons = [
@@ -29,21 +28,24 @@ export default () => {
   ];
 
   return (
-    <div id="sidebar" class="w-[50px]  h-full border-r-2 border-border">
+    <div
+      id="sidebar"
+      class="flex flex-col p-2.5 items-center w-[50px] h-full border-r border-red-500 overflow-hidden"
+    >
       <For each={icons} fallback={<div>Loading...</div>}>
         {(icon) => (
-          <div class="icon">
+          <div class="icon p-2.5 flex flex-col justify-center items-center transition duration-100 ease-out hover:translate-x-[5px]">
             <Svg
               width={icon.width}
               height={icon.height}
               classes=""
               icon_name={icon.name}
             />
-            <div class="space"></div>
+            <div class="m-2"></div>
             <span>{icon.name}</span>
           </div>
         )}
-      </For>{" "}
+      </For>
     </div>
   );
 };

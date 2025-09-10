@@ -1,5 +1,4 @@
 import { createSignal, Show } from "solid-js";
-import "../../css/Note.css";
 import { Note } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 
@@ -18,7 +17,11 @@ export default (node: NoteProps) => {
   return (
     <div
       ref={node.is_child ? undefined : setDraggableRef}
-      class={node.is_child ? "note child_node" : "note node"}
+      class="note"
+      classList={{
+        "child_node w-full": node.is_child,
+        node: !node.is_child,
+      }}
       id={node.id}
       style={{
         width: node.is_child ? "100%" : node.width + "px",
@@ -33,7 +36,9 @@ export default (node: NoteProps) => {
         ></div>
       </Show>
 
-      <div class="note_text">{node.text}</div>
+      <div class="note_text flex flex-col p-5">
+        {node.text} padding doesnt work idk why
+      </div>
     </div>
   );
 };

@@ -24,7 +24,7 @@ export default () => {
   return (
     <div
       id="topbar"
-      class="w-full h-[50px] p-2.5 border-b-2 border-border flex flex-row items-center justify-between"
+      class="w-full h-[50px] p-2.5 border-b border-border flex flex-row items-center justify-between"
     >
       <div id="breadcrumb" class="flex flex-row">
         <For each={example_path}>
