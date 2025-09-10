@@ -1,8 +1,15 @@
 {
   "compilerOptions": {
+    /* for shadcn solid */
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
+    },
+
+    /* for solidui */
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
     },
 
     "target": "ES2020",

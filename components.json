@@ -11,7 +11,7 @@
     "cssVariables": true
   },
   "alias": {
-    "component": "@/components",
-    "cn": "@/libs/cn"
+    "component": "src/components",
+    "cn": "src/libs/cn"
   }
 }

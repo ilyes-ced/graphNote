@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { Button } from "./ui/button";
+import { Dark } from "./ui/dark";
 
 export default () => {
   let example_path = [
@@ -57,9 +57,9 @@ export default () => {
       </div>
 
       <div></div>
-      <div>
+      <div class="bg-red-400 flex justify-center items-center">
         settings + misc
-        <Button />
+        <Dark />
       </div>
     </div>
   );
