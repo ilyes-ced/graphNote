@@ -29,7 +29,7 @@ export default () => {
   ];
 
   return (
-    <div id="sidebar">
+    <div id="sidebar" class="w-[50px]  h-full border-r-2 border-border">
       <For each={icons} fallback={<div>Loading...</div>}>
         {(icon) => (
           <div class="icon">

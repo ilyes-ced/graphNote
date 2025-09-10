@@ -1,4 +1,5 @@
 import { For } from "solid-js";
+import { Button } from "./ui/button";
 
 export default () => {
   let example_path = [
@@ -21,8 +22,11 @@ export default () => {
   };
 
   return (
-    <div id="topbar">
-      <div id="breadcrumb">
+    <div
+      id="topbar"
+      class="w-full h-[50px] p-2.5 border-b-2 border-border flex flex-row items-center justify-between"
+    >
+      <div id="breadcrumb" class="flex flex-row">
         <For each={example_path}>
           {(path, index) => {
             const i = index(); // Get reactive index
@@ -31,9 +35,10 @@ export default () => {
             return (
               <>
                 <div
+                  class="p-[5px] border-2 border-red-500 rounded-[5px] transition duration-100 ease-out"
                   classList={{
                     breadcrumb_path: true,
-                    active_breadcrumb_path: !isLast,
+                    "hover:bg-red-500": !isLast,
                   }}
                   onClick={!isLast ? changePath : undefined}
                   style={{
@@ -42,7 +47,9 @@ export default () => {
                 >
                   [logo]{path.name}
                 </div>
-                {!isLast && <span class="spacer"> / </span>}
+                {!isLast && (
+                  <span class="self-center mx-1 my-0 text-green-500"> / </span>
+                )}
               </>
             );
           }}
@@ -50,7 +57,10 @@ export default () => {
       </div>
 
       <div></div>
-      <div>settings + misc</div>
+      <div>
+        settings + misc
+        <Button />
+      </div>
     </div>
   );
 };

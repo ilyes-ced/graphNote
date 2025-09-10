@@ -1,5 +1,4 @@
 import { createResource, createSignal, onMount, Show } from "solid-js";
-import "../../css/Url.css";
 import { Url } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 

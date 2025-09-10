@@ -1,7 +1,6 @@
 import { createSignal, For, Show } from "solid-js";
 import { Todo as TodoType } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
-import "../../css/Todo.css";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
@@ -17,7 +16,11 @@ export default (node: TodoProps) => {
   return (
     <div
       ref={setDraggableRef}
-      class={node.is_child ? "todo child_node" : "todo node"}
+      class="todo p-5"
+      classList={{
+        child_node: node.is_child,
+        node: !node.is_child,
+      }}
       id={node.id}
       style={{
         width: node.is_child ? "100%" : node.width + "px",

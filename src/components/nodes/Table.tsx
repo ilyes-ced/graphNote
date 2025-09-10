@@ -1,5 +1,4 @@
 import { createSignal, For } from "solid-js";
-import "../../css/Table.css";
 import { Table } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 import { Button } from "../ui/button";

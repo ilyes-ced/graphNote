@@ -1,5 +1,4 @@
 import { createSignal } from "solid-js";
-import "../../css/Board.css";
 import { Board } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 
@@ -37,7 +36,11 @@ export default (node: BoardProps) => {
   return (
     <div
       ref={node.is_child ? undefined : setDraggableRef}
-      class={node.is_child ? "board child_node" : "board node"}
+      class="board"
+      classList={{
+        child_node: node.is_child,
+        node: !node.is_child,
+      }}
       id={node.id}
       style={{
         background: node.is_child ? "#00000050" : "#00000000",
@@ -79,3 +82,52 @@ export default (node: BoardProps) => {
     </div>
   );
 };
+
+/*
+
+.board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.board.child_node {
+  flex-direction: row;
+  justify-content: start;
+  padding: 5px;
+  padding-left: 10px;
+}
+
+.board_icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.board_text {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.board_text_child {
+  align-self: flex-start;
+  margin-bottom: 5px;
+}
+
+.board_content {
+  color: grey;
+}
+.board_content_child {
+  color: grey;
+  align-self: flex-start;
+}
+
+.text_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+*/
