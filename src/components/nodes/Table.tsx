@@ -1,8 +1,10 @@
-import { createSignal, For, Show } from "solid-js";
+import { createSignal, For } from "solid-js";
 import "../../css/Table.css";
 import { Table } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
+import { Button } from "../ui/button";
 
+import { BiRegularSortUp } from "solid-icons/bi";
 type TableProps = Table & {
   is_child?: boolean;
 };
@@ -26,16 +28,21 @@ export default (node: TableProps) => {
       }}
     >
       <div class="table_title">title</div>
-      <div>top row</div>
-      <table>
+
+      <Button>Click me</Button>
+      <table class="">
         <thead>
           <tr>
             <For each={node.data[0]}>
-              {(cell) => <th class="cell">{cell}</th>}
+              {(cell) => (
+                <th class="cell">
+                  {cell}
+                  <BiRegularSortUp size={16} />
+                </th>
+              )}
             </For>
           </tr>
         </thead>
-        ``
         <tbody>
           <For
             each={node.data.slice(1)}

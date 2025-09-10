@@ -20,7 +20,7 @@ export default (props: any) => {
       <div
         id="viewport-content"
         style={{
-          border: "1px solid yellow",
+          // border: "1px solid yellow",
           transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
           "transform-origin": "0 0",
           transition: "transform 0.05s ease-out",
