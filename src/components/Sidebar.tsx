@@ -34,7 +34,7 @@ export default () => {
     >
       <For each={icons} fallback={<div>Loading...</div>}>
         {(icon) => (
-          <div class="icon p-2.5 flex flex-col justify-center items-center transition duration-100 ease-out hover:translate-x-[5px]">
+          <div class="icon cursor-pointer p-2.5 flex flex-col justify-center items-center transition duration-100 ease-out hover:translate-x-[5px]">
             <Svg
               width={icon.width}
               height={icon.height}

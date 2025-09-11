@@ -108,8 +108,6 @@ export default (node: TableProps) => {
         "z-index": node.zIndex,
       }}
     >
-      <div>{node.data[0]}</div>
-      <div>{node.data}</div>
       <DataTable columns={columns} data={data} />
     </div>
   );

@@ -1,9 +1,15 @@
-import type { ColumnDef } from "@tanstack/solid-table";
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+} from "@tanstack/solid-table";
 import {
   flexRender,
   createSolidTable,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
 } from "@tanstack/solid-table";
 import { For, Show, splitProps, Accessor, createSignal } from "solid-js";
 import {
@@ -14,7 +20,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TextField, TextFieldRoot } from "@/components/ui/textfield";
 import { Button } from "@/components/ui/button";
+
+import { FaSolidAngleRight, FaSolidAngleLeft } from "solid-icons/fa";
+import { FaSolidAnglesRight, FaSolidAnglesLeft } from "solid-icons/fa";
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -22,8 +32,11 @@ type Props<TData, TValue> = {
 };
 const [pagination, setPagination] = createSignal({
   pageIndex: 0,
-  pageSize: 5, // default items per page
+  pageSize: 5, // number of items per page
 });
+const [sorting, setSorting] = createSignal<SortingState>([]);
+const [columnFilters, setColumnFilters] = createSignal<ColumnFiltersState>([]);
+const [rowSelection, setRowSelection] = createSignal({});
 
 export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
   const [local] = splitProps(props, ["columns", "data"]);
@@ -35,16 +48,45 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
     columns: local.columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+
+    onPaginationChange: setPagination,
+
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+
+    getFilteredRowModel: getFilteredRowModel(),
+
+    onRowSelectionChange: setRowSelection,
+
     state: {
+      get sorting() {
+        return sorting();
+      },
       get pagination() {
         return pagination();
       },
+      get columnFilters() {
+        return columnFilters();
+      },
+      get rowSelection() {
+        return rowSelection();
+      },
     },
-    onPaginationChange: setPagination,
   });
 
   return (
-    <div class="rounded-md border">
+    <div class="border">
+      <TextFieldRoot>
+        <TextField
+          placeholder="Filter title..."
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          onInput={(event) =>
+            table.getColumn("title")?.setFilterValue(event.currentTarget.value)
+          }
+          class="max-w-sm"
+        />
+      </TextFieldRoot>
+
       <Table>
         <TableHeader>
           <For each={table.getHeaderGroups()}>
@@ -101,24 +143,50 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
           </Show>
         </TableBody>
       </Table>
-      <div class="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        {table.getState().pagination.pageIndex + 1}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div class="flex flex-row justify-between p-4 py-2">
+        <div class="flex items-center">
+          {table.getFilteredRowModel().rows.length} of{" "}
+          {table.getState().pagination.pageIndex + 1} rows selected
+        </div>
+
+        <div class="flex items-center space-x-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <FaSolidAnglesLeft />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <FaSolidAngleLeft />
+          </Button>
+          <div class="px-2">
+            page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            <FaSolidAngleRight />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            <FaSolidAnglesRight />
+          </Button>
+        </div>
       </div>
     </div>
   );

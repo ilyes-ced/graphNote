@@ -23,9 +23,7 @@ export const TableHeader = (props: ComponentProps<"thead">) => {
 export const TableBody = (props: ComponentProps<"tbody">) => {
   const [local, rest] = splitProps(props, ["class"]);
 
-  return (
-    <tbody class={cn("[&_tr:last-child]:border-0", local.class)} {...rest} />
-  );
+  return <tbody {...rest} />;
 };
 
 export const TableFooter = (props: ComponentProps<"tfoot">) => {
@@ -59,7 +57,7 @@ export const TableHead = (props: ComponentProps<"th">) => {
   return (
     <th
       class={cn(
-        "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-10 [&:not(:last-child)]:border-r text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         local.class
       )}
       {...rest}
@@ -73,7 +71,7 @@ export const TableCell = (props: ComponentProps<"td">) => {
   return (
     <td
       class={cn(
-        "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "p-2 [&:not(:last-child)]:border-r align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         local.class
       )}
       {...rest}
