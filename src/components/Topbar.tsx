@@ -1,5 +1,8 @@
 import { For } from "solid-js";
-import { Dark } from "./ui/dark";
+import { FaSolidAnglesRight } from "solid-icons/fa";
+import { Button } from "./ui/button";
+import { WiMoonAltFirstQuarter } from "solid-icons/wi";
+import { VsSettingsGear } from "solid-icons/vs";
 
 export default () => {
   let example_path = [
@@ -35,10 +38,11 @@ export default () => {
             return (
               <>
                 <div
-                  class="p-[5px] border-2 border-red-500 rounded-[5px] transition duration-100 ease-out"
+                  class="p-[5px] border-2 border-border rounded-[5px] transition duration-100 ease-out"
                   classList={{
                     breadcrumb_path: true,
-                    "hover:bg-red-500": !isLast,
+                    "hover:bg-primary": !isLast,
+                    "border-primary": isLast,
                   }}
                   onClick={!isLast ? changePath : undefined}
                   style={{
@@ -48,7 +52,9 @@ export default () => {
                   [logo]{path.name}
                 </div>
                 {!isLast && (
-                  <span class="self-center mx-1 my-0 text-green-500"> / </span>
+                  <span class="self-center mx-1 my-0 ">
+                    <FaSolidAnglesRight size={20} />{" "}
+                  </span>
                 )}
               </>
             );
@@ -57,9 +63,14 @@ export default () => {
       </div>
 
       <div></div>
-      <div class="bg-red-400 flex justify-center items-center">
-        settings + misc
-        <Dark />
+      <div class="flex justify-center items-center space-x-4">
+        <Button variant={"secondary"}>
+          <VsSettingsGear />
+        </Button>
+
+        <Button variant={"secondary"}>
+          <WiMoonAltFirstQuarter />
+        </Button>
       </div>
     </div>
   );
