@@ -96,6 +96,11 @@
     --radius: 0.5rem;
   }
 }
+
+html {
+  @apply bg-card text-card-foreground;
+}
+
 /********************************************************/
 
 div {

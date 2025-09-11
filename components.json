@@ -7,11 +7,10 @@
       "variable": true
     },
     "color": "zinc",
-    "prefix": "",
-    "cssVariables": true
+    "prefix": ""
   },
   "alias": {
-    "component": "src/components",
+    "component": "src/components/ui",
     "cn": "src/libs/cn"
   }
 }

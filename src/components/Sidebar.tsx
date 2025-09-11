@@ -30,7 +30,7 @@ export default () => {
   return (
     <div
       id="sidebar"
-      class="flex flex-col p-2.5 items-center w-[50px] h-full border-r border-red-500 overflow-hidden bg-background"
+      class="flex flex-col p-2.5 items-center w-[50px] h-full border-r border-red-500 overflow-hidden bg-primary-foreground"
     >
       <For each={icons} fallback={<div>Loading...</div>}>
         {(icon) => (
