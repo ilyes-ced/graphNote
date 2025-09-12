@@ -7,6 +7,7 @@ import { SetStoreFunction } from "solid-js/store";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 import Url from "./Url";
 import Board from "./Board";
+import Table from "./Table";
 
 type ColumnProps = Column & {
   check_task?: (node_id: string, task_index: number) => void;
@@ -50,7 +51,7 @@ export default (node: ColumnProps) => {
           <Show
             when={node.children && node.children.length > 0}
             fallback={
-              <div class="empty_children_containe h-[65px] w-full"></div>
+              <div class="empty_children_containe h-[65px] w-full bg-gray-950"></div>
             }
           >
             <For each={node.children}>
@@ -68,6 +69,9 @@ export default (node: ColumnProps) => {
                     </Match>
                     <Match when={child_node.type === NodeType.Board}>
                       <Board {...child_node} is_child={true} />
+                    </Match>
+                    <Match when={child_node.type === NodeType.Table}>
+                      <Table {...child_node} is_child={true} />
                     </Match>
                   </Switch>
 

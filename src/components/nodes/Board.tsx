@@ -35,7 +35,7 @@ export default (node: BoardProps) => {
   //Todo: remove this later it causes it to be undraggable in the ref={}
   return (
     <div
-      ref={node.is_child ? undefined : setDraggableRef}
+      ref={setDraggableRef}
       class="board flex flex-col justify-center items-center"
       classList={{
         child_node: node.is_child,

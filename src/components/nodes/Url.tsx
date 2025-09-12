@@ -16,16 +16,16 @@ export default (node: UrlProps) => {
   const isValidUrl = (url: string): boolean => {
     return true;
   };
+
   const isYoutubeUrl = (url: string): boolean => {
     return true;
   };
 
   let invalidUrlDiv = <div id="invalid_url">The url provided is invalid</div>;
 
-  //Todo: remove this later it causes it to be undraggable in the ref={}
   return (
     <div
-      ref={node.is_child ? undefined : setDraggableRef}
+      ref={setDraggableRef}
       class="url"
       classList={{
         "child_node w-full": node.is_child,

@@ -1,9 +1,17 @@
 import { createSignal, For, Show } from "solid-js";
 import { Todo as TodoType } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
+import {
+  Checkbox,
+  CheckboxControl,
+  CheckboxDescription,
+  CheckboxErrorMessage,
+  CheckboxLabel,
+} from "../ui/checkbox";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
+  nested?: number;
 };
 
 export default (node: TodoProps) => {
@@ -34,37 +42,28 @@ export default (node: TodoProps) => {
         ></div>
       </Show>
 
-      <For each={node.tasks} fallback={<div>Loading...</div>}>
-        {(item, index) => (
-          <div
-            class="checkbox-div"
-            onClick={() => {
-              console.log("launching click: ", node.id, " ", index());
-              // todo: update tasks here
-            }}
-          >
-            <label class="checkbox">
-              <input
-                class="checkbox__trigger visuallyhidden"
-                type="checkbox"
-                checked={item.check ? true : false}
-              />
-              <span class="checkbox__symbol">
-                <svg
-                  aria-hidden="true"
-                  class="icon-checkbox"
-                  width="28px"
-                  height="28px"
-                  viewBox="0 0 28 28"
-                >
-                  <path d="M4 14l8 7L24 7"></path>
-                </svg>
-              </span>
-              <p class="checkbox__textwrapper">{item.text}</p>
-            </label>
-          </div>
-        )}
-      </For>
+      <div class="space-y-4">
+        <For each={node.tasks} fallback={<div>Loading...</div>}>
+          {(task, index) => (
+            <>
+              <Checkbox
+                class="flex items-start space-x-2"
+                style={{ "margin-left": `${node.nested || 0 * 10}px` }}
+              >
+                <CheckboxControl />
+                <div class="grid gap-1.5 leading-none">
+                  <CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Accept terms and conditions
+                  </CheckboxLabel>
+                </div>
+              </Checkbox>
+              <Show when={task.children?.length > 0}>
+                 <Todo {task.children} is_child={true} />
+              </Show>
+            </>
+          )}
+        </For>
+      </div>
     </div>
   );
 };

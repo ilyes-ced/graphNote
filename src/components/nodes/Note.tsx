@@ -15,7 +15,7 @@ export default (node: NoteProps) => {
   //Todo: remove this later it causes it to be undraggable in the ref={}
   return (
     <div
-      ref={node.is_child ? undefined : setDraggableRef}
+      ref={setDraggableRef}
       class="note"
       classList={{
         child_node: node.is_child,
