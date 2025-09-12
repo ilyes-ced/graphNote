@@ -13,7 +13,7 @@ export default (props: any) => {
         left: 0,
         width: "100vw",
         height: "100vh",
-        overflow: "scroll", // optional
+        overflow: "hidden", // optional
         "z-index": 1, // above background
       }}
     >

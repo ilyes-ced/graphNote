@@ -25,12 +25,12 @@ export default (props: any) => {
   const getCSSVar = (name: string) =>
     getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
-  let icon_bg = getCSSVar("--bg2");
-  let icon_txt = getCSSVar("--fg");
-  let icon_hint1 = getCSSVar("--active");
-  let icon_hint2 = getCSSVar("--border");
-  let icon_hint3 = getCSSVar("--inactive");
-  let icon_hint4 = getCSSVar("--df_block_color");
+  let icon_bg = getCSSVar("--color-background");
+  let icon_txt = getCSSVar("--color-foreground");
+  let icon_hint1 = getCSSVar("--color-primary");
+  let icon_hint2 = getCSSVar("--color-border");
+  let icon_hint3 = getCSSVar("--color-secondary");
+  let icon_hint4 = getCSSVar("--color-destructive");
 
   let icons = {
     note: {

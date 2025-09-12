@@ -10,7 +10,6 @@ export default (node: TodoProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-
   useDraggableNode(draggableRef, node, node.is_child);
 
   return (

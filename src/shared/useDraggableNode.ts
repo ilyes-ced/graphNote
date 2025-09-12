@@ -51,13 +51,23 @@ function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
 }
 
 function childNode(nodeId: string, parentId: string) {
+  let parentNode = store.nodes.find((node) => node.id === parentId);
   let nodeToMove = store.nodes.find((node) => node.id === nodeId);
   if (!nodeToMove) {
     console.warn("Node to move not found:", nodeId);
     return;
   }
-  if (nodeToMove.type === NodeType.Column) {
-    console.warn("Node to move cannot be nested because its a column:", nodeId);
+  if (!parentNode) {
+    return;
+  }
+
+  if (nodeToMove.type === parentNode.type) {
+    console.warn(
+      "Cannot nest nodes of the same type, nodemoved:",
+      nodeToMove.type,
+      "parent:",
+      parentNode.type
+    );
     return;
   }
 
@@ -94,11 +104,11 @@ function useDraggableNode(
   useDraggable(ref, [
     axis(null),
     // still glitchy
-    bounds(BoundsFrom.parent()),
+    is_child ? bounds() : bounds(BoundsFrom.parent()),
     // remove later and snap manually, with animation
     grid([10, 10]),
     //* set if is a child node
-    threshold(is_child ? { distance: 10 } : { distance: 0 }),
+    threshold(is_child ? { distance: 100 } : { distance: 0 }),
     position({ default: { x: node.x || 0, y: node.y || 0 } }),
     controls({
       block: ControlFrom.selector(".child_node"),
@@ -107,7 +117,9 @@ function useDraggableNode(
       onDragStart: (data) => {
         console.log("dragging:", data);
         //? increased the z-index, to +1 of the highest
-        const max_z_ndex = Math.max(...store.nodes.map((node) => node.zIndex));
+        const max_z_ndex = Math.max(
+          ...store.nodes.map((node) => node.zIndex || 1) // || 1 just to shutup the error
+        );
         setStore("nodes", (b) => b.id === node.id, "zIndex", max_z_ndex + 1);
 
         setStore("dragging", node.id);
@@ -117,9 +129,9 @@ function useDraggableNode(
         const mouseX = data.event.clientX;
         const mouseY = data.event.clientY;
 
-        //todo: here should add the class to its child container not its self
         const targets = document.querySelectorAll(".column");
         //! can be imporeved, should not be decided every drag move but on start and end
+        //! thers also rootNode that im not sure what the difference between them is
         const isColumn =
           store.nodes.find((node) => node.id === data.rootNode.id)?.type ===
           NodeType.Column;
@@ -137,24 +149,42 @@ function useDraggableNode(
       },
 
       onDragEnd: (data) => {
-        // todo: here check if its overlapping, UPDATE THE CHILD NODE  and remove hovered coontainer classs
+        console.log("darg ended", data.rootNode.id);
+
         const mouseX = data.event.clientX;
         const mouseY = data.event.clientY;
-        //! thers also rootNode that im not sure what the difference between them is
 
-        const targets = document.querySelectorAll(".column");
-        console.log(targets);
+        const targets = document.querySelectorAll(
+          `.column:not(#${data.rootNode.id})` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
+        );
+        let moved = false;
         targets.forEach((target) => {
           const isInside = isOverlapping(mouseX, mouseY, target);
           target.classList.remove("child_container_hover");
-          if (isInside) {
-            const node_id = data.currentNode.id;
-            const parent_id = target.id;
-            childNode(node_id, parent_id);
 
-            // here update the nodes in the store
+          //if child
+          //    if inside tranfer it to the new column
+          //    else make a normal node
+          if (is_child) {
+            if (isInside) {
+              console.log("yes its a child its placed in another div");
+              moved = true;
+              return;
+            }
+          } else {
+            if (isInside) {
+              const node_id = data.currentNode.id;
+              const parent_id = target.id;
+              childNode(node_id, parent_id);
+              moved = true;
+              // when overlap is detected, stop searching for overlap
+              return;
+            }
           }
         });
+        if (!moved) {
+          console.log("yes its a child its placed in canvas");
+        }
 
         setStore("dragging", null);
 

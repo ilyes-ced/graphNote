@@ -25,11 +25,11 @@ export default () => {
   };
 
   return (
-    <div
-      id="topbar"
-      class="w-full h-[50px] p-2.5 border-b border-border flex flex-row items-center justify-between"
-    >
-      <div id="breadcrumb" class="flex flex-row">
+    <div id="topbar" class="absolute left-29 w-[80%] h-30 p-3">
+      <div
+        id="breadcrumb"
+        class="border border-border p-2 rounded-md h-full bg-card  flex flex-row space-y-4 overflow-x-visible "
+      >
         <For each={example_path}>
           {(path, index) => {
             const i = index(); // Get reactive index
@@ -75,3 +75,6 @@ export default () => {
     </div>
   );
 };
+<div class="absolute h-full w-30 p-3">
+  <div class="border border-border p-2 rounded-md h-full bg-card  flex flex-col space-y-4 overflow-x-visible "></div>
+</div>;

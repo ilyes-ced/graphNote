@@ -50,7 +50,7 @@ export default (node: ColumnProps) => {
           <Show
             when={node.children && node.children.length > 0}
             fallback={
-              <div class="empty_children_container bg-gree-300 h-[65px] w-full"></div>
+              <div class="empty_children_containe h-[65px] w-full"></div>
             }
           >
             <For each={node.children}>

@@ -10,7 +10,6 @@ export default (node: NoteProps) => {
   const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
     null
   );
-
   useDraggableNode(draggableRef, node, node.is_child);
 
   //Todo: remove this later it causes it to be undraggable in the ref={}
@@ -19,7 +18,7 @@ export default (node: NoteProps) => {
       ref={node.is_child ? undefined : setDraggableRef}
       class="note"
       classList={{
-        "child_node w-full": node.is_child,
+        child_node: node.is_child,
         node: !node.is_child,
       }}
       id={node.id}
