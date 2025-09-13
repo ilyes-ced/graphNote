@@ -2,26 +2,36 @@ import {
   BaseDirectory,
   writeTextFile,
   readTextFile,
+  exists,
+  create,
 } from "@tauri-apps/plugin-fs";
 import { NodeUnion } from "../types";
 
 //? saves the JSON object as file
 // TODO: make debounce for disk write operation, to avoid writing too much to disk
-async function writeJSON(blocks: NodeUnion[]) {
-  const json = JSON.stringify(blocks, null, 2);
-
-  await writeTextFile("blocks.json", json, {
-    baseDir: BaseDirectory.Home,
+async function writeJSON(nodes: NodeUnion[]) {
+  const json = JSON.stringify(nodes, null, 2);
+  await writeTextFile("save.json", json, {
+    baseDir: BaseDirectory.Document,
   });
 }
 
 //? read the saved JSON object as file
 async function readJSON(): Promise<NodeUnion[] | null> {
   try {
-    const text = await readTextFile("blocks.json", {
-      baseDir: BaseDirectory.Home,
+    let fileExists = await exists("save.json", {
+      baseDir: BaseDirectory.Document,
     });
 
+    if (!fileExists) {
+      await create("save.json", {
+        baseDir: BaseDirectory.Document,
+      });
+    }
+
+    const text = await readTextFile("save.json", {
+      baseDir: BaseDirectory.Document,
+    });
     //? reset the zIndex
     // i think it works as intended
     const nodes: NodeUnion[] = JSON.parse(text).sort(
@@ -38,7 +48,7 @@ async function readJSON(): Promise<NodeUnion[] | null> {
 
     return nodes;
   } catch (err) {
-    console.error("Failed to read or parse blocks.json:", err);
+    console.error("Failed to read or parse save.json:", err);
     return null;
   }
 }

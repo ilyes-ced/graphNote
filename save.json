@@ -1,0 +1,182 @@
+[
+  {
+    "id": "block_9",
+    "type": 6,
+    "name": "test board",
+    "icon_path": "test.png",
+    "color": "#8f69f3",
+    "zIndex": 0,
+    "index": 0,
+    "x": 180,
+    "y": 200
+  },
+  {
+    "id": "block_6",
+    "type": 7,
+    "x": 330,
+    "y": 250,
+    "width": 300,
+    "color": "#f92",
+    "top_strip_color": "#b03",
+    "title": "test test",
+    "text": "test inner text for the note",
+    "zIndex": 1,
+    "children": [
+      {
+        "id": "block_8",
+        "type": 6,
+        "name": "test board",
+        "icon_path": "assets/logo.svg",
+        "color": "#8f69f3",
+        "zIndex": 7,
+        "index": 2
+      },
+      {
+        "id": "block_4",
+        "type": 0,
+        "width": 300,
+        "color": "#909090",
+        "title": "test test",
+        "text": "test inner text for the note with translate",
+        "zIndex": 6,
+        "index": 1
+      }
+    ]
+  },
+  {
+    "id": "block_3",
+    "type": 0,
+    "width": 300,
+    "color": "#707990",
+    "top_strip_color": "#934573",
+    "text": "test inner text for the note2",
+    "index": 1,
+    "zIndex": 2,
+    "x": 330,
+    "y": -110
+  },
+  {
+    "id": "block_1",
+    "type": 7,
+    "x": 630,
+    "y": 250,
+    "width": 300,
+    "color": "#ff0000",
+    "top_strip_color": "#00f0ff",
+    "title": "title for the column has some test children",
+    "children": [
+      {
+        "id": "block_10",
+        "type": 3,
+        "width": 300,
+        "zIndex": 5,
+        "data": [
+          ["column 1", "column 2", "column 3", "column 4", "column 5"],
+          [0, 1, 2, 3, 4],
+          [0, "test ", " tw sf f", "3", "test ok dokie"]
+        ],
+        "index": 2
+      }
+    ],
+    "zIndex": 3
+  },
+  {
+    "id": "block_0",
+    "type": 7,
+    "x": 930,
+    "y": 250,
+    "width": 300,
+    "color": "#ff00ff",
+    "top_strip_color": "#234587",
+    "title": "first block",
+    "text": "test inner text for the note",
+    "zIndex": 4,
+    "children": [
+      {
+        "id": "block_2",
+        "type": 0,
+        "width": 300,
+        "color": "#00f0f0",
+        "top_strip_color": "#f57090",
+        "text": "test inner text for the note",
+        "index": 0,
+        "zIndex": 10
+      },
+      {
+        "id": "block_5",
+        "type": 2,
+        "width": 300,
+        "color": "#909090",
+        "title": "test test",
+        "tasks": [
+          {
+            "text": "test 000",
+            "check": false
+          },
+          {
+            "text": "test 111",
+            "check": true
+          },
+          {
+            "text": "test 222",
+            "check": true
+          },
+          {
+            "text": "test 333",
+            "check": true,
+            "children": [
+              {
+                "text": "child task 00",
+                "check": true,
+                "children": [
+                  {
+                    "text": "child task 11",
+                    "check": true,
+                    "children": [
+                      {
+                        "text": "child task 22",
+                        "check": true,
+                        "children": [
+                          {
+                            "text": "child task 33",
+                            "check": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "zIndex": 7,
+        "index": 1
+      }
+    ]
+  },
+  {
+    "id": "block_11",
+    "type": 4,
+    "width": 300,
+    "color": "#593",
+    "top_strip_color": "#f7f",
+    "url": "https://tauri.app/reference/javascript/api/namespaceevent/",
+    "zIndex": 5,
+    "index": 2,
+    "x": 170,
+    "y": 500
+  },
+  {
+    "id": "block_7",
+    "type": 4,
+    "width": 300,
+    "color": "#ff5923",
+    "top_strip_color": "#6f7f",
+    "url": "https://lospec.com/palette-list/nightberry",
+    "zIndex": 7,
+    "index": 2,
+    "x": 280,
+    "y": 780
+  }
+]

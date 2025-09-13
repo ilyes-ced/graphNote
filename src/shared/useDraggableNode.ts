@@ -10,9 +10,10 @@ import {
   threshold,
   useDraggable,
 } from "@neodrag/solid";
-import { writeJSON } from "./save";
+import { writeJSON } from "../components/save";
 import { store, setStore } from "../components/store";
 import { Column, NodeType } from "../types";
+import moveNode from "./moveNode";
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
   const rect = targetEl.getBoundingClientRect();
@@ -23,132 +24,6 @@ function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
     mouseY >= rect.top &&
     mouseY <= rect.bottom
   );
-}
-
-function moveNode(
-  movedNodeId: string,
-  distNodeId: string,
-  nested: true | false = false,
-  movedToCanvas: true | false = false
-) {
-  if (nested) {
-    let parentNode = store.nodes.find((node) =>
-      node.children?.some((childNode) => childNode.id === movedNodeId)
-    );
-    const movedNode = parentNode.children?.find(
-      (child) => child.id === movedNodeId
-    );
-
-    console.log(movedNode);
-    console.log(
-      "nested moved: ",
-      movedNode.id,
-      " from column: ",
-      parentNode?.id,
-      " to: ",
-      distNodeId
-    );
-
-    if (!parentNode || !movedNode) {
-      console.warn("Parent of the Node to move not found:", movedNodeId);
-      return;
-    }
-
-    // remove node from parent
-    setStore("nodes", (nodes) =>
-      nodes.map((node) => {
-        if (node.id === parentNode?.id) {
-          return {
-            ...node,
-            children: node.children?.filter(
-              (child) => child.id !== movedNodeId
-            ),
-          };
-        }
-        return node;
-      })
-    );
-
-    // moving node to canvas or new parent
-    if (movedToCanvas) {
-      console.log(movedNodeId);
-      let dims = document.querySelector(`#${movedNodeId}`);
-      console.log("nested moved to canvas: ", dims);
-      setStore("nodes", (nodes) => [
-        ...nodes,
-        {
-          ...movedNode,
-          // removing x and y
-          x: 0, //! fix later to be close to mouse position or its current position
-          y: 0, //! fix later to be close to mouse position or its current position
-        },
-      ]);
-    } else {
-      // sent to another parent
-      setStore("nodes", (nodes) =>
-        nodes.map((node) => {
-          if (node.id === distNodeId && node.type === NodeType.Column) {
-            const existingChildren = node.children ?? [];
-            return {
-              ...node,
-              children: [
-                ...existingChildren,
-                {
-                  ...movedNode,
-                  index: existingChildren.length,
-                },
-              ],
-            };
-          }
-          return node;
-        })
-      );
-    }
-  } else {
-    let distNode = store.nodes.find((node) => node.id === distNodeId);
-    let movedNode = store.nodes.find((node) => node.id === movedNodeId);
-    if (!movedNode) {
-      console.warn("Node to move not found:", movedNodeId);
-      return;
-    }
-    if (!distNode) {
-      return;
-    }
-    if (movedNode.type === distNode.type) {
-      console.warn(
-        "Cannot nest nodes of the same type, nodemoved:",
-        movedNode.type,
-        "parent:",
-        distNode.type
-      );
-      return;
-    }
-    console.log("moved to inside a column from the canvas");
-    setStore("nodes", (nodes) =>
-      nodes.filter((node) => node.id !== movedNodeId)
-    );
-    setStore("nodes", (nodes) =>
-      nodes.map((node) => {
-        if (node.id === distNodeId && node.type === NodeType.Column) {
-          const existingChildren = node.children ?? [];
-          return {
-            ...node,
-            children: [
-              ...existingChildren,
-              {
-                ...movedNode,
-                // removing x and y
-                x: undefined,
-                y: undefined,
-                index: existingChildren.length,
-              },
-            ],
-          };
-        }
-        return node;
-      })
-    );
-  }
 }
 
 function useDraggableNode(
@@ -242,7 +117,14 @@ function useDraggableNode(
         if (!moved) {
           const node_id = data.currentNode.id;
           if (is_child) {
-            moveNode(node_id, "None", true, true);
+            const targets = document.querySelectorAll(
+              `#${data.rootNode.id}` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
+            );
+            console.info(targets[0].getBoundingClientRect());
+            moveNode(node_id, "None", true, true, {
+              x: Math.round(targets[0].getBoundingClientRect().x / 10) * 10,
+              y: Math.round(targets[0].getBoundingClientRect().y / 10) * 10,
+            });
           }
         }
 

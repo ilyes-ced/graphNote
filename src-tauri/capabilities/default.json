@@ -2,15 +2,16 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "opener:default",
     "fs:allow-app-write",
     "fs:allow-app-read",
     "fs:default",
-    "fs:allow-home-write" 
+    "fs:allow-home-write",
+    "fs:allow-document-write-recursive",
+    "fs:allow-document-read-recursive",
+    { "identifier": "fs:scope", "allow": [{ "path": "~/Documents/save.json" }] }
   ]
 }

@@ -1,3 +1,7 @@
+mod scrape;
+
+use scrape::scrape_url;
+
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -10,6 +14,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![scrape_url])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

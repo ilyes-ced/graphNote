@@ -1,5 +1,5 @@
-import { createSignal, For, Show } from "solid-js";
-import { Todo as TodoType } from "../../types";
+import { Component, createSignal, For, Show } from "solid-js";
+import { Task, Todo as TodoType } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 import {
   Checkbox,
@@ -42,28 +42,35 @@ export default (node: TodoProps) => {
         ></div>
       </Show>
 
-      <div class="space-y-4">
-        <For each={node.tasks} fallback={<div>Loading...</div>}>
-          {(task, index) => (
-            <>
-              <Checkbox
-                class="flex items-start space-x-2"
-                style={{ "margin-left": `${node.nested || 0 * 10}px` }}
-              >
-                <CheckboxControl />
-                <div class="grid gap-1.5 leading-none">
-                  <CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Accept terms and conditions
-                  </CheckboxLabel>
-                </div>
-              </Checkbox>
-              <Show when={task.children?.length > 0}>
-                 <Todo {task.children} is_child={true} />
-              </Show>
-            </>
+      <For each={node.tasks} fallback={<div>Loading...</div>}>
+        {(task, index) => <TaskItem {...task} />}
+      </For>
+    </div>
+  );
+};
+
+const TaskItem: Component<Task> = (props) => {
+  //text: string, task: boolean, children: Task[]
+
+  return (
+    <div>
+      <Checkbox class="flex items-start space-x-2 py-2">
+        <CheckboxControl />
+        <div class="grid gap-1.5 leading-none">
+          <CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            {props.text}
+          </CheckboxLabel>
+        </div>
+      </Checkbox>
+      <Show when={props.children?.length > 0}>
+        <For each={props.children} fallback={<div>Loading...</div>}>
+          {(childTask, index) => (
+            <div class="ml-4">
+              <TaskItem {...childTask} />
+            </div>
           )}
         </For>
-      </div>
+      </Show>
     </div>
   );
 };
