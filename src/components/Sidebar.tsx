@@ -1,7 +1,7 @@
 import { For } from "solid-js";
 import Svg from "./nodes/Svg";
 
-export default () => {
+export default function SidebarFloating() {
   let icons = [
     // basic blocks
     { name: "note", width: 32, height: 24 },
@@ -28,24 +28,24 @@ export default () => {
   ];
 
   return (
-    <div
-      id="sidebar"
-      class="flex flex-col p-2.5 items-center w-[50px] h-full border-r border-border overflow-hidden"
-    >
-      <For each={icons} fallback={<div>Loading...</div>}>
-        {(icon) => (
-          <div class="icon cursor-pointer p-2.5 flex flex-col justify-center items-center transition duration-100 ease-out hover:translate-x-[5px]">
-            <Svg
-              width={icon.width}
-              height={icon.height}
-              classes=""
-              icon_name={icon.name}
-            />
-            <div class="m-2"></div>
-            <span>{icon.name}</span>
-          </div>
-        )}
-      </For>
+    <div class="border-r border-border h-full overflow-hidden w-[65px] p-4 bg-card ">
+      <div class="flex flex-col space-y-4 overflow-x-visible relative">
+        <For each={icons} fallback={<div>Loading...</div>}>
+          {(icon) => (
+            <div class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10">
+              <Svg
+                width={icon.width}
+                height={icon.height}
+                classes=""
+                icon_name={icon.name}
+              />
+              <div class=""></div>
+
+              <span class="text-sm">{icon.name}</span>
+            </div>
+          )}
+        </For>
+      </div>
     </div>
   );
-};
+}

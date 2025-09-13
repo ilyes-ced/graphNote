@@ -53,7 +53,6 @@ export default (props: any) => {
         cursor: "grab",
       }}
     >
-      {store.viewport.x}/{store.viewport.y}
       {props.children}
     </div>
   );

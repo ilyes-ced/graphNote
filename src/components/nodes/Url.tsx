@@ -49,26 +49,13 @@ export default (node: UrlProps) => {
   };
 
   onMount(async () => {
-    // invoke("scrape_url", {
-    //   url: "https://scrape.do/blog/web-scraping-in-rust/",
-    // }).then((message) => {
-    //   console.log("rcieved messgs");
-    //   console.log(message);
-    // });
-    // invoke("scrape_url", {
-    //   url: "https://www.rayon.design/",
-    // }).then((message) => {
-    //   console.log("rcieved messgs");
-    //   console.log(message);
-    // });
-
-    setTimeout(async () => {
-      const res = await getMetaData(node.url);
-
-      if (res) {
-        setMetaData(res);
-      }
-    }, 0);
+    //! causes performance issues when loading
+    //setTimeout(async () => {
+    //  const res = await getMetaData(node.url);
+    //  if (res) {
+    //    setMetaData(res);
+    //  }
+    //}, 0);
   });
 
   return (
@@ -96,21 +83,26 @@ export default (node: UrlProps) => {
       <div class="space-y-2">
         <img class="url_thumbnail" src={metaData().image} alt="" />
 
-        <div class="text_container px-4 overflow-hidden text-ellipsis">
-          <div class="url_container flex items-center space-x-2">
+        <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
+          <div class="url_container flex flex-row items-center space-x-2">
             <img
-              class="url_thumbnail size-2"
+              class="url_thumbnail size-4"
               src={metaData().favicon}
               alt="favicon"
             />
+            <div>
+              <a class="url text-xs font-bold text-accent" href={node.url}>
+                {node.url}
+              </a>
+            </div>
+          </div>
 
-            <a class="url text-xs  font-bold text-accent" href={node.url}>
-              {node.url}
+          <div>
+            <a class="underline text-blue-800 font-extrabold" href={node.url}>
+              {metaData().title}
             </a>
           </div>
-          <a class="underline text-blue-800 font-extrabold" href={node.url}>
-            {metaData().title}
-          </a>
+
           <div class="url_description text-xs">{metaData().description}</div>
         </div>
       </div>

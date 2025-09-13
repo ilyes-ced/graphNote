@@ -45,36 +45,15 @@
   border: 2px dashed white !important;
 }
 
-#minimap {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 240px;
-  height: 135px;
-}
-#minimap > * {
-  border-radius: 10px;
-  border: 1px solid #88888820;
-  background-color: #88888810;
-  z-index: 1000;
-}
+/*
 
-#controls {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  z-index: 1000;
-}
 #controls > * {
   background-color: #88888810;
   border: 1px solid #88888820;
   padding: 5px 10px 5px 10px;
 }
-/* not working not sure why */
+  
+
 #controls > div:hover {
   background-color: #88888890;
 }
@@ -84,3 +63,4 @@
 #controls > :last-child {
   border-radius: 0px 10px 10px 0px;
 }
+*/

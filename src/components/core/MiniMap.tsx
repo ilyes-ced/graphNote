@@ -1,13 +1,10 @@
 export default () => {
   return (
-    <div id="minimap">
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-        }}
-      >
+    <div
+      id="minimap"
+      class="absolute bottom-2.5 right-2.5 h-38 w-64 bg-primary p-2"
+    >
+      <div class="relative size-full border border-border bg-accent z-50">
         <div
           style={{
             position: "absolute",
@@ -22,3 +19,20 @@ export default () => {
     </div>
   );
 };
+
+/*
+
+#minimap {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 240px;
+  height: 135px;
+}
+#minimap > * {
+  border-radius: 10px;
+  border: 1px solid #88888820;
+  background-color: #88888810;
+  z-index: 1000;
+}
+*/

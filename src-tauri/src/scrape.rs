@@ -116,6 +116,7 @@ pub fn scrape_url(url: String) -> Result<serde_json::Value, String> {
         }
     }
 
+    let link_selector = Selector::parse("link").unwrap();
     for el in document.select(&link_selector) {
         let tag = el.value();
 
@@ -123,11 +124,6 @@ pub fn scrape_url(url: String) -> Result<serde_json::Value, String> {
             if ["icon", "shortcut icon", "apple-touch-icon"].contains(&rel) {
                 if let Some(href) = tag.attr("href") {
                     if !href.trim().is_empty() {
-                        println!("favicon url before normilize {}", href);
-                        println!("favicon url before normilize {}", href);
-                        println!("favicon url before normilize {}", href);
-                        println!("favicon url before normilize {}", href);
-                        println!("favicon url before normilize {}", href);
                         favicon = Some(href.to_string());
                         break;
                     }
@@ -140,11 +136,6 @@ pub fn scrape_url(url: String) -> Result<serde_json::Value, String> {
     if let Some(fav_url) = &favicon {
         if let Ok(base) = Url::parse(&url) {
             if let Ok(full_url) = base.join(fav_url) {
-                println!("favicon url {}", full_url);
-                println!("favicon url {}", full_url);
-                println!("favicon url {}", full_url);
-                println!("favicon url {}", full_url);
-                println!("favicon url {}", full_url);
                 favicon = Some(full_url.to_string());
             }
         }
