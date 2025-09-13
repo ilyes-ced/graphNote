@@ -8,6 +8,7 @@ import { useDraggableNode } from "../../shared/useDraggableNode";
 import Url from "./Url";
 import Board from "./Board";
 import Table from "./Table";
+import { setStore, store } from "../store";
 
 type ColumnProps = Column & {
   check_task?: (node_id: string, task_index: number) => void;
@@ -19,10 +20,24 @@ export default (node: ColumnProps) => {
   );
   useDraggableNode(draggableRef, node);
 
+  console.log(store.selectedNodes);
+  const addSelected = (e: MouseEvent) => {
+    e.stopPropagation();
+    if (store.selectedNodes.has(node.id)) {
+      const newSet = new Set(store.selectedNodes);
+      newSet.delete(node.id);
+      setStore("selectedNodes", newSet);
+    } else {
+      setStore("selectedNodes", (prev) => new Set(prev).add(node.id));
+    }
+  };
+
   return (
     <div
+      onclick={addSelected}
       ref={setDraggableRef}
       class="column node text-center"
+      classList={{ selected_node: store.selectedNodes.has(node.id) }}
       id={node.id}
       style={{
         width: node.width + "px",
@@ -36,7 +51,6 @@ export default (node: ColumnProps) => {
           style={{ background: node.top_strip_color }}
         ></div>
       </Show>
-
       <div class="content flex flex-col p-[5px]">
         <div class="collapse_icon self-end w-6 h-6 collapse_icon hover:bg-amber-400 hover:border hover:border-green-500 hover:cursor-pointer flex justify-center items-center">
           <Svg width={16} height={16} classes="" icon_name={"collapse"} />

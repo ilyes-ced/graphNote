@@ -1,5 +1,4 @@
 import { store, setStore } from "../store";
-import Pan from "./Pan";
 
 export default (props: any) => {
   let zoomable: HTMLDivElement;

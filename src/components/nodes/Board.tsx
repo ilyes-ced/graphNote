@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import { Board } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
+import { AiOutlineCode } from "solid-icons/ai";
 
 type BoardProps = Board & {
   is_child?: boolean;
@@ -60,7 +61,7 @@ export default (node: BoardProps) => {
           "border-radius": node.is_child ? "10px" : "15px",
         }}
       >
-        {node.icon_path}
+        <AiOutlineCode class="size-full p-2" />
       </div>
       <div class="text_container flex flex-col justify-center items-center">
         <div

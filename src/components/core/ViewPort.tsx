@@ -1,5 +1,5 @@
 import { onMount } from "solid-js";
-import { store } from "../store";
+import { setStore, store } from "../store";
 
 export default (props: any) => {
   onMount(async () => {});
@@ -18,6 +18,10 @@ export default (props: any) => {
       }}
     >
       <div
+        onclick={(e) => {
+          console.log("canvas click");
+          setStore("selectedNodes", new Set());
+        }}
         id="viewport-content"
         style={{
           // border: "1px solid yellow",

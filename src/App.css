@@ -74,3 +74,51 @@ body,
   -ms-user-select: none;
   user-select: none;
 }
+
+.child_container_hover {
+  opacity: 0.5;
+  transition: opacity 0.3s ease-out;
+}
+/*for hen you exit animation*/
+.column {
+  transition: opacity 0.3s ease-out;
+}
+
+/*? works the same without it but if anything happens this might be the issue*/
+/*
+#wrapper,
+#keyhandler,
+#zoom,
+#pan,
+#nodes,
+#background {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+*/
+
+.top_strip {
+  width: 100%;
+  height: 4px;
+}
+/*grid pattern*/
+#viewport-content {
+  background-image: radial-gradient(#88888830 1px, transparent 0);
+  background-size: 10px 10px;
+  background-position: -20px -20px;
+}
+.node {
+  position: absolute;
+}
+.child_node,
+.node:not(.board) {
+  background-color: #151515;
+  border: 1px solid var(--color-background);
+}
+
+.selected_node {
+  border: 2px solid white !important;
+}

@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { createSignal, For, onCleanup, onMount } from "solid-js";
 import Svg from "./nodes/Svg";
 
 export default function SidebarFloating() {
@@ -27,12 +27,43 @@ export default function SidebarFloating() {
     { name: "image", width: 32, height: 32 },
   ];
 
+  const [isDragging, setIsDragging] = createSignal(false);
+  let lastMouse = { x: 0, y: 0 };
+
+  const handleMouseUp = (e: MouseEvent) => {
+    console.log("stoped dragging");
+    setIsDragging(false);
+  };
+  const handleMouseDown = (e: MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    lastMouse = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging()) {
+      console.log("dragging sidebar");
+    }
+  };
+
+  onMount(() => {
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mousemove", handleMouseMove);
+    onCleanup(() => {
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+    });
+  });
+
   return (
     <div class="border-r border-border h-full overflow-hidden w-[65px] p-4 bg-card ">
       <div class="flex flex-col space-y-4 overflow-x-visible relative">
         <For each={icons} fallback={<div>Loading...</div>}>
           {(icon) => (
-            <div class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10">
+            <div
+              onmousedown={handleMouseDown}
+              class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
+            >
               <Svg
                 width={icon.width}
                 height={icon.height}

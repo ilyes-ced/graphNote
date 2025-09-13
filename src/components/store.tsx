@@ -9,6 +9,7 @@ interface GlobalStore {
   snapGrid: [number, number] | null;
 
   dragging: NodeUnion["id"] | null;
+  selectedNodes: Set<string>; // node id
 
   viewport: {
     x: number;
@@ -25,6 +26,7 @@ const [store, setStore] = createStore<GlobalStore>({
   snapGrid: null,
 
   dragging: null,
+  selectedNodes: new Set([]),
 
   viewport: {
     x: 0,

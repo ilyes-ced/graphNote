@@ -4,7 +4,7 @@ export default () => {
       id="minimap"
       class="absolute bottom-2.5 right-2.5 h-38 w-64 bg-primary p-2"
     >
-      <div class="relative size-full border border-border bg-accent z-50">
+      <div class="relative size-full border border-border bg-card z-50">
         <div
           style={{
             position: "absolute",

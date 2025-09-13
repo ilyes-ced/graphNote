@@ -1,6 +1,9 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, Show, createMemo } from "solid-js";
 import { Note } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
+import { updateNote } from "@/shared/update";
+import { Editable, Slate, withSolid } from "@slate-solid/core";
+import { createEditor } from "slate";
 
 type NoteProps = Note & {
   is_child?: boolean;
@@ -11,8 +14,34 @@ export default (node: NoteProps) => {
     null
   );
   useDraggableNode(draggableRef, node, node.is_child);
+  let editableDiv: HTMLDivElement | undefined;
+  function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+    let timeout: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<T>) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+  const updateText = debounce((newValue: string) => {
+    console.log("Debounced update:", newValue);
+    // could be nested too
+    // update in the update.ts shared file
+    updateNote(node.id, newValue, node.is_child);
+  }, 3000);
 
-  //Todo: remove this later it causes it to be undraggable in the ref={}
+  const handleInput = (e: InputEvent) => {
+    const newText = editableDiv?.innerText || "";
+    updateText(newText);
+  };
+
+  const editor = createMemo(() => withSolid(createEditor()));
+  const initialValue = [
+    {
+      type: "paragraph",
+      children: [{ text: "A line of text in a paragraph." }],
+    },
+  ];
+
   return (
     <div
       ref={setDraggableRef}
@@ -35,9 +64,21 @@ export default (node: NoteProps) => {
         ></div>
       </Show>
 
-      <div class="note_text flex flex-col p-5">
-        {node.text} padding doesnt work idk why
+      <div class="p-5">
+        <Slate editor={editor()} initialValue={initialValue}>
+          <Editable />
+        </Slate>
       </div>
     </div>
   );
 };
+/*
+     <span
+          ref={editableDiv}
+          contenteditable
+          onInput={handleInput}
+          class="note_text flex flex-col cursor-text focus:outline-0"
+        >
+          {node.text}
+        </span>
+ */

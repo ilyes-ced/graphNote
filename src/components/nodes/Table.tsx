@@ -96,7 +96,7 @@ export default (node: TableProps) => {
 
   return (
     <div
-      ref={node.is_child ? undefined : setDraggableRef}
+      ref={setDraggableRef}
       class="table"
       classList={{
         "child_node w-full": node.is_child,

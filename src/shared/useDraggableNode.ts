@@ -41,7 +41,7 @@ function useDraggableNode(
     threshold(is_child ? { distance: 70 } : { distance: 0 }),
     position({ default: { x: node.x || 0, y: node.y || 0 } }),
     controls({
-      block: ControlFrom.selector(".child_node"),
+      block: ControlFrom.selector(".child_node, .note_text"),
     }),
     events({
       onDragStart: (data) => {

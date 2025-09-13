@@ -1,33 +1,15 @@
 import { SetStoreFunction } from "solid-js/store";
 import { NodeType, NodeUnion, Task } from "../types";
 import { writeJSON } from "../components/save";
-
-// probably uneeded as it is done in useDraggableBlock.ts
-const updateBlockPos = async (
-  id: string,
-  x: number,
-  y: number,
-  setBlocks: SetStoreFunction<NodeUnion[]>
-) => {
-  setBlocks(
-    (block) => block.id === id,
-    (block) => ({
-      ...block,
-      x: x,
-      y: y,
-    })
-  );
-
-  save(setBlocks);
-};
+import { setStore, store } from "@/components/store";
 
 const updateTasks = (
   block_id: string,
   task_index: number,
-  setBlocks: SetStoreFunction<NodeUnion[]>
+  setStore: SetStoreFunction<NodeUnion[]>
 ) => {
   console.log("recieved click: ", block_id, " ", task_index);
-  setBlocks((prev) =>
+  setStore((prev) =>
     prev.map((block) => {
       if (block.id === block_id && block.type === NodeType.Todo) {
         const updatedTasks = block.tasks?.map((task: Task, index: number) => {
@@ -43,17 +25,41 @@ const updateTasks = (
     })
   );
 
-  save(setBlocks);
+  save();
 };
 
-const save = (setBlocks: SetStoreFunction<NodeUnion[]>) => {
-  // save from setBlocks instead of gettign blocks()
+const updateNote = (
+  nodeId: string,
+  newValue: string,
+  nested: boolean = false
+) => {
+  // if nested
+  if (nested) {
+    // find parent id
+  } else {
+    console.log("not nested");
+    console.log(nodeId);
+    setStore("nodes", (nodes) =>
+      nodes.map((storeNode) => {
+        if (storeNode.id === nodeId) {
+          return {
+            ...storeNode,
+            text: newValue,
+          };
+        }
+        return storeNode;
+      })
+    );
+  }
+
+  save();
+};
+
+const save = () => {
+  // save from setStore instead of gettign blocks()
   setTimeout(() => {
-    setBlocks((current) => {
-      writeJSON(current);
-      return current;
-    });
+    writeJSON(store.nodes);
   }, 0);
 };
 
-export { updateBlockPos, updateTasks };
+export { updateNote, updateTasks };
