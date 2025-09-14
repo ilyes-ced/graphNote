@@ -1,8 +1,6 @@
 import "./App.css";
-import SideBar from "./components/Sidebar.tsx";
 import TopBar from "./components/Topbar.tsx";
 import Main from "./components/Main.tsx";
-import FloatingDemo from "./components/FloatingDemo.tsx";
 import Sidebar from "./components/Sidebar.tsx";
 
 function App() {

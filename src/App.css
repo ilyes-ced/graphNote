@@ -87,7 +87,7 @@ body,
 /*? works the same without it but if anything happens this might be the issue*/
 /*
 #wrapper,
-#keyhandler,
+#eventhandler,
 #zoom,
 #pan,
 #nodes,

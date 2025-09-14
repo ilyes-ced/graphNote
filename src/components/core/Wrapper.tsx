@@ -1,5 +1,5 @@
 import Controls from "./Controls";
-import KeyHandler from "./KeyHandler";
+import EventHandler from "./EventHandler";
 import MiniMap from "./MiniMap";
 import Nodes from "./Nodes";
 import Pan from "./Pan";
@@ -8,7 +8,7 @@ import Zoom from "./Zoom";
 
 /*
 wrapper: control width and height
-    keyhandler: keyboard key presses
+    EventHandler: keyboard key presses
         Zoom
             pan
                 viewport
@@ -21,7 +21,7 @@ export default () => {
   // wrapper width and lenght are defined in the store
   return (
     <div id="wrapper">
-      <KeyHandler>
+      <EventHandler>
         <Zoom>
           <Pan>
             <ViewPort>
@@ -31,7 +31,7 @@ export default () => {
             <Controls />
           </Pan>
         </Zoom>
-      </KeyHandler>
+      </EventHandler>
     </div>
   );
 };

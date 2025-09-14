@@ -1,9 +1,7 @@
-import { createSignal, Show, createMemo } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { Note } from "../../types";
 import { useDraggableNode } from "../../shared/useDraggableNode";
 import { updateNote } from "@/shared/update";
-import { Editable, Slate, withSolid } from "@slate-solid/core";
-import { createEditor } from "slate";
 
 type NoteProps = Note & {
   is_child?: boolean;
@@ -34,14 +32,6 @@ export default (node: NoteProps) => {
     updateText(newText);
   };
 
-  const editor = createMemo(() => withSolid(createEditor()));
-  const initialValue = [
-    {
-      type: "paragraph",
-      children: [{ text: "A line of text in a paragraph." }],
-    },
-  ];
-
   return (
     <div
       ref={setDraggableRef}
@@ -65,9 +55,15 @@ export default (node: NoteProps) => {
       </Show>
 
       <div class="p-5">
-        <Slate editor={editor()} initialValue={initialValue}>
-          <Editable />
-        </Slate>
+        {" "}
+        <span
+          ref={editableDiv}
+          contenteditable
+          onInput={handleInput}
+          class="note_text flex flex-col cursor-text focus:outline-0"
+        >
+          {node.text}
+        </span>
       </div>
     </div>
   );

@@ -12,6 +12,6 @@
     "fs:allow-home-write",
     "fs:allow-document-write-recursive",
     "fs:allow-document-read-recursive",
-    { "identifier": "fs:scope", "allow": [{ "path": "~/Documents/save.json" }] }
+    { "identifier": "fs:scope", "allow": [{ "path": "~/Documents" }] }
   ]
 }
