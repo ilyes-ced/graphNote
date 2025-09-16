@@ -3,6 +3,7 @@ import { FaSolidAnglesRight } from "solid-icons/fa";
 import { Button } from "./ui/button";
 import { WiMoonAltFirstQuarter } from "solid-icons/wi";
 import { VsSettingsGear } from "solid-icons/vs";
+import { store } from "./store";
 
 export default () => {
   let example_path = [
@@ -34,7 +35,7 @@ export default () => {
         class="bg-card flex flex-row space-y-4 overflow-x-visible "
       >
         <div class="flex flex-row">
-          <For each={example_path}>
+          <For each={store.boards}>
             {(path, index) => {
               const i = index(); // Get reactive index
               const isLast = i === example_path.length - 1;

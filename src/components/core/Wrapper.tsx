@@ -1,4 +1,5 @@
 import Controls from "./Controls";
+import Edges from "./Edges";
 import EventHandler from "./EventHandler";
 import MiniMap from "./MiniMap";
 import Nodes from "./Nodes";
@@ -26,6 +27,7 @@ export default () => {
           <Pan>
             <ViewPort>
               <Nodes />
+              <Edges />
             </ViewPort>
             <MiniMap />
             <Controls />

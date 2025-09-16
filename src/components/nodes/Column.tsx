@@ -9,6 +9,7 @@ import Url from "./Url";
 import Board from "./Board";
 import Table from "./Table";
 import { setStore, store } from "../store";
+import { addSelected } from "@/shared/utils";
 
 type ColumnProps = Column & {
   check_task?: (node_id: string, task_index: number) => void;
@@ -20,21 +21,9 @@ export default (node: ColumnProps) => {
   );
   useDraggableNode(draggableRef, node);
 
-  console.log(store.selectedNodes);
-  const addSelected = (e: MouseEvent) => {
-    e.stopPropagation();
-    if (store.selectedNodes.has(node.id)) {
-      const newSet = new Set(store.selectedNodes);
-      newSet.delete(node.id);
-      setStore("selectedNodes", newSet);
-    } else {
-      setStore("selectedNodes", (prev) => new Set(prev).add(node.id));
-    }
-  };
-
   return (
     <div
-      onclick={addSelected}
+      onClick={(e) => addSelected(e, node.id)}
       ref={setDraggableRef}
       class="column node text-center"
       classList={{ selected_node: store.selectedNodes.has(node.id) }}

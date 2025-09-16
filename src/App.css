@@ -112,7 +112,9 @@ body,
 }
 .node {
   position: absolute;
+  will-change: transform;
 }
+
 .child_node,
 .node:not(.board) {
   background-color: #151515;
@@ -120,5 +122,5 @@ body,
 }
 
 .selected_node {
-  border: 2px solid white !important;
+  border: 1px solid white !important;
 }

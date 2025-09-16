@@ -19,6 +19,7 @@
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-fs": "~2.4.2",
     "@tauri-apps/plugin-opener": "^2",
+    "arrows-svg": "^1.8.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "solid-icons": "^1.1.0",

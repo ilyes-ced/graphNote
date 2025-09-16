@@ -38,11 +38,28 @@ export default (props: any) => {
     setIsDragging(false);
   };
 
+  const handleWheel = (e: WheelEvent) => {
+    //TODO: make the scroll speed user defined maybe
+
+    //* scroll speed
+    const sp = 70;
+
+    const axis = e.shiftKey ? "x" : "y";
+    const direction =
+      axis === "y" ? (e.deltaY > 0 ? sp : -sp) : e.deltaX > 0 ? sp : -sp;
+
+    setStore("viewport", axis, (prev) => {
+      const newValue = prev - direction;
+      return newValue <= 0 ? newValue : 0;
+    });
+  };
+
   return (
     <div
       onmousedown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onWheel={handleWheel}
       id="pan"
       style={{
         width: "100%",

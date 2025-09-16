@@ -8,6 +8,8 @@ interface GlobalStore {
   panZoom: number | null;
   snapGrid: [number, number] | null;
 
+  boards: string[];
+
   dragging: NodeUnion["id"] | null;
   selectedNodes: Set<string>; // node id
 
@@ -24,6 +26,8 @@ const [store, setStore] = createStore<GlobalStore>({
   height: 1000,
   panZoom: null,
   snapGrid: null,
+
+  boards: ["Home"],
 
   dragging: null,
   selectedNodes: new Set([]),

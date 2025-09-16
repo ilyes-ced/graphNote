@@ -4,7 +4,6 @@ import { useDraggableNode } from "../../shared/useDraggableNode";
 import { Checkbox, CheckboxControl, CheckboxLabel } from "../ui/checkbox";
 import { addSelected } from "@/shared/utils";
 import { setStore, store } from "../store";
-import { writeJSON } from "../save";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
@@ -29,15 +28,10 @@ export default (node: TodoProps) => {
     const x = e.clientX - startX;
     const y = e.clientY - startY;
 
-    setStore("nodes", (b) => b.id === node.id, "x", x);
-    setStore("nodes", (b) => b.id === node.id, "y", y);
-    setTimeout(() => {
-      // Capture latest snapshot
-      setStore("nodes", (current) => {
-        writeJSON(current);
-        return current;
-      });
-    }, 0);
+    // setStore("nodes", node.id, "x", x);
+    node.x = x;
+    // setStore("nodes", node.id, "y", y);
+    node.y = y;
   };
 
   const onUp = () => {

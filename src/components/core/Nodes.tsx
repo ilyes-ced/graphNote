@@ -7,10 +7,13 @@ import Todo from "../nodes/Todo";
 import Url from "../nodes/Url";
 import Board from "../nodes/Board";
 import Table from "../nodes/Table";
+import Test from "../nodes/Test";
 
 export default () => {
   return (
-    <div id="nodes">
+    <div id="nodes" class="bg-red-600">
+      <Test />
+
       <For each={store.nodes}>
         {(node) => (
           <Switch fallback={<div>Not Found</div>}>

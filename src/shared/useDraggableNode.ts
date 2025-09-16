@@ -12,7 +12,7 @@ import {
 } from "@neodrag/solid";
 import { writeJSON } from "../components/save";
 import { store, setStore } from "../components/store";
-import { Column, NodeType } from "../types";
+import { NodeType } from "../types";
 import moveNode from "./moveNode";
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
@@ -38,24 +38,24 @@ function useDraggableNode(
     // remove later and snap manually, with animation
     grid([10, 10]),
     //* set if is a child node
-    threshold(is_child ? { distance: 70 } : { distance: 0 }),
+    threshold(is_child ? { distance: 70 } : { distance: 5 }),
     position({ default: { x: node.x || 0, y: node.y || 0 } }),
     controls({
-      block: ControlFrom.selector(".child_node, .note_text"),
+      block: ControlFrom.selector(".child_node, .active_note_text, .taskitem"),
     }),
     events({
       onDragStart: (data) => {
-        console.log("dragging:", data);
+        console.log("sarted dragging:", data);
         //? increased the z-index, to +1 of the highest
         const max_z_ndex = Math.max(
           ...store.nodes.map((node) => node.zIndex || 1) // || 1 just to shutup the error
         );
         setStore("nodes", (b) => b.id === node.id, "zIndex", max_z_ndex + 1);
-
         setStore("dragging", node.id);
       },
 
       onDrag: (data) => {
+        console.log("dragging", data);
         const mouseX = data.event.clientX;
         const mouseY = data.event.clientY;
 
