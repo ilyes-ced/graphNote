@@ -98,7 +98,7 @@ export default (node: UrlProps) => {
           </div>
 
           <div>
-            <a class="underline text-blue-800 font-extrabold" href={node.url}>
+            <a class="underline text-primary font-extrabold" href={node.url}>
               {metaData().title}
             </a>
           </div>

@@ -1,7 +1,7 @@
 import { onMount } from "solid-js";
 import { setStore } from "./store";
-import { readJSON } from "./save.ts";
 import Wrapper from "./core/Wrapper.tsx";
+import { readJSON } from "@/shared/save.ts";
 
 const loadNodes = async () => {
   const init_nodes = await readJSON();

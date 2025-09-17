@@ -1,6 +1,6 @@
 import { SetStoreFunction } from "solid-js/store";
 import { NodeType, NodeUnion, Task } from "../types";
-import { writeJSON } from "../components/save";
+import { writeJSON } from "./save";
 import { setStore, store } from "@/components/store";
 
 const updateTasks = (

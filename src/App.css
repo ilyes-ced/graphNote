@@ -112,7 +112,9 @@ body,
 }
 .node {
   position: absolute;
+  cursor: grab;
   will-change: transform;
+  transition: translate 0.2 ease-in-out;
 }
 
 .child_node,

@@ -19,7 +19,10 @@ export default (props: any) => {
     >
       <div
         onclick={(e) => {
+          // could cause issues in the future not sure
+          if (e.target !== e.currentTarget) return;
           console.log("canvas click");
+          e.stopPropagation();
           setStore("selectedNodes", new Set());
         }}
         id="viewport-content"

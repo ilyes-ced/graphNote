@@ -2,6 +2,7 @@ import { setStore, store } from "@/components/store";
 
 const addSelected = (e: MouseEvent, nodeId: string) => {
   // if click is on child dont do it
+
   e.stopPropagation();
   console.log("selecting:", nodeId);
   if (store.selectedNodes.has(nodeId)) {

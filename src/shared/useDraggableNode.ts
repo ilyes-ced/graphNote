@@ -10,10 +10,10 @@ import {
   threshold,
   useDraggable,
 } from "@neodrag/solid";
-import { writeJSON } from "../components/save";
 import { store, setStore } from "../components/store";
 import { NodeType } from "../types";
 import moveNode from "./moveNode";
+import { writeJSON } from "./save";
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
   const rect = targetEl.getBoundingClientRect();

@@ -40,18 +40,19 @@ export default (props: any) => {
 
   const handleWheel = (e: WheelEvent) => {
     //TODO: make the scroll speed user defined maybe
+    if (!e.ctrlKey) {
+      //* scroll speed
+      const sp = 70;
 
-    //* scroll speed
-    const sp = 70;
+      const axis = e.shiftKey ? "x" : "y";
+      const direction =
+        axis === "y" ? (e.deltaY > 0 ? sp : -sp) : e.deltaX > 0 ? sp : -sp;
 
-    const axis = e.shiftKey ? "x" : "y";
-    const direction =
-      axis === "y" ? (e.deltaY > 0 ? sp : -sp) : e.deltaX > 0 ? sp : -sp;
-
-    setStore("viewport", axis, (prev) => {
-      const newValue = prev - direction;
-      return newValue <= 0 ? newValue : 0;
-    });
+      setStore("viewport", axis, (prev) => {
+        const newValue = prev - direction;
+        return newValue <= 0 ? newValue : 0;
+      });
+    }
   };
 
   return (
@@ -67,7 +68,6 @@ export default (props: any) => {
         position: "absolute",
         top: 0,
         left: 0,
-        cursor: "grab",
       }}
     >
       {props.children}

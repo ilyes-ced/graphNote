@@ -10,6 +10,7 @@ interface GlobalStore {
 
   boards: string[];
 
+  dragThreshold: number;
   dragging: NodeUnion["id"] | null;
   selectedNodes: Set<string>; // node id
 
@@ -25,10 +26,11 @@ const [store, setStore] = createStore<GlobalStore>({
   width: 1000,
   height: 1000,
   panZoom: null,
-  snapGrid: null,
+  snapGrid: [10, 10],
 
   boards: ["Home"],
 
+  dragThreshold: 5,
   dragging: null,
   selectedNodes: new Set([]),
 
