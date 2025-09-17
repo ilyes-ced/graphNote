@@ -1,7 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { createSignal, onMount, Show } from "solid-js";
 import { Url } from "../../types";
-import { useDraggableNode } from "../../shared/useDraggableNode";
+import { useDraggable } from "@/shared/drag";
+import { store } from "../store";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -15,10 +16,7 @@ type MetaData = {
 };
 
 export default (node: UrlProps) => {
-  const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
-    null
-  );
-  useDraggableNode(draggableRef, node, node.is_child);
+  const { startDrag } = useDraggable(node, node.is_child);
 
   const [metaData, setMetaData] = createSignal<MetaData>({
     title: "placeholder",
@@ -60,17 +58,19 @@ export default (node: UrlProps) => {
 
   return (
     <div
-      ref={setDraggableRef}
+      onPointerDown={startDrag}
       class="url"
       classList={{
         "child_node w-full": node.is_child,
         node: !node.is_child,
+        selected_node: store.selectedNodes.has(node.id),
       }}
       id={node.id}
       style={{
         width: node.is_child ? "100%" : node.width + "px",
         background: node.color ? node.color : "var(--default-bg-color)",
         "z-index": node.zIndex,
+        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
       <Show when={node.top_strip_color}>

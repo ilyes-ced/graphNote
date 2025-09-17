@@ -1,18 +1,14 @@
-import { createSignal } from "solid-js";
 import { Board } from "../../types";
-import { useDraggableNode } from "../../shared/useDraggableNode";
 import { AiOutlineCode } from "solid-icons/ai";
+import { store } from "../store";
+import { useDraggable } from "@/shared/drag";
 
 type BoardProps = Board & {
   is_child?: boolean;
 };
 
 export default (node: BoardProps) => {
-  const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
-    null
-  );
-
-  useDraggableNode(draggableRef, node, node.is_child);
+  const { startDrag } = useDraggable(node, node.is_child);
 
   const iconType = (icon_path: string): "svg" | "img" => {
     console.log(icon_path);
@@ -36,12 +32,13 @@ export default (node: BoardProps) => {
   //Todo: remove this later it causes it to be undraggable in the ref={}
   return (
     <div
-      ref={setDraggableRef}
+      onPointerDown={startDrag}
       class="board flex flex-col justify-center items-center"
       classList={{
         child_node: node.is_child,
         node: !node.is_child,
         "flex flex-row justify-start p-2 pl-2.5": node.is_child,
+        selected_node: store.selectedNodes.has(node.id),
       }}
       id={node.id}
       style={{
@@ -49,6 +46,7 @@ export default (node: BoardProps) => {
         width: node.is_child ? "100%" : "60px",
         "z-index": node.zIndex,
         "border-radius": node.is_child ? "" : "15px",
+        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
       <div

@@ -1,21 +1,18 @@
 import { createEffect, createSignal, Show } from "solid-js";
 import { Note } from "../../types";
-import { useDraggableNode } from "../../shared/useDraggableNode";
 import { updateNote } from "@/shared/update";
 import { addSelected } from "@/shared/utils";
 import { store } from "../store";
+import { useDraggable } from "@/shared/drag";
 
 type NoteProps = Note & {
   is_child?: boolean;
 };
 
 export default (node: NoteProps) => {
-  const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
-    null
-  );
-  const [editable, setEditable] = createSignal(false);
+  const { startDrag } = useDraggable(node, node.is_child);
 
-  useDraggableNode(draggableRef, node, node.is_child);
+  const [editable, setEditable] = createSignal(false);
   let editableDiv: HTMLDivElement | undefined;
   function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
     let timeout: ReturnType<typeof setTimeout>;
@@ -69,16 +66,7 @@ export default (node: NoteProps) => {
   };
   return (
     <div
-      onclick={(e) => addSelected(e, node.id)}
-      onClick={(e) => {
-        e.stopPropagation();
-        console.log("======================== note main div clicked");
-      }}
-      onDblClick={(e) => {
-        e.stopPropagation();
-        console.log("======================== note main div onDblClick");
-      }}
-      ref={setDraggableRef}
+      onPointerDown={startDrag}
       class="note"
       classList={{
         child_node: node.is_child,
@@ -90,6 +78,7 @@ export default (node: NoteProps) => {
         width: node.is_child ? "100%" : node.width + "px",
         background: node.color ? node.color : "var(--default-bg-color)",
         "z-index": node.zIndex,
+        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
       <Show when={node.top_strip_color}>

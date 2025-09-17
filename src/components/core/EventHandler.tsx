@@ -104,3 +104,20 @@ export default (props: any) => {
 
   return <div id="eventhandler">{props.children}</div>;
 };
+
+/*
+
+events to handle
+  Del: delete
+  Ctrl copy
+  Ctrl paste
+
+  arrow keys to move selected nodes
+
+  Ctrl z undo
+  Ctrl y redo
+
+  
+
+
+*/

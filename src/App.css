@@ -112,15 +112,16 @@ body,
 }
 .node {
   position: absolute;
-  cursor: grab;
-  will-change: transform;
-  transition: translate 0.2 ease-in-out;
 }
 
 .child_node,
 .node:not(.board) {
   background-color: #151515;
   border: 1px solid var(--color-background);
+  cursor: grab;
+  will-change: transform;
+  /* transition: transform 0.2s ease-out; */
+  transition: transform 0.15s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .selected_node {

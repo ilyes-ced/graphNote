@@ -1,20 +1,16 @@
-import { createSignal, For } from "solid-js";
+import { createSignal } from "solid-js";
 import { Table } from "../../types";
-import { useDraggableNode } from "../../shared/useDraggableNode";
-
-import { BiRegularSortUp } from "solid-icons/bi";
+import { useDraggable } from "@/shared/drag";
 import { DataTable } from "./table/data-table";
 import { Task, columns } from "./table/columns";
+import { store } from "../store";
 type TableProps = Table & {
   is_child?: boolean;
 };
 
 export default (node: TableProps) => {
-  const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
-    null
-  );
+  const { startDrag } = useDraggable(node, node.is_child);
 
-  useDraggableNode(draggableRef, node, node.is_child);
   const [data, setData] = createSignal<Task[]>([
     {
       id: "dfadasd d0000",
@@ -96,16 +92,18 @@ export default (node: TableProps) => {
 
   return (
     <div
-      ref={setDraggableRef}
+      onPointerDown={startDrag}
       class="table"
       classList={{
         "child_node w-full": node.is_child,
         node: !node.is_child,
+        selected_node: store.selectedNodes.has(node.id),
       }}
       id={node.id}
       style={{
         //width: node.is_child ? "100%" : node.width + "px",
         "z-index": node.zIndex,
+        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
       <DataTable columns={columns} data={data} />

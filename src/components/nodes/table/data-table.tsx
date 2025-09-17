@@ -75,7 +75,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
   });
 
   return (
-    <div class="border">
+    <div class="">
       <TextFieldRoot>
         <TextField
           placeholder="Filter title..."

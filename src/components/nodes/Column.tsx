@@ -1,37 +1,32 @@
-import { Show, For, Match, Switch, createSignal } from "solid-js";
-import { NodeType, NodeUnion, Column } from "../../types";
+import { Show, For, Match, Switch } from "solid-js";
+import { NodeType, Column } from "../../types";
 import Svg from "./Svg";
 import Note from "./Note";
 import Todo from "./Todo";
-import { SetStoreFunction } from "solid-js/store";
-import { useDraggableNode } from "../../shared/useDraggableNode";
 import Url from "./Url";
 import Board from "./Board";
 import Table from "./Table";
-import { setStore, store } from "../store";
-import { addSelected } from "@/shared/utils";
+import { store } from "../store";
+import { useDraggable } from "@/shared/drag";
 
 type ColumnProps = Column & {
   check_task?: (node_id: string, task_index: number) => void;
-  setnodes: SetStoreFunction<NodeUnion[]>;
 };
+
 export default (node: ColumnProps) => {
-  const [draggableRef, setDraggableRef] = createSignal<HTMLElement | null>(
-    null
-  );
-  useDraggableNode(draggableRef, node);
+  const { startDrag } = useDraggable(node);
 
   return (
     <div
-      onClick={(e) => addSelected(e, node.id)}
-      ref={setDraggableRef}
-      class="column node text-center"
+      onPointerDown={startDrag}
+      class="column node"
       classList={{ selected_node: store.selectedNodes.has(node.id) }}
       id={node.id}
       style={{
         width: node.width + "px",
         background: node.color, //? if this doesnt exist, .node in App.css will take care of it
         "z-index": node.zIndex,
+        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
       <Show when={node.top_strip_color}>
@@ -44,8 +39,10 @@ export default (node: ColumnProps) => {
         <div class="collapse_icon self-end w-6 h-6 collapse_icon hover:bg-amber-400 hover:border hover:border-green-500 hover:cursor-pointer flex justify-center items-center">
           <Svg width={16} height={16} classes="" icon_name={"collapse"} />
         </div>
-        <div class="title text-base font-extrabold mb-2">{node.title}</div>
-        <div class="subtitle mb-4">subtitle</div>
+        <div class="title text-xl font-extrabold mb-2 text-center">
+          {node.title}
+        </div>
+        <div class="subtitle mb-4 text-center">subtitle</div>
 
         <div
           class="children_container flex flex-col"

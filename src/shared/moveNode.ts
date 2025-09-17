@@ -75,6 +75,8 @@ export default function moveNode(
                 {
                   ...movedNode,
                   index: existingChildren.length,
+                  x: 0,
+                  y: 0,
                 },
               ],
             };
@@ -91,6 +93,7 @@ export default function moveNode(
       return;
     }
     if (!distNode) {
+      console.warn("parent dist node to move to not found:", distNodeId);
       return;
     }
     if (movedNode.type === distNode.type) {
@@ -117,8 +120,8 @@ export default function moveNode(
               {
                 ...movedNode,
                 // removing x and y
-                x: undefined,
-                y: undefined,
+                x: 0,
+                y: 0,
                 index: existingChildren.length,
               },
             ],

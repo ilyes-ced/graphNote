@@ -12,7 +12,7 @@ type TodoProps = TodoType & {
 };
 
 export default (node: TodoProps) => {
-  const { startDrag } = useDraggable(node);
+  const { startDrag } = useDraggable(node, node.is_child);
 
   return (
     <div
@@ -50,8 +50,8 @@ const TaskItem: Component<Task> = (props: any, nodeId: string) => {
   // taskitem classname prevents the checkbox box from being used as drag handle so the click event on the checkbox can trigger
   return (
     <div>
-      <div class="taskitem flex items-center">
-        <label class="inline-flex items-center space-x-2 cursor-pointer">
+      <div class="flex items-center">
+        <label class="taskitem inline-flex items-center space-x-2 cursor-pointer">
           <input type="checkbox" class="peer hidden" />
           <div class="w-5 h-5 rounded border border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 relative">
             <svg
