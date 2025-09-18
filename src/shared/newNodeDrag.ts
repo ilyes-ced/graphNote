@@ -28,7 +28,9 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
     // dont accept middle mouse click
     console.log("dragging", node.id, is_child);
     if (e.which === 2) return;
-    if (!is_child) if ((e.target as HTMLElement).closest(".child_node")) return;
+    if (!is_child)
+      if ((e.target as HTMLElement).closest(".child_node, .resize_handle"))
+        return;
 
     //? update here because new colmns could appear later
     targets = document.querySelectorAll(".column");

@@ -84,8 +84,13 @@ interface Board extends Node, ChildNode {
   icon_path: string;
   nodes: NodeUnion[];
 }
+interface Image extends Node, ChildNode {
+  path: string;
+  title: string;
+  description: string;
+}
 
-type NodeUnion = Note | Comment | Url | Todo | Table | Column | Board;
+type NodeUnion = Note | Comment | Url | Todo | Table | Column | Board | Image;
 
 export { NodeType };
 export type {
@@ -100,4 +105,5 @@ export type {
   NodeUnion,
   Task,
   Board,
+  Image,
 };

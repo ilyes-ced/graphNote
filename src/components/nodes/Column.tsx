@@ -7,7 +7,8 @@ import Url from "./Url";
 import Board from "./Board";
 import Table from "./Table";
 import { store } from "../store";
-import { useDraggable } from "@/shared/drag";
+import { useDraggable } from "@/shared/nodeDrag";
+import Image from "../nodes/Image";
 
 type ColumnProps = Column & {
   check_task?: (node_id: string, task_index: number) => void;
@@ -72,6 +73,9 @@ export default (node: ColumnProps) => {
                     </Match>
                     <Match when={child_node.type === NodeType.Table}>
                       <Table {...child_node} is_child={true} />
+                    </Match>
+                    <Match when={child_node.type === NodeType.Image}>
+                      <Image {...child_node} is_child={true} />
                     </Match>
                   </Switch>
 

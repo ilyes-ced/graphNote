@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
 import { Table } from "../../types";
-import { useDraggable } from "@/shared/drag";
+import { useDraggable } from "@/shared/nodeDrag";
 import { DataTable } from "./table/data-table";
 import { Task, columns } from "./table/columns";
 import { store } from "../store";

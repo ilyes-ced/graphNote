@@ -4,7 +4,7 @@ import { useDraggableNode } from "../../shared/useDraggableNode";
 import { Checkbox, CheckboxControl, CheckboxLabel } from "../ui/checkbox";
 import { addSelected } from "@/shared/utils";
 import { setStore, store } from "../store";
-import { useDraggable } from "@/shared/drag";
+import { useDraggable } from "@/shared/nodeDrag";
 
 type TodoProps = TodoType & {
   is_child?: boolean;

@@ -3,7 +3,7 @@ import { Note } from "../../types";
 import { updateNote } from "@/shared/update";
 import { addSelected } from "@/shared/utils";
 import { store } from "../store";
-import { useDraggable } from "@/shared/drag";
+import { useDraggable } from "@/shared/nodeDrag";
 
 type NoteProps = Note & {
   is_child?: boolean;
@@ -11,9 +11,10 @@ type NoteProps = Note & {
 
 export default (node: NoteProps) => {
   const { startDrag } = useDraggable(node, node.is_child);
-
   const [editable, setEditable] = createSignal(false);
-  let editableDiv: HTMLDivElement | undefined;
+
+  let editableDiv!: HTMLDivElement;
+
   function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
     let timeout: ReturnType<typeof setTimeout>;
     return (...args: Parameters<T>) => {

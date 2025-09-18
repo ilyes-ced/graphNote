@@ -7,13 +7,11 @@ import Todo from "../nodes/Todo";
 import Url from "../nodes/Url";
 import Board from "../nodes/Board";
 import Table from "../nodes/Table";
-import Test from "../nodes/Test";
+import Image from "../nodes/Image";
 
 export default () => {
   return (
     <div id="nodes" class="bg-red-600">
-      <Test />
-
       <For each={store.nodes}>
         {(node) => (
           <Switch fallback={<div>Not Found</div>}>
@@ -34,6 +32,9 @@ export default () => {
             </Match>
             <Match when={node.type === NodeType.Table}>
               <Table {...node} />
+            </Match>
+            <Match when={node.type === NodeType.Image}>
+              <Image {...node} />
             </Match>
           </Switch>
         )}

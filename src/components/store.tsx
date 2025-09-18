@@ -8,7 +8,7 @@ interface GlobalStore {
   panZoom: number | null;
   snapGrid: [number, number] | null;
 
-  boards: string[];
+  activeBoards: { name: string; id: string }[];
 
   dragThreshold: number;
   dragging: NodeUnion["id"] | null;
@@ -28,7 +28,7 @@ const [store, setStore] = createStore<GlobalStore>({
   panZoom: null,
   snapGrid: [10, 10],
 
-  boards: ["Home"],
+  activeBoards: [{ name: "Home", id: "0" }],
 
   dragThreshold: 5,
   dragging: null,

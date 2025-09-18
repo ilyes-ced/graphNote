@@ -1,28 +1,22 @@
-import { For } from "solid-js";
+import { createSignal, For } from "solid-js";
 import { FaSolidAnglesRight } from "solid-icons/fa";
 import { Button } from "./ui/button";
 import { WiMoonAltFirstQuarter } from "solid-icons/wi";
 import { VsSettingsGear } from "solid-icons/vs";
-import { store } from "./store";
+import { setStore, store } from "./store";
 
 export default () => {
-  let example_path = [
-    {
-      name: "home",
-      logo_path: "logo_name.png",
-    },
-    {
-      name: "sub workspace",
-      logo_path: "logo_name.png",
-    },
-    {
-      name: "sub sub workspace",
-      logo_path: "logo_name.png",
-    },
-  ];
-
-  const changePath = (e: MouseEvent) => {
-    console.log(e);
+  const breadcrumbsClick = (index: number, id: string) => {
+    console.log("+++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++");
+    console.log("+++++++++++++++++++++++++++++++++");
+    console.log(store.activeBoards);
+    setStore("activeBoards", (items) => items.slice(0, index + 1));
+    console.log(store.activeBoards);
   };
 
   return (
@@ -35,28 +29,35 @@ export default () => {
         class="bg-card flex flex-row space-y-4 overflow-x-visible "
       >
         <div class="flex flex-row">
-          <For each={store.boards}>
-            {(path, index) => {
-              const i = index(); // Get reactive index
-              const isLast = i === example_path.length - 1;
-
+          <For each={store.activeBoards}>
+            {(breadcrumb, index) => {
               return (
                 <>
                   <div
                     class="p-[5px] border-2 border-border rounded-[5px] transition duration-100 ease-out"
                     classList={{
                       breadcrumb_path: true,
-                      "hover:bg-primary": !isLast,
-                      "border-primary": isLast,
+                      "hover:bg-primary": !(
+                        index() ===
+                        store.activeBoards.length - 1
+                      ),
+                      "border-primary":
+                        index() === store.activeBoards.length - 1,
                     }}
-                    onClick={!isLast ? changePath : undefined}
+                    onClick={() =>
+                      !(index() === store.activeBoards.length - 1)
+                        ? breadcrumbsClick(index(), breadcrumb.id)
+                        : undefined
+                    }
                     style={{
-                      cursor: !isLast ? "pointer" : "default",
+                      cursor: !(index() === store.activeBoards.length - 1)
+                        ? "pointer"
+                        : "default",
                     }}
                   >
-                    [logo]{path.name}
+                    [logo]{breadcrumb.name}
                   </div>
-                  {!isLast && (
+                  {!(index() === store.activeBoards.length - 1) && (
                     <span class="self-center mx-1 my-0 ">
                       <FaSolidAnglesRight size={20} />{" "}
                     </span>

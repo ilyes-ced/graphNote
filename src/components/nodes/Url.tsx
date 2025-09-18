@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { createSignal, onMount, Show } from "solid-js";
 import { Url } from "../../types";
-import { useDraggable } from "@/shared/drag";
+import { useDraggable } from "@/shared/nodeDrag";
 import { store } from "../store";
 
 type UrlProps = Url & {
