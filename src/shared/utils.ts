@@ -1,4 +1,6 @@
 import { setStore, store } from "@/components/store";
+import { NodeUnion } from "@/types";
+import { writeJSON } from "./save";
 
 const addSelected = (e: MouseEvent, nodeId: string) => {
   // if click is on child dont do it
@@ -14,4 +16,13 @@ const addSelected = (e: MouseEvent, nodeId: string) => {
   console.log("adding :", store.selectedNodes);
 };
 
-export { addSelected };
+const saveChanges = () => {
+  setTimeout(() => {
+    setStore("nodes", (current: NodeUnion[]) => {
+      writeJSON(current);
+      return current;
+    });
+  }, 0);
+};
+
+export { addSelected, saveChanges };

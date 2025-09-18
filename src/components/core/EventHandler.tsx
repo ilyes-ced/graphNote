@@ -102,7 +102,17 @@ export default (props: any) => {
   listen("tauri://drag-enter", (event) => {});
   listen("tauri://drag-leave", (event) => {});
 
-  return <div id="eventhandler">{props.children}</div>;
+  return (
+    <div
+      id="eventhandler"
+      onContextMenu={(e) => {
+        // e.preventDefault(); // prevent browser context menu
+        // console.log("this is opening the context menu");
+      }}
+    >
+      {props.children}
+    </div>
+  );
 };
 
 /*

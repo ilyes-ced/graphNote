@@ -2,7 +2,7 @@ import { onCleanup } from "solid-js";
 import { store, setStore } from "../components/store";
 import { NodeType, type NodeUnion } from "../types";
 import { writeJSON } from "./save";
-import { addSelected } from "./utils";
+import { addSelected, saveChanges } from "./utils";
 import moveNode from "./moveNode";
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
@@ -27,7 +27,8 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
   const startDrag = (e: PointerEvent) => {
     // dont accept middle mouse click
     console.log("dragging", node.id, is_child);
-    if (e.which === 2) return;
+    if (e.button !== 0) return;
+    // if it is not a child ignore elemnts with these classNames
     if (!is_child)
       if ((e.target as HTMLElement).closest(".child_node, .resize_handle"))
         return;
@@ -149,7 +150,8 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
     const targets = document.querySelectorAll(
       `.column:not(#${node.id})` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
     );
-    let moved = false;
+    let movedToOtherNode = false;
+    // todo: stop foreeach when finished
     targets.forEach((target) => {
       //! fix this e. error
       const isInside = isOverlapping(e.clientX, e.clientY, target);
@@ -157,63 +159,72 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
 
       if (is_child) {
         if (isInside) {
-          console.log("dropping a node", node.id, "in parent node:", target.id);
-          moved = true;
-          const node_id = node.id;
-          const target_id = target.id;
-          moveNode(node_id, target_id, true);
+          movedToOtherNode = true;
+          moveNode(node.id, target.id, true);
           // return;
         }
       } else {
         if (isInside) {
-          const node_id = node.id;
-          const target_id = target.id;
-          moveNode(node_id, target_id);
-          moved = true;
+          moveNode(node.id, target.id);
+          movedToOtherNode = true;
           // return;
         }
       }
     });
-    if (!moved) {
-      const node_id = node.id;
+
+    if (!movedToOtherNode) {
       if (is_child) {
         const targets = document.querySelectorAll(`#${node.id}`);
         console.info(targets[0].getBoundingClientRect());
-        moveNode(node_id, "None", true, true, {
+        moveNode(node.id, "None", true, true, {
           x: Math.round(targets[0].getBoundingClientRect().x / 10) * 10,
           y: Math.round(targets[0].getBoundingClientRect().y / 10) * 10,
         });
-      }
-    }
-    /////////////////////////////////////////////////////////
-    // if not child node snap it to grid,
-    // TODO: also we need to snap to grid when child is dropped to canvas
-    else {
-      //? snap to grid if it is defined
-      if (store.snapGrid) {
-        const [gx, gy] = store.snapGrid;
-        const nodeInStore = store.nodes.find((n) => n.id === node.id);
-        // if (!nodeInStore) return;
-        const snappedX = Math.round(nodeInStore?.x ?? 0 / gx) * gx;
-        const snappedY = Math.round(nodeInStore?.y ?? 0 / gy) * gy;
-        // Skip if already snapped
-        // if (nodeInStore?.x === snappedX && nodeInStore.y === snappedY) return;
-        // Defer snapping to next frame to allow transition animation
-        console.info(snappedX, snappedY);
-        requestAnimationFrame(() => {
-          setStore("nodes", (n) => n.id === node.id, "x", snappedX);
-          setStore("nodes", (n) => n.id === node.id, "y", snappedY);
-        });
+        //TODO: snap to grid
+      } else {
+        //? snap to grid if it is defined
+        if (store.snapGrid) {
+          const [gx, gy] = store.snapGrid;
+          const nodeInStore = store.nodes.find((n) => n.id === node.id);
+          // if (!nodeInStore) return;
+          const snappedX = Math.round((nodeInStore?.x ?? 0) / gx) * gx;
+          const snappedY = Math.round((nodeInStore?.y ?? 0) / gy) * gy;
+          // Skip if already snapped
+          // if (nodeInStore?.x === snappedX && nodeInStore.y === snappedY) return;
+          // Defer snapping to next frame to allow transition animation
+          console.info(snappedX, snappedY);
+          requestAnimationFrame(() => {
+            setStore(
+              "nodes",
+              (n) => n.id === node.id,
+              (node) => ({
+                ...node,
+                x: snappedX,
+                y: snappedY,
+              })
+            );
+            saveChanges();
+          });
+        } else {
+          //! untested
+          requestAnimationFrame(() => {
+            const nodeInStore = store.nodes.find((n) => n.id === node.id);
+            setStore(
+              "nodes",
+              (n) => n.id === node.id,
+              (node) => ({
+                ...node,
+                x: nodeInStore?.x ?? 0,
+                y: nodeInStore?.y ?? 0,
+              })
+            );
+            saveChanges();
+          });
+        }
       }
     }
 
-    //? save the changes to file
-    setTimeout(() => {
-      setStore("nodes", (current: NodeUnion[]) => {
-        writeJSON(current);
-        return current;
-      });
-    }, 0);
+    saveChanges();
   };
 
   onCleanup(() => {
