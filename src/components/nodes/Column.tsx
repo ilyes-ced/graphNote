@@ -5,7 +5,7 @@ import Note from "./Note";
 import Todo from "./Todo";
 import Url from "./Url";
 import Board from "./Board";
-import Table from "./Table";
+import Table from "./OldTable";
 import { store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import Image from "../nodes/Image";

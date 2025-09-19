@@ -38,6 +38,8 @@ export default (node: BoardProps) => {
       ...items,
       { name: (board as Board).name, id: (board as Board).id },
     ]);
+    //? when changing workspace deselect selected nodes
+    setStore("selectedNodes", new Set([]));
   };
 
   //Todo: remove this later it causes it to be undraggable in the ref={}

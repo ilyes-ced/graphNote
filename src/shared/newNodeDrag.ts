@@ -220,9 +220,3 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
     startDrag,
   };
 }
-
-/**
- *
- * addSelected(e, node.id);
- *
- */

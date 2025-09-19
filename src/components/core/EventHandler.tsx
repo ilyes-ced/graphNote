@@ -102,6 +102,15 @@ export default (props: any) => {
   listen("tauri://drag-enter", (event) => {});
   listen("tauri://drag-leave", (event) => {});
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      //! doesnt work yet
+      e.stopPropagation();
+      console.log("escape clicked");
+      setStore("selectedNodes", new Set());
+    }
+  };
+
   return (
     <div
       id="eventhandler"
@@ -109,6 +118,7 @@ export default (props: any) => {
         // e.preventDefault(); // prevent browser context menu
         // console.log("this is opening the context menu");
       }}
+      onKeyDown={handleKeyDown}
     >
       {props.children}
     </div>

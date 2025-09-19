@@ -26,7 +26,7 @@ export default (node: NoteProps) => {
     console.log("Debounced update:", newValue);
     // could be nested too
     // update in the update.ts shared file
-    updateNote(node.id, newValue, node.is_child);
+    updateNote(node.id, newValue);
   }, 3000);
 
   const handleInput = (e: InputEvent) => {
@@ -92,12 +92,9 @@ export default (node: NoteProps) => {
       <div class="p-5">
         {" "}
         <span
-          onClick={() => {
-            console.log("======================== note clicked");
-          }}
           onKeyDown={handleKeyDown}
+          onInput={handleInput}
           onDblClick={(e) => {
-            console.log("======================== double clicked");
             setEditable(true);
             addSelected(e, node.id);
           }}
@@ -105,7 +102,6 @@ export default (node: NoteProps) => {
           ref={editableDiv}
           contenteditable={editable()}
           classList={{ "cursor-text active_note_text": editable() }}
-          onInput={handleInput}
           class="note_text flex flex-col focus:outline-0 whitespace-pre-wrap"
         >
           {node.text}

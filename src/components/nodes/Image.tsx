@@ -3,6 +3,7 @@ import { Image } from "../../types";
 import { setStore, store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { saveChanges } from "@/shared/utils";
+import { getActiveBoardId, updateImageWidth } from "@/shared/update";
 
 type ImageProps = Image & {
   is_child?: boolean;
@@ -13,8 +14,7 @@ export default (node: ImageProps) => {
   const [hover, setHover] = createSignal(false);
 
   const [width, setWidth] = createSignal(
-    // store.nodes.find((n) => n.id === node.id)?.width ?? 300
-    300
+    store.nodes[getActiveBoardId()].find((n) => n.id === node.id)?.width ?? 300
   );
   //const [height, setHeight] = createSignal();
 
@@ -41,8 +41,7 @@ export default (node: ImageProps) => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
 
-      setStore("nodes", (n) => n.id === node.id, "width", width());
-      saveChanges();
+      updateImageWidth(node.id, width());
     };
 
     window.addEventListener("pointermove", onMove);

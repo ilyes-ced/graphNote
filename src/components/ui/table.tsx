@@ -17,7 +17,12 @@ export const Table = (props: ComponentProps<"table">) => {
 export const TableHeader = (props: ComponentProps<"thead">) => {
   const [local, rest] = splitProps(props, ["class"]);
 
-  return <thead class={cn("[&_tr]:border-b", local.class)} {...rest} />;
+  return (
+    <thead
+      class={cn("[&_tr]:border-b border-red-400", local.class)}
+      {...rest}
+    />
+  );
 };
 
 export const TableBody = (props: ComponentProps<"tbody">) => {

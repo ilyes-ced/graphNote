@@ -15,6 +15,8 @@ type MetaData = {
   favicon: string;
 };
 
+//TODO: add cashing system
+//TODO: store them Documents/graphnote/cache and search there first if it doesnt exist do scrape_url
 export default (node: UrlProps) => {
   const { startDrag } = useDraggable(node, node.is_child);
 
@@ -46,14 +48,15 @@ export default (node: UrlProps) => {
     }
   };
 
-  onMount(async () => {
-    //! causes performance issues when loading
-    //setTimeout(async () => {
-    //  const res = await getMetaData(node.url);
-    //  if (res) {
-    //    setMetaData(res);
-    //  }
-    //}, 0);
+  onMount(() => {
+    // Defer to next microtask to avoid blocking render
+    queueMicrotask(() => {
+      getMetaData(node.url).then((res) => {
+        if (res) {
+          setMetaData(res);
+        }
+      });
+    });
   });
 
   return (
@@ -110,6 +113,9 @@ export default (node: UrlProps) => {
   );
 };
 
+function tick() {
+  throw new Error("Function not implemented.");
+}
 /*
       also check if url is for example a vedio fromn youtube to be able to watch
       it also check if its a valid url if a new note is created and its nothing

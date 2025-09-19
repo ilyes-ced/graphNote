@@ -27,7 +27,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
   let startY = 0;
   let initialMouseX = 0;
   let initialMouseY = 0;
-  let targets = document.querySelectorAll(".column");
+  let targets = document.querySelectorAll(".column, .board");
   const threshold = 1;
 
   const startDrag = (e: PointerEvent) => {
@@ -44,7 +44,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
         return;
 
     //? update here because new colmns could appear later
-    targets = document.querySelectorAll(".column");
+    targets = document.querySelectorAll(".column, .board");
 
     console.info("started dragging:", node.id);
     //? increased the z-index, to +1 of the highest
@@ -71,44 +71,11 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
 
     // if (!store.nodes.find((n) => n.id === node.id)) return;
 
+    //TODO: updating store on every move might be bad for performance
+    //TODO: make it change the translate values of the HTMLdiv and on drag end update the store positions
     if (!is_child) {
       updatePosition(node.id, x, y);
     } else {
-      // update inside the parent
-      //  setStore(
-      //    "nodes",
-      //    (n) => n.type === NodeType.Column, // only look inside columns
-      //    "children",
-      //    (c) => c.id === node.id, // find the child node
-      //    "x",
-      //    x
-      //  );
-      //  setStore(
-      //    "nodes",
-      //    (n) => n.type === NodeType.Column, // only look inside columns
-      //    "children",
-      //    (c) => c.id === node.id, // find the child node
-      //    "y",
-      //    y
-      //  );
-      //! trying to combine them doesnt work
-      //! setStore( "nodes", (node) => node.type === NodeType.Column, "children", (child) => child.id === node.id, (child) => { child.x = x; child.y = y; } );
-      //  setStore(
-      //    "nodes",
-      //    (node) => node.type === NodeType.Column,
-      //    "children",
-      //    (child) => child.id === node.id,
-      //    "x",
-      //    x
-      //  );
-      //  setStore(
-      //    "nodes",
-      //    (node) => node.type === NodeType.Column,
-      //    "children",
-      //    (child) => child.id === node.id,
-      //    "y",
-      //    y
-      //  );
       updateChildPosition(node.id, x, y);
     }
 
@@ -149,7 +116,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
     console.log("dropping a node", node.id, is_child);
 
     const targets = document.querySelectorAll(
-      `.column:not(#${node.id})` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
+      `.column:not(#${node.id}), .board` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
     );
     let movedToOtherNode = false;
     // todo: stop foreeach when finished

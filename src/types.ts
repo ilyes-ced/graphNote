@@ -67,12 +67,36 @@ interface Todo extends Node, ChildNode {
   // [x] text
   tasks: Task[];
 }
+
+////////////////////////////////////////////////
+type Badge = {
+  text: string;
+  color: Color;
+};
+
+type BadgeRegistry = Record<string, Badge[]>;
+
+type ColumnType =
+  | { type: "string" }
+  | { type: "number" }
+  | { type: "date" }
+  | { type: "status"; value: BadgeRegistry }
+  | { type: "label"; value: BadgeRegistry }
+  | { type: "priority"; value: BadgeRegistry };
+// can add more in the future
+
+interface ColumnSchema {
+  key: string;
+  title: string;
+  typeDef: ColumnType;
+}
 interface Table extends Node, ChildNode {
-  // maye fix it later
-  data: string | number[][];
+  columns: ColumnSchema[];
+  rows: Record<string, string | number>[];
   description?: string;
   title?: string;
 }
+////////////////////////////////////////////////
 
 interface Column extends Node, ChildNode {
   title: string;
@@ -104,4 +128,37 @@ export type {
   Task,
   Board,
   Image,
+  Badge,
+  ColumnType,
+  ColumnSchema,
+  BadgeRegistry,
 };
+
+/*
+type ColumnType =
+  | { type: "string" }
+  | { type: "text" }
+  | { type: "number" }
+  | { type: "boolean" }
+  | { type: "currency" }
+  | { type: "percentage" }
+  | { type: "date" }
+  | { type: "time" }
+  | { type: "datetime" }
+  | { type: "duration" }
+  | { type: "email" }
+  | { type: "url" }
+  | { type: "phone" }
+  | { type: "color" }
+  | { type: "image" }
+  | { type: "file" }
+  | { type: "rating"; max: number } // e.g. 5-star or 10-scale
+  | { type: "status"; options: string[] }
+  | { type: "label"; options: string[] }
+  | { type: "priority"; options: string[] }
+  | { type: "select"; options: string[] }
+  | { type: "multiselect"; options: string[] }
+  | { type: "user"; users: string[] } // or object references
+  | { type: "reference"; table: string } // link to another table
+  | { type: "formula"; expression: string };
+*/

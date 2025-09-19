@@ -30,28 +30,16 @@ const updateTasks = (
 };
 
 //? update Note text content
-const updateNote = (
-  nodeId: string,
-  newValue: string,
-  nested: boolean = false
-) => {
-  // if nested
-  if (nested) {
-    // find parent id
-  } else {
-    console.log("not nested");
-    console.log(nodeId);
-    setStore("nodes", (nodes) =>
-      nodes.map((storeNode) => {
-        if (storeNode.id === nodeId) {
-          return {
-            ...storeNode,
-            text: newValue,
-          };
-        }
-        return storeNode;
-      })
-    );
+const updateNote = (nodeId: string, newValue: string) => {
+  console.log("not nested");
+  console.log(nodeId);
+
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      setStore("nodes", parentId, index, "text", newValue);
+      break;
+    }
   }
 
   saveChanges();
@@ -93,6 +81,19 @@ const updatePosition = (nodeId: string, x: number, y: number) => {
   saveChanges();
 };
 
+//? update image wdith
+const updateImageWidth = (nodeId: string, width: number) => {
+  const activeBoardId = getActiveBoardId();
+  const boardNodes = store.nodes[activeBoardId] ?? [];
+
+  const index = boardNodes.findIndex((n) => n.id === nodeId);
+  if (index !== -1) {
+    setStore("nodes", activeBoardId, index, "width", width);
+  }
+
+  saveChanges();
+};
+
 //? update position of a nested node
 const updateChildPosition = (nodeId: string, x: number, y: number) => {
   // find active board id
@@ -115,6 +116,8 @@ const updateChildPosition = (nodeId: string, x: number, y: number) => {
       }
     }
   }
+
+  saveChanges();
 };
 
 const isColumn = (nodeId: string): boolean => {
@@ -172,6 +175,8 @@ const addNode = (
     const activeBoardId = getActiveBoardId();
     setStore("nodes", activeBoardId, (nodes = []) => [...nodes, newNode]);
   }
+
+  saveChanges();
 };
 
 export {
@@ -185,4 +190,5 @@ export {
   findParentIdByNodeId,
   removeNodeById,
   addNode,
+  updateImageWidth,
 };
