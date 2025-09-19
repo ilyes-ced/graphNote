@@ -20,9 +20,26 @@ import {
 import { FaSolidFilter } from "solid-icons/fa";
 import { VsGraphLine } from "solid-icons/vs";
 import { Checkbox, CheckboxControl } from "../ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 export default (node: TableProps) => {
   const { startDrag } = useDraggable(node, node.is_child);
+
+  //TODO: change to string which is the badgeRegistry key to show the menu of the related badge type
+  // with a for loop to create a list for each type of badges used
+  // none for no menu showd
+  const [showBadgeSelectionMenu, setShowBadgeSelectionMenu] =
+    createSignal<string>("none");
+  const [badgeSelectionMenuPos, setBadgeSelectionMenuPos] = createSignal<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
 
   // for badges its selection
   const getCellInput = (key: string, value: string | number | Badge) => {
@@ -40,10 +57,64 @@ export default (node: TableProps) => {
         </Match>
 
         <Match when={colType.typeDef === ColumnType.Badge}>
-          multi choice here
-          <BadgeComponent text={value.label} color={value.color} />
+          <div class="relative">
+            <BadgeComponent type={key} text={value.label} color={value.color} />
+          </div>
         </Match>
       </Switch>
+    );
+  };
+  const BadgeSelectionMenu = (props: { type: keyof typeof badgeRegistry }) => {
+    return (
+      <div
+        class="badge-selection-menu absolute z-50 border border-border rounded-md p-2 flex items-center justify-center cursor-pointer bg-background"
+        style={{
+          top: badgeSelectionMenuPos().x + "px",
+          left: badgeSelectionMenuPos().y + "px",
+        }}
+      >
+        <div class="flex flex-col divide-accent divide-2">
+          <For each={badgeRegistry[props.type]}>
+            {(badge) => (
+              <div class="px-4 py-2 hover:bg-accent rounded-md">
+                <BadgeComponent
+                  type={props.type}
+                  text={badge.label}
+                  color={badge.color}
+                />
+              </div>
+            )}
+          </For>
+        </div>
+      </div>
+    );
+  };
+  const BadgeComponent = (props: {
+    type: string;
+    text: string;
+    color: string;
+  }) => {
+    return (
+      <div
+        onClick={(e) => {
+          console.log("||||||||||||||||||||||||||||||");
+          console.log("||||||||||||||||||||||||||||||");
+          console.log("||||||||||||||||||||||||||||||");
+          console.log("||||||||||||||||||||||||||||||");
+          console.log(e.currentTarget.getBoundingClientRect().top);
+          console.log(e.currentTarget.getBoundingClientRect().left);
+          console.log(e.clientY);
+          setBadgeSelectionMenuPos({
+            x: e.currentTarget.getBoundingClientRect().top - table().y - 10,
+            y: e.currentTarget.getBoundingClientRect().left - table().x - 68,
+          });
+          setShowBadgeSelectionMenu(props.type);
+        }}
+        class="badge border rounded-md px-2 py-1  font-semibold flex items-center justify-center cursor-pointer"
+        style={{ background: props.color + "70", "border-color": props.color }}
+      >
+        {props.text}
+      </div>
     );
   };
 
@@ -67,10 +138,8 @@ export default (node: TableProps) => {
     ],
   };
 
-  const getBadge = (label: string): Badge => {
-    const badge = badgeRegistry["status"].find(
-      (badge) => badge.label === label
-    );
+  const getBadge = (type: string, label: string): Badge => {
+    const badge = badgeRegistry[type].find((badge) => badge.label === label);
 
     if (badge) {
       return badge;
@@ -85,8 +154,8 @@ export default (node: TableProps) => {
     width: 300,
     zIndex: 15,
     index: 1,
-    x: 1030,
-    y: 350,
+    x: 600,
+    y: 100,
     columns: [
       {
         key: "id",
@@ -109,6 +178,11 @@ export default (node: TableProps) => {
         typeDef: ColumnType.String,
       },
       {
+        key: "status",
+        title: "status",
+        typeDef: ColumnType.Badge,
+      },
+      {
         key: "label",
         title: "label",
         typeDef: ColumnType.Badge,
@@ -120,35 +194,40 @@ export default (node: TableProps) => {
         name: "ahmed",
         age: 10,
         phoneNumber: "0500000000000",
-        label: getBadge("todo"),
+        status: getBadge("status", "todo"),
+        label: getBadge("label", "bug"),
       },
       {
         id: "10",
         name: "ahmed",
         age: 10,
         phoneNumber: "0500000000000",
-        label: getBadge("in-progress"),
+        status: getBadge("status", "in-progress"),
+        label: getBadge("label", "bug"),
       },
       {
         id: "10",
         name: "ahmed",
         age: 10,
         phoneNumber: "0500000000000",
-        label: getBadge("done"),
+        status: getBadge("status", "done"),
+        label: getBadge("label", "feature"),
       },
       {
         id: "10",
         name: "ahmed",
         age: 10,
         phoneNumber: "0500000000000",
-        label: getBadge("cancelled"),
+        status: getBadge("status", "cancelled"),
+        label: getBadge("label", "enhancement"),
       },
       {
         id: "10",
         name: "ahmed",
         age: 10,
         phoneNumber: "0500000000000",
-        label: getBadge("todo"),
+        status: getBadge("status", "todo"),
+        label: getBadge("label", "bug"),
       },
     ],
   });
@@ -160,6 +239,18 @@ export default (node: TableProps) => {
 
   return (
     <div
+      onMouseLeave={() => setShowBadgeSelectionMenu("none")}
+      onClick={
+        // maybe add if target is not badge or inside meny
+        (e) => {
+          if (
+            !(e.target as HTMLElement).closest(".badge, .badge-selection-menu")
+          ) {
+            // todo: reorder task items
+            setShowBadgeSelectionMenu("none");
+          }
+        }
+      }
       onPointerDown={startDrag}
       class="table"
       classList={{
@@ -174,6 +265,14 @@ export default (node: TableProps) => {
         transform: `translate3d(${table().x}px, ${table().y}px, 0)`,
       }}
     >
+      <For each={Object.entries(badgeRegistry)}>
+        {([type, badges]) => (
+          <Show when={showBadgeSelectionMenu() === type}>
+            <BadgeSelectionMenu type={type} />
+          </Show>
+        )}
+      </For>
+
       <div class="relative overflow-x-auto p-2">
         <div class="pb-4 flex space-x-4 justify-between">
           <Filter />
@@ -328,15 +427,5 @@ const CheckboxComponent = () => {
     <Checkbox class="flex items-center space-x-2">
       <CheckboxControl />
     </Checkbox>
-  );
-};
-const BadgeComponent = (props: { text: string; color: string }) => {
-  return (
-    <div
-      class="border rounded-md px-2 py-1 text-xs font-semibold flex items-center justify-center"
-      style={{ background: props.color + "70", "border-color": props.color }}
-    >
-      {props.text}
-    </div>
   );
 };
