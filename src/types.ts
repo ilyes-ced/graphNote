@@ -69,20 +69,21 @@ interface Todo extends Node, ChildNode {
 }
 
 ////////////////////////////////////////////////
+
 type Badge = {
-  text: string;
+  label: string;
   color: Color;
 };
 
 type BadgeRegistry = Record<string, Badge[]>;
 
-type ColumnType =
-  | { type: "string" }
-  | { type: "number" }
-  | { type: "date" }
-  | { type: "status"; value: BadgeRegistry }
-  | { type: "label"; value: BadgeRegistry }
-  | { type: "priority"; value: BadgeRegistry };
+enum ColumnType {
+  String,
+  Number,
+  Boolean,
+  Date,
+  Badge,
+}
 // can add more in the future
 
 interface ColumnSchema {
@@ -92,7 +93,7 @@ interface ColumnSchema {
 }
 interface Table extends Node, ChildNode {
   columns: ColumnSchema[];
-  rows: Record<string, string | number>[];
+  rows: Record<string, string | number | Badge>[];
   description?: string;
   title?: string;
 }
@@ -113,8 +114,7 @@ interface Image extends Node, ChildNode {
 }
 
 type NodeUnion = Note | Comment | Url | Todo | Table | Column | Board | Image;
-
-export { NodeType };
+export { NodeType, ColumnType };
 export type {
   Node,
   ChildNode,
@@ -129,7 +129,6 @@ export type {
   Board,
   Image,
   Badge,
-  ColumnType,
   ColumnSchema,
   BadgeRegistry,
 };

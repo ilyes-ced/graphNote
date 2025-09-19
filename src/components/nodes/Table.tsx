@@ -1,9 +1,9 @@
-import { createSignal, For, JSX } from "solid-js";
+import { createSignal, For, JSX, Match, Show, Switch } from "solid-js";
 import {
   Badge,
   BadgeRegistry,
+  ColumnType,
   Table as TableNode,
-  type ColumnType,
 } from "../../types";
 import { useDraggable } from "@/shared/nodeDrag";
 import { DataTable } from "./table/data-table";
@@ -17,6 +17,9 @@ import {
   BiRegularSortDown,
   BiRegularSortUp,
 } from "solid-icons/bi";
+import { FaSolidFilter } from "solid-icons/fa";
+import { VsGraphLine } from "solid-icons/vs";
+import { Checkbox, CheckboxControl } from "../ui/checkbox";
 
 export default (node: TableProps) => {
   const { startDrag } = useDraggable(node, node.is_child);
@@ -24,21 +27,33 @@ export default (node: TableProps) => {
   // TODO: save later in file
   const badgeRegistry: BadgeRegistry = {
     status: [
-      { text: "todo", color: "#999" },
-      { text: "in-progress", color: "#007bff" },
-      { text: "done", color: "#28a745" },
-      { text: "cancelled", color: "#dc3545" },
+      { label: "todo", color: "#999999" },
+      { label: "in-progress", color: "#007bff" },
+      { label: "done", color: "#28a745" },
+      { label: "cancelled", color: "#dc3545" },
     ],
     priority: [
-      { text: "low", color: "#6c757d" },
-      { text: "medium", color: "#ffc107" },
-      { text: "high", color: "#dc3545" },
+      { label: "low", color: "#6c757d" },
+      { label: "medium", color: "#ffc107" },
+      { label: "high", color: "#dc3545" },
     ],
     label: [
-      { text: "bug", color: "#e74c3c" },
-      { text: "feature", color: "#2980b9" },
-      { text: "enhancement", color: "#2ecc71" },
+      { label: "bug", color: "#e74c3c" },
+      { label: "feature", color: "#2980b9" },
+      { label: "enhancement", color: "#2ecc71" },
     ],
+  };
+
+  const getBadge = (label: string): Badge => {
+    const badge = badgeRegistry["status"].find(
+      (badge) => badge.label === label
+    );
+
+    if (badge) {
+      return badge;
+    } else {
+      return { label: "unknown", color: "#ffffff" };
+    }
   };
 
   const [table, setTable] = createSignal<TableNode>({
@@ -53,40 +68,72 @@ export default (node: TableProps) => {
       {
         key: "id",
         title: "id",
-        typeDef: { type: "string" },
+        typeDef: ColumnType.String,
       },
       {
         key: "name",
         title: "name",
-        typeDef: { type: "string" },
+        typeDef: ColumnType.String,
       },
       {
         key: "age",
         title: "age",
-        typeDef: { type: "number" },
+        typeDef: ColumnType.Number,
       },
       {
         key: "phoneNumber",
         title: "phone number",
-        typeDef: { type: "string" },
+        typeDef: ColumnType.String,
       },
       {
-        key: "phoneNumber",
-        title: "phone number",
-        typeDef: {
-          type: "status",
-          value: "status",
-        },
+        key: "label",
+        title: "label",
+        typeDef: ColumnType.Badge,
       },
     ],
     rows: [
-      { id: "10", name: "ahmed", age: 10, phoneNumber: "0500000000000" },
-      { id: "10", name: "ahmed", age: 10, phoneNumber: "0500000000000" },
-      { id: "10", name: "ahmed", age: 10, phoneNumber: "0500000000000" },
-      { id: "10", name: "ahmed", age: 10, phoneNumber: "0500000000000" },
-      { id: "10", name: "ahmed", age: 10, phoneNumber: "0500000000000" },
+      {
+        id: "10",
+        name: "ahmed",
+        age: 10,
+        phoneNumber: "0500000000000",
+        label: getBadge("todo"),
+      },
+      {
+        id: "10",
+        name: "ahmed",
+        age: 10,
+        phoneNumber: "0500000000000",
+        label: getBadge("in-progress"),
+      },
+      {
+        id: "10",
+        name: "ahmed",
+        age: 10,
+        phoneNumber: "0500000000000",
+        label: getBadge("done"),
+      },
+      {
+        id: "10",
+        name: "ahmed",
+        age: 10,
+        phoneNumber: "0500000000000",
+        label: getBadge("cancelled"),
+      },
+      {
+        id: "10",
+        name: "ahmed",
+        age: 10,
+        phoneNumber: "0500000000000",
+        label: getBadge("todo"),
+      },
     ],
   });
+  type TableCellValue = string | number | Badge;
+
+  function isBadge(val: TableCellValue): val is Badge {
+    return typeof val === "object" && "label" in val && "color" in val;
+  }
 
   return (
     <div
@@ -104,30 +151,56 @@ export default (node: TableProps) => {
         transform: `translate3d(${table().x}px, ${table().y}px, 0)`,
       }}
     >
-      <div class="relative overflow-x-auto">
-        <Filter />
+      <div class="relative overflow-x-auto p-2">
+        <div class="pb-4 flex space-x-4 justify-between">
+          <Filter />
+          <button class="cursor-pointer px-4 py-1 border border-border hover:bg-red-500 w-fit">
+            <VsGraphLine size={16} />
+          </button>
+        </div>
         <Table>
           <TableHead>
             <TableHeaderRow>
-              <TableHeaderCell>
-                <Checkbox />
-              </TableHeaderCell>
+              <TableCellCheckbox>
+                <CheckboxComponent />
+              </TableCellCheckbox>
               <For each={table().columns}>
                 {(header) => <TableHeaderCell>{header.title}</TableHeaderCell>}
               </For>
+              <TableCellCheckbox> </TableCellCheckbox>
             </TableHeaderRow>
           </TableHead>
+
           <TableBody>
             <For each={table().rows}>
               {(row) => (
                 <TableRow>
-                  <TableCell>
-                    {" "}
-                    <Checkbox />
-                  </TableCell>
+                  <TableCellCheckbox>
+                    <CheckboxComponent />
+                  </TableCellCheckbox>
                   {Object.entries(row).map(([key, value]) => (
-                    <TableCell>{value}</TableCell>
+                    <TableCell>
+                      <Switch>
+                        <Match
+                          when={
+                            typeof value === "string" ||
+                            typeof value === "number"
+                          }
+                        >
+                          {value}
+                        </Match>
+                        <Match when={isBadge(value)}>
+                          <BadgeComponent
+                            text={value.label}
+                            color={value.color}
+                          />
+                        </Match>
+                      </Switch>
+                    </TableCell>
                   ))}
+                  <TableCellButton>
+                    <BiRegularDotsHorizontalRounded />
+                  </TableCellButton>
                 </TableRow>
               )}
             </For>
@@ -169,7 +242,7 @@ const TableHeaderRow = (props: { children: JSX.Element }) => {
 const TableHeaderCell = (props: { children: JSX.Element }) => {
   return (
     <th class="">
-      <div class="px-6 py-3 flex items-center w-full cursor-pointer hover:bg-red-400">
+      <div class="px-6 py-4 flex items-center w-full cursor-pointer hover:bg-red-400">
         {props.children}
         <BiRegularSortDown class="ml-2" size={16} />
       </div>
@@ -181,12 +254,21 @@ const TableHeaderCell = (props: { children: JSX.Element }) => {
 ////////////////////////////////////////////////////////////////////////////////////
 const TableRow = (props: { children: JSX.Element }) => {
   return (
-    <tr class="px-6 py-4 font-medium whitespace-nowrap text-foreground border-t border-border divide-x-1 divide-border hover:bg-accent cursor-pointer">
+    <tr class="px-6 py-4 font-medium whitespace-nowrap text-foreground border-t border-border divide-x-1 divide-border hover:bg-accent ">
       {props.children}
     </tr>
   );
 };
 const TableCell = (props: { children: JSX.Element }) => {
+  return <td class="px-6 py-4">{props.children}</td>;
+};
+// on click gere
+const TableCellButton = (props: { children: JSX.Element }) => {
+  return (
+    <td class="px-6 py-4 cursor-pointer hover:bg-red-400">{props.children}</td>
+  );
+};
+const TableCellCheckbox = (props: { children: JSX.Element }) => {
   return <td class="px-6 py-4">{props.children}</td>;
 };
 
@@ -195,38 +277,60 @@ const TableCell = (props: { children: JSX.Element }) => {
 ////////////////////////////////////////////////////////////////////////////////////
 const Pagination = () => {
   return (
-    <div class="flex flex-row items-center justify-between p-4">
-      <div>Showing x of y</div>
-      <div class="flex">
-        <button class="border">first</button>
-        <button class="border">1</button>
-        <button class="border">2</button>
-        <button class="border">3</button>
-        <button class="border">4</button>
-        <button class="border">5</button>
-        <button class="border">last</button>
+    <div class="flex flex-row items-center justify-between pt-4 ">
+      <span class="text-md font-normal  text-foreground mb-4 md:mb-0 block w-full md:inline md:w-auto">
+        Showing <span class="font-semibold text-foreground">1-10</span> of{" "}
+        <span class="font-semibold text-foreground">1000</span>
+      </span>
+
+      <div class="flex divide-x-1 divide-border">
+        <button class="cursor-pointer hover:bg-muted border-y border-l border-border px-4">
+          first
+        </button>
+        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border bg-secondary">
+          1
+        </button>
+        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
+          2
+        </button>
+        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
+          3
+        </button>
+        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
+          4
+        </button>
+        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
+          5
+        </button>
+        <button class="cursor-pointer hover:bg-muted border-y border-r border-border px-4">
+          last
+        </button>
       </div>
     </div>
   );
 };
 const Filter = () => {
   return (
-    <input
-      type="text"
-      name=""
-      placeholder="filter here"
-      id=""
-      class="m-4 px-4 py-1 border border-border"
-    />
+    <div class="flex px-4 py-1 border border-border items-center">
+      <FaSolidFilter class="text-foreground" />
+      <input type="text" name="" placeholder="filter here" id="" class="pl-4" />
+    </div>
   );
 };
-const Checkbox = () => {
+const CheckboxComponent = () => {
   return (
-    <div class="flex items-center">
-      <input id="checkbox-all-search" type="checkbox" class="" />
-      <label for="checkbox-all-search" class="sr-only">
-        checkbox
-      </label>
+    <Checkbox class="flex items-center space-x-2">
+      <CheckboxControl />
+    </Checkbox>
+  );
+};
+const BadgeComponent = (props: { text: string; color: string }) => {
+  return (
+    <div
+      class="border rounded-md px-2 py-1 text-xs font-semibold flex items-center justify-center"
+      style={{ background: props.color + "70", "border-color": props.color }}
+    >
+      {props.text}
     </div>
   );
 };
