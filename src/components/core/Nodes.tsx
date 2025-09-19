@@ -8,7 +8,6 @@ import Url from "../nodes/Url";
 import Board from "../nodes/Board";
 import Table from "../nodes/Table";
 import Image from "../nodes/Image";
-import OldTable from "../nodes/OldTable";
 
 export default () => {
   return (
@@ -33,7 +32,6 @@ export default () => {
             </Match>
             <Match when={node.type === NodeType.Table}>
               <Table {...node} />
-              <OldTable {...node} />
             </Match>
             <Match when={node.type === NodeType.Image}>
               <Image {...node} />

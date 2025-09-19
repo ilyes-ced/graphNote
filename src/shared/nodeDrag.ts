@@ -39,8 +39,15 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
     console.log("dragging", node.id, is_child);
     if (e.button !== 0) return;
     // if it is not a child ignore elemnts with these classNames
+
+    if ((e.target as HTMLElement).closest(".order_tasklist")) {
+      // todo: reorder task items
+      return;
+    }
     if (!is_child)
-      if ((e.target as HTMLElement).closest(".child_node, .resize_handle"))
+      if (
+        (e.target as HTMLElement).closest(".child_node, .resize_handle, input")
+      )
         return;
 
     //? update here because new colmns could appear later

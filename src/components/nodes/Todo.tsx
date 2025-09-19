@@ -5,6 +5,7 @@ import { Checkbox, CheckboxControl, CheckboxLabel } from "../ui/checkbox";
 import { addSelected } from "@/shared/utils";
 import { setStore, store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
+import { VsThreeBars } from "solid-icons/vs";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
@@ -50,7 +51,7 @@ const TaskItem: Component<Task> = (props: any, nodeId: string) => {
   // taskitem classname prevents the checkbox box from being used as drag handle so the click event on the checkbox can trigger
   return (
     <div>
-      <div class="flex items-center">
+      <div class="flex items-center justify-between">
         <label class="taskitem inline-flex items-center space-x-2 cursor-pointer">
           <input type="checkbox" class="peer hidden" />
           <div class="w-5 h-5 rounded border border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 relative">
@@ -64,8 +65,9 @@ const TaskItem: Component<Task> = (props: any, nodeId: string) => {
               <path d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <span class="text-gray-700">Label</span>
+          <span class="text-foreground">Label</span>
         </label>
+        <VsThreeBars class="order_tasklist h-full cursor-pointer" />
       </div>
 
       <Show when={props.children?.length > 0}>

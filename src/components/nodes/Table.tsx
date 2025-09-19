@@ -24,6 +24,29 @@ import { Checkbox, CheckboxControl } from "../ui/checkbox";
 export default (node: TableProps) => {
   const { startDrag } = useDraggable(node, node.is_child);
 
+  // for badges its selection
+  const getCellInput = (key: string, value: string | number | Badge) => {
+    // get column type here
+    let colType =
+      table().columns.find((col) => col.key === key) ?? ColumnType.String;
+    return (
+      <Switch>
+        <Match when={colType.typeDef === ColumnType.String}>
+          <div contentEditable>{value}</div>
+        </Match>
+
+        <Match when={colType.typeDef === ColumnType.Number}>
+          <div contentEditable>{value}</div>
+        </Match>
+
+        <Match when={colType.typeDef === ColumnType.Badge}>
+          multi choice here
+          <BadgeComponent text={value.label} color={value.color} />
+        </Match>
+      </Switch>
+    );
+  };
+
   // TODO: save later in file
   const badgeRegistry: BadgeRegistry = {
     status: [
@@ -179,24 +202,7 @@ export default (node: TableProps) => {
                     <CheckboxComponent />
                   </TableCellCheckbox>
                   {Object.entries(row).map(([key, value]) => (
-                    <TableCell>
-                      <Switch>
-                        <Match
-                          when={
-                            typeof value === "string" ||
-                            typeof value === "number"
-                          }
-                        >
-                          {value}
-                        </Match>
-                        <Match when={isBadge(value)}>
-                          <BadgeComponent
-                            text={value.label}
-                            color={value.color}
-                          />
-                        </Match>
-                      </Switch>
-                    </TableCell>
+                    <TableCell>{getCellInput(key, value)}</TableCell>
                   ))}
                   <TableCellButton>
                     <BiRegularDotsHorizontalRounded />
