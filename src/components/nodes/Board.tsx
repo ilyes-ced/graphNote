@@ -3,6 +3,7 @@ import { AiOutlineCode } from "solid-icons/ai";
 import { setStore, store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { reconcile } from "solid-js/store";
+import { findNodeById } from "@/shared/update";
 
 type BoardProps = Board & {
   is_child?: boolean;
@@ -31,42 +32,12 @@ export default (node: BoardProps) => {
   };
 
   const handleDoubleClick = () => {
-    //TODOO : handle when its nested
     console.error("double clicked the board", node.id);
-    const board = store.nodes.find(
-      (storeNode) =>
-        storeNode.id === node.id && storeNode.type === NodeType.Board
-    );
-
-    if (board) {
-      setStore("nodes", (board as Board)?.nodes ?? []);
-      setStore("activeBoards", (items) => [
-        ...items,
-        { name: (board as Board).name, id: (board as Board).id },
-      ]);
-    } else {
-      //nested here
-      let nestedBoard: Board | undefined;
-
-      for (const storeNode of store.nodes) {
-        if (storeNode.type === NodeType.Column) {
-          const board = (storeNode as Column).children.find(
-            (childNode) =>
-              childNode.id === node.id && childNode.type === NodeType.Board
-          );
-          if (board) {
-            nestedBoard = board as Board;
-            break;
-          }
-        }
-      }
-
-      setStore("nodes", (nestedBoard as Board)?.nodes ?? []);
-      setStore("activeBoards", (items) => [
-        ...items,
-        { name: (nestedBoard as Board).name, id: (nestedBoard as Board).id },
-      ]);
-    }
+    const board = findNodeById(node.id);
+    setStore("activeBoards", (items) => [
+      ...items,
+      { name: (board as Board).name, id: (board as Board).id },
+    ]);
   };
 
   //Todo: remove this later it causes it to be undraggable in the ref={}

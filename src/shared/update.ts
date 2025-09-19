@@ -1,13 +1,14 @@
 import { SetStoreFunction } from "solid-js/store";
 import { NodeType, NodeUnion, Task } from "../types";
-import { writeJSON } from "./save";
 import { setStore, store } from "@/components/store";
+import { saveChanges } from "./utils";
 
 const updateTasks = (
   block_id: string,
   task_index: number,
   setStore: SetStoreFunction<NodeUnion[]>
 ) => {
+  // needs rework is outdated
   console.log("recieved click: ", block_id, " ", task_index);
   setStore((prev) =>
     prev.map((block) => {
@@ -25,9 +26,10 @@ const updateTasks = (
     })
   );
 
-  save();
+  saveChanges();
 };
 
+//? update Note text content
 const updateNote = (
   nodeId: string,
   newValue: string,
@@ -52,14 +54,135 @@ const updateNote = (
     );
   }
 
-  save();
+  saveChanges();
 };
 
-const save = () => {
-  // save from setStore instead of gettign blocks()
-  setTimeout(() => {
-    writeJSON(store.nodes);
-  }, 0);
+const getActiveBoardId = (): string => {
+  return store.activeBoards[store.activeBoards.length - 1].id;
 };
 
-export { updateNote, updateTasks };
+//? on dragstart, increase the z index of dragged node to make appear on top always
+//TODO: change to indlude only the current active board
+//TODO: change to include child elemnts as well
+const updateZIndex = (nodeId: string) => {
+  const activeBoardId = getActiveBoardId();
+  if (!activeBoardId) return;
+
+  const boardNodes = store.nodes[activeBoardId] ?? [];
+  const max_z_index = Math.max(...boardNodes.map((node) => node.zIndex ?? 0));
+
+  const index = boardNodes.findIndex((n) => n.id === nodeId);
+  if (index !== -1) {
+    setStore("nodes", activeBoardId, index, "zIndex", max_z_index + 1);
+  }
+
+  // no need to save here
+};
+
+//? update node position
+const updatePosition = (nodeId: string, x: number, y: number) => {
+  const activeBoardId = getActiveBoardId();
+  const boardNodes = store.nodes[activeBoardId] ?? [];
+
+  const index = boardNodes.findIndex((n) => n.id === nodeId);
+  if (index !== -1) {
+    if (x > 0) setStore("nodes", activeBoardId, index, "x", x);
+    if (y > 0) setStore("nodes", activeBoardId, index, "y", y);
+  }
+
+  saveChanges();
+};
+
+//? update position of a nested node
+const updateChildPosition = (nodeId: string, x: number, y: number) => {
+  // find active board id
+  // find a column node that has child nodeId
+  // we find a column node  by type matching we search all the records with that id if they have our nodeId
+
+  const activeBoardId = getActiveBoardId();
+
+  outerLoop: for (const parentNode of store.nodes[activeBoardId] || []) {
+    if (parentNode.type === NodeType.Column) {
+      const childNodes = store.nodes[parentNode.id] || [];
+      for (let i = 0; i < childNodes.length; i++) {
+        const node = childNodes[i];
+        if (node.id === nodeId) {
+          console.log(node);
+          setStore("nodes", parentNode.id, i, "x", x);
+          setStore("nodes", parentNode.id, i, "y", y);
+          break outerLoop;
+        }
+      }
+    }
+  }
+};
+
+const isColumn = (nodeId: string): boolean => {
+  const activeBoardId = getActiveBoardId();
+  const nodesInActiveBoard = store.nodes[activeBoardId] ?? [];
+
+  const isColumn = nodesInActiveBoard.some(
+    (storeNode) => storeNode.id === nodeId && storeNode.type === NodeType.Column
+  );
+
+  return isColumn;
+};
+
+const findNodeById = (nodeId: string): NodeUnion | undefined => {
+  for (const nodes of Object.values(store.nodes)) {
+    const found = nodes.find((n) => n.id === nodeId);
+    if (found) return found;
+  }
+};
+
+const findParentIdByNodeId = (nodeId: string): string | null => {
+  for (const [parentId, childNodes] of Object.entries(store.nodes)) {
+    if (childNodes.some((node) => node.id === nodeId)) {
+      return parentId;
+    }
+  }
+  return null;
+};
+
+const removeNodeById = (nodeId: string, parentId?: string) => {
+  let space;
+  if (parentId) {
+    space = parentId;
+  } else {
+    space = getActiveBoardId();
+  }
+
+  const updated = store.nodes[space]?.filter((n) => n.id !== nodeId);
+  if (updated) {
+    setStore("nodes", space, updated);
+  }
+};
+
+const addNode = (
+  newNode: NodeUnion,
+  // x: number,
+  // y: number,
+  //* if is set to tru, node is sent to active board = canvas
+  //* if it is set, node is sent to another node
+  targetNodeId?: string
+) => {
+  if (targetNodeId) {
+    setStore("nodes", targetNodeId, (nodes = []) => [...nodes, newNode]);
+  } else {
+    const activeBoardId = getActiveBoardId();
+    setStore("nodes", activeBoardId, (nodes = []) => [...nodes, newNode]);
+  }
+};
+
+export {
+  updateNote,
+  updateZIndex,
+  updatePosition,
+  updateChildPosition,
+  getActiveBoardId,
+  isColumn,
+  findNodeById,
+  findParentIdByNodeId,
+  removeNodeById,
+  addNode,
+};

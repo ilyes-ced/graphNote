@@ -50,12 +50,12 @@ export default (node: ColumnProps) => {
           style={{ position: "relative" }}
         >
           <Show
-            when={node.children && node.children.length > 0}
+            when={store.nodes[node.id] && store.nodes[node.id].length > 0}
             fallback={
               <div class="empty_children_containe h-[65px] w-full bg-gray-950"></div>
             }
           >
-            <For each={node.children}>
+            <For each={store.nodes[node.id]}>
               {(child_node, index) => (
                 <>
                   <Switch fallback={<div>Not Found</div>}>
@@ -79,7 +79,7 @@ export default (node: ColumnProps) => {
                     </Match>
                   </Switch>
 
-                  <Show when={index() < node.children.length - 1}>
+                  <Show when={index() < store.nodes[node.id].length - 1}>
                     <div class="column_spacer pt-[5px] bg-transparent"></div>
                   </Show>
                 </>

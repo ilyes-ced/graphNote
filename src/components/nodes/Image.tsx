@@ -1,9 +1,8 @@
 import { createSignal, onCleanup, Show } from "solid-js";
-import { Image, NodeUnion } from "../../types";
+import { Image } from "../../types";
 import { setStore, store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
-import { makeResizeObserver } from "@solid-primitives/resize-observer";
-import { writeJSON } from "@/shared/save";
+import { saveChanges } from "@/shared/utils";
 
 type ImageProps = Image & {
   is_child?: boolean;
@@ -14,7 +13,8 @@ export default (node: ImageProps) => {
   const [hover, setHover] = createSignal(false);
 
   const [width, setWidth] = createSignal(
-    store.nodes.find((n) => n.id === node.id)?.width ?? 300
+    // store.nodes.find((n) => n.id === node.id)?.width ?? 300
+    300
   );
   //const [height, setHeight] = createSignal();
 
@@ -42,12 +42,7 @@ export default (node: ImageProps) => {
       window.removeEventListener("pointerup", onUp);
 
       setStore("nodes", (n) => n.id === node.id, "width", width());
-      setTimeout(() => {
-        setStore("nodes", (current: NodeUnion[]) => {
-          writeJSON(current);
-          return current;
-        });
-      }, 0);
+      saveChanges();
     };
 
     window.addEventListener("pointermove", onMove);

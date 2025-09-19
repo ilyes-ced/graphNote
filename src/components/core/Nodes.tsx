@@ -12,7 +12,7 @@ import Image from "../nodes/Image";
 export default () => {
   return (
     <div id="nodes" class="bg-red-600">
-      <For each={store.nodes}>
+      <For each={store.nodes[store.activeBoards.at(-1).id]}>
         {(node) => (
           <Switch fallback={<div>Not Found</div>}>
             <Match when={node.type === NodeType.Column}>

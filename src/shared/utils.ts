@@ -18,7 +18,7 @@ const addSelected = (e: MouseEvent, nodeId: string) => {
 
 const saveChanges = () => {
   setTimeout(() => {
-    setStore("nodes", (current: NodeUnion[]) => {
+    setStore("nodes", (current: Record<string, NodeUnion[]>) => {
       writeJSON(current);
       return current;
     });

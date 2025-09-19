@@ -76,13 +76,11 @@ interface Table extends Node, ChildNode {
 
 interface Column extends Node, ChildNode {
   title: string;
-  children: ChildNode[];
 }
 
 interface Board extends Node, ChildNode {
   name: string;
   icon_path: string;
-  nodes: NodeUnion[];
 }
 interface Image extends Node, ChildNode {
   path: string;

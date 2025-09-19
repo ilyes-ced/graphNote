@@ -1,9 +1,15 @@
 import { onCleanup } from "solid-js";
 import { store, setStore } from "../components/store";
 import { NodeType, type NodeUnion } from "../types";
-import { writeJSON } from "./save";
 import { addSelected, saveChanges } from "./utils";
 import moveNode from "./moveNode";
+import {
+  findNodeById,
+  isColumn,
+  updateChildPosition,
+  updatePosition,
+  updateZIndex,
+} from "./update";
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
   const rect = targetEl.getBoundingClientRect();
@@ -25,6 +31,10 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
   const threshold = 1;
 
   const startDrag = (e: PointerEvent) => {
+    //? at leastit helps with removing the ghost when dragging an image
+    //? other thatn that im not sure
+    e.preventDefault();
+
     // dont accept middle mouse click
     console.log("dragging", node.id, is_child);
     if (e.button !== 0) return;
@@ -38,14 +48,8 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
 
     console.info("started dragging:", node.id);
     //? increased the z-index, to +1 of the highest
-    const max_z_ndex = Math.max(
-      ...store.nodes.map((node) => node.zIndex || 1) // || 1 just to shutup the error
-    );
-    setStore("nodes", (b) => b.id === node.id, "zIndex", max_z_ndex + 1);
-    setStore("dragging", node.id);
 
-    e.preventDefault();
-
+    updateZIndex(node.id);
     setStore("dragging", node.id);
 
     const scale = store.viewport?.scale ?? 1;
@@ -68,8 +72,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
     // if (!store.nodes.find((n) => n.id === node.id)) return;
 
     if (!is_child) {
-      if (x > 0) setStore("nodes", (n: NodeUnion) => n.id === node.id, "x", x);
-      if (y > 0) setStore("nodes", (n: NodeUnion) => n.id === node.id, "y", y);
+      updatePosition(node.id, x, y);
     } else {
       // update inside the parent
       //  setStore(
@@ -88,36 +91,34 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
       //    "y",
       //    y
       //  );
-
       //! trying to combine them doesnt work
       //! setStore( "nodes", (node) => node.type === NodeType.Column, "children", (child) => child.id === node.id, (child) => { child.x = x; child.y = y; } );
-      setStore(
-        "nodes",
-        (node) => node.type === NodeType.Column,
-        "children",
-        (child) => child.id === node.id,
-        "x",
-        x
-      );
-      setStore(
-        "nodes",
-        (node) => node.type === NodeType.Column,
-        "children",
-        (child) => child.id === node.id,
-        "y",
-        y
-      );
+      //  setStore(
+      //    "nodes",
+      //    (node) => node.type === NodeType.Column,
+      //    "children",
+      //    (child) => child.id === node.id,
+      //    "x",
+      //    x
+      //  );
+      //  setStore(
+      //    "nodes",
+      //    (node) => node.type === NodeType.Column,
+      //    "children",
+      //    (child) => child.id === node.id,
+      //    "y",
+      //    y
+      //  );
+      updateChildPosition(node.id, x, y);
     }
 
-    const isColumn =
-      store.nodes.find((storeNode) => storeNode.id === node.id)?.type ===
-      NodeType.Column;
+    const nodeIsColumn = isColumn(node.id);
 
     //! could cause some performance issues if there is alot of column nodes on the canvas
     //* introducting debound can reduce the number of calls and improve performance
     targets.forEach((target) => {
       const isInside = isOverlapping(e.clientX, e.clientY, target);
-      if (isInside && !isColumn) {
+      if (isInside && !nodeIsColumn) {
         target.classList.add("child_container_hover");
       } else {
         target.classList.remove("child_container_hover");
@@ -185,7 +186,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
         //? snap to grid if it is defined
         if (store.snapGrid) {
           const [gx, gy] = store.snapGrid;
-          const nodeInStore = store.nodes.find((n) => n.id === node.id);
+          const nodeInStore = findNodeById(node.id);
           // if (!nodeInStore) return;
           const snappedX = Math.round((nodeInStore?.x ?? 0) / gx) * gx;
           const snappedY = Math.round((nodeInStore?.y ?? 0) / gy) * gy;
@@ -194,30 +195,33 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
           // Defer snapping to next frame to allow transition animation
           console.info(snappedX, snappedY);
           requestAnimationFrame(() => {
-            setStore(
-              "nodes",
-              (n) => n.id === node.id,
-              (node) => ({
-                ...node,
-                x: snappedX,
-                y: snappedY,
-              })
-            );
+            // setStore(
+            //   "nodes",
+            //   (n) => n.id === node.id,
+            //   (node) => ({
+            //     ...node,
+            //     x: snappedX,
+            //     y: snappedY,
+            //   })
+            // );
+            updatePosition(node.id, snappedX, snappedY);
             saveChanges();
           });
         } else {
           //! untested
           requestAnimationFrame(() => {
-            const nodeInStore = store.nodes.find((n) => n.id === node.id);
-            setStore(
-              "nodes",
-              (n) => n.id === node.id,
-              (node) => ({
-                ...node,
-                x: nodeInStore?.x ?? 0,
-                y: nodeInStore?.y ?? 0,
-              })
-            );
+            const nodeInStore = findNodeById(node.id);
+            // setStore(
+            //   "nodes",
+            //   (n) => n.id === node.id,
+            //   (node) => ({
+            //     ...node,
+            //     x: nodeInStore?.x ?? 0,
+            //     y: nodeInStore?.y ?? 0,
+            //   })
+            // );
+            //todo: fix later
+            updatePosition(node.id, nodeInStore?.x ?? 0, nodeInStore?.y ?? 0);
             saveChanges();
           });
         }

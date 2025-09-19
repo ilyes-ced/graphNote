@@ -2,7 +2,9 @@ import { createStore } from "solid-js/store";
 import { NodeUnion } from "../types";
 
 interface GlobalStore {
-  nodes: NodeUnion[];
+  //? no board id is "home"
+  //? < board nodeID, nodes>
+  nodes: Record<string, NodeUnion[]>;
   width: number;
   height: number;
   panZoom: number | null;
@@ -12,6 +14,7 @@ interface GlobalStore {
 
   dragThreshold: number;
   dragging: NodeUnion["id"] | null;
+  // todo: reset when changing workspace
   selectedNodes: Set<string>; // node id
 
   viewport: {
@@ -22,13 +25,13 @@ interface GlobalStore {
 }
 
 const [store, setStore] = createStore<GlobalStore>({
-  nodes: [],
+  nodes: {},
   width: 1000,
   height: 1000,
   panZoom: null,
   snapGrid: [10, 10],
 
-  activeBoards: [{ name: "Home", id: "0" }],
+  activeBoards: [{ name: "home", id: "home" }],
 
   dragThreshold: 5,
   dragging: null,

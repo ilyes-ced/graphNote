@@ -1,8 +1,7 @@
 import { onCleanup } from "solid-js";
 import { store, setStore } from "../components/store";
 import { NodeType, type NodeUnion } from "../types";
-import { writeJSON } from "./save";
-import { addSelected } from "./utils";
+import { addSelected, saveChanges } from "./utils";
 import moveNode from "./moveNode";
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
@@ -208,12 +207,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
     }
 
     //? save the changes to file
-    setTimeout(() => {
-      setStore("nodes", (current: NodeUnion[]) => {
-        writeJSON(current);
-        return current;
-      });
-    }, 0);
+    saveChanges();
   };
 
   onCleanup(() => {
