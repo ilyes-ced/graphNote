@@ -1,7 +1,7 @@
 type RGB = `rgb(${number}, ${number}, ${number})`;
 type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
 type HEX = `#${string}`;
-type Color = RGB | RGBA | HEX;
+type ColorType = RGB | RGBA | HEX;
 
 type Task = { text: string; check: boolean; children: Task[] };
 
@@ -101,6 +101,11 @@ interface Table extends Node, ChildNode {
 
 interface Column extends Node, ChildNode {
   title: string;
+}
+
+interface Color extends Node, ChildNode {
+  colorValue: ColorType;
+  text: string;
 }
 
 interface Board extends Node, ChildNode {

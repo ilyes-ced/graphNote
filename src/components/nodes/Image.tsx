@@ -68,7 +68,7 @@ export default (node: ImageProps) => {
       id={node.id}
       style={{
         width: node.is_child ? "100%" : width() + "px",
-        background: node.color ? node.color : "var(--default-bg-color)",
+        background: node.color ? node.color : "",
         "z-index": node.zIndex,
         transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}

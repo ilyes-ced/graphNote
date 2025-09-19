@@ -8,6 +8,7 @@ import Url from "../nodes/Url";
 import Board from "../nodes/Board";
 import Table from "../nodes/Table";
 import Image from "../nodes/Image";
+import Color from "../nodes/Color";
 
 export default () => {
   return (
@@ -35,6 +36,9 @@ export default () => {
             </Match>
             <Match when={node.type === NodeType.Image}>
               <Image {...node} />
+            </Match>
+            <Match when={node.type === NodeType.Color}>
+              <Color {...node} />
             </Match>
           </Switch>
         )}

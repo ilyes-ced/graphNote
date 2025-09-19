@@ -66,7 +66,7 @@ export default (node: BoardProps) => {
       <div
         class="board_icon flex flex-col justify-center items-center"
         style={{
-          background: node.color ? node.color : "var(--default-bg-color)",
+          background: node.color ? node.color : "",
           width: node.is_child ? "50px" : "60px",
           height: node.is_child ? "50px" : "60px",
           "margin-right": node.is_child ? "10px" : "",

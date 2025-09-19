@@ -76,7 +76,18 @@ export default (node: TableProps) => {
         <div class="flex flex-col divide-accent divide-2">
           <For each={badgeRegistry[props.type]}>
             {(badge) => (
-              <div class="px-4 py-2 hover:bg-accent rounded-md">
+              <div
+                class="px-4 py-2 hover:bg-accent rounded-md"
+                onClick={(e) => {
+                  e.preventDefault();
+                  console.log("000000000000000000000000000000000");
+                  console.log("000000000000000000000000000000000");
+                  console.log("000000000000000000000000000000000");
+                  console.log("000000000000000000000000000000000");
+                  //TODO: change badge logic here
+                  setShowBadgeSelectionMenu("none");
+                }}
+              >
                 <BadgeComponent
                   type={props.type}
                   text={badge.label}
@@ -97,13 +108,7 @@ export default (node: TableProps) => {
     return (
       <div
         onClick={(e) => {
-          console.log("||||||||||||||||||||||||||||||");
-          console.log("||||||||||||||||||||||||||||||");
-          console.log("||||||||||||||||||||||||||||||");
-          console.log("||||||||||||||||||||||||||||||");
-          console.log(e.currentTarget.getBoundingClientRect().top);
-          console.log(e.currentTarget.getBoundingClientRect().left);
-          console.log(e.clientY);
+          // show menu and set position
           setBadgeSelectionMenuPos({
             x: e.currentTarget.getBoundingClientRect().top - table().y - 10,
             y: e.currentTarget.getBoundingClientRect().left - table().x - 68,
@@ -380,6 +385,8 @@ const TableCellCheckbox = (props: { children: JSX.Element }) => {
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+const paginationButtonsClasses =
+  "cursor-pointer hover:bg-muted px-4 py-1 border-y border-border";
 const Pagination = () => {
   return (
     <div class="flex flex-row items-center justify-between pt-4 ">
@@ -392,21 +399,21 @@ const Pagination = () => {
         <button class="cursor-pointer hover:bg-muted border-y border-l border-border px-4">
           first
         </button>
-        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border bg-secondary">
-          1
-        </button>
-        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
-          2
-        </button>
-        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
-          3
-        </button>
-        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
-          4
-        </button>
-        <button class="cursor-pointer hover:bg-muted px-4 py-1 border-y border-border">
-          5
-        </button>
+
+        <For each={[1, 2, 3, 4, 5]}>
+          {(pageNum) => (
+            <button
+              class={paginationButtonsClasses}
+              classList={{
+                // active button color, change later
+                "bg-secondary": pageNum === 1,
+              }}
+            >
+              {pageNum}
+            </button>
+          )}
+        </For>
+
         <button class="cursor-pointer hover:bg-muted border-y border-r border-border px-4">
           last
         </button>
