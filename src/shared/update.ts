@@ -1,5 +1,18 @@
 import { SetStoreFunction } from "solid-js/store";
-import { NodeType, NodeUnion, Task } from "../types";
+import {
+  Board,
+  Image,
+  Color,
+  Column,
+  NodeType,
+  NodeUnion,
+  Note,
+  Table,
+  Task,
+  Activity,
+  Todo,
+  Url,
+} from "../types";
 import { setStore, store } from "@/components/store";
 import { saveChanges } from "./utils";
 
@@ -179,6 +192,130 @@ const addNode = (
   saveChanges();
 };
 
+const generateNewId = (): string => {
+  const allNodes = Object.values(store.nodes).flat();
+  let maxId = 0;
+
+  for (const node of allNodes) {
+    const match = node.id.match(/^node_(\d+)$/);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (num > maxId) maxId = num;
+    }
+  }
+
+  return `node_${maxId + 1}`;
+};
+
+const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
+  const base = {
+    id: generateNewId(),
+    type,
+    width: 300,
+    x,
+    y,
+    index: 0,
+  };
+
+  switch (type) {
+    case NodeType.Note:
+      return {
+        ...base,
+        text: "",
+      } satisfies Note;
+
+    case NodeType.Comment:
+      return {
+        ...base,
+        comment: "",
+      };
+
+    case NodeType.Todo:
+      return {
+        ...base,
+        title: "",
+        tasks: [],
+      } satisfies Todo;
+
+    case NodeType.Table:
+      return {
+        ...base,
+        columns: [],
+        rows: [],
+        title: "",
+        description: "",
+      } satisfies Table;
+
+    case NodeType.Url:
+      return {
+        ...base,
+        url: "",
+      } satisfies Url;
+
+    case NodeType.Board:
+      return {
+        ...base,
+        name: "New Board",
+        icon_path: "",
+      } satisfies Board;
+
+    case NodeType.Column:
+      return {
+        ...base,
+        title: "New Column",
+      } satisfies Column;
+
+    case NodeType.Document:
+      return {
+        ...base,
+        text: "",
+      } satisfies Note;
+
+    case NodeType.Color:
+      return {
+        ...base,
+        colorValue: "#ffffff", //TODO: randomize it
+        text: "Color Node",
+      } satisfies Color;
+
+    case NodeType.Image:
+      return {
+        ...base,
+        path: "",
+        title: "Untitled Image",
+        description: "",
+      } satisfies Image;
+
+    case NodeType.Activity:
+      return {
+        ...base,
+        // TODO: Fill once you define what Activity contains
+      } as Activity;
+
+    default:
+      throw new Error(`Unsupported node type: ${type}`);
+  }
+};
+
+const newNode = (type: NodeType, x: number, y: number) => {
+  const activeBoardId = getActiveBoardId();
+
+  //todo: adjust the x and y to scale as well
+
+  let snappedX: number, snappedY: number;
+  if (store.snapGrid) {
+    snappedX = Math.round(x / 10) * 10;
+    snappedY = Math.round(y / 10) * 10;
+  }
+
+  setStore("nodes", activeBoardId, (nodes = []) => [
+    ...nodes,
+    generateNewNode(type, snappedX ?? x, snappedY ?? y),
+  ]);
+
+  saveChanges();
+};
+
 export {
   updateNote,
   updateZIndex,
@@ -191,4 +328,5 @@ export {
   removeNodeById,
   addNode,
   updateImageWidth,
+  newNode,
 };

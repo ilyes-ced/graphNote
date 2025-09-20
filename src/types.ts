@@ -11,6 +11,7 @@ enum NodeType {
   Todo = "Todo",
   Table = "Table",
   Url = "Url",
+  Activity = "Activity",
 
   Arrow = "Arrow",
   Board = "Board",
@@ -118,8 +119,35 @@ interface Image extends Node, ChildNode {
   title: string;
   description: string;
 }
+interface Activity extends Node, ChildNode {
+  //TODO: figure me out
+}
 
-type NodeUnion = Note | Comment | Url | Todo | Table | Column | Board | Image;
+interface Arrow extends Node, ChildNode {}
+interface Code extends Node, ChildNode {}
+interface Upload extends Node, ChildNode {}
+interface Drawing extends Node, ChildNode {}
+interface Sketch extends Node, ChildNode {}
+interface Document extends Node, ChildNode {}
+
+type NodeUnion =
+  | Note
+  | Comment
+  | Todo
+  | Table
+  | Url
+  | Activity
+  | Arrow
+  | Board
+  | Column
+  | Code
+  | Document
+  | Upload
+  | Drawing
+  | Sketch
+  | Color
+  | Image;
+
 export { NodeType, ColumnType };
 export type {
   Node,
@@ -138,6 +166,7 @@ export type {
   ColumnSchema,
   BadgeRegistry,
   Color,
+  Activity,
 };
 
 /*

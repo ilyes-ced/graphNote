@@ -1,5 +1,7 @@
 import { createSignal, For, onCleanup, onMount } from "solid-js";
 import Svg from "./nodes/Svg";
+import { newNode } from "@/shared/update";
+import { NodeType } from "@/types";
 
 export default function SidebarFloating() {
   let icons = [
@@ -25,44 +27,97 @@ export default function SidebarFloating() {
     { name: "sketch", width: 32, height: 24 },
     { name: "color", width: 28, height: 32 },
     { name: "image", width: 32, height: 32 },
+    { name: "activity", width: 32, height: 32 },
   ];
 
-  const [isDragging, setIsDragging] = createSignal(false);
-  let lastMouse = { x: 0, y: 0 };
+  // have all the template componenets in this file,
+  // when dragged it moved with it and is made visible
+  // when its released we hide and put back where it belongs
+  // on release we take its position and create a new item there
 
-  const handleMouseUp = (e: MouseEvent) => {
-    console.log("stoped dragging");
-    setIsDragging(false);
-  };
-  const handleMouseDown = (e: MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    lastMouse = { x: e.clientX, y: e.clientY };
-  };
+  const [dragging, setDragging] = createSignal(false);
+  const [dragPos, setDragPos] = createSignal({ x: 0, y: 0 });
+  const [cloneType, setCloneType] = createSignal<string | null>(null);
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging()) {
-      console.log("dragging sidebar");
+    setDragPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const findType = (type: string): NodeType => {
+    console.log("PPPPPPPPPPPPPPPPPPPPPPPP");
+    console.log(type);
+    switch (type) {
+      case "note":
+        return NodeType.Note;
+      case "todo":
+        return NodeType.Todo;
+      case "comment":
+        return NodeType.Comment;
+      case "table":
+        return NodeType.Table;
+      case "url":
+        return NodeType.Url;
+      case "arrow":
+        return NodeType.Arrow;
+      case "board":
+        return NodeType.Board;
+      case "column":
+        return NodeType.Column;
+      case "code":
+        return NodeType.Code;
+      case "document":
+        return NodeType.Document;
+      case "upload":
+        return NodeType.Upload;
+      case "drawing":
+        return NodeType.Drawing;
+      case "sketch":
+        return NodeType.Sketch;
+      case "color":
+        return NodeType.Color;
+      case "image":
+        return NodeType.Image;
+      case "activity":
+        return NodeType.Activity;
+      default:
+        throw new Error(`Unsupported node type: ${type}`);
     }
   };
 
-  onMount(() => {
-    window.addEventListener("mouseup", handleMouseUp);
+  const handleMouseUp = () => {
+    newNode(findType(cloneType() ?? ""), dragPos().x, dragPos().y);
+    setDragging(false);
+    setCloneType(null);
+
+    // here we add to the store
+
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  const startDragging = (type: string) => (e: MouseEvent) => {
+    e.preventDefault();
+    setCloneType(type);
+    setDragging(true);
+    setDragPos({ x: e.clientX, y: e.clientY });
+
     window.addEventListener("mousemove", handleMouseMove);
-    onCleanup(() => {
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("mousemove", handleMouseMove);
-    });
+    window.addEventListener("mouseup", handleMouseUp);
+  };
+
+  onCleanup(() => {
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
   });
 
   return (
-    <div class="border-r border-border h-full overflow-hidden w-[65px] p-4 bg-card ">
+    <div class="border-r border-border h-full overflow-hidden w-[65px] p-4 bg-card">
       <div class="flex flex-col space-y-4 overflow-x-visible relative">
         <For each={icons} fallback={<div>Loading...</div>}>
           {(icon) => (
             <div
-              onmousedown={handleMouseDown}
               class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
+              onMouseDown={startDragging(icon.name)}
             >
               <Svg
                 width={icon.width}
@@ -76,6 +131,18 @@ export default function SidebarFloating() {
             </div>
           )}
         </For>
+      </div>
+
+      <div
+        class="bg-red-900 p-4 z-50"
+        style={{
+          position: "absolute",
+          display: dragging() ? "block" : "none",
+          top: `${dragPos().y}px`,
+          left: `${dragPos().x}px`,
+        }}
+      >
+        note template
       </div>
     </div>
   );

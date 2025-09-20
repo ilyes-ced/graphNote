@@ -51,7 +51,10 @@ export function useDraggable(
 
     if (!is_child) {
       const ignoredClasseNames =
-        [".child_node", ignoredClasses]?.join(", ") ?? "";
+        ignoredClasses?.length || 0 > 0
+          ? [".child_node", ignoredClasses]?.join(", ")
+          : "child_node";
+      console.log(ignoredClasseNames);
       if (
         //(e.target as HTMLElement).closest(".child_node, .resize_handle, input")
         (e.target as HTMLElement).closest(ignoredClasseNames)
