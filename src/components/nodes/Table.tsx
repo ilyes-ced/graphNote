@@ -29,7 +29,10 @@ import {
 } from "../ui/select";
 
 export default (node: TableProps) => {
-  const { startDrag } = useDraggable(node, node.is_child);
+  const { startDrag } = useDraggable(node, node.is_child, [
+    "input",
+    ".columnSelection",
+  ]);
 
   //TODO: change to string which is the badgeRegistry key to show the menu of the related badge type
   // with a for loop to create a list for each type of badges used
@@ -45,7 +48,15 @@ export default (node: TableProps) => {
   const getCellInput = (key: string, value: string | number | Badge) => {
     // get column type here
     let colType =
-      table().columns.find((col) => col.key === key) ?? ColumnType.String;
+      node.columns.find((col) => col.key === key) ?? ColumnType.String;
+
+    const isBadgeValue =
+      typeof value === "object" &&
+      value !== null &&
+      "type" in value &&
+      "label" in value;
+    const badge = isBadgeValue ? getBadge(value.type, value.label) : null;
+
     return (
       <Switch>
         <Match when={colType.typeDef === ColumnType.String}>
@@ -58,7 +69,7 @@ export default (node: TableProps) => {
 
         <Match when={colType.typeDef === ColumnType.Badge}>
           <div class="relative">
-            <BadgeComponent type={key} text={value.label} color={value.color} />
+            <BadgeComponent type={key} text={badge.label} color={badge.color} />
           </div>
         </Match>
       </Switch>
@@ -110,12 +121,12 @@ export default (node: TableProps) => {
         onClick={(e) => {
           // show menu and set position
           setBadgeSelectionMenuPos({
-            x: e.currentTarget.getBoundingClientRect().top - table().y - 10,
-            y: e.currentTarget.getBoundingClientRect().left - table().x - 68,
+            x: e.currentTarget.getBoundingClientRect().top - node.y - 10,
+            y: e.currentTarget.getBoundingClientRect().left - node.x - 68,
           });
           setShowBadgeSelectionMenu(props.type);
         }}
-        class="badge border rounded-md px-2 py-1  font-semibold flex items-center justify-center cursor-pointer"
+        class="badge border-2 rounded-md px-2 py-1  font-semibold flex items-center justify-center cursor-pointer"
         style={{ background: props.color + "70", "border-color": props.color }}
       >
         {props.text}
@@ -126,20 +137,20 @@ export default (node: TableProps) => {
   // TODO: save later in file
   const badgeRegistry: BadgeRegistry = {
     status: [
-      { label: "todo", color: "#999999" },
-      { label: "in-progress", color: "#007bff" },
-      { label: "done", color: "#28a745" },
-      { label: "cancelled", color: "#dc3545" },
+      { id: "badge_0", label: "todo", color: "#999999" },
+      { id: "badge_1", label: "in-progress", color: "#007bff" },
+      { id: "badge_2", label: "done", color: "#28a745" },
+      { id: "badge_3", label: "cancelled", color: "#dc3545" },
     ],
     priority: [
-      { label: "low", color: "#6c757d" },
-      { label: "medium", color: "#ffc107" },
-      { label: "high", color: "#dc3545" },
+      { id: "badge_4", label: "low", color: "#28a745" },
+      { id: "badge_5", label: "medium", color: "#ffc107" },
+      { id: "badge_6", label: "high", color: "#dc3545" },
     ],
     label: [
-      { label: "bug", color: "#e74c3c" },
-      { label: "feature", color: "#2980b9" },
-      { label: "enhancement", color: "#2ecc71" },
+      { id: "badge_7", label: "bug", color: "#e74c3c" },
+      { id: "badge_8", label: "feature", color: "#2980b9" },
+      { id: "badge_9", label: "enhancement", color: "#2ecc71" },
     ],
   };
 
@@ -149,93 +160,10 @@ export default (node: TableProps) => {
     if (badge) {
       return badge;
     } else {
-      return { label: "unknown", color: "#ffffff" };
+      return { id: "none", label: "unknown", color: "#ffffff" };
     }
   };
 
-  const [table, setTable] = createSignal<TableNode>({
-    id: "block_100",
-    type: 3,
-    width: 300,
-    zIndex: 15,
-    index: 1,
-    x: 600,
-    y: 100,
-    columns: [
-      {
-        key: "id",
-        title: "id",
-        typeDef: ColumnType.String,
-      },
-      {
-        key: "name",
-        title: "name",
-        typeDef: ColumnType.String,
-      },
-      {
-        key: "age",
-        title: "age",
-        typeDef: ColumnType.Number,
-      },
-      {
-        key: "phoneNumber",
-        title: "phone number",
-        typeDef: ColumnType.String,
-      },
-      {
-        key: "status",
-        title: "status",
-        typeDef: ColumnType.Badge,
-      },
-      {
-        key: "label",
-        title: "label",
-        typeDef: ColumnType.Badge,
-      },
-    ],
-    rows: [
-      {
-        id: "10",
-        name: "ahmed",
-        age: 10,
-        phoneNumber: "0500000000000",
-        status: getBadge("status", "todo"),
-        label: getBadge("label", "bug"),
-      },
-      {
-        id: "10",
-        name: "ahmed",
-        age: 10,
-        phoneNumber: "0500000000000",
-        status: getBadge("status", "in-progress"),
-        label: getBadge("label", "bug"),
-      },
-      {
-        id: "10",
-        name: "ahmed",
-        age: 10,
-        phoneNumber: "0500000000000",
-        status: getBadge("status", "done"),
-        label: getBadge("label", "feature"),
-      },
-      {
-        id: "10",
-        name: "ahmed",
-        age: 10,
-        phoneNumber: "0500000000000",
-        status: getBadge("status", "cancelled"),
-        label: getBadge("label", "enhancement"),
-      },
-      {
-        id: "10",
-        name: "ahmed",
-        age: 10,
-        phoneNumber: "0500000000000",
-        status: getBadge("status", "todo"),
-        label: getBadge("label", "bug"),
-      },
-    ],
-  });
   type TableCellValue = string | number | Badge;
 
   function isBadge(val: TableCellValue): val is Badge {
@@ -267,7 +195,7 @@ export default (node: TableProps) => {
       style={{
         //width: node.is_child ? "100%" : node.width + "px",
         "z-index": node.zIndex,
-        transform: `translate3d(${table().x}px, ${table().y}px, 0)`,
+        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
       <For each={Object.entries(badgeRegistry)}>
@@ -277,13 +205,30 @@ export default (node: TableProps) => {
           </Show>
         )}
       </For>
-
       <div class="relative overflow-x-auto p-2">
         <div class="pb-4 flex space-x-4 justify-between">
           <Filter />
-          <button class="cursor-pointer px-4 py-1 border border-border hover:bg-red-500 w-fit">
-            <VsGraphLine size={16} />
-          </button>
+          <div class="flex space-x-2 columnSelection">
+            <Select
+              class="rounded-none cursor-pointer"
+              options={["Apple", "Banana", "Blueberry", "Grapes", "Pineapple"]}
+              placeholder="Column filter"
+              itemComponent={(props) => (
+                <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+              )}
+            >
+              <SelectTrigger class="">
+                <SelectValue<string>>
+                  {(state) => state.selectedOption()}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent />
+            </Select>
+
+            <button class="cursor-pointer px-4 py-1 border border-border hover:bg-red-500 w-fit">
+              <VsGraphLine size={16} />
+            </button>
+          </div>
         </div>
         <Table>
           <TableHead>
@@ -291,7 +236,7 @@ export default (node: TableProps) => {
               <TableCellCheckbox>
                 <CheckboxComponent />
               </TableCellCheckbox>
-              <For each={table().columns}>
+              <For each={node.columns}>
                 {(header) => <TableHeaderCell>{header.title}</TableHeaderCell>}
               </For>
               <TableCellCheckbox> </TableCellCheckbox>
@@ -299,7 +244,7 @@ export default (node: TableProps) => {
           </TableHead>
 
           <TableBody>
-            <For each={table().rows}>
+            <For each={node.rows}>
               {(row) => (
                 <TableRow>
                   <TableCellCheckbox>

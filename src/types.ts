@@ -6,24 +6,24 @@ type ColorType = RGB | RGBA | HEX;
 type Task = { text: string; check: boolean; children: Task[] };
 
 enum NodeType {
-  Note,
-  Comment,
-  Todo,
-  Table,
-  Url,
+  Note = "Note",
+  Comment = "Comment",
+  Todo = "Todo",
+  Table = "Table",
+  Url = "Url",
 
-  Arrow,
-  Board,
-  Column,
+  Arrow = "Arrow",
+  Board = "Board",
+  Column = "Column",
 
-  Code,
-  Document,
-  Upload,
+  Code = "Code",
+  Document = "Document",
+  Upload = "Upload",
 
-  Drawing,
-  Sketch,
-  Color,
-  Image,
+  Drawing = "Drawing",
+  Sketch = "Sketch",
+  Color = "Color",
+  Image = "Image",
 }
 
 interface BaseNode {
@@ -71,18 +71,19 @@ interface Todo extends Node, ChildNode {
 ////////////////////////////////////////////////
 
 type Badge = {
+  id: string;
   label: string;
-  color: Color;
+  color: ColorType;
 };
 
 type BadgeRegistry = Record<string, Badge[]>;
 
 enum ColumnType {
-  String,
-  Number,
-  Boolean,
-  Date,
-  Badge,
+  String = "String",
+  Number = "Number",
+  Boolean = "Boolean",
+  Date = "Date",
+  Badge = "Badge",
 }
 // can add more in the future
 
@@ -136,6 +137,7 @@ export type {
   Badge,
   ColumnSchema,
   BadgeRegistry,
+  Color,
 };
 
 /*

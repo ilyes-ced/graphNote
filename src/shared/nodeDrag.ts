@@ -22,7 +22,11 @@ function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
   );
 }
 
-export function useDraggable(node: NodeUnion, is_child: boolean = false) {
+export function useDraggable(
+  node: NodeUnion,
+  is_child: boolean = false,
+  ignoredClasses?: string[]
+) {
   let startX = 0;
   let startY = 0;
   let initialMouseX = 0;
@@ -44,11 +48,16 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false) {
       // todo: reorder task items
       return;
     }
-    if (!is_child)
+
+    if (!is_child) {
+      const ignoredClasseNames =
+        [".child_node", ignoredClasses]?.join(", ") ?? "";
       if (
-        (e.target as HTMLElement).closest(".child_node, .resize_handle, input")
+        //(e.target as HTMLElement).closest(".child_node, .resize_handle, input")
+        (e.target as HTMLElement).closest(ignoredClasseNames)
       )
         return;
+    }
 
     //? update here because new colmns could appear later
     targets = document.querySelectorAll(".column, .board");

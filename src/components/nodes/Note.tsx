@@ -110,13 +110,3 @@ export default (node: NoteProps) => {
     </div>
   );
 };
-/*
-     <span
-          ref={editableDiv}
-          contenteditable
-          onInput={handleInput}
-          class="note_text flex flex-col cursor-text focus:outline-0"
-        >
-          {node.text}
-        </span>
- */

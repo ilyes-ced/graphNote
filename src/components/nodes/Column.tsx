@@ -10,12 +10,8 @@ import { store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import Image from "../nodes/Image";
 
-type ColumnProps = Column & {
-  check_task?: (node_id: string, task_index: number) => void;
-};
-
-export default (node: ColumnProps) => {
-  const { startDrag } = useDraggable(node);
+export default (node: Column) => {
+  const { startDrag } = useDraggable(node, false, [".collapse_icon"]);
 
   return (
     <div
