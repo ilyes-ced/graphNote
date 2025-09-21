@@ -121,6 +121,11 @@ interface Image extends Node, ChildNode {
 }
 interface Activity extends Node, ChildNode {
   //TODO: figure me out
+  title: string;
+  desciption: string;
+  //? key string is for the date yyyy-mm-dd
+  // ! pain in the ass to implment it to handle other date formats
+  progress: Record<string, number>;
 }
 
 interface Arrow extends Node, ChildNode {}
@@ -167,6 +172,7 @@ export type {
   BadgeRegistry,
   Color,
   Activity,
+  ColorType,
 };
 
 /*

@@ -9,11 +9,15 @@ import Board from "../nodes/Board";
 import Table from "../nodes/Table";
 import Image from "../nodes/Image";
 import Color from "../nodes/Color";
+import ColorSelectMenu from "../ui/ColorSelectMenu";
+import Activity from "../nodes/Activity";
 
 export default () => {
   return (
     <div id="nodes" class="bg-red-600">
-      <For each={store.nodes[store.activeBoards.at(-1).id]}>
+      <ColorSelectMenu />
+
+      <For each={store.nodes[store.activeBoards.at(-1)?.id ?? "home"]}>
         {(node) => (
           <Switch fallback={<div>Not Found</div>}>
             <Match when={node.type === NodeType.Column}>
@@ -39,6 +43,9 @@ export default () => {
             </Match>
             <Match when={node.type === NodeType.Color}>
               <Color {...node} />
+            </Match>
+            <Match when={node.type === NodeType.Activity}>
+              <Activity {...node} />
             </Match>
           </Switch>
         )}
