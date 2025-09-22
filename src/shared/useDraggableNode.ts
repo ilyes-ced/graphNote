@@ -13,7 +13,7 @@ import {
 import { store, setStore } from "../components/store";
 import { NodeType } from "../types";
 import moveNode from "./moveNode";
-import { writeJSON } from "./save";
+import { saveNodesJSON } from "./save";
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
   const rect = targetEl.getBoundingClientRect();
@@ -135,7 +135,7 @@ function useDraggableNode(
 
         setTimeout(() => {
           setStore("nodes", (current) => {
-            writeJSON(current);
+            saveNodesJSON();
             return current;
           });
         }, 0);
@@ -160,7 +160,7 @@ function useDraggableCanvas(ref: () => HTMLElement | null) {
         setTimeout(() => {
           // Capture latest snapshot
           setStore("nodes", (current) => {
-            writeJSON(current);
+            saveNodesJSON();
             return current;
           });
         }, 0);

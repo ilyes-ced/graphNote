@@ -15,7 +15,9 @@ import Activity from "../nodes/Activity";
 export default () => {
   return (
     <div id="nodes" class="bg-red-600">
-      <ColorSelectMenu />
+      <div class="hidden">
+        <ColorSelectMenu />
+      </div>
 
       <For each={store.nodes[store.activeBoards.at(-1)?.id ?? "home"]}>
         {(node) => (

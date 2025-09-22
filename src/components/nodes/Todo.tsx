@@ -1,9 +1,6 @@
-import { Component, createSignal, For, JSX, onCleanup, Show } from "solid-js";
+import { Component, For, Show } from "solid-js";
 import { Task, Todo as TodoType } from "../../types";
-import { useDraggableNode } from "../../shared/useDraggableNode";
-import { Checkbox, CheckboxControl, CheckboxLabel } from "../ui/checkbox";
-import { addSelected } from "@/shared/utils";
-import { setStore, store } from "../store";
+import { store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { VsThreeBars } from "solid-icons/vs";
 
@@ -13,7 +10,7 @@ type TodoProps = TodoType & {
 };
 
 export default (node: TodoProps) => {
-  const { startDrag } = useDraggable(node, node.is_child);
+  const { startDrag } = useDraggable(node, node.is_child, [".taskitem"]);
 
   return (
     <div
@@ -65,7 +62,9 @@ const TaskItem: Component<Task> = (props: any, nodeId: string) => {
               <path d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <span class="text-foreground">Label</span>
+          <span class="taskitem-text text-foreground" contentEditable>
+            {props.text}
+          </span>
         </label>
         <VsThreeBars class="order_tasklist h-full cursor-pointer" />
       </div>

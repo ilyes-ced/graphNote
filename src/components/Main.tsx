@@ -4,11 +4,15 @@ import Wrapper from "./core/Wrapper.tsx";
 import { readJSON } from "@/shared/save.ts";
 
 const loadNodes = async () => {
-  const init_nodes = await readJSON();
-  console.log(init_nodes);
-  console.log("init_nodes:", init_nodes, Array.isArray(init_nodes));
-  if (init_nodes) {
-    setStore("nodes", init_nodes);
+  const initStore = await readJSON();
+
+  console.log("11111111111111111111111111111111");
+  console.log(initStore);
+  console.log("11111111111111111111111111111111");
+
+  if (initStore) {
+    setStore("nodes", initStore?.nodes ?? []);
+    setStore("edges", initStore?.edges ?? []);
   }
 };
 

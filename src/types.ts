@@ -39,8 +39,8 @@ interface Node extends BaseNode {
   width?: number;
   //? height depends on content shouldnt be user controlled
   //height?: number;
-  color?: Color;
-  top_strip_color?: Color;
+  color?: ColorType;
+  top_strip_color?: ColorType;
   zIndex?: number;
 }
 
@@ -48,7 +48,7 @@ interface ChildNode extends BaseNode {
   id: string;
   type: NodeType;
   index: number;
-  color?: Color;
+  color?: ColorType;
 }
 
 interface Note extends Node, ChildNode {
@@ -135,6 +135,41 @@ interface Drawing extends Node, ChildNode {}
 interface Sketch extends Node, ChildNode {}
 interface Document extends Node, ChildNode {}
 
+////////////////////////////////////////////////
+
+enum EdgeType {
+  Bezier = "Bezier",
+  Straight = "Straight",
+  Step = "Step",
+}
+
+interface BaseEdge {
+  srcNodeId: string;
+  distNodeId: string;
+  color?: string; // default foreground
+  stroke?: string; // default 2
+  label?: string; // default none
+  style?: string; // solid, dashed ...., default solid
+  // type?: string; // straight, bezier, step curved >>>> default bezier
+  srcArrowHead?: string; // default none
+  DistArrowHead?: string; // default normal arrow head
+}
+interface BezierEdge extends BaseEdge {
+  type: EdgeType.Bezier;
+  curvature?: number;
+}
+interface StraightEdge extends BaseEdge {
+  type: EdgeType.Straight;
+  sharpness?: number;
+}
+interface StepEdge extends BaseEdge {
+  type: EdgeType.Step;
+  stepDirection?: "horizontal" | "vertical";
+}
+type Edge = BezierEdge | StraightEdge | StepEdge;
+
+////////////////////////////////////////////////
+
 type NodeUnion =
   | Note
   | Comment
@@ -153,7 +188,7 @@ type NodeUnion =
   | Color
   | Image;
 
-export { NodeType, ColumnType };
+export { NodeType, ColumnType, EdgeType };
 export type {
   Node,
   ChildNode,
@@ -173,6 +208,7 @@ export type {
   Color,
   Activity,
   ColorType,
+  Edge,
 };
 
 /*

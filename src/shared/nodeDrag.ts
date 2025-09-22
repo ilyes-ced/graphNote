@@ -33,6 +33,11 @@ export function useDraggable(
   let initialMouseY = 0;
   let targets = document.querySelectorAll(".column, .board");
   const threshold = 1;
+  const ignoredClasseNames =
+    ignoredClasses?.length || 0 > 0
+      ? [".child_node", ignoredClasses]?.join(", ")
+      : "child_node";
+  console.log(ignoredClasseNames);
 
   const startDrag = (e: PointerEvent) => {
     //? at leastit helps with removing the ghost when dragging an image
@@ -50,11 +55,6 @@ export function useDraggable(
     }
 
     if (!is_child) {
-      const ignoredClasseNames =
-        ignoredClasses?.length || 0 > 0
-          ? [".child_node", ignoredClasses]?.join(", ")
-          : "child_node";
-      console.log(ignoredClasseNames);
       if (
         //(e.target as HTMLElement).closest(".child_node, .resize_handle, input")
         (e.target as HTMLElement).closest(ignoredClasseNames)
@@ -125,7 +125,7 @@ export function useDraggable(
       console.log("=================================================");
       console.log("did not move so single click");
       console.log("=================================================");
-      if ((e.target as HTMLElement).closest(".taskitem")) return;
+      if ((e.target as HTMLElement).closest(ignoredClasseNames)) return;
       addSelected(e, node.id);
       return;
     }

@@ -22,8 +22,8 @@ export default (node: ActivityProps) => {
 
   const firstDay = "Sunday";
   const today = new Date();
-  console.log(today);
-  console.log(today.getDay);
+  // console.log(today);
+  // console.log(today.getDay);
 
   return (
     <div

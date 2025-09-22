@@ -1,10 +1,12 @@
 import { createStore } from "solid-js/store";
-import { NodeUnion } from "../types";
+import { NodeUnion, Edge } from "../types";
 
 interface GlobalStore {
   //? no board id is "home"
   //? < board nodeID, nodes>
   nodes: Record<string, NodeUnion[]>;
+  edges: Record<string, Edge[]>;
+
   width: number;
   height: number;
   panZoom: number | null;
@@ -26,6 +28,8 @@ interface GlobalStore {
 
 const [store, setStore] = createStore<GlobalStore>({
   nodes: {},
+  edges: {},
+
   width: 1000,
   height: 1000,
   panZoom: null,
