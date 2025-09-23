@@ -11,7 +11,9 @@ import { useDraggable } from "@/shared/nodeDrag";
 import Image from "../nodes/Image";
 
 export default (node: Column) => {
-  const { startDrag } = useDraggable(node, false, [".collapse_icon"]);
+  const { startDrag } = useDraggable(node, false, {
+    classes: ["collapse_icon"],
+  });
 
   return (
     <div

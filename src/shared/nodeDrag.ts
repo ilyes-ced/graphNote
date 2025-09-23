@@ -25,7 +25,7 @@ function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
 export function useDraggable(
   node: NodeUnion,
   is_child: boolean = false,
-  ignoredClasses?: string[]
+  ignoredElements?: { tags?: string[]; classes?: string[]; ids?: string[] }
 ) {
   let startX = 0;
   let startY = 0;
@@ -33,16 +33,23 @@ export function useDraggable(
   let initialMouseY = 0;
   let targets = document.querySelectorAll(".column, .board");
   const threshold = 1;
-  const ignoredClasseNames =
-    ignoredClasses?.length || 0 > 0
-      ? [".child_node", ignoredClasses]?.join(", ")
-      : "child_node";
-  console.log(ignoredClasseNames);
+  const ignoredSelectors =
+    (ignoredElements?.classes?.length || 0) > 0 ||
+    (ignoredElements?.ids?.length || 0) > 0 ||
+    (ignoredElements?.tags?.length || 0) > 0
+      ? [
+          ".child_node",
+          ...(ignoredElements?.classes || []).map((cls) => `.${cls}`),
+          ...(ignoredElements?.ids || []).map((id) => `#${id}`),
+          ...(ignoredElements?.tags || []),
+        ].join(", ")
+      : ".child_node";
+  console.log(ignoredSelectors);
 
   const startDrag = (e: PointerEvent) => {
     //? at leastit helps with removing the ghost when dragging an image
     //? other thatn that im not sure
-    e.preventDefault();
+    if (node.type === NodeType.Image) e.preventDefault();
 
     // dont accept middle mouse click
     console.log("dragging", node.id, is_child);
@@ -57,7 +64,7 @@ export function useDraggable(
     if (!is_child) {
       if (
         //(e.target as HTMLElement).closest(".child_node, .resize_handle, input")
-        (e.target as HTMLElement).closest(ignoredClasseNames)
+        (e.target as HTMLElement).closest(ignoredSelectors)
       )
         return;
     }
@@ -125,7 +132,7 @@ export function useDraggable(
       console.log("=================================================");
       console.log("did not move so single click");
       console.log("=================================================");
-      if ((e.target as HTMLElement).closest(ignoredClasseNames)) return;
+      if ((e.target as HTMLElement).closest(ignoredSelectors)) return;
       addSelected(e, node.id);
       return;
     }

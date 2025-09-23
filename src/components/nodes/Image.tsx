@@ -10,7 +10,9 @@ type ImageProps = Image & {
 };
 
 export default (node: ImageProps) => {
-  const { startDrag } = useDraggable(node, node.is_child, [".resize_handle"]);
+  const { startDrag } = useDraggable(node, node.is_child, {
+    classes: ["resize_handle"],
+  });
   const [hover, setHover] = createSignal(false);
 
   const [width, setWidth] = createSignal(

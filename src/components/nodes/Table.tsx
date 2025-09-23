@@ -29,10 +29,10 @@ import {
 } from "../ui/select";
 
 export default (node: TableProps) => {
-  const { startDrag } = useDraggable(node, node.is_child, [
-    "input",
-    ".columnSelection",
-  ]);
+  const { startDrag } = useDraggable(node, node.is_child, {
+    tags: ["input"],
+    classes: ["columnSelection"],
+  });
 
   //TODO: change to string which is the badgeRegistry key to show the menu of the related badge type
   // with a for loop to create a list for each type of badges used

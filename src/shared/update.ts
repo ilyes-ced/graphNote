@@ -16,37 +16,19 @@ import {
 import { setStore, store } from "@/components/store";
 import { saveChanges } from "./utils";
 
-const updateTasks = (
-  block_id: string,
-  task_index: number,
-  setStore: SetStoreFunction<NodeUnion[]>
-) => {
-  // needs rework is outdated
-  console.log("recieved click: ", block_id, " ", task_index);
-  setStore((prev) =>
-    prev.map((block) => {
-      if (block.id === block_id && block.type === NodeType.Todo) {
-        const updatedTasks = block.tasks?.map((task: Task, index: number) => {
-          if (index === task_index) {
-            return { ...task, check: !task.check };
-          }
-          return task;
-        });
-
-        return { ...block, tasks: updatedTasks };
-      }
-      return block;
-    })
-  );
-
-  saveChanges();
+const updateTaskCheck = (nodeId: string, value: boolean, taskIndex: number) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      setStore("nodes", parentId, index, "text", value);
+      break;
+    }
+  }
 };
+const updateTaskText = () => {};
 
 //? update Note text content
 const updateNote = (nodeId: string, newValue: string) => {
-  console.log("not nested");
-  console.log(nodeId);
-
   for (const [parentId, nodeList] of Object.entries(store.nodes)) {
     const index = nodeList.findIndex((n) => n.id === nodeId);
     if (index !== -1) {
