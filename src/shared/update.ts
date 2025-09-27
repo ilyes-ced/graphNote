@@ -16,16 +16,58 @@ import {
 import { setStore, store } from "@/components/store";
 import { saveChanges } from "./utils";
 
-const updateTaskCheck = (nodeId: string, value: boolean, taskIndex: number) => {
+const updateTask = (
+  nodeId: string,
+  value: string | boolean,
+  taskIndex: number
+) => {
   for (const [parentId, nodeList] of Object.entries(store.nodes)) {
-    const index = nodeList.findIndex((n) => n.id === nodeId);
-    if (index !== -1) {
-      setStore("nodes", parentId, index, "text", value);
+    const nodeIndex = nodeList.findIndex((node) => node.id === nodeId);
+    let updatedField: string;
+
+    if (typeof value === "boolean") {
+      updatedField = "check";
+    } else if (typeof value === "string") {
+      updatedField = "text";
+    } else {
+      return;
+    }
+
+    if (nodeIndex !== -1) {
+      // Make sure it's a Todo with a tasks array
+      const node = store.nodes[parentId][nodeIndex];
+      if (
+        "tasks" in node &&
+        Array.isArray(node.tasks) &&
+        node.tasks[taskIndex]
+      ) {
+        console.log(
+          "Updating:",
+          parentId,
+          nodeIndex,
+          "tasks",
+          taskIndex,
+          updatedField,
+          value
+        );
+        setStore(
+          "nodes",
+          parentId,
+          nodeIndex,
+          "tasks",
+          taskIndex,
+          updatedField,
+          value
+        );
+      } else {
+        console.warn("Node found but tasks array or index is invalid");
+      }
       break;
     }
   }
+
+  saveChanges();
 };
-const updateTaskText = () => {};
 
 //? update Note text content
 const updateNote = (nodeId: string, newValue: string) => {
@@ -143,6 +185,7 @@ const findParentIdByNodeId = (nodeId: string): string | null => {
 };
 
 const removeNodeById = (nodeId: string, parentId?: string) => {
+  console.info("removing the node:", nodeId);
   let space;
   if (parentId) {
     space = parentId;
@@ -164,6 +207,8 @@ const addNode = (
   //* if it is set, node is sent to another node
   targetNodeId?: string
 ) => {
+  console.info("adding the node:", newNode);
+
   if (targetNodeId) {
     setStore("nodes", targetNodeId, (nodes = []) => [...nodes, newNode]);
   } else {
@@ -311,4 +356,5 @@ export {
   addNode,
   updateImageWidth,
   newNode,
+  updateTask,
 };

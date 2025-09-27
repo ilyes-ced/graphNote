@@ -19,16 +19,17 @@ export default (props: any) => {
       const dx = e.clientX - lastMouse.x;
       const dy = e.clientY - lastMouse.y;
 
+      // todo: limit the movement on the other side as well, do the same thing on the scroll too
       // limiting the movement to the size of the viewport, not sure if i really should
-      if (store.viewport.x + dx <= 0) {
+      if (store.viewport.x + dx <= 500) {
         setStore("viewport", "x", (prev) => prev + dx);
       } else {
-        setStore("viewport", "x", 0);
+        setStore("viewport", "x", 500);
       }
-      if (store.viewport.y + dy <= 0) {
+      if (store.viewport.y + dy <= 500) {
         setStore("viewport", "y", (prev) => prev + dy);
       } else {
-        setStore("viewport", "y", 0);
+        setStore("viewport", "y", 500);
       }
       lastMouse = { x: e.clientX, y: e.clientY };
     }
@@ -70,6 +71,7 @@ export default (props: any) => {
         left: 0,
       }}
     >
+      {store.viewport.x}/{store.viewport.y}
       {props.children}
     </div>
   );

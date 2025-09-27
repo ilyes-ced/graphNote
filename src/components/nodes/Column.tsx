@@ -18,7 +18,7 @@ export default (node: Column) => {
   return (
     <div
       onPointerDown={startDrag}
-      class="column node"
+      class="group/col column node"
       classList={{ selected_node: store.selectedNodes.has(node.id) }}
       id={node.id}
       style={{
@@ -35,7 +35,11 @@ export default (node: Column) => {
         ></div>
       </Show>
       <div class="content flex flex-col p-[5px]">
-        <div class="collapse_icon self-end w-6 h-6 collapse_icon hover:bg-amber-400 hover:border hover:border-green-500 hover:cursor-pointer flex justify-center items-center">
+        <div
+          class="collapse_icon self-end w-6 h-6 collapse_icon cursor-pointer flex justify-center items-center hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/col:opacity-100 
+           pointer-events-none group-hover/col:pointer-events-auto 
+           transition-all duration-200 ease-in-out"
+        >
           <Svg width={16} height={16} classes="" icon_name={"collapse"} />
         </div>
         <div class="title text-xl font-extrabold mb-2 text-center">

@@ -83,13 +83,9 @@ export default (node: NoteProps) => {
         ></div>
       </Show>
 
-      <div class="p-5 relative group">
-        <div
-          class="cursor-pointer absolute right-0 top-0 aspect-square p-1 hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover:opacity-100 
-           pointer-events-none group-hover:pointer-events-auto 
-           transition-all duration-200 ease-in-out"
-        >
-          <BiSolidEditAlt color="#ffffff" size={16} />
+      <div class="p-5 relative">
+        <div class="bg-red-400  absolute right-0 top-0 aspect-square">
+          <BiSolidEditAlt color="#ffffff" size={32} />
         </div>
 
         <span

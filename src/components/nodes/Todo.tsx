@@ -3,23 +3,33 @@ import { Task, Todo as TodoType } from "../../types";
 import { store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { VsThreeBars } from "solid-icons/vs";
+import { updateTask } from "@/shared/update";
+import { debounce } from "@/shared/utils";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
   nested?: number;
 };
 
+const updateTaskDebounce = debounce(
+  (nodeId: string, index: number, value: string | boolean) => {
+    updateTask(nodeId, value, index);
+  },
+  3000
+);
+
+const handleTaskChange = (
+  nodeId: string,
+  index: number,
+  value: string | boolean
+) => {
+  updateTaskDebounce(nodeId, index, value);
+};
+
 export default (node: TodoProps) => {
   const { startDrag } = useDraggable(node, node.is_child, {
-    classes: ["taskitem", "taskitem-text"],
+    classes: ["taskitem", "taskitem-text", "checkbox-hitbox"],
   });
-
-  const handleTextChange = () => {
-    // update text on tasks
-  };
-  const handleCheck = () => {
-    // update checked tasks
-  };
 
   return (
     <div
@@ -45,25 +55,36 @@ export default (node: TodoProps) => {
         ></div>
       </Show>
 
+      <h1>title</h1>
+
       <For each={node.tasks} fallback={<div>Loading...</div>}>
-        {(task, index) => <TaskItem {...task} nodeId={node.id} />}
+        {(task, index) => (
+          <TaskItem {...task} nodeId={node.id} index={index()} />
+        )}
       </For>
     </div>
   );
 };
 
-const TaskItem: Component<Task> = (props: any, nodeId: string) => {
+type TaskItemProps = Task & {
+  nodeId: string;
+  index: number;
+};
+const TaskItem: Component<Task> = (props: TaskItemProps) => {
   //text: string, task: boolean, children: Task[]
   // taskitem classname prevents the checkbox box from being used as drag handle so the click event on the checkbox can trigger
   return (
-    <div>
+    <div style={{ "margin-left": `${props.nestLevel * 18}px` }}>
       <div class="flex items-start justify-between">
         <div class="inline-flex items-start">
-          <label class="flex items-center cursor-pointer relative pt-[2px]">
+          <label class="checkbox-hitbox flex items-center cursor-pointer relative pt-[2px]">
             <input
               type="checkbox"
-              checked
-              class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-primary checked:border-primary"
+              checked={props.check}
+              onInput={() => {
+                handleTaskChange(props.nodeId, props.index, !props.check);
+              }}
+              class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border-2 border-foreground checked:bg-primary/80 checked:border-primary"
               id="check7"
             />
             <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/5">
@@ -86,6 +107,13 @@ const TaskItem: Component<Task> = (props: any, nodeId: string) => {
           <span
             class="taskitem-text cursor-text text-foreground outline-0 overflow-hidden text-ellipsis whitespace-nowrap ml-2"
             contentEditable={true}
+            onInput={(e) => {
+              handleTaskChange(
+                props.nodeId,
+                props.index,
+                e.currentTarget.textContent
+              );
+            }}
           >
             {props.text}
           </span>
@@ -93,16 +121,11 @@ const TaskItem: Component<Task> = (props: any, nodeId: string) => {
 
         <VsThreeBars class="order_tasklist h-full cursor-pointer pt-[3px]" />
       </div>
-
-      <Show when={props.children?.length > 0}>
-        <For each={props.children} fallback={<div>Loading...</div>}>
-          {(childTask, index) => (
-            <div class="ml-4">
-              <TaskItem {...childTask} />
-            </div>
-          )}
-        </For>
-      </Show>
     </div>
   );
 };
+/**
+ *
+ *
+ *
+ */

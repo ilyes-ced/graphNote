@@ -82,6 +82,8 @@ export default function moveNode(
 
     console.log("moved to inside a column from the canvas");
     removeNodeById(movedNodeId);
+
+    console.log("starting to add the node");
     addNode(
       {
         ...movedNode,
@@ -90,7 +92,6 @@ export default function moveNode(
         y: canvasCoords?.y || 0,
         index: store.nodes[distNode.id]?.length ?? 0,
       },
-
       distNode.id
     );
 

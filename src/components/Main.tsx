@@ -6,9 +6,8 @@ import { readJSON } from "@/shared/save.ts";
 const loadNodes = async () => {
   const initStore = await readJSON();
 
-  console.log("11111111111111111111111111111111");
-  console.log(initStore);
-  console.log("11111111111111111111111111111111");
+  console.info("store init in main.tsx");
+  console.info(initStore);
 
   if (initStore) {
     setStore("nodes", initStore?.nodes ?? []);
@@ -27,30 +26,3 @@ export default () => {
     </div>
   );
 };
-
-/*
-    <div id="main">
-      <For each={blocks.nodes}>
-        {(block) => (
-          <Switch fallback={<div>Not Found</div>}>
-            <Match when={block.type === Block_type.Column}>
-              <Column {...block} />
-            </Match>
-            <Match when={block.type === Block_type.Note}>
-              <Note {...block} />
-            </Match>
-            <Match when={block.type === Block_type.Todo}>
-              <Todo {...block} />
-            </Match>
-          </Switch>
-        )}
-      </For>
-    </div>
-
-
-
-
-
-
-
-    */

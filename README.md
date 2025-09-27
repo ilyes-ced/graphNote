@@ -1,7 +1,62 @@
-# Tauri + Solid + Typescript
+# Heading 1
 
-This template should help get you started developing with Tauri, Solid and Typescript in Vite.
+## Heading 2
 
-## Recommended IDE Setup
+### Heading 3
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+#### Heading 4
+
+##### Heading 5
+
+###### Heading 6
+
+Lorem ipsum dolor.
+
+**bold text**
+_italicized text_
+~~The world is flat.~~
+I need to highlight these ==very important words==.
+
+---
+
+[title](https://www.example.com)
+![alt text](image.jpg)
+
+Lorem
+
+---
+
+Ipsum
+
+---
+
+Dolor
+
+> Lorem ipsum dolor.
+>
+> > Lorem ipsum dolor.
+> >
+> > > Lorem ipsum dolor.
+> > >
+> > > > Lorem ipsum dolor.
+
+1. Lorem
+   1. Lorem
+1. Lorem
+1. Ipsum
+1. Dolor
+
+- Lorem
+- Ipsum
+- Dolor
+
+- [x] Write the press release
+- [ ] Update the website
+- [ ] Contact the media
+
+[Github]: https://github.com
+
+| Syntax    | Description |
+| --------- | ----------- |
+| Header    | Title       |
+| Paragraph | Text        |

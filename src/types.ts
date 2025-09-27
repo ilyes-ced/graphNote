@@ -3,7 +3,7 @@ type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
 type HEX = `#${string}`;
 type ColorType = RGB | RGBA | HEX;
 
-type Task = { text: string; check: boolean; children: Task[] };
+type Task = { text: string; check: boolean; nestLevel: number };
 
 enum NodeType {
   Note = "Note",

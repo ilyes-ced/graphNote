@@ -44,7 +44,6 @@ export function useDraggable(
           ...(ignoredElements?.tags || []),
         ].join(", ")
       : ".child_node";
-  console.log(ignoredSelectors);
 
   const startDrag = (e: PointerEvent) => {
     //? at leastit helps with removing the ghost when dragging an image
@@ -108,7 +107,7 @@ export function useDraggable(
     const nodeIsColumn = isColumn(node.id);
 
     //! could cause some performance issues if there is alot of column nodes on the canvas
-    //* introducting debound can reduce the number of calls and improve performance
+    //* introducting debounce can reduce the number of calls and improve performance
     targets.forEach((target) => {
       const isInside = isOverlapping(e.clientX, e.clientY, target);
       if (isInside && !nodeIsColumn) {
