@@ -51,7 +51,7 @@ export default (props: any) => {
 
       setStore("viewport", axis, (prev) => {
         const newValue = prev - direction;
-        return newValue <= 0 ? newValue : 0;
+        return newValue <= 500 ? newValue : 500;
       });
     }
   };

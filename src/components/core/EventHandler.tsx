@@ -1,115 +1,98 @@
-import saveFile from "@/shared/saveFile";
+import { onMount, onCleanup } from "solid-js";
 import { listen } from "@tauri-apps/api/event";
-import { setStore } from "../store";
-
-interface payload {
-  paths: string[];
-  position: { x: number; y: number };
-  id: number;
-}
-
-const fileCategories = {
-  image: ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "tiff", "ico"],
-  video: ["mp4", "mkv", "mov", "avi", "webm", "flv"],
-  music: ["mp3", "wav", "ogg", "flac", "m4a"],
-  office: ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv", "pdf"],
-  code: [
-    "js",
-    "ts",
-    "py",
-    "rs",
-    "java",
-    "c",
-    "cpp",
-    "cs",
-    "html",
-    "css",
-    "js",
-    "ts",
-    "jsx",
-    "tsx",
-    "json",
-    "xml",
-    "yaml",
-    "yml",
-    "sh",
-    "php",
-    "go",
-    "rb",
-    "swift",
-    "kt",
-    "dart",
-  ],
-  text: ["txt", "md", "log"],
-};
+import { setStore, store } from "../store";
+import { payload } from "@/types";
+import { recieveDragNDropFile } from "@/shared/utils";
+import {
+  addNode,
+  findNodeById,
+  generateNewId,
+  incremenSelectedNodesPositions,
+  removeNodeById,
+} from "@/shared/update";
 
 export default (props: any) => {
   listen<payload>("tauri://drag-drop", (event) => {
-    console.log("event :", event);
+    recieveDragNDropFile(event);
+  });
 
-    const payload = event.payload;
+  // todo: use later to add some styles
+  //listen("tauri://drag-enter", (event) => {});
+  //listen("tauri://drag-leave", (event) => {});
 
-    console.log("file path:", payload.paths);
-    console.log("file pos:", payload.position);
+  onMount(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      console.log("eventhandler key press", e.key);
+      // You can add logic here like:
+      if (e.ctrlKey) {
+        switch (e.key) {
+          case "c": // copy
+            console.log("pressed ctrl+c");
+            store.selectedNodes.forEach((selectedNode) => {
+              let node = findNodeById(selectedNode);
+              if (node) setStore("copiedNodes", (nodes) => [...nodes, node]);
+              console.log("copied nodes:", store.copiedNodes);
+            });
 
-    if (!payload.paths || payload.paths.length === 0) return;
-
-    payload.paths.forEach(async (filePath) => {
-      if ((await saveFile(filePath)) === true) {
-        // add file to nodes store
-        console.log("+===============================");
-        console.log(filePath.split(".").splice(-1)[0].toLowerCase());
-
-        const fileExt = filePath.split(".").splice(-1)[0].toLowerCase();
-
-        let fileType = "unknown";
-        for (const [category, extensions] of Object.entries(fileCategories)) {
-          if (extensions.includes(fileExt)) {
-            fileType = category;
             break;
-          }
-        }
-        console.log("file type:", fileType);
+          case "v": // paste
+            // paste the selected nodes as is but change Ids
+            // also increment x and y by a little in case of paste in the same position
+            store.copiedNodes.forEach((copiedNode) => {
+              addNode({
+                ...copiedNode,
+                id: generateNewId(),
+                x: copiedNode.x + 30,
+                y: copiedNode.y + 30,
+              });
+            });
+            break;
+          case "z": // undo
+            break;
+          case "y": // redo
+            break;
+          case "f": // search
+            break;
 
-        switch (fileType) {
-          //todo: add the item to the nodes store depending on the fileType
-          case "image":
-            break;
-          case "video":
-            break;
-          case "music":
-            break;
-          case "office":
-            break;
-          case "code":
-            break;
-          case "text":
-            break;
-
-          //todo: when the file is unhancled it should be deleted
           default:
-            console.warn(
-              `file type ${fileExt} is unknown and cannot be handled`
-            );
             break;
         }
       } else {
-        //send error message notification
+        switch (e.key) {
+          case "Escape":
+            setStore("selectedNodes", new Set());
+            break;
+          case "Delete":
+            store.selectedNodes.forEach((selectedNode) => {
+              removeNodeById(selectedNode);
+            });
+            break;
+
+          // move selected nodes
+          case "ArrowUp":
+            incremenSelectedNodesPositions(0, -10);
+            break;
+          case "ArrowDown":
+            incremenSelectedNodesPositions(0, 10);
+            break;
+          case "ArrowLeft":
+            incremenSelectedNodesPositions(-10, 0);
+            break;
+          case "ArrowRight":
+            incremenSelectedNodesPositions(10, 0);
+            break;
+          default:
+            break;
+        }
       }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    onCleanup(() => {
+      window.removeEventListener("keydown", handleKeyDown);
     });
   });
-
-  listen("tauri://drag-enter", (event) => {});
-  listen("tauri://drag-leave", (event) => {});
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      //! doesnt work yet
-      e.stopPropagation();
-      console.log("escape clicked");
-      setStore("selectedNodes", new Set());
-    }
-  };
 
   return (
     <div
@@ -118,7 +101,6 @@ export default (props: any) => {
         // e.preventDefault(); // prevent browser context menu
         // console.log("this is opening the context menu");
       }}
-      onKeyDown={handleKeyDown}
     >
       {props.children}
     </div>

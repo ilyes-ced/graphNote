@@ -19,6 +19,8 @@ interface GlobalStore {
   // todo: reset when changing workspace
   selectedNodes: Set<string>; // node id
 
+  copiedNodes: NodeUnion[];
+
   viewport: {
     x: number;
     y: number;
@@ -40,6 +42,8 @@ const [store, setStore] = createStore<GlobalStore>({
   dragThreshold: 5,
   dragging: null,
   selectedNodes: new Set([]),
+
+  copiedNodes: [],
 
   viewport: {
     x: 0,

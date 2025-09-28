@@ -4,6 +4,7 @@ import { setStore, store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { saveChanges } from "@/shared/utils";
 import { getActiveBoardId, updateImageWidth } from "@/shared/update";
+import { IoResize } from "solid-icons/io";
 
 type ImageProps = Image & {
   is_child?: boolean;
@@ -13,7 +14,6 @@ export default (node: ImageProps) => {
   const { startDrag } = useDraggable(node, node.is_child, {
     classes: ["resize_handle"],
   });
-  const [hover, setHover] = createSignal(false);
 
   const [width, setWidth] = createSignal(
     store.nodes[getActiveBoardId()].find((n) => n.id === node.id)?.width ?? 300
@@ -58,10 +58,8 @@ export default (node: ImageProps) => {
   return (
     <div
       ref={boxRef}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
       onPointerDown={startDrag}
-      class="image resize"
+      class="image resize group/resize"
       classList={{
         child_node: node.is_child,
         node: !node.is_child,
@@ -86,13 +84,14 @@ export default (node: ImageProps) => {
         src={node.path || "placeholder.png"}
         alt="test image name"
       />
-      {width()}
-      <Show when={hover() && !node.is_child}>
-        <div
-          onPointerDown={startResize}
-          class="cursor-nwse-resize resize_handle size-4 bg-red-300 absolute right-0 bottom-0"
-        ></div>
-      </Show>
+      <div
+        onPointerDown={startResize}
+        class="resize_handle cursor-pointer absolute bottom-0 right-0 aspect-square hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/resize:opacity-100 
+                   pointer-events-none group-hover/resize:pointer-events-auto 
+                   transition-all duration-200 ease-in-out"
+      >
+        <IoResize color="#000000" size={24} class="rotate-90 " stroke="4" />
+      </div>
     </div>
   );
 };

@@ -28,7 +28,7 @@ const handleTaskChange = (
 
 export default (node: TodoProps) => {
   const { startDrag } = useDraggable(node, node.is_child, {
-    classes: ["taskitem", "taskitem-text", "checkbox-hitbox"],
+    classes: ["taskitem", "taskitem-text", "checkbox-check"],
   });
 
   return (
@@ -77,7 +77,7 @@ const TaskItem: Component<Task> = (props: TaskItemProps) => {
     <div style={{ "margin-left": `${props.nestLevel * 18}px` }}>
       <div class="flex items-start justify-between">
         <div class="inline-flex items-start">
-          <label class="checkbox-hitbox flex items-center cursor-pointer relative pt-[2px]">
+          <label class="checkbox-check flex items-center cursor-pointer relative pt-[2px]">
             <input
               type="checkbox"
               checked={props.check}
@@ -103,7 +103,7 @@ const TaskItem: Component<Task> = (props: TaskItemProps) => {
                 ></path>
               </svg>
             </span>
-          </label>{" "}
+          </label>
           <span
             class="taskitem-text cursor-text text-foreground outline-0 overflow-hidden text-ellipsis whitespace-nowrap ml-2"
             contentEditable={true}
@@ -124,8 +124,3 @@ const TaskItem: Component<Task> = (props: TaskItemProps) => {
     </div>
   );
 };
-/**
- *
- *
- *
- */

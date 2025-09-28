@@ -33,12 +33,18 @@ export default (props: any) => {
       }}
     >
       <div
-        onclick={(e) => {
+        onClick={(e) => {
           // could cause issues in the future not sure
           if (e.target !== e.currentTarget) return;
           console.log("canvas click");
           e.stopPropagation();
           setStore("selectedNodes", new Set());
+        }}
+        onDblClick={(e) => {
+          // could cause issues in the future not sure
+          if (e.target !== e.currentTarget) return;
+          console.log("canvas double click");
+          e.stopPropagation();
         }}
         id="viewport-content"
         style={{
@@ -46,8 +52,8 @@ export default (props: any) => {
           transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
           "transform-origin": "50% 50%",
           transition: "transform 0.05s ease-out",
-          width: "100%",
-          height: "100%",
+          width: "2000px",
+          height: "2000px",
         }}
       >
         {props.children}

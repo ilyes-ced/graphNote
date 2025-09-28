@@ -117,6 +117,22 @@ const updatePosition = (nodeId: string, x: number, y: number) => {
 
   saveChanges();
 };
+//? update node position for arrow keys
+const incremenSelectedNodesPositions = (x: number, y: number) => {
+  store.selectedNodes.forEach((selectedNode) => {
+    console.info("incrementing position of node:", selectedNode, x, y);
+
+    const activeBoardId = getActiveBoardId();
+    const boardNodes = store.nodes[activeBoardId] ?? [];
+
+    const index = boardNodes.findIndex((n) => n.id === selectedNode);
+    if (index !== -1) {
+      if (x) setStore("nodes", activeBoardId, index, "x", (prev) => prev + x);
+      if (y) setStore("nodes", activeBoardId, index, "y", (prev) => prev + y);
+    }
+  });
+  saveChanges();
+};
 
 //? update image wdith
 const updateImageWidth = (nodeId: string, width: number) => {
@@ -197,6 +213,8 @@ const removeNodeById = (nodeId: string, parentId?: string) => {
   if (updated) {
     setStore("nodes", space, updated);
   }
+
+  saveChanges();
 };
 
 const addNode = (
@@ -347,6 +365,7 @@ export {
   updateNote,
   updateZIndex,
   updatePosition,
+  incremenSelectedNodesPositions,
   updateChildPosition,
   getActiveBoardId,
   isColumn,
@@ -354,6 +373,7 @@ export {
   findParentIdByNodeId,
   removeNodeById,
   addNode,
+  generateNewId,
   updateImageWidth,
   newNode,
   updateTask,

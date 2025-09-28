@@ -3,6 +3,12 @@ type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
 type HEX = `#${string}`;
 type ColorType = RGB | RGBA | HEX;
 
+interface payload {
+  paths: string[];
+  position: { x: number; y: number };
+  id: number;
+}
+
 type Task = { text: string; check: boolean; nestLevel: number };
 
 enum NodeType {
@@ -209,6 +215,7 @@ export type {
   Activity,
   ColorType,
   Edge,
+  payload,
 };
 
 /*
