@@ -1,7 +1,5 @@
-import { Component, For, Show } from "solid-js";
+import { Component, For } from "solid-js";
 import { Task, Todo as TodoType } from "../../types";
-import { store } from "../store";
-import { useDraggable } from "@/shared/nodeDrag";
 import { VsThreeBars } from "solid-icons/vs";
 import { updateTask } from "@/shared/update";
 import { debounce } from "@/shared/utils";
@@ -27,34 +25,8 @@ const handleTaskChange = (
 };
 
 export default (node: TodoProps) => {
-  const { startDrag } = useDraggable(node, node.is_child, {
-    classes: ["taskitem", "taskitem-text", "checkbox-check"],
-  });
-
   return (
-    <div
-      onPointerDown={startDrag}
-      class="todo p-5"
-      classList={{
-        "child_node w-full": node.is_child,
-        node: !node.is_child,
-        selected_node: store.selectedNodes.has(node.id),
-      }}
-      id={node.id}
-      style={{
-        width: node.is_child ? "100%" : node.width + "px",
-        background: node.color ? node.color : "",
-        "z-index": node.zIndex,
-        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
-      }}
-    >
-      <Show when={node.top_strip_color}>
-        <div
-          class="top_strip"
-          style={{ background: node.top_strip_color }}
-        ></div>
-      </Show>
-
+    <div class="p-5">
       <h1>title</h1>
 
       <For each={node.tasks} fallback={<div>Loading...</div>}>

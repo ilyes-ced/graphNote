@@ -184,19 +184,6 @@ export default (node: TableProps) => {
           }
         }
       }
-      onPointerDown={startDrag}
-      class="table"
-      classList={{
-        "child_node w-full": node.is_child,
-        node: !node.is_child,
-        selected_node: store.selectedNodes.has(node.id),
-      }}
-      id={node.id}
-      style={{
-        //width: node.is_child ? "100%" : node.width + "px",
-        "z-index": node.zIndex,
-        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
-      }}
     >
       <For each={Object.entries(badgeRegistry)}>
         {([type, badges]) => (

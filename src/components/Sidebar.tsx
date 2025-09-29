@@ -12,6 +12,7 @@ import Svg from "./nodes/Svg";
 import { newNode } from "@/shared/update";
 import { NodeType } from "@/types";
 import { store } from "./store";
+import ColorSelectMenu from "./ui/ColorSelectMenu";
 
 const icons = [
   // basic blocks
@@ -41,7 +42,7 @@ const icons = [
 
 const stylesIcons = [
   // basic blocks
-  { name: "note", width: 32, height: 24 },
+  { name: "color", width: 32, height: 24 },
 ];
 
 // have all the template componenets in this file,
@@ -206,36 +207,27 @@ const NodeStyle: Component = (props: any) => {
   return (
     <div class="h-full overflow-hidden w-[65px] p-4 bg-card">
       <div class="flex flex-col space-y-4 overflow-x-visible relative">
-        <For each={stylesIcons} fallback={<div>Loading...</div>}>
-          {(icon) => (
-            <div
-              class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
-              onMouseDown={startDragging(icon.name)}
-            >
-              <Svg
-                width={icon.width}
-                height={icon.height}
-                classes=""
-                icon_name={icon.name}
-              />
-              <div class=""></div>
-
-              <span class="text-sm">{icon.name}</span>
+        {/* colors menu toggle */}
+        <div>
+          <div class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square">
+            <div class="flex flex-col size-full p-2">
+              <div class="bg-[#EC4899] border-b-0 h-1/6 w-full "></div>
+              <div class="bg-[#8B5CF6] h-5/6 w-full "></div>
             </div>
-          )}
-        </For>
-      </div>
+          </div>
+          <p class="text-sm text-center">colors</p>
+        </div>
 
-      <div
-        class="bg-red-900 p-4 z-50"
-        style={{
-          position: "absolute",
-          display: dragging() ? "block" : "none",
-          top: `${dragPos().y}px`,
-          left: `${dragPos().x}px`,
-        }}
-      >
-        note template
+        {/* colors menu toggle */}
+        <div>
+          <div class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square">
+            <div class="flex flex-col size-full p-2">
+              <div class="bg-[#EC4899] border-b-0 h-1/6 w-full "></div>
+              <div class="bg-[#8B5CF6] h-5/6 w-full "></div>
+            </div>
+          </div>
+          <p class="text-sm text-center">colors</p>
+        </div>
       </div>
     </div>
   );

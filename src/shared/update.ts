@@ -134,8 +134,8 @@ const incremenSelectedNodesPositions = (x: number, y: number) => {
   saveChanges();
 };
 
-//? update image wdith
-const updateImageWidth = (nodeId: string, width: number) => {
+//? update node wdith
+const updateNodeWidth = (nodeId: string, width: number) => {
   const activeBoardId = getActiveBoardId();
   const boardNodes = store.nodes[activeBoardId] ?? [];
 
@@ -374,7 +374,7 @@ export {
   removeNodeById,
   addNode,
   generateNewId,
-  updateImageWidth,
+  updateNodeWidth,
   newNode,
   updateTask,
 };

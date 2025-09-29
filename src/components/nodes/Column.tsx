@@ -7,88 +7,66 @@ import Url from "./Url";
 import Board from "./Board";
 import Table from "./Table";
 import { store } from "../store";
-import { useDraggable } from "@/shared/nodeDrag";
 import Image from "../nodes/Image";
+import NodeWrapper from "../core/NodeWrapper";
 
 export default (node: Column) => {
-  const { startDrag } = useDraggable(node, false, {
-    classes: ["collapse_icon"],
-  });
-
   return (
-    <div
-      onPointerDown={startDrag}
-      class="group/col column node"
-      classList={{ selected_node: store.selectedNodes.has(node.id) }}
-      id={node.id}
-      style={{
-        width: node.width + "px",
-        background: node.color, //? if this doesnt exist, .node in App.css will take care of it
-        "z-index": node.zIndex,
-        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
-      }}
-    >
-      <Show when={node.top_strip_color}>
-        <div
-          class="top_strip"
-          style={{ background: node.top_strip_color }}
-        ></div>
-      </Show>
-      <div class="content flex flex-col p-[5px]">
-        <div
-          class="collapse_icon self-end w-6 h-6 collapse_icon cursor-pointer flex justify-center items-center hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/col:opacity-100 
-           pointer-events-none group-hover/col:pointer-events-auto 
+    <div class="content flex flex-col p-[5px]">
+      <div
+        class="collapse_icon self-end w-6 h-6 collapse_icon cursor-pointer flex justify-center items-center hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/collapse:opacity-100 
+           pointer-events-none group-hover/collapse:pointer-events-auto 
            transition-all duration-200 ease-in-out"
+      >
+        <Svg width={16} height={16} classes="" icon_name={"collapse"} />
+      </div>
+      <div class="title text-xl font-extrabold mb-2 text-center">
+        {node.title}
+      </div>
+      <div class="subtitle mb-4 text-center">subtitle</div>
+      <div
+        class="children_container flex flex-col"
+        style={{ position: "relative" }}
+      >
+        <Show
+          when={store.nodes[node.id] && store.nodes[node.id].length > 0}
+          fallback={
+            <div class="empty_children_containe h-[65px] w-full bg-gray-950"></div>
+          }
         >
-          <Svg width={16} height={16} classes="" icon_name={"collapse"} />
-        </div>
-        <div class="title text-xl font-extrabold mb-2 text-center">
-          {node.title}
-        </div>
-        <div class="subtitle mb-4 text-center">subtitle</div>
-
-        <div
-          class="children_container flex flex-col"
-          style={{ position: "relative" }}
-        >
-          <Show
-            when={store.nodes[node.id] && store.nodes[node.id].length > 0}
-            fallback={
-              <div class="empty_children_containe h-[65px] w-full bg-gray-950"></div>
-            }
-          >
-            <For each={store.nodes[node.id]}>
-              {(child_node, index) => (
-                <>
+          <For each={store.nodes[node.id]}>
+            {(child_node, index) => (
+              <div class=" flex flex-col">
+                <NodeWrapper node={node} isChildNode={true}>
                   <Switch fallback={<div>Not Found</div>}>
                     <Match when={child_node.type === NodeType.Note}>
-                      <Note {...child_node} is_child={true} />
+                      <Note {...child_node} />
                     </Match>
                     <Match when={child_node.type === NodeType.Todo}>
-                      <Todo {...child_node} is_child={true} />
+                      <Todo {...child_node} />
                     </Match>
                     <Match when={child_node.type === NodeType.Url}>
-                      <Url {...child_node} is_child={true} />
+                      <Url {...child_node} />
                     </Match>
                     <Match when={child_node.type === NodeType.Board}>
-                      <Board {...child_node} is_child={true} />
+                      <Board {...child_node} />
                     </Match>
                     <Match when={child_node.type === NodeType.Table}>
-                      <Table {...child_node} is_child={true} />
+                      <Table {...child_node} />
                     </Match>
                     <Match when={child_node.type === NodeType.Image}>
-                      <Image {...child_node} is_child={true} />
+                      <Image {...child_node} />
                     </Match>
                   </Switch>
+                </NodeWrapper>
 
-                  <Show when={index() < store.nodes[node.id].length - 1}>
-                    <div class="column_spacer pt-[5px] bg-transparent"></div>
-                  </Show>
-                </>
-              )}
-            </For>
-          </Show>
-        </div>
+                <Show when={index() < store.nodes[node.id].length - 1}>
+                  <div class="column_spacer pt-[5px] bg-transparent"></div>
+                </Show>
+              </div>
+            )}
+          </For>
+        </Show>
       </div>
     </div>
   );

@@ -60,22 +60,7 @@ export default (node: UrlProps) => {
   });
 
   return (
-    <div
-      onPointerDown={startDrag}
-      class="url"
-      classList={{
-        "child_node w-full": node.is_child,
-        node: !node.is_child,
-        selected_node: store.selectedNodes.has(node.id),
-      }}
-      id={node.id}
-      style={{
-        width: node.is_child ? "100%" : node.width + "px",
-        background: node.color ? node.color : "",
-        "z-index": node.zIndex,
-        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
-      }}
-    >
+    <div>
       <Show when={node.top_strip_color}>
         <div
           class="top_strip"

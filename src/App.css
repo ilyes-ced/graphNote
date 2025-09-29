@@ -131,7 +131,6 @@ body,
 .column {
   /*for hen you exit animation*/
   transition: opacity 0.3s ease-out;
-  background-color: var(--color-primary);
 }
 
 .selected_node {

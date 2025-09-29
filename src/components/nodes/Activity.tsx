@@ -1,5 +1,4 @@
-import { createEffect, createSignal, For, Show } from "solid-js";
-import { store } from "../store";
+import { For, Show } from "solid-js";
 import { useDraggable } from "@/shared/nodeDrag";
 import { Activity } from "@/types";
 
@@ -26,22 +25,7 @@ export default (node: ActivityProps) => {
   // console.log(today.getDay);
 
   return (
-    <div
-      onPointerDown={startDrag}
-      class="activity"
-      classList={{
-        child_node: node.is_child,
-        node: !node.is_child,
-        selected_node: store.selectedNodes.has(node.id),
-      }}
-      id={node.id}
-      style={{
-        width: node.is_child ? "100%" : "",
-        background: node.color ? node.color : "",
-        "z-index": node.zIndex,
-        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
-      }}
-    >
+    <div>
       <Show when={node.top_strip_color}>
         <div
           class="top_strip"
