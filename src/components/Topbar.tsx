@@ -1,9 +1,11 @@
 import { createSignal, For } from "solid-js";
-import { FaSolidAnglesRight } from "solid-icons/fa";
 import { Button } from "./ui/button";
-import { WiMoonAltFirstQuarter } from "solid-icons/wi";
-import { VsSettingsGear } from "solid-icons/vs";
 import { setStore, store } from "./store";
+import {
+  IconChevronsRight,
+  IconMoonFilled,
+  IconSettings,
+} from "@tabler/icons-solidjs";
 
 export default () => {
   const breadcrumbsClick = (index: number, id: string) => {
@@ -59,7 +61,7 @@ export default () => {
                   </div>
                   {!(index() === store.activeBoards.length - 1) && (
                     <span class="self-center mx-1 my-0 ">
-                      <FaSolidAnglesRight size={20} />{" "}
+                      <IconChevronsRight />
                     </span>
                   )}
                 </>
@@ -71,11 +73,11 @@ export default () => {
 
       <div class="flex justify-center items-center space-x-4">
         <Button variant={"secondary"}>
-          <VsSettingsGear />
+          <IconSettings />
         </Button>
 
         <Button variant={"secondary"}>
-          <WiMoonAltFirstQuarter />
+          <IconMoonFilled />
         </Button>
       </div>
     </div>

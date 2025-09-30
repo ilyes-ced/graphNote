@@ -13,6 +13,26 @@ import { newNode } from "@/shared/update";
 import { NodeType } from "@/types";
 import { store } from "./store";
 import ColorSelectMenu from "./ui/ColorSelectMenu";
+import {
+  IconArrowBackUp,
+  IconArrowForwardUp,
+  IconBlockquote,
+  IconBold,
+  IconCode,
+  IconH1,
+  IconH2,
+  IconH3,
+  IconH4,
+  IconH5,
+  IconH6,
+  IconItalic,
+  IconList,
+  IconListNumbers,
+  IconPilcrow,
+  IconSpacingVertical,
+  IconStrikethrough,
+  IconUnderline,
+} from "@tabler/icons-solidjs";
 
 const icons = [
   // basic blocks
@@ -42,7 +62,30 @@ const icons = [
 
 const stylesIcons = [
   // basic blocks
-  { name: "color", width: 32, height: 24 },
+  { name: "bold", icon: IconBold },
+  { name: "italic", icon: IconItalic },
+  { name: "underline", icon: IconUnderline },
+  { name: "strike", icon: IconStrikethrough },
+
+  { name: "paragraph", icon: IconPilcrow },
+
+  { name: "header 1", icon: IconH1 },
+  { name: "header 2", icon: IconH2 },
+  { name: "header 3", icon: IconH3 },
+  { name: "header 4", icon: IconH4 },
+  { name: "header 5", icon: IconH5 },
+  { name: "header 6", icon: IconH6 },
+
+  { name: "list", icon: IconList },
+  { name: "numberedList", icon: IconListNumbers },
+
+  { name: "codeBlock", icon: IconCode },
+  { name: "blockQuote", icon: IconBlockquote },
+
+  { name: "verticalRule", icon: IconSpacingVertical },
+
+  { name: "redo", icon: IconArrowBackUp },
+  { name: "undo", icon: IconArrowForwardUp },
 ];
 
 // have all the template componenets in this file,
@@ -207,7 +250,7 @@ const NodeStyle: Component = (props: any) => {
   return (
     <div class="h-full overflow-hidden w-[65px] p-4 bg-card">
       <div class="flex flex-col space-y-4 overflow-x-visible relative">
-        {/* colors menu toggle */}
+        {/* colors menu toggle
         <div>
           <div class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square">
             <div class="flex flex-col size-full p-2">
@@ -217,16 +260,21 @@ const NodeStyle: Component = (props: any) => {
           </div>
           <p class="text-sm text-center">colors</p>
         </div>
+        */}
 
-        {/* colors menu toggle */}
-        <div>
-          <div class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square">
-            <div class="flex flex-col size-full p-2">
-              <div class="bg-[#EC4899] border-b-0 h-1/6 w-full "></div>
-              <div class="bg-[#8B5CF6] h-5/6 w-full "></div>
-            </div>
-          </div>
-          <p class="text-sm text-center">colors</p>
+        <div class="h-full overflow-auto space-y-2">
+          <For each={stylesIcons} fallback={<div>Loading...</div>}>
+            {(icon) => (
+              <div>
+                <div class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square">
+                  <div class="flex flex-col size-full p-2">
+                    <icon.icon />
+                  </div>
+                </div>
+                <p class="text-sm text-center overflow-visible">{icon.name}</p>
+              </div>
+            )}
+          </For>
         </div>
       </div>
     </div>

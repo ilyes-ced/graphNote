@@ -4,7 +4,7 @@ import { updateNote } from "@/shared/update";
 import { addSelected, debounce } from "@/shared/utils";
 import { store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
-import { BiSolidEditAlt } from "solid-icons/bi";
+import { IconEdit } from "@tabler/icons-solidjs";
 
 type NoteProps = Note & {
   is_child?: boolean;
@@ -85,7 +85,7 @@ export default (node: NoteProps) => {
 
       <div class="p-5 relative">
         <div class="bg-red-400  absolute right-0 top-0 aspect-square">
-          <BiSolidEditAlt color="#ffffff" size={32} />
+          <IconEdit />
         </div>
 
         <span

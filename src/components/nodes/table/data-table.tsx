@@ -22,9 +22,12 @@ import {
 } from "@/components/ui/table";
 import { TextField, TextFieldRoot } from "@/components/ui/textfield";
 import { Button } from "@/components/ui/button";
-
-import { FaSolidAngleRight, FaSolidAngleLeft } from "solid-icons/fa";
-import { FaSolidAnglesRight, FaSolidAnglesLeft } from "solid-icons/fa";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconChevronsLeft,
+  IconChevronsRight,
+} from "@tabler/icons-solidjs";
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -156,7 +159,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <FaSolidAnglesLeft />
+            <IconChevronsLeft />
           </Button>
           <Button
             variant="outline"
@@ -164,7 +167,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <FaSolidAngleLeft />
+            <IconArrowLeft />
           </Button>
           <div class="px-2">
             page {table.getState().pagination.pageIndex + 1} of{" "}
@@ -176,7 +179,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <FaSolidAngleRight />
+            <IconArrowRight />
           </Button>
           <Button
             variant="outline"
@@ -184,7 +187,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <FaSolidAnglesRight />
+            <IconChevronsRight />
           </Button>
         </div>
       </div>

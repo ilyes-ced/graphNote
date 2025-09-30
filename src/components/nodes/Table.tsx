@@ -12,13 +12,6 @@ import { store } from "../store";
 type TableProps = TableNode & {
   is_child?: boolean;
 };
-import {
-  BiRegularDotsHorizontalRounded,
-  BiRegularSortDown,
-  BiRegularSortUp,
-} from "solid-icons/bi";
-import { FaSolidFilter } from "solid-icons/fa";
-import { VsGraphLine } from "solid-icons/vs";
 import { Checkbox, CheckboxControl } from "../ui/checkbox";
 import {
   Select,
@@ -27,6 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import {
+  IconDotsVertical,
+  IconFilter,
+  IconGraph,
+  IconSortDescending,
+} from "@tabler/icons-solidjs";
 
 export default (node: TableProps) => {
   const { startDrag } = useDraggable(node, node.is_child, {
@@ -213,7 +212,7 @@ export default (node: TableProps) => {
             </Select>
 
             <button class="cursor-pointer px-4 py-1 border border-border hover:bg-red-500 w-fit">
-              <VsGraphLine size={16} />
+              <IconGraph size={16} />
             </button>
           </div>
         </div>
@@ -241,7 +240,7 @@ export default (node: TableProps) => {
                     <TableCell>{getCellInput(key, value)}</TableCell>
                   ))}
                   <TableCellButton>
-                    <BiRegularDotsHorizontalRounded />
+                    <IconDotsVertical />
                   </TableCellButton>
                 </TableRow>
               )}
@@ -286,7 +285,7 @@ const TableHeaderCell = (props: { children: JSX.Element }) => {
     <th class="">
       <div class="px-6 py-4 flex items-center w-full cursor-pointer hover:bg-red-400">
         {props.children}
-        <BiRegularSortDown class="ml-2" size={16} />
+        <IconSortDescending class="ml-2" size={16} />
       </div>
     </th>
   );
@@ -356,7 +355,7 @@ const Pagination = () => {
 const Filter = () => {
   return (
     <div class="flex px-4 py-1 border border-border items-center">
-      <FaSolidFilter class="text-foreground" />
+      <IconFilter class="text-foreground" />
       <input type="text" name="" placeholder="filter here" id="" class="pl-4" />
     </div>
   );

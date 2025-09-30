@@ -1,9 +1,9 @@
 import { Board, Column, NodeType, NodeUnion } from "../../types";
-import { AiOutlineCode } from "solid-icons/ai";
 import { setStore, store } from "../store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { reconcile } from "solid-js/store";
 import { findNodeById } from "@/shared/update";
+import { IconCode } from "@tabler/icons-solidjs";
 
 type BoardProps = Board & {
   is_child?: boolean;
@@ -73,7 +73,7 @@ export default (node: BoardProps) => {
           "border-radius": node.is_child ? "10px" : "15px",
         }}
       >
-        <AiOutlineCode class="size-full p-2" />
+        <IconCode class="size-full p-2" />
       </div>
       <div class="text_container flex flex-col justify-center items-center">
         <div

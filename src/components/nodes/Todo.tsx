@@ -1,8 +1,8 @@
 import { Component, For } from "solid-js";
 import { Task, Todo as TodoType } from "../../types";
-import { VsThreeBars } from "solid-icons/vs";
 import { updateTask } from "@/shared/update";
 import { debounce } from "@/shared/utils";
+import { IconMenu2 } from "@tabler/icons-solidjs";
 
 type TodoProps = TodoType & {
   is_child?: boolean;
@@ -91,7 +91,7 @@ const TaskItem: Component<Task> = (props: TaskItemProps) => {
           </span>
         </div>
 
-        <VsThreeBars class="order_tasklist h-full cursor-pointer pt-[3px]" />
+        <IconMenu2 class="order_tasklist h-full cursor-pointer pt-[3px]" />
       </div>
     </div>
   );

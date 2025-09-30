@@ -1,10 +1,5 @@
 import type { Column, ColumnDef } from "@tanstack/solid-table";
 import { Button } from "../../ui/button";
-import {
-  BiRegularDotsHorizontalRounded,
-  BiRegularSortDown,
-  BiRegularSortUp,
-} from "solid-icons/bi";
 
 import {
   DropdownMenu,
@@ -15,6 +10,11 @@ import {
 import { Checkbox, CheckboxControl } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Match, Switch } from "solid-js";
+import {
+  IconDotsVertical,
+  IconSortAscending,
+  IconSortDescending,
+} from "@tabler/icons-solidjs";
 
 // This type is used to define the shape of our data.
 // You can use a Zod or Validbot schema here if you want.
@@ -34,12 +34,12 @@ const sorterComponent = function (name: string, column: Column<Task, unknown>) {
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
       {name}
-      <Switch fallback={<BiRegularSortDown class="ml-2" size={16} />}>
+      <Switch fallback={<IconSortDescending class="ml-2" size={16} />}>
         <Match when={column.getIsSorted() === "asc"}>
-          <BiRegularSortDown class="ml-2" size={16} />
+          <IconSortDescending class="ml-2" size={16} />
         </Match>
         <Match when={column.getIsSorted() === "desc"}>
-          <BiRegularSortUp class="ml-2" size={16} />
+          <IconSortAscending class="ml-2" size={16} />
         </Match>
       </Switch>
     </Button>
@@ -124,7 +124,7 @@ export const columns: ColumnDef<Task>[] = [
       <DropdownMenu placement="bottom-end">
         <DropdownMenuTrigger class="flex items-center justify-center">
           <Button variant="ghost" size="icon">
-            <BiRegularDotsHorizontalRounded class="cursor-pointer" />
+            <IconDotsVertical class="cursor-pointer" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
