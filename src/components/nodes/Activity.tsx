@@ -48,7 +48,7 @@ export default (node: ActivityProps) => {
           </div>
         </div>
 
-        <div class="flex flex-row space-x-[2px]">
+        <div class="flex flex-row space-x-[2px] overflow-auto">
           <For each={Array.from(Array(52).keys())}>
             {(week) => (
               <div class="flex flex-col space-y-[2px]">

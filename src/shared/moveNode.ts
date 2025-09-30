@@ -35,8 +35,14 @@ export default function moveNode(
     // moving node to canvas or new parent
     if (movedToCanvas) {
       console.log(movedNodeId);
-      let dims = document.querySelector(`#${movedNodeId}`);
-      console.log("nested moved to canvas: ", dims);
+      console.log(
+        "nested moved to canvas: ",
+        movedNodeId,
+        distNodeId,
+        nested,
+        movedToCanvas,
+        canvasCoords
+      );
       // put it in activeboard
       addNode({
         ...movedNode,

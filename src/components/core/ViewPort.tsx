@@ -13,8 +13,7 @@ export default (props: any) => {
         //console.log(store.nodes);
         //console.log(store.nodes["home"]);
         //console.log(store.nodes[store.activeBoards.at(-1)?.id ?? "home"]);
-
-        stop();
+        // stop();
       }
     });
   });

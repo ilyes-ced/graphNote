@@ -9,6 +9,8 @@ import Table from "./Table";
 import { store } from "../store";
 import Image from "../nodes/Image";
 import NodeWrapper from "../core/NodeWrapper";
+import Color from "../nodes/Color";
+import Activity from "../nodes/Activity";
 
 export default (node: Column) => {
   return (
@@ -36,8 +38,8 @@ export default (node: Column) => {
         >
           <For each={store.nodes[node.id]}>
             {(child_node, index) => (
-              <div class=" flex flex-col">
-                <NodeWrapper node={node} isChildNode={true}>
+              <>
+                <NodeWrapper node={child_node} isChildNode={true}>
                   <Switch fallback={<div>Not Found</div>}>
                     <Match when={child_node.type === NodeType.Note}>
                       <Note {...child_node} />
@@ -57,13 +59,19 @@ export default (node: Column) => {
                     <Match when={child_node.type === NodeType.Image}>
                       <Image {...child_node} />
                     </Match>
+                    <Match when={child_node.type === NodeType.Color}>
+                      <Color {...child_node} />
+                    </Match>
+                    <Match when={child_node.type === NodeType.Activity}>
+                      <Activity {...child_node} />
+                    </Match>
                   </Switch>
                 </NodeWrapper>
 
                 <Show when={index() < store.nodes[node.id].length - 1}>
                   <div class="column_spacer pt-[5px] bg-transparent"></div>
                 </Show>
-              </div>
+              </>
             )}
           </For>
         </Show>

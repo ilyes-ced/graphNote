@@ -2,7 +2,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { createSignal, onMount, Show } from "solid-js";
 import { Url } from "../../types";
 import { useDraggable } from "@/shared/nodeDrag";
-import { store } from "../store";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -60,47 +59,35 @@ export default (node: UrlProps) => {
   });
 
   return (
-    <div>
-      <Show when={node.top_strip_color}>
-        <div
-          class="top_strip"
-          style={{ background: node.top_strip_color }}
-        ></div>
-      </Show>
+    <div class="space-y-2">
+      <img class="url_thumbnail" src={metaData().image} alt="" />
 
-      <div class="space-y-2">
-        <img class="url_thumbnail" src={metaData().image} alt="" />
-
-        <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
-          <div class="url_container flex flex-row items-center space-x-2">
-            <img
-              class="url_thumbnail size-4"
-              src={metaData().favicon}
-              alt="favicon"
-            />
-            <div>
-              <a class="url text-xs font-bold text-accent" href={node.url}>
-                {node.url}
-              </a>
-            </div>
-          </div>
-
+      <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
+        <div class="url_container flex flex-row items-center space-x-2">
+          <img
+            class="url_thumbnail size-4"
+            src={metaData().favicon}
+            alt="favicon"
+          />
           <div>
-            <a class="underline text-primary font-extrabold" href={node.url}>
-              {metaData().title}
+            <a class="url text-xs font-bold text-accent" href={node.url}>
+              {node.url}
             </a>
           </div>
-
-          <div class="url_description text-xs">{metaData().description}</div>
         </div>
+
+        <div>
+          <a class="underline text-primary font-extrabold" href={node.url}>
+            {metaData().title}
+          </a>
+        </div>
+
+        <div class="url_description text-xs">{metaData().description}</div>
       </div>
     </div>
   );
 };
 
-function tick() {
-  throw new Error("Function not implemented.");
-}
 /*
       also check if url is for example a vedio fromn youtube to be able to watch
       it also check if its a valid url if a new note is created and its nothing

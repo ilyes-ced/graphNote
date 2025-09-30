@@ -19,28 +19,35 @@ const ignoredClasses = (
   classes?: string[];
   ids?: string[];
 } => {
-  switch (nodeType) {
-    case NodeType.Column:
-      return { classes: ["collapse_icon", "resize_handle"] };
-    case NodeType.Note:
-      return { classes: ["resize_handle"] };
-    case NodeType.Todo:
-      return {
-        classes: [
-          "resize_handle",
-          "taskitem",
-          "taskitem-text",
-          "checkbox-check",
-        ],
-      };
-    case NodeType.Image:
-      return {};
-    case NodeType.Table:
-      return { tags: ["input"], classes: ["columnSelection"] };
+  const baseResult: {
+    tags?: string[];
+    classes?: string[];
+    ids?: string[];
+  } = (() => {
+    switch (nodeType) {
+      case NodeType.Column:
+        return { classes: ["collapse_icon"] };
+      case NodeType.Note:
+        return { tags: ["button"] };
+      case NodeType.Todo:
+        return {
+          classes: ["taskitem", "taskitem-text", "checkbox-check"],
+        };
+      case NodeType.Table:
+        return { tags: ["input"], classes: ["columnSelection"] };
 
-    default:
-      return {};
-  }
+      default:
+        return {};
+    }
+  })();
+
+  // Ensure "resize_handle" is always present
+  return {
+    ...baseResult,
+    classes: Array.from(
+      new Set([...(baseResult.classes ?? []), "resize_handle"])
+    ),
+  };
 };
 
 export default (props: nodeProps) => {
@@ -77,9 +84,7 @@ export default (props: nodeProps) => {
         width: props.isChildNode ? "100%" : width() + "px",
         background: props.node.color, //? if this doesnt exist, .node in App.css will take care of it
         "z-index": props.node.zIndex,
-        transform: props.isChildNode
-          ? ""
-          : `translate3d(${props.node.x}px, ${props.node.y}px, 0)`,
+        transform: `translate3d(${props.node.x}px, ${props.node.y}px, 0)`,
       }}
     >
       <Show when={props.node.top_strip_color}>
@@ -88,6 +93,7 @@ export default (props: nodeProps) => {
           style={{ background: props.node.top_strip_color }}
         ></div>
       </Show>
+
       {props.children}
 
       <Show when={!props.isChildNode}>

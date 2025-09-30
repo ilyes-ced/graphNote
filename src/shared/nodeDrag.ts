@@ -60,13 +60,8 @@ export function useDraggable(
       return;
     }
 
-    if (!is_child) {
-      if (
-        //(e.target as HTMLElement).closest(".child_node, .resize_handle, input")
-        (e.target as HTMLElement).closest(ignoredSelectors)
-      )
-        return;
-    }
+    if (!is_child)
+      if ((e.target as HTMLElement).closest(ignoredSelectors)) return;
 
     //? update here because new colmns could appear later
     targets = document.querySelectorAll(".column, .board");
@@ -154,13 +149,11 @@ export function useDraggable(
         if (isInside) {
           movedToOtherNode = true;
           moveNode(node.id, target.id, true);
-          // return;
         }
       } else {
         if (isInside) {
           moveNode(node.id, target.id);
           movedToOtherNode = true;
-          // return;
         }
       }
     });
@@ -187,15 +180,6 @@ export function useDraggable(
           // Defer snapping to next frame to allow transition animation
           console.info(snappedX, snappedY);
           requestAnimationFrame(() => {
-            // setStore(
-            //   "nodes",
-            //   (n) => n.id === node.id,
-            //   (node) => ({
-            //     ...node,
-            //     x: snappedX,
-            //     y: snappedY,
-            //   })
-            // );
             updatePosition(node.id, snappedX, snappedY);
             saveChanges();
           });
@@ -203,15 +187,6 @@ export function useDraggable(
           //! untested
           requestAnimationFrame(() => {
             const nodeInStore = findNodeById(node.id);
-            // setStore(
-            //   "nodes",
-            //   (n) => n.id === node.id,
-            //   (node) => ({
-            //     ...node,
-            //     x: nodeInStore?.x ?? 0,
-            //     y: nodeInStore?.y ?? 0,
-            //   })
-            // );
             //todo: fix later
             updatePosition(node.id, nodeInStore?.x ?? 0, nodeInStore?.y ?? 0);
             saveChanges();

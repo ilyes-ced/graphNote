@@ -14,6 +14,7 @@
   "dependencies": {
     "@kobalte/core": "^0.13.11",
     "@neodrag/solid": "3.0.0-next.8",
+    "@tabler/icons-solidjs": "^3.35.0",
     "@tailwindcss/vite": "^4.1.13",
     "@tanstack/solid-table": "^8.21.3",
     "@tauri-apps/api": "^2",
@@ -22,6 +23,9 @@
     "arrows-svg": "^1.8.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "highlight.js": "^11.11.1",
+    "lucide-solid": "^0.544.0",
+    "quill": "^2.0.3",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.9.3",
     "tailwind-merge": "^3.3.1",
