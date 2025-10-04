@@ -1,4 +1,4 @@
-import { setStore, store } from "@/components/store";
+import { setStore, store } from "@/shared/store";
 import { saveEdgesJSON, saveNodesJSON } from "./save";
 import { payload } from "@/types";
 import saveFile from "@/shared/saveFile";

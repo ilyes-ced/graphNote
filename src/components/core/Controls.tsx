@@ -1,5 +1,5 @@
 import { saveChanges } from "@/shared/utils";
-import { setStore, store } from "../store";
+import { setStore, store } from "../../shared/store";
 
 export default () => {
   const classes =

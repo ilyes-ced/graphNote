@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { setStore, store } from "../store";
+import { setStore, store } from "../../shared/store";
 
 export default (props: any) => {
   const [isDragging, setIsDragging] = createSignal(false);
@@ -41,19 +41,19 @@ export default (props: any) => {
 
   const handleWheel = (e: WheelEvent) => {
     //TODO: make the scroll speed user defined maybe
-    if (!e.ctrlKey) {
-      //* scroll speed
-      const sp = 70;
-
-      const axis = e.shiftKey ? "x" : "y";
-      const direction =
-        axis === "y" ? (e.deltaY > 0 ? sp : -sp) : e.deltaX > 0 ? sp : -sp;
-
-      setStore("viewport", axis, (prev) => {
-        const newValue = prev - direction;
-        return newValue <= 500 ? newValue : 500;
-      });
-    }
+    //if (!e.ctrlKey) {
+    //  //* scroll speed
+    //  const sp = 70;
+    //
+    //  const axis = e.shiftKey ? "x" : "y";
+    //  const direction =
+    //    axis === "y" ? (e.deltaY > 0 ? sp : -sp) : e.deltaX > 0 ? sp : -sp;
+    //
+    //  setStore("viewport", axis, (prev) => {
+    //    const newValue = prev - direction;
+    //    return newValue <= 500 ? newValue : 500;
+    //  });
+    //}
   };
 
   return (

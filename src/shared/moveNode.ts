@@ -1,5 +1,5 @@
 import { ChildNode, NodeType } from "../types";
-import { store, setStore } from "../components/store";
+import { store, setStore } from "./store";
 import {
   addNode,
   findNodeById,

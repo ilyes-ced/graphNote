@@ -1,6 +1,6 @@
 import { createSignal, For } from "solid-js";
 import { Button } from "./ui/button";
-import { setStore, store } from "./store";
+import { setStore, store } from "../shared/store";
 import {
   IconChevronsRight,
   IconMoonFilled,

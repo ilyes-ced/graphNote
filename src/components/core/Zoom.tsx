@@ -1,4 +1,4 @@
-import { store, setStore } from "../store";
+import { store, setStore } from "../../shared/store";
 
 export default (props: any) => {
   let zoomable: HTMLDivElement;

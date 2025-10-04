@@ -6,7 +6,7 @@ import {
   mkdir,
 } from "@tauri-apps/plugin-fs";
 import { Edge, NodeUnion } from "../types";
-import { store } from "@/components/store";
+import { store } from "@/shared/store";
 
 //? saves the JSON object as file
 // TODO: make debounce for disk write operation, to avoid writing too much to disk

@@ -1,5 +1,5 @@
 import { onMount } from "solid-js";
-import { setStore, store } from "./store";
+import { setStore } from "../shared/store.tsx";
 import Wrapper from "./core/Wrapper.tsx";
 import { readJSON } from "@/shared/save.ts";
 

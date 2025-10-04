@@ -2,9 +2,9 @@ export default () => {
   return (
     <div
       id="minimap"
-      class="absolute bottom-2.5 right-2.5 h-38 w-64 bg-primary p-2"
+      class="absolute bottom-2.5 right-2.5 h-38 w-64 bg-primary p-2 z-[1000]"
     >
-      <div class="relative size-full border border-border bg-card z-50">
+      <div class="relative size-full border border-border bg-card z-[1000]">
         <div
           style={{
             position: "absolute",

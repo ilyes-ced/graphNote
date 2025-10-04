@@ -1,6 +1,6 @@
 import { onMount, onCleanup } from "solid-js";
 import { listen } from "@tauri-apps/api/event";
-import { setStore, store } from "../store";
+import { setStore, store } from "../../shared/store";
 import { payload } from "@/types";
 import { recieveDragNDropFile } from "@/shared/utils";
 import {
@@ -22,16 +22,13 @@ export default (props: any) => {
 
   onMount(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log("eventhandler key press", e.key);
       // You can add logic here like:
       if (e.ctrlKey) {
         switch (e.key) {
           case "c": // copy
-            console.log("pressed ctrl+c");
             store.selectedNodes.forEach((selectedNode) => {
               let node = findNodeById(selectedNode);
               if (node) setStore("copiedNodes", (nodes) => [...nodes, node]);
-              console.log("copied nodes:", store.copiedNodes);
             });
 
             break;

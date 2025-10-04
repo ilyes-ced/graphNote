@@ -1,5 +1,5 @@
 import { createEffect, onMount } from "solid-js";
-import { setStore, store } from "../store";
+import { setStore, store } from "../../shared/store";
 
 export default (props: any) => {
   onMount(async () => {

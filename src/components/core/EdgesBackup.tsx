@@ -1,5 +1,5 @@
 import { createSignal, onMount, onCleanup } from "solid-js";
-import { store } from "../store";
+import { store } from "../../shared/store";
 import { findNodeById } from "@/shared/update";
 
 interface Props {

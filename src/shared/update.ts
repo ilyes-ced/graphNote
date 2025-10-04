@@ -13,7 +13,7 @@ import {
   Todo,
   Url,
 } from "../types";
-import { setStore, store } from "@/components/store";
+import { setStore, store } from "@/shared/store";
 import { saveChanges } from "./utils";
 
 const updateTask = (

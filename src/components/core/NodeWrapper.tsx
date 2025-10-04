@@ -4,7 +4,7 @@ import { useDraggable } from "@/shared/nodeDrag";
 import { useResize } from "@/shared/useResize";
 import { getActiveBoardId, updateNodeWidth } from "@/shared/update";
 import ResizeHandle from "../nodes/resizeHandle";
-import { store } from "../store";
+import { store } from "../../shared/store";
 
 interface nodeProps {
   node: NodeUnion;

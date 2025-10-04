@@ -1,6 +1,6 @@
 import { For, Match, Switch } from "solid-js";
 
-import { store } from "../store";
+import { store } from "../../shared/store";
 import EdgeStep from "../edges/EdgeStep";
 import EdgeBezier from "../edges/EdgeBezier";
 import EdgeStraight from "../edges/EdgeStraight";

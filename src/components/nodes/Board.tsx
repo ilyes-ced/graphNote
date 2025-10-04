@@ -1,5 +1,5 @@
 import { Board, Column, NodeType, NodeUnion } from "../../types";
-import { setStore, store } from "../store";
+import { setStore, store } from "../../shared/store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { reconcile } from "solid-js/store";
 import { findNodeById } from "@/shared/update";

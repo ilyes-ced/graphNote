@@ -2,7 +2,7 @@ import { createEffect, createSignal, Show } from "solid-js";
 import { Note } from "../../types";
 import { updateNote } from "@/shared/update";
 import { addSelected, debounce } from "@/shared/utils";
-import { store } from "../store";
+import { store } from "../../shared/store";
 import { useDraggable } from "@/shared/nodeDrag";
 import { IconEdit } from "@tabler/icons-solidjs";
 

@@ -1,5 +1,5 @@
 import { onCleanup } from "solid-js";
-import { store, setStore } from "../components/store";
+import { store, setStore } from "./store";
 import { type NodeUnion } from "../types";
 
 export function useDraggable(edge: NodeUnion, ignoredClasses?: string[]) {

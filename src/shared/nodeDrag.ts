@@ -1,5 +1,5 @@
 import { onCleanup } from "solid-js";
-import { store, setStore } from "../components/store";
+import { store, setStore } from "./store";
 import { NodeType, type NodeUnion } from "../types";
 import { addSelected, saveChanges } from "./utils";
 import moveNode from "./moveNode";

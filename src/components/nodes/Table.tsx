@@ -8,7 +8,7 @@ import {
 import { useDraggable } from "@/shared/nodeDrag";
 import { DataTable } from "./table/data-table";
 import { Task, columns } from "./table/columns";
-import { store } from "../store";
+import { store } from "../../shared/store";
 type TableProps = TableNode & {
   is_child?: boolean;
 };

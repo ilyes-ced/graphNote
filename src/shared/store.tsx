@@ -1,5 +1,6 @@
 import { createStore } from "solid-js/store";
 import { NodeUnion, Edge } from "../types";
+import { Editor } from "@tiptap/core";
 
 interface GlobalStore {
   //? no board id is "home"
@@ -13,6 +14,9 @@ interface GlobalStore {
   snapGrid: [number, number] | null;
 
   activeBoards: { name: string; id: string }[];
+  activeSidebar: "nodes" | "noteStyles";
+
+  noteEditor: Editor | null;
 
   dragThreshold: number;
   dragging: NodeUnion["id"] | null;
@@ -38,6 +42,9 @@ const [store, setStore] = createStore<GlobalStore>({
   snapGrid: [10, 10],
 
   activeBoards: [{ name: "home", id: "home" }],
+  activeSidebar: "noteStyles",
+
+  noteEditor: null,
 
   dragThreshold: 5,
   dragging: null,

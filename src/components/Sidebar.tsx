@@ -11,7 +11,7 @@ import {
 import Svg from "./nodes/Svg";
 import { newNode } from "@/shared/update";
 import { NodeType } from "@/types";
-import { store } from "./store";
+import { store } from "../shared/store";
 import ColorSelectMenu from "./ui/ColorSelectMenu";
 import {
   IconArrowBackUp,
@@ -33,6 +33,7 @@ import {
   IconStrikethrough,
   IconUnderline,
 } from "@tabler/icons-solidjs";
+import { Editor } from "@tiptap/core";
 
 const icons = [
   // basic blocks
@@ -61,31 +62,63 @@ const icons = [
 ];
 
 const stylesIcons = [
-  // basic blocks
-  { name: "bold", icon: IconBold },
-  { name: "italic", icon: IconItalic },
-  { name: "underline", icon: IconUnderline },
-  { name: "strike", icon: IconStrikethrough },
+  { name: "bold", icon: IconBold, action: "toggleBold" },
+  { name: "italic", icon: IconItalic, action: "toggleItalic" },
+  { name: "underline", icon: IconUnderline, action: "toggleUnderline" },
+  { name: "strike", icon: IconStrikethrough, action: "toggleStrike" },
+  { name: "paragraph", icon: IconPilcrow, action: "setParagraph" },
 
-  { name: "paragraph", icon: IconPilcrow },
+  {
+    name: "header 1",
+    icon: IconH1,
+    action: "toggleHeading",
+    attrs: { level: 1 },
+  },
+  {
+    name: "header 2",
+    icon: IconH2,
+    action: "toggleHeading",
+    attrs: { level: 2 },
+  },
+  {
+    name: "header 3",
+    icon: IconH3,
+    action: "toggleHeading",
+    attrs: { level: 3 },
+  },
+  {
+    name: "header 4",
+    icon: IconH4,
+    action: "toggleHeading",
+    attrs: { level: 4 },
+  },
+  {
+    name: "header 5",
+    icon: IconH5,
+    action: "toggleHeading",
+    attrs: { level: 5 },
+  },
+  {
+    name: "header 6",
+    icon: IconH6,
+    action: "toggleHeading",
+    attrs: { level: 6 },
+  },
 
-  { name: "header 1", icon: IconH1 },
-  { name: "header 2", icon: IconH2 },
-  { name: "header 3", icon: IconH3 },
-  { name: "header 4", icon: IconH4 },
-  { name: "header 5", icon: IconH5 },
-  { name: "header 6", icon: IconH6 },
+  { name: "list", icon: IconList, action: "toggleBulletList" },
+  { name: "numberedList", icon: IconListNumbers, action: "toggleOrderedList" },
 
-  { name: "list", icon: IconList },
-  { name: "numberedList", icon: IconListNumbers },
+  { name: "codeBlock", icon: IconCode, action: "toggleCodeBlock" },
+  { name: "blockQuote", icon: IconBlockquote, action: "toggleBlockquote" },
 
-  { name: "codeBlock", icon: IconCode },
-  { name: "blockQuote", icon: IconBlockquote },
+  {
+    name: "verticalRule",
+    icon: IconSpacingVertical,
+    action: "setHorizontalRule",
+  },
 
-  { name: "verticalRule", icon: IconSpacingVertical },
-
-  { name: "redo", icon: IconArrowBackUp },
-  { name: "undo", icon: IconArrowForwardUp },
+  { name: "undo", icon: IconArrowBackUp, action: "undo" },
+  { name: "redo", icon: IconArrowForwardUp, action: "redo" },
 ];
 
 // have all the template componenets in this file,
@@ -96,9 +129,6 @@ const stylesIcons = [
 const [dragging, setDragging] = createSignal(false);
 const [dragPos, setDragPos] = createSignal({ x: 0, y: 0 });
 const [cloneType, setCloneType] = createSignal<string | null>(null);
-const [activeSidebar, setActiveSidebar] = createSignal<"nodes" | "styles">(
-  "nodes"
-);
 
 const handleMouseMove = (e: MouseEvent) => {
   setDragPos({ x: e.clientX, y: e.clientY });
@@ -146,12 +176,7 @@ const findType = (type: string): NodeType => {
 };
 createEffect(() => {
   console.info("store value serelcterd nodes is changed");
-  const nodes = store.selectedNodes; // this access tracks reactivity
-  if (nodes.size > 0) {
-    setActiveSidebar("styles");
-  } else {
-    setActiveSidebar("nodes");
-  }
+  // const nodes = store.selectedNodes; // this access tracks reactivity
 });
 const handleMouseUp = () => {
   newNode(findType(cloneType() ?? ""), dragPos().x, dragPos().y);
@@ -174,7 +199,7 @@ const startDragging = (type: string) => (e: MouseEvent) => {
   window.addEventListener("mouseup", handleMouseUp);
 };
 
-export default function SidebarFloating() {
+export default () => {
   onCleanup(() => {
     window.removeEventListener("mousemove", handleMouseMove);
     window.removeEventListener("mouseup", handleMouseUp);
@@ -186,8 +211,8 @@ export default function SidebarFloating() {
       <div
         class="absolute top-0 left-0 w-full h-full transition-transform duration-300 ease-in-out"
         classList={{
-          "translate-x-0": activeSidebar() === "nodes",
-          "-translate-x-full": activeSidebar() !== "nodes",
+          "translate-x-0": store.activeSidebar === "nodes",
+          "-translate-x-full": store.activeSidebar !== "nodes",
         }}
       >
         <NodesList />
@@ -197,17 +222,17 @@ export default function SidebarFloating() {
       <div
         class="absolute top-0 left-0 w-full h-full transition-transform duration-300 ease-in-out"
         classList={{
-          "translate-x-0": activeSidebar() === "styles",
-          "translate-x-full": activeSidebar() !== "styles", // slides in from the right
+          "translate-x-0": store.activeSidebar === "noteStyles",
+          "translate-x-full": store.activeSidebar !== "noteStyles", // slides in from the right
         }}
       >
-        <NodeStyle />
+        <NoteStyles />
       </div>
     </div>
   );
-}
+};
 
-const NodesList: Component = (props: any) => {
+const NodesList: Component = () => {
   return (
     <div class="h-full overflow-hidden w-[65px] p-4 bg-card">
       <div class="flex flex-col space-y-4 overflow-x-visible relative">
@@ -246,7 +271,7 @@ const NodesList: Component = (props: any) => {
   );
 };
 
-const NodeStyle: Component = (props: any) => {
+const NoteStyles: Component = () => {
   return (
     <div class="h-full overflow-hidden w-[65px] p-4 bg-card">
       <div class="flex flex-col space-y-4 overflow-x-visible relative">
@@ -266,11 +291,23 @@ const NodeStyle: Component = (props: any) => {
           <For each={stylesIcons} fallback={<div>Loading...</div>}>
             {(icon) => (
               <div>
-                <div class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square">
+                <button
+                  class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square hover:bg-primary"
+                  onClick={() => {
+                    console.log("Clicked italic in sidebar");
+                    const editor = store.noteEditor;
+                    if (editor) {
+                      //editor.chain().focus().toggleItalic().run();
+                      toggle(editor, icon.name);
+                    } else {
+                      console.warn("Editor is not yet ready");
+                    }
+                  }}
+                >
                   <div class="flex flex-col size-full p-2">
                     <icon.icon />
                   </div>
-                </div>
+                </button>
                 <p class="text-sm text-center overflow-visible">{icon.name}</p>
               </div>
             )}
@@ -279,4 +316,65 @@ const NodeStyle: Component = (props: any) => {
       </div>
     </div>
   );
+};
+
+const toggle = (editor: Editor, togglable: string) => {
+  switch (togglable) {
+    case "bold":
+      editor.chain().focus().toggleBold().run();
+      break;
+    case "italic":
+      editor.chain().focus().toggleItalic().run();
+      break;
+    case "underline":
+      editor.chain().focus().toggleUnderline().run();
+      break;
+    case "strike":
+      editor.chain().focus().toggleStrike().run();
+      break;
+    case "paragraph":
+      editor.chain().focus().setParagraph().run();
+      break;
+    case "header 1":
+      editor.chain().focus().toggleHeading({ level: 1 }).run();
+      break;
+    case "header 2":
+      editor.chain().focus().toggleHeading({ level: 2 }).run();
+      break;
+    case "header 3":
+      editor.chain().focus().toggleHeading({ level: 3 }).run();
+      break;
+    case "header 4":
+      editor.chain().focus().toggleHeading({ level: 4 }).run();
+      break;
+    case "header 5":
+      editor.chain().focus().toggleHeading({ level: 5 }).run();
+      break;
+    case "header 6":
+      editor.chain().focus().toggleHeading({ level: 6 }).run();
+      break;
+    case "list":
+      editor.chain().focus().toggleBulletList().run();
+      break;
+    case "numberedList":
+      editor.chain().focus().toggleOrderedList().run();
+      break;
+    case "codeBlock":
+      editor.chain().focus().toggleCodeBlock().run();
+      break;
+    case "blockQuote":
+      editor.chain().focus().toggleBlockquote().run();
+      break;
+    case "verticalRule":
+      editor.chain().focus().setHorizontalRule().run();
+      break;
+    case "undo":
+      editor.chain().focus().undo().run();
+      break;
+    case "redo":
+      editor.chain().focus().redo().run();
+      break;
+    default:
+      console.warn("Unhandled action:", togglable);
+  }
 };

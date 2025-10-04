@@ -6,7 +6,7 @@ import Todo from "./Todo";
 import Url from "./Url";
 import Board from "./Board";
 import Table from "./Table";
-import { store } from "../store";
+import { store } from "../../shared/store";
 import Image from "../nodes/Image";
 import NodeWrapper from "../core/NodeWrapper";
 import Color from "../nodes/Color";

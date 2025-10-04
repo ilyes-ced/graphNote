@@ -1,5 +1,5 @@
-import { For, JSX, Match, Show, Switch } from "solid-js";
-import { store } from "../store";
+import { createEffect, For, JSX, Match, Show, Switch } from "solid-js";
+import { store } from "../../shared/store";
 import { NodeType, NodeUnion } from "../../types";
 import Column from "../nodes/Column";
 import Note from "../nodes/Note";

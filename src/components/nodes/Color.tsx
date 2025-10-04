@@ -1,4 +1,4 @@
-import { store } from "../store";
+import { store } from "../../shared/store";
 import { Color } from "../../types";
 
 type ColorProps = Color & {
