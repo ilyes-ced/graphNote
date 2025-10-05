@@ -16,7 +16,15 @@ import NodeWrapper from "./NodeWrapper";
 export default () => {
   return (
     <div id="nodes" class="bg-red-600">
-      <div class="hidden">
+      <div
+        class={`transition-all duration-200 ease-in-out 
+          absolute top-4 left-4 shadow-lg shadow-primary/50
+          ${
+            store.showColorMenu
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-95 pointer-events-none"
+          }`}
+      >
         <ColorSelectMenu />
       </div>
 

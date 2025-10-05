@@ -1,7 +1,7 @@
 import "./App.css";
 import TopBar from "./components/Topbar.tsx";
 import Main from "./components/Main.tsx";
-import Sidebar from "./components/Sidebar.tsx";
+import Sidebar from "./components/sidebar/Sidebar.tsx";
 
 function App() {
   return (

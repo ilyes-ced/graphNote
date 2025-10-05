@@ -20,8 +20,6 @@ import Underline from "@tiptap/extension-underline";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 
-import { EditorContext } from "@/shared/editorContext";
-
 import {
   IconBold,
   IconEdit,
@@ -51,7 +49,7 @@ export default (node: NoteProps) => {
     },
     onBlur({}) {
       // there is
-      setStore("activeSidebar", "nodes");
+      // setStore("activeSidebar", "nodes");
     },
     onUpdate({ editor }) {
       updateText(JSON.stringify(editor.getJSON()));
@@ -77,106 +75,19 @@ export default (node: NoteProps) => {
     content: JSON.parse(node.text),
   }));
 
-  onMount(() => {});
-
-  const isBold = useEditorIsActive(
-    () => editor(),
-    () => "bold"
-  );
-  const isItalic = useEditorIsActive(
-    () => editor(),
-    () => "italic"
-  );
-
-  const isStrike = useEditorIsActive(
-    () => editor(),
-    () => "strike"
-  );
-  const isUnderline = useEditorIsActive(
-    () => editor(),
-    () => "underline"
-  );
-  const isCode = useEditorIsActive(
-    () => editor(),
-    () => "code"
-  );
-  const isParagraph = useEditorIsActive(
-    () => editor(),
-    () => "paragraph"
-  );
-  const isBlockquote = useEditorIsActive(
-    () => editor(),
-    () => "blockquote"
-  );
-  const isCodeBlock = useEditorIsActive(
-    () => editor(),
-    () => "codeBlock"
-  );
-  const isBulletList = useEditorIsActive(
-    () => editor(),
-    () => "bulletList"
-  );
-  const isOrderedList = useEditorIsActive(
-    () => editor(),
-    () => "orderedList"
-  );
-
-  const isHeading = (level: number) =>
-    useEditorIsActive(
-      () => editor(),
-      () => ({ type: "heading", attrs: { level } })
-    );
-
-  const canBold = createEditorTransaction(
-    () => editor(),
-    (ed: any) => {
-      try {
-        return ed.can().chain().toggleBold().run();
-      } catch {
-        return false;
-      }
-    }
-  );
-
-  // Similarly for italic, undo, redo, etc.
-  const canItalic = createEditorTransaction(
-    () => editor(),
-    (ed: any) => {
-      try {
-        return ed.can().chain().toggleItalic().run();
-      } catch {
-        return false;
-      }
-    }
-  );
-
-  const canUndo = createEditorTransaction(
-    () => editor(),
-    (ed: any) => {
-      try {
-        return ed.can().chain().undo().run();
-      } catch {
-        return false;
-      }
-    }
-  );
-
-  const canRedo = createEditorTransaction(
-    () => editor(),
-    (ed: any) => {
-      try {
-        return ed.can().chain().redo().run();
-      } catch {
-        return false;
-      }
-    }
-  );
-
   return (
     <div class="p-5 ">
-      <EditorContext.Provider value={editor()}>
-        <div class="" id="editor" ref={editorRef}></div>
-      </EditorContext.Provider>
+      {editor()?.isActive("bold") ? "bold" : "bold is false"}
+      {"\n"}
+      {editor()?.isActive("italic") ? "italic" : "italic is false"}
+      {"\n"}
+      {editor()?.isActive("underline") ? "underline" : "underline is false"}
+      {"\n"}
+      {editor()?.isActive("strike") ? "strike" : "strike is false"}
+      {"\n"}
+      {editor()?.isActive("paragraph") ? "paragraph" : "paragraph is false"}
+      {"\n"}
+      <div id="editor" ref={editorRef}></div>
     </div>
   );
 };

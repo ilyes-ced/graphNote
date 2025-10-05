@@ -14,7 +14,7 @@ import Activity from "../nodes/Activity";
 
 export default (node: Column) => {
   return (
-    <div class="content flex flex-col p-[5px]">
+    <div class="content flex flex-col p-2">
       <div
         class="collapse_icon self-end w-6 h-6 collapse_icon cursor-pointer flex justify-center items-center hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/collapse:opacity-100 
            pointer-events-none group-hover/collapse:pointer-events-auto 
@@ -69,7 +69,7 @@ export default (node: Column) => {
                 </NodeWrapper>
 
                 <Show when={index() < store.nodes[node.id].length - 1}>
-                  <div class="column_spacer pt-[5px] bg-transparent"></div>
+                  <div class="column_spacer pt-2 bg-transparent"></div>
                 </Show>
               </>
             )}

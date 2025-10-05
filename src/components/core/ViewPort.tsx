@@ -38,6 +38,7 @@ export default (props: any) => {
           console.log("canvas click");
           e.stopPropagation();
           setStore("selectedNodes", new Set());
+          setStore("showColorMenu", false);
         }}
         onDblClick={(e) => {
           // could cause issues in the future not sure

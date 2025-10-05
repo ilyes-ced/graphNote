@@ -28,7 +28,7 @@ const ignoredClasses = (
       case NodeType.Column:
         return { classes: ["collapse_icon"] };
       case NodeType.Note:
-        return { tags: ["button"] };
+        return { tags: ["button"], ids: ["editor"] };
       case NodeType.Todo:
         return {
           classes: ["taskitem", "taskitem-text", "checkbox-check"],
