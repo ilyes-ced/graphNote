@@ -20,6 +20,10 @@ import {
   IconSpacingVertical,
   IconStrikethrough,
   IconUnderline,
+  IconAlignLeft,
+  IconAlignCenter,
+  IconAlignRight,
+  IconAlignJustified,
 } from "@tabler/icons-solidjs";
 
 const stylesIcons = [
@@ -40,10 +44,10 @@ const stylesIcons = [
   { name: "blockQuote", icon: IconBlockquote },
   { name: "verticalRule", icon: IconSpacingVertical },
 
-  { name: "left", icon: IconSpacingVertical },
-  { name: "center", icon: IconSpacingVertical },
-  { name: "right", icon: IconSpacingVertical },
-  { name: "justify", icon: IconSpacingVertical },
+  { name: "alignLeft", icon: IconAlignLeft },
+  { name: "alignCenter", icon: IconAlignCenter },
+  { name: "alignRight", icon: IconAlignRight },
+  { name: "alignJustify", icon: IconAlignJustified },
 ];
 
 export default () => {
@@ -55,28 +59,21 @@ export default () => {
             {(icon) => (
               <div>
                 <button
-                  class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square hover:bg-primary"
+                  class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square  hover:bg-muted-foreground transition-colors duration-150 ease-in-out"
                   classList={{
                     "bg-primary": store.noteEditor
                       ? isStyleActive(store.noteEditor, icon.name)
                       : false,
                   }}
                   onClick={() => {
-                    console.log("Clicked italic in sidebar");
                     const editor = store.noteEditor;
-                    if (editor) {
-                      //editor.chain().focus().toggleItalic().run();
-                      toggle(editor, icon.name);
-                    } else {
-                      console.warn("Editor is not yet ready");
-                    }
+                    if (editor) toggle(editor, icon.name);
                   }}
                 >
                   <div class="flex flex-col size-full p-2">
                     <icon.icon />
                   </div>
                 </button>
-                <p class="text-sm text-center overflow-visible">{icon.name}</p>
               </div>
             )}
           </For>
@@ -136,11 +133,17 @@ const toggle = (editor: Editor, togglable: string) => {
     case "verticalRule":
       editor.chain().focus().setHorizontalRule().run();
       break;
-    case "undo":
-      editor.chain().focus().undo().run();
+    case "alignLeft":
+      editor.chain().focus().setTextAlign("left").run();
       break;
-    case "redo":
-      editor.chain().focus().redo().run();
+    case "alignCenter":
+      editor.chain().focus().setTextAlign("center").run();
+      break;
+    case "alignRight":
+      editor.chain().focus().setTextAlign("right").run();
+      break;
+    case "alignJustify":
+      editor.chain().focus().setTextAlign("justify").run();
       break;
     default:
       console.warn("Unhandled action:", togglable);
@@ -150,40 +153,47 @@ const toggle = (editor: Editor, togglable: string) => {
 const isStyleActive = (editor: Editor, togglable: string): boolean => {
   switch (togglable) {
     case "bold":
-      return editor.isActive("bold");
+      return (
+        store.activeTags.includes("strong") || store.activeTags.includes("b")
+      );
     case "italic":
-      return editor.isActive("italic");
+      return store.activeTags.includes("em") || store.activeTags.includes("i");
     case "underline":
-      return editor.isActive("underline");
+      return store.activeTags.includes("u");
     case "strike":
-      return editor.isActive("strike");
+      return store.activeTags.includes("s") || store.activeTags.includes("del");
     case "paragraph":
-      return editor.isActive("paragraph");
+      return store.activeTags.includes("p");
     case "header 1":
-      return editor.isActive("heading", { level: 1 });
+      return store.activeTags.includes("h1");
     case "header 2":
-      return editor.isActive("heading", { level: 2 });
+      return store.activeTags.includes("h2");
     case "header 3":
-      return editor.isActive("heading", { level: 3 });
+      return store.activeTags.includes("h3");
     case "header 4":
-      return editor.isActive("heading", { level: 4 });
+      return store.activeTags.includes("h4");
     case "header 5":
-      return editor.isActive("heading", { level: 5 });
+      return store.activeTags.includes("h5");
     case "header 6":
-      return editor.isActive("heading", { level: 6 });
+      return store.activeTags.includes("h6");
     case "list":
-      return false;
+      return store.activeTags.includes("ul");
     case "numberedList":
-      return false;
+      return store.activeTags.includes("ol");
     case "codeBlock":
-      return false;
+      return store.activeTags.includes("pre");
     case "blockQuote":
-      return false;
+      return store.activeTags.includes("blockquote");
     case "verticalRule":
+      return store.activeTags.includes("hr");
+
+    case "alignLeft":
       return false;
-    case "undo":
+    case "alignCenter":
       return false;
-    case "redo":
+    case "alignRight":
+      return false;
+    case "alignJustify":
       return false;
     default:
       console.warn("Unhandled action:", togglable);

@@ -18,6 +18,7 @@ interface GlobalStore {
   showColorMenu: boolean;
 
   noteEditor: Editor | null;
+  activeTags: string[]; // has all active nodes like strong, p, h1 .....
 
   dragThreshold: number;
   dragging: NodeUnion["id"] | null;
@@ -44,9 +45,9 @@ const [store, setStore] = createStore<GlobalStore>({
 
   activeBoards: [{ name: "home", id: "home" }],
   activeSidebar: "noteStyles",
-  showColorMenu: true,
-
+  showColorMenu: false,
   noteEditor: null,
+  activeTags: [],
 
   dragThreshold: 5,
   dragging: null,

@@ -46,6 +46,7 @@ export function useDraggable(
       : ".child_node";
 
   const startDrag = (e: PointerEvent) => {
+    if (store.showColorMenu) setStore("showColorMenu", false);
     //? at leastit helps with removing the ghost when dragging an image
     //? other thatn that im not sure
     if (node.type === NodeType.Image) e.preventDefault();

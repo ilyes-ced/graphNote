@@ -1,3 +1,4 @@
+import { store } from "@/shared/store";
 import { ColorType } from "@/types";
 import { For } from "solid-js";
 
@@ -35,19 +36,34 @@ export default () => {
 
   return (
     <div
-      id="colorSelectMenu"
-      class="border border-border p-4 w-fit bg-card space-y-4"
+      class={`transition-all duration-200 ease-in-out 
+          absolute top-4 left-4 shadow-lg shadow-primary/50
+          ${
+            store.showColorMenu
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-95 pointer-events-none"
+          }`}
     >
-      {/* bg or strip selection */}
-      <div class=" flex">
-        <div class={groupClasses}>bg</div>
-        <div class={groupClasses}>strip</div>
-      </div>
+      <div
+        id="colorSelectMenu"
+        class="border border-border p-4 w-fit bg-card space-y-4"
+      >
+        {/* bg or strip selection */}
+        <div class=" flex">
+          <div class={groupClasses}>bg</div>
+          <div class={groupClasses}>strip</div>
+        </div>
 
-      <BgColors />
+        <BgColors />
+      </div>
     </div>
   );
 };
+
+const changeBg = (bg: string) => {};
+const changeFg = (fg: string) => {};
+const changeBgFg = (bg: string, fg: string) => {};
+const changeTopStrip = (color: string) => {};
 
 const BgColors = () => {
   return (

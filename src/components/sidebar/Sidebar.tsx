@@ -27,6 +27,8 @@ export default () => {
   return (
     <div class="relative overflow-hidden h-full w-[65px] border-r border-border">
       {/* Nodes Sidebar */}
+      <div class="relative size-full"></div>
+
       <div
         class="absolute top-0 left-0 w-full h-full transition-transform duration-300 ease-in-out"
         classList={{
@@ -53,7 +55,7 @@ export default () => {
         class="absolute top-0 left-0 w-full h-full transition-transform duration-300 ease-in-out"
         classList={{
           "translate-x-0": store.activeSidebar === "nodeStyles",
-          "translate-x-full": store.activeSidebar !== "nodeStyles", // slides in from the right
+          "-translate-x-full": store.activeSidebar !== "nodeStyles", // slides in from the right
         }}
       >
         <NodeStyles />
