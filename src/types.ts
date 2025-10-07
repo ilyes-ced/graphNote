@@ -46,6 +46,7 @@ interface Node extends BaseNode {
   //? height depends on content shouldnt be user controlled
   //height?: number;
   color?: ColorType;
+  textColor?: ColorType;
   top_strip_color?: ColorType;
   zIndex?: number;
 }

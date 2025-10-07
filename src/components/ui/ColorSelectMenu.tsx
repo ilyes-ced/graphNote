@@ -1,6 +1,8 @@
 import { store } from "@/shared/store";
+import { updateNodeColor } from "@/shared/update";
 import { ColorType } from "@/types";
-import { For } from "solid-js";
+import { createSignal, For, onMount } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 // first color is default
 const bgColorList: ColorType[] = [
@@ -19,21 +21,25 @@ const textColorList: ColorType[] = [
   "#8B5CF6",
   "#EC4899",
 ];
-const textBgComboColorList: { text: ColorType; bg: ColorType }[] = [
+
+type comboType = { bg: ColorType; fg: ColorType };
+const textBgComboColorList: comboType[] = [
   {
-    text: "#8B5CF6",
     bg: "#F59E0B",
+    fg: "#8B5CF6",
   },
   {
-    text: "#8B5CF6",
     bg: "#EF4444",
+    fg: "#8B5CF6",
   },
 ];
 
 export default () => {
-  const groupClasses =
-    "flex items-center justify-center w-1/2 p-2 aspect-square cursor-pointer";
+  const [bgOrStrip, setBgOrStrip] = createSignal<0 | 1>(0);
+  const colorSelections = [<BgColors />, <StripColors />];
 
+  const groupClasses =
+    "flex items-center justify-center w-1/2 p-2 aspect-2/1 rounded cursor-pointer transition-colors duration-200 ease-in-out hover:bg-primary";
   return (
     <div
       class={`transition-all duration-200 ease-in-out 
@@ -49,32 +55,66 @@ export default () => {
         class="border border-border p-4 w-fit bg-card space-y-4"
       >
         {/* bg or strip selection */}
-        <div class=" flex">
-          <div class={groupClasses}>bg</div>
-          <div class={groupClasses}>strip</div>
+        <div class="flex space-x-4">
+          <div
+            class={groupClasses}
+            classList={{
+              "bg-primary": bgOrStrip() === 0,
+            }}
+            onClick={() => setBgOrStrip(0)}
+          >
+            bg
+          </div>
+          <div
+            class={groupClasses}
+            classList={{
+              "bg-primary": bgOrStrip() === 1,
+            }}
+            onClick={() => setBgOrStrip(1)}
+          >
+            strip
+          </div>
         </div>
 
-        <BgColors />
+        <Dynamic component={colorSelections[bgOrStrip()]} />
       </div>
     </div>
   );
 };
 
-const changeBg = (bg: string) => {};
-const changeFg = (fg: string) => {};
-const changeBgFg = (bg: string, fg: string) => {};
-const changeTopStrip = (color: string) => {};
+const changeBg = (bg: ColorType) => {
+  store.selectedNodes.forEach((nodeId) => {
+    updateNodeColor(nodeId, "bg", bg);
+  });
+};
+const changeFg = (fg: ColorType) => {
+  store.selectedNodes.forEach((nodeId) => {
+    updateNodeColor(nodeId, "fg", fg);
+  });
+};
+const changeBgFg = (combo: comboType) => {
+  store.selectedNodes.forEach((nodeId) => {
+    updateNodeColor(nodeId, "bg", combo.bg);
+    updateNodeColor(nodeId, "fg", combo.fg);
+  });
+};
+const changeTopStrip = (color: ColorType) => {
+  store.selectedNodes.forEach((nodeId) => {
+    updateNodeColor(nodeId, "strip", color);
+  });
+};
 
 const BgColors = () => {
   return (
-    <>
+    <div class="space-y-2">
       {/* bg color selection */}
       <div class="grid grid-cols-5 gap-2">
         <For each={bgColorList}>
           {(bgColor) => (
             <div
-              class="border border-transparent hover:border-foreground/70 cursor-pointer size-2 p-2"
+              class="border border-transparent hover:border-foreground/70 cursor-pointer w-10 aspect-3/2 p-2"
               style={{ background: bgColor }}
+              onClick={() => changeBg(bgColor)}
             ></div>
           )}
         </For>
@@ -85,8 +125,9 @@ const BgColors = () => {
         <For each={textColorList}>
           {(textColor) => (
             <div
-              class="border border-transparent hover:border-foreground/70 cursor-pointer bg-accent size-4 text-xs text-center"
+              class="border border-transparent hover:border-foreground/70 cursor-pointer bg-accent w-10 aspect-3/2 flex items-center justify-center"
               style={{ color: textColor }}
+              onClick={() => changeFg(textColor)}
             >
               A
             </div>
@@ -99,8 +140,9 @@ const BgColors = () => {
         <For each={textBgComboColorList}>
           {(combo) => (
             <div
-              class="border border-transparent hover:border-foreground/70 cursor-pointer bg-accent size-4 text-xs text-center"
-              style={{ color: combo.text, background: combo.bg }}
+              class="border border-transparent hover:border-foreground/70 cursor-pointer bg-accent w-10 aspect-3/2 flex items-center justify-center"
+              style={{ color: combo.fg, background: combo.bg }}
+              onClick={() => changeBgFg(combo)}
             >
               A
             </div>
@@ -110,6 +152,29 @@ const BgColors = () => {
       <button class="w-full px-2 py-1 border border-border bg-accent hover:bg-primary cursor-pointer transition-all duration-200 ease-in-out">
         Add custom color
       </button>
-    </>
+    </div>
+  );
+};
+
+const StripColors = () => {
+  return (
+    <div class="space-y-2">
+      {/* bg color selection */}
+      <div class="grid grid-cols-5 gap-2">
+        <For each={bgColorList}>
+          {(stripColor) => (
+            <div
+              class="border border-transparent hover:border-foreground/70 cursor-pointer w-10 aspect-3/2 p-2"
+              style={{ background: stripColor }}
+              onClick={() => changeTopStrip(stripColor)}
+            ></div>
+          )}
+        </For>
+      </div>
+
+      <button class="w-full px-2 py-1 border border-border bg-accent hover:bg-primary cursor-pointer transition-all duration-200 ease-in-out">
+        Add custom color
+      </button>
+    </div>
   );
 };

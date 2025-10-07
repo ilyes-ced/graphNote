@@ -108,7 +108,7 @@ export default (node: NoteProps) => {
 
   return (
     <div class="p-5 ">
-      {JSON.stringify(store.activeTags)}
+      {/*JSON.stringify(store.activeTags)*/}
 
       <div
         class="focus:outline-none focus:ring-0 focus:border-none"

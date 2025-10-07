@@ -45,9 +45,9 @@ export default () => {
             <div class="flex flex-col size-full p-2">
               <div
                 class="border-b-0 h-1/6 w-full"
-                style={{ background: color1() }}
+                style={{ background: color2() }}
               ></div>
-              <div class="h-5/6 w-full " style={{ background: color2() }}></div>
+              <div class="h-5/6 w-full " style={{ background: color1() }}></div>
             </div>
           </div>
           <p class="text-sm text-center">colors</p>

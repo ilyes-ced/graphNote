@@ -12,6 +12,7 @@ import {
   Activity,
   Todo,
   Url,
+  ColorType,
 } from "../types";
 import { setStore, store } from "@/shared/store";
 import { saveChanges } from "./utils";
@@ -361,6 +362,35 @@ const newNode = (type: NodeType, x: number, y: number) => {
   saveChanges();
 };
 
+//? update node colors, fg or bg or strip
+const updateNodeColor = (
+  nodeId: string,
+  type: "bg" | "fg" | "strip",
+  color: ColorType
+) => {
+  const activeBoardId = getActiveBoardId();
+  const boardNodes = store.nodes[activeBoardId] ?? [];
+
+  const index = boardNodes.findIndex((n) => n.id === nodeId);
+  if (index !== -1) {
+    switch (type) {
+      case "bg":
+        setStore("nodes", activeBoardId, index, "color", color);
+        break;
+      case "fg":
+        setStore("nodes", activeBoardId, index, "textColor", color);
+        break;
+      case "strip":
+        setStore("nodes", activeBoardId, index, "top_strip_color", color);
+        break;
+      default:
+        break;
+    }
+  }
+
+  saveChanges();
+};
+
 export {
   updateNote,
   updateZIndex,
@@ -377,4 +407,5 @@ export {
   updateNodeWidth,
   newNode,
   updateTask,
+  updateNodeColor,
 };
