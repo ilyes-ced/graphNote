@@ -108,12 +108,12 @@ body,
   scrollbar-width: thin;
 }
 
-/*grid pattern*/
 #viewport-content {
   background-image: radial-gradient(#88888830 1px, transparent 0);
   background-size: 10px 10px;
   background-position: -20px -20px;
 }
+
 .node {
   position: absolute;
 }
@@ -189,6 +189,6 @@ body,
     @apply text-lg font-bold;
   }
   pre {
-    @apply bg-accent rounded;
+    @apply border border-accent rounded px-2;
   }
 }

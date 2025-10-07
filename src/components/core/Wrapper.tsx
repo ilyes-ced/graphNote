@@ -1,3 +1,4 @@
+import ColorSelectMenu from "../ui/ColorSelectMenu";
 import Controls from "./Controls";
 import Edges from "./Edges";
 import EventHandler from "./EventHandler";
@@ -22,6 +23,7 @@ export default () => {
   // wrapper width and lenght are defined in the store
   return (
     <div id="wrapper">
+      <ColorSelectMenu />
       <EventHandler>
         <Zoom>
           <Pan>

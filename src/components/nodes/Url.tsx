@@ -60,7 +60,11 @@ export default (node: UrlProps) => {
 
   return (
     <div class="space-y-2">
-      <img class="url_thumbnail" src={metaData().image} alt="" />
+      <img
+        class="url_thumbnail pointer-events-none"
+        src={metaData().image}
+        alt=""
+      />
 
       <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
         <div class="url_container flex flex-row items-center space-x-2">

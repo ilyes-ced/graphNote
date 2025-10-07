@@ -85,7 +85,7 @@ export default (props: nodeProps) => {
         background: props.node.color, //? if this doesnt exist, .node in App.css will take care of it
         "z-index": props.node.zIndex,
         transform: `translate3d(${props.node.x}px, ${props.node.y}px, 0)`,
-        color: props.node.textColor,
+        color: props.node.textColor ?? "var(--color-foreground)",
       }}
     >
       <Show when={props.node.top_strip_color}>

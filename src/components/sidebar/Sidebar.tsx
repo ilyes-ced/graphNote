@@ -1,14 +1,5 @@
-import {
-  Component,
-  createSignal,
-  For,
-  onCleanup,
-  createEffect,
-} from "solid-js";
-import Svg from "../nodes/Svg";
-import { newNode } from "@/shared/update";
-import { NodeType } from "@/types";
-import { setStore, store } from "../../shared/store";
+import { createEffect, Match, Switch } from "solid-js";
+import { store } from "../../shared/store";
 import NodeList from "./NodeList";
 import NoteStyles from "./NoteStyles";
 import NodeStyles from "./NodeStyles";
@@ -25,8 +16,48 @@ createEffect(() => {
 
 export default () => {
   return (
-    <div class="relative overflow-hidden h-full w-[65px] border-r border-border">
+    <div class="flex overflow-hidden h-full w-[65px] border-r border-border">
       {/* Nodes Sidebar */}
+
+      <div
+        class="w-[65px] h-full transition-transform duration-300 ease-in-out"
+        classList={{
+          "translate-x-0": store.activeSidebar === "nodes",
+          "-translate-x-full": store.activeSidebar == "noteStyles",
+          "translate-x-full": store.activeSidebar == "nodeStyles",
+        }}
+      >
+        <NodeList />
+      </div>
+
+      {/* note Styles Sidebar */}
+      <div
+        class="w-[65px] h-full transition-transform duration-300 ease-in-out"
+        classList={{
+          "-translate-x-full": store.activeSidebar === "noteStyles",
+        }}
+      >
+        <NoteStyles />
+      </div>
+
+      {/* node Styles Sidebar */}
+      <div
+        class="w-[65px] h-full transition-transform duration-300 ease-in-out"
+        classList={{
+          "-translate-x-[200%]": store.activeSidebar === "nodeStyles",
+          "-translate-x-[300%]": store.activeSidebar !== "nodeStyles", // slides in from the right
+        }}
+      >
+        <NodeStyles />
+      </div>
+    </div>
+  );
+};
+
+/*
+
+    <div class="relative overflow-hidden h-full w-[65px] border-r border-border">
+      {/* Nodes Sidebar }
       <div class="relative size-full"></div>
 
       <div
@@ -39,7 +70,7 @@ export default () => {
         <NodeList />
       </div>
 
-      {/* note Styles Sidebar */}
+      {/* note Styles Sidebar }
       <div
         class="absolute top-0 left-0 w-full h-full transition-transform duration-300 ease-in-out"
         classList={{
@@ -50,7 +81,7 @@ export default () => {
         <NoteStyles />
       </div>
 
-      {/* node Styles Sidebar */}
+      {/* node Styles Sidebar }
       <div
         class="absolute top-0 left-0 w-full h-full transition-transform duration-300 ease-in-out"
         classList={{
@@ -61,5 +92,6 @@ export default () => {
         <NodeStyles />
       </div>
     </div>
-  );
-};
+  
+
+*/

@@ -1,11 +1,15 @@
 import { store } from "@/shared/store";
 import { updateNodeColor } from "@/shared/update";
 import { ColorType } from "@/types";
-import { createSignal, For, onMount } from "solid-js";
+import { createSignal, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
 // first color is default
+
 const bgColorList: ColorType[] = [
+  getComputedStyle(document.documentElement)
+    .getPropertyValue("--color-card")
+    .trim() as ColorType,
   "#EF4444",
   "#F59E0B",
   "#10B981",
@@ -13,7 +17,11 @@ const bgColorList: ColorType[] = [
   "#8B5CF6",
   "#EC4899",
 ];
+
 const textColorList: ColorType[] = [
+  getComputedStyle(document.documentElement)
+    .getPropertyValue("--color-foreground")
+    .trim() as ColorType,
   "#EF4444",
   "#F59E0B",
   "#10B981",
@@ -24,6 +32,14 @@ const textColorList: ColorType[] = [
 
 type comboType = { bg: ColorType; fg: ColorType };
 const textBgComboColorList: comboType[] = [
+  {
+    bg: getComputedStyle(document.documentElement)
+      .getPropertyValue("--color-card")
+      .trim() as ColorType,
+    fg: getComputedStyle(document.documentElement)
+      .getPropertyValue("--color-foreground")
+      .trim() as ColorType,
+  },
   {
     bg: "#F59E0B",
     fg: "#8B5CF6",
@@ -42,8 +58,7 @@ export default () => {
     "flex items-center justify-center w-1/2 p-2 aspect-2/1 rounded cursor-pointer transition-colors duration-200 ease-in-out hover:bg-primary";
   return (
     <div
-      class={`transition-all duration-200 ease-in-out 
-          absolute top-4 left-4 shadow-lg shadow-primary/50
+      class={`z-50 transition-all duration-200 ease-in-out absolute top-4 left-4 [box-shadow:5px_5px_var(--color-primary)]
           ${
             store.showColorMenu
               ? "opacity-100 scale-100"
@@ -140,7 +155,7 @@ const BgColors = () => {
         <For each={textBgComboColorList}>
           {(combo) => (
             <div
-              class="border border-transparent hover:border-foreground/70 cursor-pointer bg-accent w-10 aspect-3/2 flex items-center justify-center"
+              class="border border-transparent hover:border-foreground/70 cursor-pointer w-10 aspect-3/2 flex items-center justify-center"
               style={{ color: combo.fg, background: combo.bg }}
               onClick={() => changeBgFg(combo)}
             >

@@ -51,7 +51,7 @@ export default (props: any) => {
           // border: "1px solid yellow",
           transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
           "transform-origin": "50% 50%",
-          transition: "transform 0.05s ease-out",
+          transition: "transform 0.2s ease-out",
           width: "2000px",
           height: "2000px",
         }}

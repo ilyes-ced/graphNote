@@ -44,7 +44,7 @@ const [store, setStore] = createStore<GlobalStore>({
   snapGrid: [10, 10],
 
   activeBoards: [{ name: "home", id: "home" }],
-  activeSidebar: "noteStyles",
+  activeSidebar: "nodes",
   showColorMenu: true,
   noteEditor: null,
   activeTags: [],

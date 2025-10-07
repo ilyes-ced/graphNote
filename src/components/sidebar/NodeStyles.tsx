@@ -14,6 +14,7 @@ createEffect(() => {
 export default () => {
   const [color1, setColor1] = createSignal("#EC4899");
   const [color2, setColor2] = createSignal("#8B5CF6");
+  const [color3, setColor3] = createSignal("#8B5CF6");
 
   const setColors = () => {
     const nodeId = store.selectedNodes.values().next().value;
@@ -21,6 +22,12 @@ export default () => {
       const node = findNodeById(nodeId);
       setColor1(node?.color ?? "#444444");
       setColor2(node?.top_strip_color ?? "#333333");
+      setColor3(
+        node?.textColor ??
+          getComputedStyle(document.documentElement)
+            .getPropertyValue("--color-foreground")
+            .trim()
+      );
     }
   };
 
@@ -47,7 +54,15 @@ export default () => {
                 class="border-b-0 h-1/6 w-full"
                 style={{ background: color2() }}
               ></div>
-              <div class="h-5/6 w-full " style={{ background: color1() }}></div>
+              <div
+                class="h-5/6 w-full flex items-center justify-center"
+                style={{
+                  background: color1(),
+                  color: color3() ?? "var(--color-foreground)",
+                }}
+              >
+                A
+              </div>
             </div>
           </div>
           <p class="text-sm text-center">colors</p>

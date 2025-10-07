@@ -1,6 +1,6 @@
-import { createEffect, For, JSX, Match, Show, Switch } from "solid-js";
+import { For, Match, Switch } from "solid-js";
 import { store } from "../../shared/store";
-import { NodeType, NodeUnion } from "../../types";
+import { NodeType } from "../../types";
 import Column from "../nodes/Column";
 import Note from "../nodes/Note";
 import Todo from "../nodes/Todo";
@@ -9,15 +9,12 @@ import Board from "../nodes/Board";
 import Table from "../nodes/Table";
 import Image from "../nodes/Image";
 import Color from "../nodes/Color";
-import ColorSelectMenu from "../ui/ColorSelectMenu";
 import Activity from "../nodes/Activity";
 import NodeWrapper from "./NodeWrapper";
 
 export default () => {
   return (
     <div id="nodes" class="bg-red-600">
-      <ColorSelectMenu />
-
       <For each={store.nodes[store.activeBoards.at(-1)?.id ?? "home"]}>
         {(node) => (
           <NodeWrapper node={node}>
