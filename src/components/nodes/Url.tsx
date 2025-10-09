@@ -74,7 +74,7 @@ export default (node: UrlProps) => {
             alt="favicon"
           />
           <div>
-            <a class="url text-xs font-bold text-accent" href={node.url}>
+            <a class="url text-xs font-bold text-foreground" href={node.url}>
               {node.url}
             </a>
           </div>

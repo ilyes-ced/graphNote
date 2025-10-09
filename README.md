@@ -1,62 +1,17 @@
-# Heading 1
+# dev
 
-## Heading 2
+```
+GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 pnpm tauri dev
+```
 
-### Heading 3
+# building
 
-#### Heading 4
+```
+NO_STRIP=true pnpm tauri build --verbose
+```
 
-##### Heading 5
+# running
 
-###### Heading 6
-
-Lorem ipsum dolor.
-
-**bold text**
-_italicized text_
-~~The world is flat.~~
-I need to highlight these ==very important words==.
-
----
-
-[title](https://www.example.com)
-![alt text](image.jpg)
-
-Lorem
-
----
-
-Ipsum
-
----
-
-Dolor
-
-> Lorem ipsum dolor.
->
-> > Lorem ipsum dolor.
-> >
-> > > Lorem ipsum dolor.
-> > >
-> > > > Lorem ipsum dolor.
-
-1. Lorem
-   1. Lorem
-1. Lorem
-1. Ipsum
-1. Dolor
-
-- Lorem
-- Ipsum
-- Dolor
-
-- [x] Write the press release
-- [ ] Update the website
-- [ ] Contact the media
-
-[Github]: https://github.com
-
-| Syntax    | Description |
-| --------- | ----------- |
-| Header    | Title       |
-| Paragraph | Text        |
+```
+GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bundle/appimage/graphnote_0.1.0_amd64.AppImage
+```

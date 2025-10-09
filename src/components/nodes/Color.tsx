@@ -1,4 +1,3 @@
-import { store } from "../../shared/store";
 import { Color } from "../../types";
 
 type ColorProps = Color & {
@@ -14,7 +13,6 @@ export default (node: ColorProps) => {
         style={{ background: node.colorValue }}
       >
         {node.colorValue}
-        hex value here
       </div>
       <div class="p-5 text-xs">
         by default is color name here, editable \{node.text}

@@ -90,7 +90,7 @@ export default (props: nodeProps) => {
     >
       <Show when={props.node.top_strip_color}>
         <div
-          class="top_strip"
+          class="top_strip absolute top-0 left-0"
           style={{ background: props.node.top_strip_color }}
         ></div>
       </Show>

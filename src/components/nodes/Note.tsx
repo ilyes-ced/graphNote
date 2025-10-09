@@ -1,14 +1,9 @@
-import { createEffect, createSignal, onMount } from "solid-js";
 import { Note } from "../../types";
-import { updateNote } from "@/shared/update";
-import { addSelected, debounce } from "@/shared/utils";
+import { changeToUrlNode, updateNote } from "@/shared/update";
+import { debounce } from "@/shared/utils";
 
 import StarterKit from "@tiptap/starter-kit";
-import {
-  createEditorTransaction,
-  createTiptapEditor,
-  useEditorIsActive,
-} from "solid-tiptap";
+import { createTiptapEditor } from "solid-tiptap";
 import Blockquote from "@tiptap/extension-blockquote";
 import Highlight from "@tiptap/extension-highlight";
 import Typography from "@tiptap/extension-typography";
@@ -21,13 +16,7 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import TextAlign from "@tiptap/extension-text-align";
 
-import {
-  IconBold,
-  IconEdit,
-  IconItalic,
-  IconStrikethrough,
-} from "@tabler/icons-solidjs";
-import { setStore, store } from "../../shared/store";
+import { setStore } from "../../shared/store";
 
 type NoteProps = Note & {
   is_child?: boolean;
@@ -74,16 +63,24 @@ export default (node: NoteProps) => {
     onSelectionUpdate() {
       setStore("activeTags", getActiveTagsAtCursor());
     },
-    onBlur() {
-      // there is
-      // setStore("activeSidebar", "nodes");
-    },
     onUpdate({ editor }) {
       //? there is a short loss of focus when pressing a style for the text to update and for the cursor to focus again so we need this timeout to make sure we get the active tags after the cursor is focused back
       setTimeout(() => {
         setStore("activeTags", getActiveTagsAtCursor());
       }, 0);
-      updateText(JSON.stringify(editor.getJSON()));
+
+      console.log(editor.getJSON());
+      const text = editor.getText().trim();
+      console.log(text);
+      const urlRegex = /^(https?:\/\/[^\s]+)$/;
+      console.log(urlRegex.test(text));
+
+      if (urlRegex.test(text)) {
+        console.log("here we change this this note node to a url node");
+        changeToUrlNode(node.id, text);
+      } else {
+        updateText(JSON.stringify(editor.getJSON()));
+      }
     },
     extensions: [
       StarterKit,
@@ -110,11 +107,7 @@ export default (node: NoteProps) => {
     <div class="p-5 ">
       {/*JSON.stringify(store.activeTags)*/}
 
-      <div
-        class="focus:outline-none focus:ring-0 focus:border-none"
-        id="editor"
-        ref={editorRef}
-      ></div>
+      <div id="editor" ref={editorRef}></div>
     </div>
   );
 };

@@ -129,7 +129,7 @@ export default () => {
       </div>
 
       <div
-        class="absolute bg-red-900 p-4 "
+        class="absolute bg-red-900 p-4 z-[1000]"
         style={{
           display: dragging() ? "block" : "none",
           top: `${dragPos().y}px`,

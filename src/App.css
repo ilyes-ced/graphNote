@@ -124,6 +124,9 @@ body,
   border: 1px solid var(--color-background);
   cursor: grab;
   will-change: transform;
+}
+
+.node-animation {
   /* transition: transform 0.2s ease-out; */
   transition: transform 0.15s cubic-bezier(0.33, 1, 0.68, 1);
 }
@@ -161,11 +164,13 @@ body,
 }
 
 .tiptap {
+  @apply focus:outline-0 cursor-text select-none;
+
   ul {
-    @apply list-disc list-inside pl-4;
+    @apply list-disc pl-4;
   }
   ol {
-    @apply list-decimal list-inside pl-4;
+    @apply list-decimal pl-4;
   }
   blockquote {
     @apply p-4 border-l-4 border-primary bg-background/50;

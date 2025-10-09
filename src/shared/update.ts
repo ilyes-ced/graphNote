@@ -267,7 +267,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
     case NodeType.Note:
       return {
         ...base,
-        text: '{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Markdown shortcuts make it easy to format the text while typing."}]},{"type":"paragraph","content":[{"type":"text","text":"To test that, start a new line and type "},{"type":"text","marks":[{"type":"code"}],"text":"#"},{"type":"text","text":" followed by a space to get a heading. Try "},{"type":"text","marks":[{"type":"code"}],"text":"#"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"##"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"###"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"####"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"#####"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"######"},{"type":"text","text":"for different levels."}]},{"type":"paragraph","content":[{"type":"text","text":"Those conventions are called input rules in Tiptap. Some of them are enabled by default. Try "},{"type":"text","marks":[{"type":"code"}],"text":">"},{"type":"text","text":" for blockquotes, "},{"type":"text","marks":[{"type":"code"}],"text":"*"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"-"},{"type":"text","text":" or "},{"type":"text","marks":[{"type":"code"}],"text":"+"},{"type":"text","text":" for bullet lists, or "},{"type":"text","marks":[{"type":"code"}],"text":"foobar"},{"type":"text","text":" to highlight code, "},{"type":"text","marks":[{"type":"code"}],"text":"~~tildes~~"},{"type":"text","text":" to strike text, or "},{"type":"text","marks":[{"type":"code"}],"text":"==equal signs=="},{"type":"text","text":" to highlight text."}]},{"type":"paragraph","content":[{"type":"text","text":"You can overwrite existing input rules or add your own to nodes, marks and extensions."}]},{"type":"paragraph","content":[{"type":"text","text":"For example, we added the "},{"type":"text","marks":[{"type":"code"}],"text":"Typography"},{"type":"text","text":" extension here. Try typing "},{"type":"text","marks":[{"type":"code"}],"text":"(c)"},{"type":"text","text":" to see how it’s converted to a proper © character. You can also try "},{"type":"text","marks":[{"type":"code"}],"text":"->"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":">>"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"1/2"},{"type":"text","text":", "},{"type":"text","marks":[{"type":"code"}],"text":"!="},{"type":"text","text":", or "},{"type":"text","marks":[{"type":"code"}],"text":"--"},{"type":"text","text":"."}]}]}',
+        text: '{"type":"doc","content":[{"type":"paragraph"}]}',
       } satisfies Note;
 
     case NodeType.Comment:
@@ -391,6 +391,40 @@ const updateNodeColor = (
   saveChanges();
 };
 
+const unsetStripColor = () => {
+  store.selectedNodes.forEach((nodeId) => {
+    const activeBoardId = getActiveBoardId();
+    const boardNodes = store.nodes[activeBoardId] ?? [];
+
+    const index = boardNodes.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      setStore("nodes", activeBoardId, index, (prev) => ({
+        ...prev,
+        top_strip_color: undefined,
+      }));
+    }
+  });
+
+  saveChanges();
+};
+
+const changeToUrlNode = (nodeId: string, url: string) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      setStore("nodes", parentId, index, (oldNote) => ({
+        ...oldNote,
+        type: NodeType.Url,
+        url: url,
+        text: undefined,
+      }));
+      break;
+    }
+  }
+
+  saveChanges();
+};
+
 export {
   updateNote,
   updateZIndex,
@@ -408,4 +442,6 @@ export {
   newNode,
   updateTask,
   updateNodeColor,
+  changeToUrlNode,
+  unsetStripColor,
 };

@@ -47,8 +47,8 @@ const TaskItem: Component<Task> = (props: TaskItemProps) => {
   // taskitem classname prevents the checkbox box from being used as drag handle so the click event on the checkbox can trigger
   return (
     <div style={{ "margin-left": `${props.nestLevel * 18}px` }}>
-      <div class="flex items-start justify-between">
-        <div class="inline-flex items-start">
+      <div class="flex items-start justify-between group/taskitem">
+        <div class="inline-flex items-start ">
           <label class="checkbox-check flex items-center cursor-pointer relative pt-[2px]">
             <input
               type="checkbox"
@@ -91,7 +91,7 @@ const TaskItem: Component<Task> = (props: TaskItemProps) => {
           </span>
         </div>
 
-        <IconMenu2 class="order_tasklist h-full cursor-pointer pt-[3px]" />
+        <IconMenu2 class="order_tasklist size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100" />
       </div>
     </div>
   );

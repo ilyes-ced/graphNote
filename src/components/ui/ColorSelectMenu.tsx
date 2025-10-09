@@ -1,5 +1,5 @@
 import { store } from "@/shared/store";
-import { updateNodeColor } from "@/shared/update";
+import { unsetStripColor, updateNodeColor } from "@/shared/update";
 import { ColorType } from "@/types";
 import { createSignal, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
@@ -97,12 +97,12 @@ export default () => {
   );
 };
 
-const changeBg = (bg: ColorType) => {
+const changeBg = (bg: ColorType | "none") => {
   store.selectedNodes.forEach((nodeId) => {
     updateNodeColor(nodeId, "bg", bg);
   });
 };
-const changeFg = (fg: ColorType) => {
+const changeFg = (fg: ColorType | "none") => {
   store.selectedNodes.forEach((nodeId) => {
     updateNodeColor(nodeId, "fg", fg);
   });
@@ -113,7 +113,7 @@ const changeBgFg = (combo: comboType) => {
     updateNodeColor(nodeId, "fg", combo.fg);
   });
 };
-const changeTopStrip = (color: ColorType) => {
+const changeTopStrip = (color: ColorType | "none") => {
   store.selectedNodes.forEach((nodeId) => {
     updateNodeColor(nodeId, "strip", color);
   });
@@ -127,7 +127,7 @@ const BgColors = () => {
         <For each={bgColorList}>
           {(bgColor) => (
             <div
-              class="border border-transparent hover:border-foreground/70 cursor-pointer w-10 aspect-3/2 p-2"
+              class="border border-border hover:border-foreground/70 cursor-pointer w-10 aspect-3/2 p-2"
               style={{ background: bgColor }}
               onClick={() => changeBg(bgColor)}
             ></div>
@@ -140,7 +140,7 @@ const BgColors = () => {
         <For each={textColorList}>
           {(textColor) => (
             <div
-              class="border border-transparent hover:border-foreground/70 cursor-pointer bg-accent w-10 aspect-3/2 flex items-center justify-center"
+              class="border border-border hover:border-foreground/70 cursor-pointer bg-accent w-10 aspect-3/2 flex items-center justify-center"
               style={{ color: textColor }}
               onClick={() => changeFg(textColor)}
             >
@@ -155,7 +155,7 @@ const BgColors = () => {
         <For each={textBgComboColorList}>
           {(combo) => (
             <div
-              class="border border-transparent hover:border-foreground/70 cursor-pointer w-10 aspect-3/2 flex items-center justify-center"
+              class="border border-border hover:border-foreground/70 cursor-pointer w-10 aspect-3/2 flex items-center justify-center"
               style={{ color: combo.fg, background: combo.bg }}
               onClick={() => changeBgFg(combo)}
             >
@@ -176,6 +176,12 @@ const StripColors = () => {
     <div class="space-y-2">
       {/* bg color selection */}
       <div class="grid grid-cols-5 gap-2">
+        <div
+          class="relative border border-border hover:border-foreground/70 cursor-pointer w-10 aspect-[3/2] bg-transparent"
+          onClick={() => unsetStripColor()}
+        >
+          <div class="absolute top-1/2 left-1/2 w-[120%] h-[2px] bg-destructive rotate-30 -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
         <For each={bgColorList}>
           {(stripColor) => (
             <div
