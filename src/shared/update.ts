@@ -336,6 +336,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
       return {
         ...base,
         // TODO: Fill once you define what Activity contains
+        width: undefined,
       } as Activity;
 
     default:
@@ -425,6 +426,18 @@ const changeToUrlNode = (nodeId: string, url: string) => {
   saveChanges();
 };
 
+const updateColumnTitle = (nodeId: string, newValue: string) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      setStore("nodes", parentId, index, "title", newValue);
+      break;
+    }
+  }
+
+  saveChanges();
+};
+
 export {
   updateNote,
   updateZIndex,
@@ -444,4 +457,5 @@ export {
   updateNodeColor,
   changeToUrlNode,
   unsetStripColor,
+  updateColumnTitle,
 };

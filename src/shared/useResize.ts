@@ -1,7 +1,8 @@
 import { createSignal, onCleanup } from "solid-js";
 
 export function useResize(
-  initialWidth: number = 300,
+  // undefined for activity type node
+  initialWidth: number | undefined,
   onResizeEnd?: (width: number) => void
 ) {
   const [width, setWidth] = createSignal(initialWidth);

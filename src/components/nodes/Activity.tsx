@@ -25,7 +25,7 @@ export default (node: ActivityProps) => {
   // console.log(today.getDay);
 
   return (
-    <div>
+    <div class="">
       <Show when={node.top_strip_color}>
         <div
           class="top_strip"
@@ -33,7 +33,7 @@ export default (node: ActivityProps) => {
         ></div>
       </Show>
 
-      <div class="p-5 space-y-4">
+      <div class="p-5 space-y-4 ">
         {/* title */}
         <div class="flex">
           <div class="border rounded size-14 flex justify-center items-center">
@@ -48,7 +48,7 @@ export default (node: ActivityProps) => {
           </div>
         </div>
 
-        <div class="flex flex-row space-x-[2px] overflow-auto">
+        <div class="flex flex-row space-x-[2px]">
           <For each={Array.from(Array(52).keys())}>
             {(week) => (
               <div class="flex flex-col space-y-[2px]">

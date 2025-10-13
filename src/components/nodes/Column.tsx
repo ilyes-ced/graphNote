@@ -1,4 +1,4 @@
-import { Show, For, Match, Switch } from "solid-js";
+import { Show, For, Match, Switch, createSignal } from "solid-js";
 import { NodeType, Column } from "../../types";
 import Svg from "./Svg";
 import Note from "./Note";
@@ -11,8 +11,24 @@ import Image from "../nodes/Image";
 import NodeWrapper from "../core/NodeWrapper";
 import Color from "../nodes/Color";
 import Activity from "../nodes/Activity";
+import { updateColumnTitle } from "@/shared/update";
+import { debounce } from "@/shared/utils";
 
 export default (node: Column) => {
+  const [editable, setEditable] = createSignal<boolean>(false);
+
+  let editableDiv!: HTMLDivElement;
+
+  const updateTitle = debounce((newValue: string) => {
+    console.log("Debounced update:", newValue);
+    updateColumnTitle(node.id, newValue);
+  }, 3000);
+
+  const handleInput = () => {
+    const newText = editableDiv?.innerText || "";
+    updateTitle(newText);
+  };
+
   return (
     <div class="content flex flex-col p-2">
       <div
@@ -22,7 +38,18 @@ export default (node: Column) => {
       >
         <Svg width={16} height={16} classes="" icon_name={"collapse"} />
       </div>
-      <div class="title text-xl font-extrabold mb-2 text-center">
+      <div
+        ref={editableDiv}
+        class="title text-xl font-extrabold mb-2 text-center focus:outline-0"
+        classList={{ titleHandle: editable() }}
+        contentEditable={editable()}
+        onClick={() => setEditable(true)}
+        style={{
+          cursor: editable() ? "text" : "",
+        }}
+        onBlur={() => setEditable(false)}
+        onInput={handleInput}
+      >
         {node.title}
       </div>
       <div class="subtitle mb-4 text-center">subtitle</div>

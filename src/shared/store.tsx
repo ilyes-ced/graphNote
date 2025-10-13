@@ -45,7 +45,7 @@ const [store, setStore] = createStore<GlobalStore>({
 
   activeBoards: [{ name: "home", id: "home" }],
   activeSidebar: "nodes",
-  showColorMenu: true,
+  showColorMenu: false,
   noteEditor: null,
   activeTags: [],
 

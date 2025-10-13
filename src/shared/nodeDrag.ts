@@ -56,10 +56,11 @@ export function useDraggable(
     if (e.button !== 0) return;
     // if it is not a child ignore elemnts with these classNames
 
-    if ((e.target as HTMLElement).closest(".order_tasklist")) {
-      // todo: reorder task items
-      return;
-    }
+    //? maybe should handle it in its file
+    //if ((e.target as HTMLElement).closest(".tasklist_handle")) {
+    //  // todo: reorder task items
+    //  return;
+    //}
 
     if (!is_child)
       if ((e.target as HTMLElement).closest(ignoredSelectors)) return;

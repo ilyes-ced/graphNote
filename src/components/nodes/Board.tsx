@@ -1,7 +1,6 @@
-import { Board, Column, NodeType, NodeUnion } from "../../types";
+import { Board } from "../../types";
 import { setStore, store } from "../../shared/store";
 import { useDraggable } from "@/shared/nodeDrag";
-import { reconcile } from "solid-js/store";
 import { findNodeById } from "@/shared/update";
 import { IconCode } from "@tabler/icons-solidjs";
 
@@ -46,12 +45,21 @@ export default (node: BoardProps) => {
   return (
     <div
       onDblClick={handleDoubleClick}
+      onPointerDown={startDrag}
       class="board flex flex-col justify-center items-center"
       classList={{
         child_node: node.is_child,
         node: !node.is_child,
-        "flex flex-row justify-start p-2 pl-2.5": node.is_child,
+        "flex flex-row justify-start p-2 pl-2.5 border": node.is_child,
         selected_node: store.selectedNodes.has(node.id),
+      }}
+      id={node.id}
+      style={{
+        background: node.is_child ? "#00000050" : "#00000000",
+        width: node.is_child ? "100%" : "60px",
+        "z-index": node.zIndex,
+        "border-radius": node.is_child ? "" : "15px",
+        transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
       <div

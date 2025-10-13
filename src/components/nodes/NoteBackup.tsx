@@ -18,8 +18,6 @@ export default (node: NoteProps) => {
 
   const updateText = debounce((newValue: string) => {
     console.log("Debounced update:", newValue);
-    // could be nested too
-    // update in the update.ts shared file
     updateNote(node.id, newValue);
   }, 3000);
 
