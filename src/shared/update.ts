@@ -468,6 +468,30 @@ const updateColumnTitle = (nodeId: string, newValue: string) => {
   saveChanges();
 };
 
+const updateActivityCounter = (
+  nodeId: string,
+  date: string,
+  newValue: number
+) => {
+  console.log(nodeId, date, newValue);
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      setStore(
+        "nodes",
+        parentId,
+        index,
+        "progress",
+        date,
+        (prev) => (prev ?? 0) + 1
+      );
+      break;
+    }
+  }
+
+  saveChanges();
+};
+
 export {
   updateNote,
   updateZIndex,
@@ -489,4 +513,5 @@ export {
   unsetStripColor,
   updateColumnTitle,
   newImageNode,
+  updateActivityCounter,
 };

@@ -1,12 +1,12 @@
-import { onMount, Show } from "solid-js";
+import { onMount, Show, createSignal, createEffect } from "solid-js";
 import { Activity } from "@/types";
 
 import CalHeatmap from "cal-heatmap";
 import "cal-heatmap/cal-heatmap.css";
 import Tooltip from "cal-heatmap/plugins/Tooltip";
-import Legend from "cal-heatmap/plugins/Legend";
 import CalendarLabel from "cal-heatmap/plugins/CalendarLabel";
-import dayjs from "dayjs";
+import { updateActivityCounter } from "@/shared/update";
+
 type ActivityProps = Activity & {
   is_child?: boolean;
 };
@@ -22,8 +22,38 @@ type ActivityProps = Activity & {
 
 export default (node: ActivityProps) => {
   let calendarContainer!: HTMLDivElement;
+  let contentRef: HTMLDivElement | undefined;
+  const [isOpen, setIsOpen] = createSignal(false);
+  const [activeDate, setActiveDate] = createSignal("string");
+
+  const handleEdit = (value: number) => {
+    console.log("Debounced activity update:", node.id, activeDate(), value);
+    updateActivityCounter(node.id, activeDate(), value);
+  };
+
+  const classes =
+    "cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2";
+
   onMount(() => {
     const cal: CalHeatmap = new CalHeatmap();
+
+    createEffect(() => {
+      const data = Object.entries(node.progress).map(([date, value]) => ({
+        date,
+        value,
+      }));
+
+      cal?.fill(data);
+      addCellBorders();
+
+      //const color = node.textColor ?? "var(--color-foreground)";
+      // const foreground = getComputedStyle(document.documentElement)
+      //   .getPropertyValue("--color-primary")
+      //   .trim();
+      // console.log(foreground);
+      //changeTextColor(foreground);
+    });
+
     cal.paint(
       {
         itemSelector: calendarContainer,
@@ -32,12 +62,17 @@ export default (node: ActivityProps) => {
           sort: "asc",
         },
         subDomain: {
+          color: /*node.textColor ??*/ "var(--color-foreground)",
           type: "day",
-          radius: 2,
+          radius: 0,
           width: 15,
           height: 15,
-          label: function (timestamp, value) {
-            return `${value ?? 0}`;
+          label: function (timestamp: any, value: any) {
+            return `${value ?? ""}`;
+          },
+          style: {
+            stroke: "#ccc",
+            strokeWidth: 1,
           },
         },
         range: 1,
@@ -45,10 +80,9 @@ export default (node: ActivityProps) => {
         theme: "dark",
         scale: {
           color: {
-            // Try some values: Purples, Blues, Turbo, Magma, etc ...
-            scheme: "greens",
             type: "linear",
             domain: [0, 30],
+            range: ["transparent", node.textColor ?? "#f64a03"],
           },
         },
         data: {
@@ -65,7 +99,7 @@ export default (node: ActivityProps) => {
         [
           Tooltip,
           {
-            text: function (date, value, dayjsDate) {
+            text: function (date: any, value: any, dayjsDate: any) {
               return (
                 (value ? value + " times" : "No data") +
                 " on " +
@@ -88,10 +122,44 @@ export default (node: ActivityProps) => {
       ]
     );
 
-    cal.on("click", (event, timestamp, value) => {
-      console.log(new Date(timestamp).toLocaleDateString() + "/" + value);
+    cal.on("click", (event: any, timestamp: any, value: any) => {
+      setIsOpen(true);
+      setActiveDate(new Date(timestamp).toISOString().split("T")[0]);
+      console.log(
+        new Date(timestamp).toISOString().split("T")[0] + "/" + value
+      );
     });
+    addCellBorders();
   });
+
+  const addCellBorders = () => {
+    setTimeout(() => {
+      const cells = Array.from(
+        calendarContainer.getElementsByClassName("ch-subdomain-bg")
+      );
+
+      cells.forEach((cell: any) => {
+        if (cell.style.fill) {
+          cell.style.strokeWidth = "1px";
+          cell.style.stroke = node.textColor ?? "#f64a03";
+        }
+      });
+    }, 0);
+  };
+
+  const changeTextColor = (color: string) => {
+    setTimeout(() => {
+      const cells = Array.from(
+        calendarContainer.getElementsByClassName("ch-subdomain-text")
+      );
+
+      cells.forEach((cell: any) => {
+        if (cell.style.fill) {
+          cell.style.stroke = color;
+        }
+      });
+    }, 0);
+  };
 
   return (
     <div class="">
@@ -109,18 +177,51 @@ export default (node: ActivityProps) => {
             logo
           </div>
           <div class="flex-1 px-4">
-            <div class="text-xl font-bold text-foreground">title</div>
-            <div class="text-muted-foreground">desc</div>
+            <div class="activityTitle text-xl font-bold ">title</div>
+            <div class="activityDesc ">desc</div>
           </div>
           <div class="border-2 border-border size-14 flex justify-center items-center">
             logo
           </div>
         </div>
-
+        {/* heatmap */}
         <div
-          class="border-2 border-border size-fit p-4"
+          class="border-2 border-border size-fit p-4 pb-0"
           ref={calendarContainer}
         ></div>
+
+        {/* Edit form */}
+        <div classList={{ "border-2 border-border": isOpen() }}>
+          <div
+            ref={contentRef}
+            class="overflow-hidden transition-[height] duration-300 ease-out w-full"
+            style={{
+              height: isOpen() ? `${contentRef?.scrollHeight ?? 0}px` : "0px",
+            }}
+          >
+            <div class="p-4 flex items-center justify-between">
+              <div>{activeDate()}</div>
+              <div
+                id="controls"
+                class="flex flex-row items-center justify-center"
+              >
+                <div
+                  onClick={() => handleEdit(-1)}
+                  class={classes + " rounded-l-md activityChangers"}
+                >
+                  -
+                </div>
+                <div class={classes}>{node.progress[activeDate()] ?? 0}</div>
+                <div
+                  onClick={() => handleEdit(+1)}
+                  class={classes + "  rounded-r-md activityChangers"}
+                >
+                  +
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

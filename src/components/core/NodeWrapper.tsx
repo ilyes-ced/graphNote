@@ -42,7 +42,9 @@ const ignoredClasses = (
         return { tags: ["input"], classes: ["columnSelection"] };
 
       case NodeType.Activity:
-        return { classes: ["activityCell", "ch-subdomain-bg"] };
+        return {
+          classes: ["activityCell", "ch-subdomain-bg", "activityChangers"],
+        };
 
       default:
         return {};
@@ -109,7 +111,7 @@ export default (props: nodeProps) => {
       {/* props.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
       <Show when={props.node.top_strip_color}>
         <div
-          class="top_strip absolute top-0 left-0"
+          class="top_strip absolute top-0 left-0 h-1 w-full"
           style={{ background: props.node.top_strip_color }}
         ></div>
       </Show>

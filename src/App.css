@@ -12,7 +12,7 @@
   --color-card-foreground: oklch(0.985 0 0);
   --color-popover: oklch(0.21 0.006 285.885);
   --color-popover-foreground: oklch(0.985 0 0);
-  --color-primary: oklch(0.646 0.222 41.116);
+  --color-primary: oklch(0.65 0.2173 36.85);
   --color-primary-foreground: oklch(0.98 0.016 73.684);
   --color-secondary: oklch(0.274 0.006 286.033);
   --color-secondary-foreground: oklch(0.985 0 0);
@@ -214,4 +214,41 @@ body,
 }
 .ch-subdomain-bg {
   cursor: pointer;
+}
+
+/* cal-heatmap color change transition  */
+.activityTitle,
+.activityDesc,
+.ch-plugin-calendar-label-text,
+.ch-domain-text,
+.ch-subdomain-bg,
+.ch-subdomain-text {
+  transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* color picker styling */
+.color-dropdown {
+  background-color: var(--color-card) !important;
+  border-width: 2px !important;
+  border-color: var(--color-border) !important;
+  padding: 20px !important;
+  border-radius: 0px !important;
+  box-shadow: 5px 5px var(--color-primary) !important;
+}
+
+.btn-appearance {
+  border-radius: 0px !important;
+
+  display: flex;
+  justify-items: center;
+  align-items: center;
+
+  padding: 0px 20px 0px 20px !important;
+}
+
+.picker-toggle,
+.color-picker {
+  display: flex;
+  justify-items: center;
+  align-items: center;
 }

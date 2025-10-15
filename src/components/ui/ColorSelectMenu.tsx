@@ -4,6 +4,9 @@ import { ColorType } from "@/types";
 import { createSignal, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
+import { DefaultColorPicker } from "@thednp/solid-color-picker";
+import "@thednp/solid-color-picker/style.css";
+
 // first color is default
 
 const bgColorList: ColorType[] = [
@@ -134,6 +137,11 @@ const BgColors = () => {
           )}
         </For>
       </div>
+      <DefaultColorPicker
+        value="rgb(100,100,100)"
+        onChange={(color) => changeBg(color as ColorType)}
+      />
+
       <div class="w-full border-t border-border"></div>
       {/* text color selection */}
       <div class="grid grid-cols-5 gap-2">
@@ -149,6 +157,11 @@ const BgColors = () => {
           )}
         </For>
       </div>
+      <DefaultColorPicker
+        value="rgb(100,100,100)"
+        onChange={(color) => changeFg(color as ColorType)}
+      />
+
       <div class="w-full border-t border-border"></div>
       {/* text/bg color combo selection */}
       <div class="grid grid-cols-5 gap-2">
@@ -162,11 +175,8 @@ const BgColors = () => {
               A
             </div>
           )}
-        </For>{" "}
+        </For>
       </div>
-      <button class="w-full px-2 py-1 border border-border bg-accent hover:bg-primary cursor-pointer transition-all duration-200 ease-in-out">
-        Add custom color
-      </button>
     </div>
   );
 };
@@ -192,10 +202,10 @@ const StripColors = () => {
           )}
         </For>
       </div>
-
-      <button class="w-full px-2 py-1 border border-border bg-accent hover:bg-primary cursor-pointer transition-all duration-200 ease-in-out">
-        Add custom color
-      </button>
+      <DefaultColorPicker
+        value="rgb(100,100,100)"
+        onChange={(color) => console.log(color)}
+      />
     </div>
   );
 };
