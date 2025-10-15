@@ -102,8 +102,8 @@ export default (props: nodeProps) => {
         color: props.node.textColor ?? "var(--color-foreground)",
       }}
     >
-      {width()}
-      {props.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content"}
+      {/* width() */}
+      {/* props.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
       <Show when={props.node.top_strip_color}>
         <div
           class="top_strip absolute top-0 left-0"

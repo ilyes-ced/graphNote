@@ -13,6 +13,8 @@ import {
 
 export default (props: any) => {
   listen<payload>("tauri://drag-drop", (event) => {
+    // get mouse coords here
+    console.log(event);
     recieveDragNDropFile(event);
   });
 

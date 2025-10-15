@@ -363,6 +363,36 @@ const newNode = (type: NodeType, x: number, y: number) => {
   saveChanges();
 };
 
+const newImageNode = (img: string, x: number, y: number) => {
+  const activeBoardId = getActiveBoardId();
+  console.info("test222");
+
+  //todo: adjust the x and y to scale as well
+
+  let snappedX: number = x,
+    snappedY: number = y;
+  if (store.snapGrid) {
+    snappedX = Math.round(x / 10) * 10;
+    snappedY = Math.round(y / 10) * 10;
+  }
+
+  const imageNode = {
+    id: generateNewId(),
+    type: NodeType.Image,
+    width: 300,
+    x: snappedX,
+    y: snappedY,
+    index: 0,
+    path: img,
+    title: "Untitled Image",
+    description: "test",
+  };
+
+  setStore("nodes", activeBoardId, (nodes = []) => [...nodes, imageNode]);
+
+  saveChanges();
+};
+
 //? update node colors, fg or bg or strip
 const updateNodeColor = (
   nodeId: string,
@@ -458,4 +488,5 @@ export {
   changeToUrlNode,
   unsetStripColor,
   updateColumnTitle,
+  newImageNode,
 };

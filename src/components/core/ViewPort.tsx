@@ -25,9 +25,9 @@ export default (props: any) => {
         position: "absolute",
         top: 0,
         left: 0,
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden", // optional
+        width: "100%",
+        height: "100%",
+        overflow: "auto", // optional
         "z-index": 1, // above background
       }}
     >
@@ -52,8 +52,8 @@ export default (props: any) => {
           transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
           "transform-origin": "50% 50%",
           transition: "transform 0.2s ease-out",
-          width: "2000px",
-          height: "2000px",
+          width: "100%",
+          height: "100%",
         }}
       >
         {props.children}

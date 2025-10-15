@@ -16,39 +16,40 @@ export default () => {
   return (
     <div id="nodes" class="bg-red-600">
       <For each={store.nodes[store.activeBoards.at(-1)?.id ?? "home"]}>
-        {(node) => (
-          <NodeWrapper node={node}>
-            <Switch fallback={<div>Not Found</div>}>
-              <Match when={node.type === NodeType.Column}>
-                <Column {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Note}>
-                <Note {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Todo}>
-                <Todo {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Url}>
-                <Url {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Board}>
-                <Board {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Table}>
-                <Table {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Image}>
-                <Image {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Color}>
-                <Color {...node} />
-              </Match>
-              <Match when={node.type === NodeType.Activity}>
-                <Activity {...node} />
-              </Match>
-            </Switch>
-          </NodeWrapper>
-        )}
+        {(node) =>
+          node.type === NodeType.Board ? (
+            <Board {...node} />
+          ) : (
+            <NodeWrapper node={node}>
+              <Switch fallback={<div>Not Found</div>}>
+                <Match when={node.type === NodeType.Column}>
+                  <Column {...node} />
+                </Match>
+                <Match when={node.type === NodeType.Note}>
+                  <Note {...node} />
+                </Match>
+                <Match when={node.type === NodeType.Todo}>
+                  <Todo {...node} />
+                </Match>
+                <Match when={node.type === NodeType.Url}>
+                  <Url {...node} />
+                </Match>
+                <Match when={node.type === NodeType.Table}>
+                  <Table {...node} />
+                </Match>
+                <Match when={node.type === NodeType.Image}>
+                  <Image {...node} />
+                </Match>
+                <Match when={node.type === NodeType.Color}>
+                  <Color {...node} />
+                </Match>
+                <Match when={node.type === NodeType.Activity}>
+                  <Activity {...node} />
+                </Match>
+              </Switch>
+            </NodeWrapper>
+          )
+        }
       </For>
     </div>
   );

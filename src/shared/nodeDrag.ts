@@ -138,7 +138,7 @@ export function useDraggable(
     console.log("dropping a node", node.id, is_child);
 
     const targets = document.querySelectorAll(
-      `.column:not(#${node.id}), .board` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
+      `.column:not(#${node.id}), .board:not(#${node.id})` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
     );
     let movedToOtherNode = false;
     // todo: stop foreeach when finished
@@ -150,6 +150,7 @@ export function useDraggable(
       if (is_child) {
         if (isInside) {
           movedToOtherNode = true;
+          console.error("this is the end herer");
           moveNode(node.id, target.id, true);
         }
       } else {
@@ -210,9 +211,3 @@ export function useDraggable(
     startDrag,
   };
 }
-
-/**
- *
- * addSelected(e, node.id);
- *
- */

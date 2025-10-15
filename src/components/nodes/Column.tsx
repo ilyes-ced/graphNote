@@ -6,7 +6,7 @@ import Todo from "./Todo";
 import Url from "./Url";
 import Board from "./Board";
 import Table from "./Table";
-import { store } from "../../shared/store";
+import { setStore, store } from "../../shared/store";
 import Image from "../nodes/Image";
 import NodeWrapper from "../core/NodeWrapper";
 import Color from "../nodes/Color";
@@ -28,6 +28,11 @@ export default (node: Column) => {
     const newText = editableDiv?.innerText || "";
     updateTitle(newText);
   };
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevents new line
+    }
+  };
 
   return (
     <div class="content flex flex-col p-2">
@@ -43,12 +48,16 @@ export default (node: Column) => {
         class="title text-xl font-extrabold mb-2 text-center focus:outline-0"
         classList={{ titleHandle: editable() }}
         contentEditable={editable()}
-        onClick={() => setEditable(true)}
+        onClick={() => {
+          setEditable(true);
+          setStore("selectedNodes", new Set());
+        }}
         style={{
           cursor: editable() ? "text" : "",
         }}
         onBlur={() => setEditable(false)}
         onInput={handleInput}
+        onKeyDown={handleKeyDown}
       >
         {node.title}
       </div>
@@ -66,34 +75,35 @@ export default (node: Column) => {
           <For each={store.nodes[node.id]}>
             {(child_node, index) => (
               <>
-                <NodeWrapper node={child_node} isChildNode={true}>
-                  <Switch fallback={<div>Not Found</div>}>
-                    <Match when={child_node.type === NodeType.Note}>
-                      <Note {...child_node} />
-                    </Match>
-                    <Match when={child_node.type === NodeType.Todo}>
-                      <Todo {...child_node} />
-                    </Match>
-                    <Match when={child_node.type === NodeType.Url}>
-                      <Url {...child_node} />
-                    </Match>
-                    <Match when={child_node.type === NodeType.Board}>
-                      <Board {...child_node} />
-                    </Match>
-                    <Match when={child_node.type === NodeType.Table}>
-                      <Table {...child_node} />
-                    </Match>
-                    <Match when={child_node.type === NodeType.Image}>
-                      <Image {...child_node} />
-                    </Match>
-                    <Match when={child_node.type === NodeType.Color}>
-                      <Color {...child_node} />
-                    </Match>
-                    <Match when={child_node.type === NodeType.Activity}>
-                      <Activity {...child_node} />
-                    </Match>
-                  </Switch>
-                </NodeWrapper>
+                {child_node.type === NodeType.Board ? (
+                  <Board {...child_node} is_child={true} />
+                ) : (
+                  <NodeWrapper node={child_node} isChildNode={true}>
+                    <Switch fallback={<div>Not Found</div>}>
+                      <Match when={child_node.type === NodeType.Note}>
+                        <Note {...child_node} />
+                      </Match>
+                      <Match when={child_node.type === NodeType.Todo}>
+                        <Todo {...child_node} />
+                      </Match>
+                      <Match when={child_node.type === NodeType.Url}>
+                        <Url {...child_node} />
+                      </Match>
+                      <Match when={child_node.type === NodeType.Table}>
+                        <Table {...child_node} />
+                      </Match>
+                      <Match when={child_node.type === NodeType.Image}>
+                        <Image {...child_node} />
+                      </Match>
+                      <Match when={child_node.type === NodeType.Color}>
+                        <Color {...child_node} />
+                      </Match>
+                      <Match when={child_node.type === NodeType.Activity}>
+                        <Activity {...child_node} />
+                      </Match>
+                    </Switch>
+                  </NodeWrapper>
+                )}
 
                 <Show when={index() < store.nodes[node.id].length - 1}>
                   <div class="column_spacer pt-2 bg-transparent"></div>

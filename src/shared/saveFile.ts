@@ -6,37 +6,60 @@ import {
 } from "@tauri-apps/plugin-fs";
 import { join } from "@tauri-apps/api/path";
 
+function getNextName(name: string, counter: number) {
+  const nameParts = name.split(".");
+  const ext = nameParts.length > 1 ? "." + nameParts.pop() : "";
+  const baseName = nameParts.join(".");
+
+  let newName = name;
+
+  newName = `${baseName}${counter}${ext}`;
+
+  return newName;
+}
+
+const checkFile = async (path: string): Promise<string> => {
+  let finalPath: string;
+  let counter = 0;
+
+  while (true) {
+    const filePath = path.split("/").splice(-1)[0];
+    const fileName = counter === 0 ? filePath : getNextName(filePath, counter);
+    const folderPath = "GraphNote";
+    const fullPath = await join(folderPath, fileName);
+    const fileExists = await exists(fullPath, {
+      baseDir: BaseDirectory.Document,
+    });
+    if (!fileExists) {
+      finalPath = fullPath;
+      break;
+    }
+    counter++;
+  }
+
+  return finalPath;
+};
+
 //* true=succefully copied, string=error message
-export default async (path: string): Promise<true | string> => {
+export default async (
+  path: string
+): Promise<{ res: boolean; text: string }> => {
   //? note sure about this one might cause errors outside of home directory
   //? might also cause problems in windows not sure tho
   //? copy the dragged file to our saves folder
   try {
-    const fileName = path.split("/").splice(-1)[0];
-    const folderPath = "GraphNote";
-    const fullPath = await join(folderPath, fileName);
+    const fullPath = await checkFile(path);
+    console.log("creating file:", fullPath);
 
-    console.info("file name: ", fileName);
-    console.info("file fullPath: ", fullPath);
-    console.info("file path: ", path);
-
-    const fileExists = await exists(fullPath, {
-      baseDir: BaseDirectory.Document,
+    await copyFile(path, fullPath, {
+      fromPathBaseDir: BaseDirectory.Document,
+      toPathBaseDir: BaseDirectory.Document,
     });
+    console.info("finished copying:", path, "to:", fullPath);
 
-    if (!fileExists) {
-      await copyFile(path, fullPath, {
-        fromPathBaseDir: BaseDirectory.Document,
-        toPathBaseDir: BaseDirectory.Document,
-      });
-      console.info("finished copying:", path, "to:", fileName);
-    } else {
-      console.error("file already exists did not create");
-      return "file already exists did not create";
-    }
-    return true;
+    return { res: true, text: fullPath };
   } catch (error) {
     console.log("error copying the file: ", error);
-    return error as string;
+    return { res: false, text: error as string };
   }
 };

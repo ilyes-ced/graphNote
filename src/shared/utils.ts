@@ -3,6 +3,7 @@ import { saveEdgesJSON, saveNodesJSON } from "./save";
 import { payload } from "@/types";
 import saveFile from "@/shared/saveFile";
 import { Event } from "@tauri-apps/api/event";
+import { newImageNode } from "./update";
 
 const addSelected = (e: MouseEvent, nodeId: string) => {
   // if click is on child dont do it
@@ -78,8 +79,9 @@ const recieveDragNDropFile = (event: Event<payload>) => {
 
   if (!payload.paths || payload.paths.length === 0) return;
 
-  payload.paths.forEach(async (filePath) => {
-    if ((await saveFile(filePath)) === true) {
+  payload.paths.forEach(async (filePath, index) => {
+    const result = await saveFile(filePath);
+    if (result.res) {
       // add file to nodes store
       console.log("+===============================");
       console.log(filePath.split(".").splice(-1)[0].toLowerCase());
@@ -98,6 +100,11 @@ const recieveDragNDropFile = (event: Event<payload>) => {
       switch (fileType) {
         //todo: add the item to the nodes store depending on the fileType
         case "image":
+          const pos = event.payload.position;
+          console.log(event.payload.position);
+          console.log(event.payload.paths);
+          console.info("test");
+          newImageNode(result.text, pos.x + index * 300, pos.y + index * 300);
           break;
         case "video":
           break;
@@ -116,7 +123,7 @@ const recieveDragNDropFile = (event: Event<payload>) => {
           break;
       }
     } else {
-      console.error("failed to save file");
+      console.error("failed to save file:", result.text);
       //send error message notification
     }
   });

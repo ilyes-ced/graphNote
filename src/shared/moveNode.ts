@@ -14,6 +14,7 @@ export default function moveNode(
   movedToCanvas: true | false = false,
   canvasCoords?: { x: number; y: number }
 ) {
+  console.log(movedNodeId, distNodeId, nested, movedToCanvas, canvasCoords);
   if (nested) {
     let oldParentNodeId = findParentIdByNodeId(movedNodeId);
     if (!oldParentNodeId) {
