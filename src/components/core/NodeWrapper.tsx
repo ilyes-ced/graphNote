@@ -41,6 +41,9 @@ const ignoredClasses = (
       case NodeType.Table:
         return { tags: ["input"], classes: ["columnSelection"] };
 
+      case NodeType.Activity:
+        return { classes: ["activityCell", "ch-subdomain-bg"] };
+
       default:
         return {};
     }

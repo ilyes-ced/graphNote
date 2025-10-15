@@ -1,9 +1,4 @@
-import {
-  BaseDirectory,
-  copyFile,
-  exists,
-  readTextFile,
-} from "@tauri-apps/plugin-fs";
+import { BaseDirectory, copyFile, exists } from "@tauri-apps/plugin-fs";
 import { join } from "@tauri-apps/api/path";
 
 function getNextName(name: string, counter: number) {

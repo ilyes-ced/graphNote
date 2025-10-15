@@ -207,3 +207,11 @@ body,
     @apply border border-accent rounded px-2;
   }
 }
+
+/* cal-heatmap styles  */
+#ch-tooltip {
+  z-index: 1000;
+}
+.ch-subdomain-bg {
+  cursor: pointer;
+}
