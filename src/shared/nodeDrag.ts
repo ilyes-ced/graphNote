@@ -198,6 +198,25 @@ export function useDraggable(
       }
     }
 
+    console.log(node.id);
+    const movedNode = document.getElementById(node.id);
+    const rect = movedNode?.getBoundingClientRect();
+    if (rect) {
+      if (node.x + rect.width > (store.viewport.width || 0))
+        setStore("viewport", {
+          width: Math.round((node.x + rect.width + 50) / 10) * 10,
+        });
+      if (node.y + rect.height > (store.viewport.height || 0))
+        setStore("viewport", {
+          height: Math.round((node.y + rect.height + 50) / 10) * 10,
+        });
+
+      console.log("----------------------");
+      console.log(node.x, node.y);
+      console.log(Math.round((node.x + rect.width + 50) / 10) * 10);
+      console.log(Math.round((node.y + rect.height + 50) / 10) * 10);
+    }
+
     saveChanges();
   };
 

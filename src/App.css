@@ -217,6 +217,8 @@ body,
 }
 
 /* cal-heatmap color change transition  */
+.ActivityButton1,
+.ActivityButton2,
 .activityTitle,
 .activityDesc,
 .ch-plugin-calendar-label-text,

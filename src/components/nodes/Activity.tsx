@@ -6,6 +6,7 @@ import "cal-heatmap/cal-heatmap.css";
 import Tooltip from "cal-heatmap/plugins/Tooltip";
 import CalendarLabel from "cal-heatmap/plugins/CalendarLabel";
 import { updateActivityCounter } from "@/shared/update";
+import { colorWithPreservedAlpha } from "@/shared/colorUtils";
 
 type ActivityProps = Activity & {
   is_child?: boolean;
@@ -27,32 +28,28 @@ export default (node: ActivityProps) => {
   const [activeDate, setActiveDate] = createSignal("string");
 
   const handleEdit = (value: number) => {
-    console.log("Debounced activity update:", node.id, activeDate(), value);
     updateActivityCounter(node.id, activeDate(), value);
   };
 
   const classes =
     "cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2";
+  let cal: CalHeatmap;
+
+  createEffect(() => {
+    const data = Object.entries(node.progress).map(([date, value]) => ({
+      date,
+      value,
+    }));
+    cal?.fill(data);
+  });
+
+  createEffect(() => {
+    const color = node.textColor ?? "var(--color-primary)";
+    updateCellStyles();
+  });
 
   onMount(() => {
-    const cal: CalHeatmap = new CalHeatmap();
-
-    createEffect(() => {
-      const data = Object.entries(node.progress).map(([date, value]) => ({
-        date,
-        value,
-      }));
-
-      cal?.fill(data);
-      addCellBorders();
-
-      //const color = node.textColor ?? "var(--color-foreground)";
-      // const foreground = getComputedStyle(document.documentElement)
-      //   .getPropertyValue("--color-primary")
-      //   .trim();
-      // console.log(foreground);
-      //changeTextColor(foreground);
-    });
+    cal = new CalHeatmap();
 
     cal.paint(
       {
@@ -62,7 +59,7 @@ export default (node: ActivityProps) => {
           sort: "asc",
         },
         subDomain: {
-          color: /*node.textColor ??*/ "var(--color-foreground)",
+          color: /* node.textColor ?? */ "var(--color-foreground)",
           type: "day",
           radius: 0,
           width: 15,
@@ -129,37 +126,41 @@ export default (node: ActivityProps) => {
         new Date(timestamp).toISOString().split("T")[0] + "/" + value
       );
     });
-    addCellBorders();
+    updateCellStyles();
   });
 
-  const addCellBorders = () => {
+  const updateCellStyles = () => {
     setTimeout(() => {
       const cells = Array.from(
         calendarContainer.getElementsByClassName("ch-subdomain-bg")
       );
 
+      const color = node.textColor ?? "#f64a03";
       cells.forEach((cell: any) => {
         if (cell.style.fill) {
+          const bg = colorWithPreservedAlpha(cell.style.fill, color);
+
           cell.style.strokeWidth = "1px";
-          cell.style.stroke = node.textColor ?? "#f64a03";
-        }
-      });
-    }, 0);
-  };
-
-  const changeTextColor = (color: string) => {
-    setTimeout(() => {
-      const cells = Array.from(
-        calendarContainer.getElementsByClassName("ch-subdomain-text")
-      );
-
-      cells.forEach((cell: any) => {
-        if (cell.style.fill) {
           cell.style.stroke = color;
+          cell.style.fill = bg;
         }
       });
     }, 0);
   };
+
+  //const changeTextColor = (color: string) => {
+  //  setTimeout(() => {
+  //    const cells = Array.from(
+  //      calendarContainer.getElementsByClassName("ch-subdomain-text")
+  //    );
+  //
+  //    cells.forEach((cell: any) => {
+  //      if (cell.style.fill) {
+  //        cell.style.stroke = color;
+  //      }
+  //    });
+  //  }, 0);
+  //};
 
   return (
     <div class="">
@@ -170,17 +171,17 @@ export default (node: ActivityProps) => {
         ></div>
       </Show>
 
-      <div class="p-5 space-y-4 ">
+      <div class="p-5 ">
         {/* title */}
-        <div class="flex">
-          <div class="border-2 border-border size-14 flex justify-center items-center">
+        <div class="flex mb-4">
+          <div class="ActivityButton1 border-2 border-border size-14 flex justify-center items-center">
             logo
           </div>
           <div class="flex-1 px-4">
             <div class="activityTitle text-xl font-bold ">title</div>
             <div class="activityDesc ">desc</div>
           </div>
-          <div class="border-2 border-border size-14 flex justify-center items-center">
+          <div class="ActivityButton2 border-2 border-border size-14 flex justify-center items-center">
             logo
           </div>
         </div>
@@ -191,7 +192,7 @@ export default (node: ActivityProps) => {
         ></div>
 
         {/* Edit form */}
-        <div classList={{ "border-2 border-border": isOpen() }}>
+        <div classList={{ "border-2 border-border mt-4": isOpen() }}>
           <div
             ref={contentRef}
             class="overflow-hidden transition-[height] duration-300 ease-out w-full"

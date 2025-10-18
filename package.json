@@ -21,6 +21,7 @@
     "@tauri-apps/plugin-fs": "~2.4.2",
     "@tauri-apps/plugin-opener": "^2.5.0",
     "@thednp/solid-color-picker": "^0.0.14",
+    "@thisbeyond/solid-dnd": "^0.7.5",
     "@tiptap/core": "^3.7.0",
     "@tiptap/extension-blockquote": "^3.7.0",
     "@tiptap/extension-heading": "^3.7.0",

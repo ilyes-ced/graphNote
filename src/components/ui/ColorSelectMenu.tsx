@@ -138,7 +138,7 @@ const BgColors = () => {
         </For>
       </div>
       <DefaultColorPicker
-        value="rgb(100,100,100)"
+        value="rgb(25,25,25)"
         onChange={(color) => changeBg(color as ColorType)}
       />
 
@@ -158,7 +158,7 @@ const BgColors = () => {
         </For>
       </div>
       <DefaultColorPicker
-        value="rgb(100,100,100)"
+        value="rgb(25,25,25)"
         onChange={(color) => changeFg(color as ColorType)}
       />
 
@@ -203,7 +203,7 @@ const StripColors = () => {
         </For>
       </div>
       <DefaultColorPicker
-        value="rgb(100,100,100)"
+        value="rgb(25,25,25)"
         onChange={(color) => console.log(color)}
       />
     </div>

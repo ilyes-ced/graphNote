@@ -35,6 +35,9 @@ importers:
       '@thednp/solid-color-picker':
         specifier: ^0.0.14
         version: 0.0.14(solid-js@1.9.9)
+      '@thisbeyond/solid-dnd':
+        specifier: ^0.7.5
+        version: 0.7.5(solid-js@1.9.9)
       '@tiptap/core':
         specifier: ^3.7.0
         version: 3.7.0(@tiptap/pm@3.7.0)
@@ -913,6 +916,12 @@ packages:
     engines: {node: '>=18', pnpm: '>=8.6.0'}
     peerDependencies:
       solid-js: ^1.6.0
+
+  '@thisbeyond/solid-dnd@0.7.5':
+    resolution: {integrity: sha512-DfI5ff+yYGpK9M21LhYwIPlbP2msKxN2ARwuu6GF8tT1GgNVDTI8VCQvH4TJFoVApP9d44izmAcTh/iTCH2UUw==}
+    engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
+    peerDependencies:
+      solid-js: ^1.5
 
   '@tiptap/core@3.7.0':
     resolution: {integrity: sha512-RQELiZdRyEISe3m3DnNnJtnE0hTV+6S6/BAC89E/UK6ZAlhwg3t08ouM33AoA1/R4QhTml8ITxCk1y7Re3Jdyg==}
@@ -2696,6 +2705,10 @@ snapshots:
       '@thednp/color': 1.0.14
       '@thednp/color-picker': 2.0.4
       '@thednp/shorty': 2.0.11
+      solid-js: 1.9.9
+
+  '@thisbeyond/solid-dnd@0.7.5(solid-js@1.9.9)':
+    dependencies:
       solid-js: 1.9.9
 
   '@tiptap/core@3.7.0(@tiptap/pm@3.7.0)':

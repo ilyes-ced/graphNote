@@ -6,9 +6,6 @@ import { readJSON } from "@/shared/save.ts";
 const loadNodes = async () => {
   const initStore = await readJSON();
 
-  console.info("store init in main.tsx");
-  console.info(initStore);
-
   if (initStore) {
     setStore("nodes", initStore?.nodes ?? []);
     setStore("edges", initStore?.edges ?? []);

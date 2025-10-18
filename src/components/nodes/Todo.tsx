@@ -1,15 +1,43 @@
 import { createSignal, For, onMount } from "solid-js";
-import { Task, Todo as TodoType } from "../../types";
+import {
+  DragDropProvider,
+  DragDropSensors,
+  DragOverlay,
+  SortableProvider,
+  createSortable,
+  closestCenter,
+} from "@thisbeyond/solid-dnd";
+import { useDragDropContext } from "@thisbeyond/solid-dnd";
+import { NodeUnion, Task, Todo as TodoType } from "../../types";
 import { updateTask } from "@/shared/update";
 import { debounce } from "@/shared/utils";
 import { IconMenu2 } from "@tabler/icons-solidjs";
 
+// === Types ===
 type TodoProps = TodoType & {
   is_child?: boolean;
   nested?: number;
 };
 
-let todoRef!: HTMLDivElement;
+type TaskWithId = Task & { _id: string };
+
+type SortableItemProps = {
+  task: TaskWithId;
+  id: string;
+  nodeId: string;
+  index: number;
+};
+
+type TaskItemProps = TaskWithId & {
+  nodeId: string;
+  index: number;
+};
+
+// === Utils ===
+const generateId = (() => {
+  let counter = 0;
+  return () => `task-id-${counter++}`;
+})();
 
 const updateTaskDebounce = debounce(
   (nodeId: string, index: number, value: string | boolean) => {
@@ -17,44 +45,6 @@ const updateTaskDebounce = debounce(
   },
   3000
 );
-
-// isDragging, x, y
-
-const pointerDownHandle = (e: PointerEvent, nodeId: string, index: number) => {
-  const rect = todoRef.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  setMovingIndex(index);
-  setDragging((prev) =>
-    prev.map((item, i) =>
-      i === index ? { ...item, ...{ drag: true, x: x, y: y } } : item
-    )
-  );
-
-  window.addEventListener("pointermove", onMove);
-  window.addEventListener("pointerup", onUp);
-};
-
-const onMove = (e: PointerEvent) => {
-  const rect = todoRef.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  setDragging((prev) =>
-    prev.map((item, i) =>
-      i === movingIndex() ? { ...item, ...{ x: x, y: y } } : item
-    )
-  );
-};
-
-const onUp = (e: PointerEvent) => {
-  setDragging((prev) =>
-    prev.map((item, i) =>
-      i === movingIndex() ? { ...item, ...{ drag: false, x: 0, y: 0 } } : item
-    )
-  );
-  window.removeEventListener("pointermove", onMove);
-  window.removeEventListener("pointerup", onUp);
-};
 
 const handleTaskChange = (
   nodeId: string,
@@ -64,66 +54,104 @@ const handleTaskChange = (
   updateTaskDebounce(nodeId, index, value);
 };
 
-const [dragging, setDragging] = createSignal<
-  {
-    drag: boolean;
-    x: number;
-    y: number;
-  }[]
->([]);
-const [movingIndex, setMovingIndex] = createSignal<number>();
-
+// === Main Component ===
 export default (node: TodoProps) => {
-  onMount(() => {
-    console.log(
-      Array.from({ length: node.tasks.length }, () => ({
-        drag: false,
-        x: 0,
-        y: 0,
-      }))
-    );
-    setDragging(
-      Array.from({ length: node.tasks.length }, () => ({
-        drag: false,
-        x: 0,
-        y: 0,
-      }))
-    );
-  });
+  // Wrap tasks with local _id
+  const wrapTasksWithIds = (tasks: Task[]): TaskWithId[] =>
+    tasks.map((task) => ({ ...task, _id: generateId() }));
+
+  const [items, setItems] = createSignal<TaskWithId[]>(
+    wrapTasksWithIds(node.tasks)
+  );
+  const [activeId, setActiveId] = createSignal<string | null>(null);
+
+  const ids = () => items().map((task) => task._id);
+
+  const onDragStart = ({ draggable }) => {
+    setActiveId(draggable.id);
+  };
+
+  const onDragEnd = ({ draggable, droppable }) => {
+    if (draggable && droppable) {
+      const fromIndex = ids().indexOf(draggable.id);
+      const toIndex = ids().indexOf(droppable.id);
+
+      if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
+        const updated = [...items()];
+        const [moved] = updated.splice(fromIndex, 1);
+        updated.splice(toIndex, 0, moved);
+        setItems(updated);
+      }
+    }
+
+    setActiveId(null);
+  };
 
   return (
-    <div ref={todoRef} class="p-5 relative">
-      {JSON.stringify(dragging())}
-      <div class="text-2xl font-bold">title</div>
+    <div class="p-5">
+      <div class="text-2xl font-bold mb-4">Task List</div>
 
-      <For each={node.tasks} fallback={<div>Loading...</div>}>
-        {(task, index) => (
-          <TaskItem {...task} nodeId={node.id} index={index()} />
-        )}
-      </For>
+      <DragDropProvider
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        collisionDetector={closestCenter}
+      >
+        <DragDropSensors />
+
+        <SortableProvider ids={ids()}>
+          <div class="flex flex-col gap-2">
+            <For each={items()}>
+              {(task, i) => (
+                <SortableItem
+                  task={task}
+                  id={task._id}
+                  nodeId={node.id}
+                  index={i()}
+                />
+              )}
+            </For>
+          </div>
+        </SortableProvider>
+
+        <DragOverlay>
+          <div class="sortable bg-red-700 text-white p-4 rounded shadow z-50">
+            {activeId()}/tt
+          </div>
+        </DragOverlay>
+      </DragDropProvider>
     </div>
   );
 };
 
-type TaskItemProps = Task & {
-  nodeId: string;
-  index: number;
-};
+// === Sortable Wrapper ===
+const SortableItem = (props: SortableItemProps) => {
+  const sortable = createSortable(props.id);
+  const [state] = useDragDropContext();
 
-const TaskItem = (props: TaskItemProps) => {
-  //text: string, task: boolean, children: Task[]
-  // taskitem classname prevents the checkbox box from being used as drag handle so the click event on the checkbox can trigger
   return (
     <div
-      id={`task_${props.nodeId}_${props.index}`}
-      style={{
-        "margin-left": `${props.nestLevel * 18}px`,
-        position: dragging()[props.index]?.drag ? "absolute" : "static",
-        top: `${dragging()[props.index]?.y}px`,
-        left: `${dragging()[props.index]?.x}px`,
+      use:sortable
+      class="sortable group/taskitem flex justify-between"
+      classList={{
+        "opacity-25": sortable.isActiveDraggable,
+        "transition-transform": !!state.active.draggable,
       }}
     >
-      <div class="flex items-start justify-between  group/taskitem">
+      <TaskItem {...props.task} index={props.index} nodeId={props.nodeId} />
+      <IconMenu2 class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100 " />
+    </div>
+  );
+};
+
+// === Task UI ===
+const TaskItem = (props: TaskItemProps) => {
+  return (
+    <div
+      style={{
+        "margin-left": `${props.nestLevel * 18}px`,
+      }}
+    >
+      <div class="flex items-start justify-between">
         <div class="inline-flex items-center space-x-2">
           <Checkbox {...props} />
           <span
@@ -133,20 +161,13 @@ const TaskItem = (props: TaskItemProps) => {
               handleTaskChange(
                 props.nodeId,
                 props.index,
-                e.currentTarget.textContent
+                e.currentTarget.textContent || ""
               );
             }}
           >
             {props.text}
           </span>
         </div>
-
-        <IconMenu2
-          onPointerDown={(e) => {
-            pointerDownHandle(e, props.nodeId, props.index);
-          }}
-          class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100"
-        />
       </div>
     </div>
   );
@@ -158,9 +179,9 @@ const Checkbox = (props: TaskItemProps) => {
       <input
         type="checkbox"
         checked={props.check}
-        onInput={() => {
-          handleTaskChange(props.nodeId, props.index, !props.check);
-        }}
+        onInput={() =>
+          handleTaskChange(props.nodeId, props.index, !props.check)
+        }
         class="peer size-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-foreground checked:bg-primary/80 checked:border-primary"
       />
       <span class="absolute text-white opacity-0 peer-checked:opacity-100 flex items-center justify-center">

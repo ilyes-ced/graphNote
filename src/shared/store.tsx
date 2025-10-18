@@ -8,8 +8,6 @@ interface GlobalStore {
   nodes: Record<string, NodeUnion[]>;
   edges: Record<string, Edge[]>;
 
-  width: number;
-  height: number;
   panZoom: number | null;
   snapGrid: [number, number] | null;
 
@@ -30,6 +28,8 @@ interface GlobalStore {
   viewport: {
     x: number;
     y: number;
+    width: number | null;
+    height: number | null;
     scale: number;
   };
 }
@@ -38,8 +38,6 @@ const [store, setStore] = createStore<GlobalStore>({
   nodes: {},
   edges: {},
 
-  width: 1000,
-  height: 1000,
   panZoom: null,
   snapGrid: [10, 10],
 
@@ -58,6 +56,8 @@ const [store, setStore] = createStore<GlobalStore>({
   viewport: {
     x: 0,
     y: 0,
+    width: null,
+    height: null,
     scale: 1,
   },
 });

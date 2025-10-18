@@ -483,9 +483,22 @@ const updateActivityCounter = (
         index,
         "progress",
         date,
-        (prev) => (prev ?? 0) + 1
+        // make go no less than 0
+        (prev) => (prev ?? 0) + newValue
       );
       break;
+    }
+  }
+
+  saveChanges();
+};
+
+const reorderTasks = (nodeId: string, tasks: Task[]) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const nodeIndex = nodeList.findIndex((node) => node.id === nodeId);
+
+    if (nodeIndex !== -1) {
+      setStore("nodes", parentId, nodeIndex, "tasks", tasks);
     }
   }
 
@@ -514,4 +527,5 @@ export {
   updateColumnTitle,
   newImageNode,
   updateActivityCounter,
+  reorderTasks,
 };
