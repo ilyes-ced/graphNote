@@ -33,3 +33,4 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 
 - [ ] stop the selection on Notes when draging items
 - [ ] color selector sometimes changes automatically
+- [ ] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why

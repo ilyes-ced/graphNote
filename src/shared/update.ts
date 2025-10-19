@@ -121,8 +121,6 @@ const updatePosition = (nodeId: string, x: number, y: number) => {
 //? update node position for arrow keys
 const incremenSelectedNodesPositions = (x: number, y: number) => {
   store.selectedNodes.forEach((selectedNode) => {
-    console.info("incrementing position of node:", selectedNode, x, y);
-
     const activeBoardId = getActiveBoardId();
     const boardNodes = store.nodes[activeBoardId] ?? [];
 
@@ -202,7 +200,6 @@ const findParentIdByNodeId = (nodeId: string): string | null => {
 };
 
 const removeNodeById = (nodeId: string, parentId?: string) => {
-  console.info("removing the node:", nodeId);
   let space;
   if (parentId) {
     space = parentId;
@@ -226,8 +223,6 @@ const addNode = (
   //* if it is set, node is sent to another node
   targetNodeId?: string
 ) => {
-  console.info("adding the node:", newNode);
-
   if (targetNodeId) {
     setStore("nodes", targetNodeId, (nodes = []) => [...nodes, newNode]);
   } else {
@@ -365,7 +360,6 @@ const newNode = (type: NodeType, x: number, y: number) => {
 
 const newImageNode = (img: string, x: number, y: number) => {
   const activeBoardId = getActiveBoardId();
-  console.info("test222");
 
   //todo: adjust the x and y to scale as well
 
@@ -505,6 +499,39 @@ const reorderTasks = (nodeId: string, tasks: Task[]) => {
   saveChanges();
 };
 
+const newDocumentNode = (
+  path: string,
+  x: number,
+  y: number,
+  docType: string
+) => {
+  const activeBoardId = getActiveBoardId();
+
+  //todo: adjust the x and y to scale as well
+
+  let snappedX: number = x,
+    snappedY: number = y;
+  if (store.snapGrid) {
+    snappedX = Math.round(x / 10) * 10;
+    snappedY = Math.round(y / 10) * 10;
+  }
+
+  const docNode = {
+    id: generateNewId(),
+    type: NodeType.Document,
+    width: 300,
+    x: snappedX,
+    y: snappedY,
+    index: 0,
+    path: path,
+    description: "test",
+    docType: docType,
+  };
+
+  setStore("nodes", activeBoardId, (nodes = []) => [...nodes, docNode]);
+
+  saveChanges();
+};
 export {
   updateNote,
   updateZIndex,
@@ -528,4 +555,5 @@ export {
   newImageNode,
   updateActivityCounter,
   reorderTasks,
+  newDocumentNode,
 };

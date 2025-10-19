@@ -20,7 +20,7 @@ export default (props: any) => {
 
   return (
     <div
-      class="border border-red-600"
+      class=""
       id="viewport"
       style={{
         position: "absolute",
@@ -33,7 +33,7 @@ export default (props: any) => {
       }}
     >
       <div
-        class="border border-blue-600"
+        class=""
         onClick={(e) => {
           // could cause issues in the future not sure
           if (e.target !== e.currentTarget) return;
@@ -54,7 +54,11 @@ export default (props: any) => {
           transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
           "transform-origin": "50% 50%",
           transition: "all 0.2s ease-out",
-          width: store.viewport.width ? `${store.viewport.width}px` : "100%",
+          "min-height": "100%",
+          "min-width": "100%",
+          width: store.viewport.width
+            ? `${store.viewport.width}px`
+            : "100%" /* make it minimum 100% */,
           height: store.viewport.height ? `${store.viewport.height}px` : "100%",
         }}
       >

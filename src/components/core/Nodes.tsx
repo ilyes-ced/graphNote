@@ -1,4 +1,4 @@
-import { createSignal, For, Match, onMount, Switch } from "solid-js";
+import { For, Match, onMount, Switch } from "solid-js";
 import { setStore, store } from "../../shared/store";
 import { NodeType } from "../../types";
 import Column from "../nodes/Column";
@@ -10,6 +10,7 @@ import Table from "../nodes/Table";
 import Image from "../nodes/Image";
 import Color from "../nodes/Color";
 import Activity from "../nodes/Activity";
+import Document from "../nodes/Document";
 import NodeWrapper from "./NodeWrapper";
 
 export default () => {
@@ -23,7 +24,13 @@ export default () => {
       console.log(nodes);
       nodes.forEach((node) => {
         const rect = node.getBoundingClientRect();
-
+        if (node.id === "block_10") {
+          console.log("===================");
+          console.log("===================");
+          console.log("===================");
+          console.log("===================");
+          console.log(rect);
+        }
         if (rect.x + rect.width > maxWidth)
           maxWidth = Math.round((rect.x + rect.width + 50) / 10) * 10;
         if (rect.y + rect.height > maxHeight)
@@ -70,6 +77,9 @@ export default () => {
                   </Match>
                   <Match when={node.type === NodeType.Activity}>
                     <Activity {...node} />
+                  </Match>
+                  <Match when={node.type === NodeType.Document}>
+                    <Document {...node} />
                   </Match>
                 </Switch>
               </NodeWrapper>

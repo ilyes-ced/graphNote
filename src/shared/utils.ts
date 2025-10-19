@@ -3,7 +3,7 @@ import { saveEdgesJSON, saveNodesJSON } from "./save";
 import { payload } from "@/types";
 import saveFile from "@/shared/saveFile";
 import { Event } from "@tauri-apps/api/event";
-import { newImageNode } from "./update";
+import { newDocumentNode, newImageNode } from "./update";
 
 const addSelected = (e: MouseEvent, nodeId: string) => {
   // if click is on child dont do it
@@ -38,7 +38,7 @@ const fileCategories = {
   image: ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "tiff", "ico"],
   video: ["mp4", "mkv", "mov", "avi", "webm", "flv"],
   music: ["mp3", "wav", "ogg", "flac", "m4a"],
-  office: ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv", "pdf"],
+  document: ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv", "pdf"],
   code: [
     "js",
     "ts",
@@ -100,17 +100,30 @@ const recieveDragNDropFile = (event: Event<payload>) => {
       switch (fileType) {
         //todo: add the item to the nodes store depending on the fileType
         case "image":
-          const pos = event.payload.position;
+          const imgPos = event.payload.position;
           console.log(event.payload.position);
           console.log(event.payload.paths);
           console.info("test");
-          newImageNode(result.text, pos.x + index * 300, pos.y + index * 300);
+          newImageNode(
+            result.text,
+            imgPos.x + index * 300,
+            imgPos.y + index * 300
+          );
           break;
         case "video":
           break;
         case "music":
           break;
-        case "office":
+        case "document":
+          const docPos = event.payload.position;
+          newDocumentNode(
+            result.text,
+            docPos.x + index * 300,
+            docPos.y + index * 300,
+            "widget"
+          );
+
+          console.log("we recieved a pdf file");
           break;
         case "code":
           break;

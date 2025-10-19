@@ -110,7 +110,6 @@ export default (props: nodeProps) => {
     >
       {/* width() */}
       {/* props.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
-      {props.node.x},{props.node.y}
       <Show when={props.node.top_strip_color}>
         <div
           class="top_strip absolute top-0 left-0 h-1 w-full"

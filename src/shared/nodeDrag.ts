@@ -198,23 +198,30 @@ export function useDraggable(
       }
     }
 
-    console.log(node.id);
+    //? extending viewport when needed
     const movedNode = document.getElementById(node.id);
     const rect = movedNode?.getBoundingClientRect();
+    const scale = store.viewport.scale || 1;
     if (rect) {
-      if (node.x + rect.width > (store.viewport.width || 0))
-        setStore("viewport", {
-          width: Math.round((node.x + rect.width + 50) / 10) * 10,
-        });
-      if (node.y + rect.height > (store.viewport.height || 0))
-        setStore("viewport", {
-          height: Math.round((node.y + rect.height + 50) / 10) * 10,
-        });
+      const width = rect.width / scale;
+      const height = rect.height / scale;
 
-      console.log("----------------------");
-      console.log(node.x, node.y);
-      console.log(Math.round((node.x + rect.width + 50) / 10) * 10);
-      console.log(Math.round((node.y + rect.height + 50) / 10) * 10);
+      const rightEdge = node.x + width;
+      const bottomEdge = node.y + height;
+
+      if (rightEdge > store.viewport.width) {
+        const newWidth = Math.round((rightEdge + 50) / 10) * 10;
+        setStore("viewport", {
+          width: Math.max(newWidth, store.viewport.width),
+        });
+      }
+
+      if (bottomEdge > store.viewport.height) {
+        const newHeight = Math.round((bottomEdge + 50) / 10) * 10;
+        setStore("viewport", {
+          height: Math.max(newHeight, store.viewport.height),
+        });
+      }
     }
 
     saveChanges();

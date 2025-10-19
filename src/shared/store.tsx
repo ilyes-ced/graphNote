@@ -28,8 +28,8 @@ interface GlobalStore {
   viewport: {
     x: number;
     y: number;
-    width: number | null;
-    height: number | null;
+    width: number;
+    height: number;
     scale: number;
   };
 }
@@ -43,7 +43,7 @@ const [store, setStore] = createStore<GlobalStore>({
 
   activeBoards: [{ name: "home", id: "home" }],
   activeSidebar: "nodes",
-  showColorMenu: true,
+  showColorMenu: false,
   noteEditor: null,
   activeTags: [],
 
@@ -56,8 +56,8 @@ const [store, setStore] = createStore<GlobalStore>({
   viewport: {
     x: 0,
     y: 0,
-    width: null,
-    height: null,
+    width: 0,
+    height: 0,
     scale: 1,
   },
 });

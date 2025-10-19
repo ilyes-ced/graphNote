@@ -19,6 +19,8 @@ export default (props: any) => {
       const dx = e.clientX - lastMouse.x;
       const dy = e.clientY - lastMouse.y;
 
+      //TODO could be better to limit it based if the viewport is still in view
+
       // todo: limit the movement on the other side as well, do the same thing on the scroll too
       // limiting the movement to the size of the viewport, not sure if i really should
       if (store.viewport.x + dx <= 500 * store.viewport.scale) {

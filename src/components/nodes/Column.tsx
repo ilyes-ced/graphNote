@@ -13,6 +13,7 @@ import Color from "../nodes/Color";
 import Activity from "../nodes/Activity";
 import { updateColumnTitle } from "@/shared/update";
 import { debounce } from "@/shared/utils";
+import Document from "../nodes/Document";
 
 export default (node: Column) => {
   const [editable, setEditable] = createSignal<boolean>(false);
@@ -100,6 +101,9 @@ export default (node: Column) => {
                       </Match>
                       <Match when={child_node.type === NodeType.Activity}>
                         <Activity {...child_node} />
+                      </Match>
+                      <Match when={child_node.type === NodeType.Document}>
+                        <Document {...child_node} />
                       </Match>
                     </Switch>
                   </NodeWrapper>
