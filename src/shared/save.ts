@@ -11,7 +11,7 @@ import { NodeUnion } from "../types";
 // TODO: make debounce for disk write operation, to avoid writing too much to disk
 async function writeJSON(nodes: NodeUnion[]) {
   const json = JSON.stringify(nodes, null, 2);
-  await writeTextFile("GraphNote/save.json", json, {
+  await writeTextFile("GraphNote/save_old.json", json, {
     baseDir: BaseDirectory.Document,
   });
 }
@@ -21,7 +21,7 @@ async function readJSON(): Promise<NodeUnion[] | null> {
   try {
     // maybe make them user defined later
     const folderPath = "GraphNote";
-    const filePath = "GraphNote/save.json";
+    const filePath = "GraphNote/save_old.json";
     /////////////////////////////////////////////////////////
     // check folder exists of not create
     const folderExists = await exists(folderPath, {
@@ -49,7 +49,7 @@ async function readJSON(): Promise<NodeUnion[] | null> {
     }
     /////////////////////////////////////////////////////////
 
-    const text = await readTextFile("GraphNote/save.json", {
+    const text = await readTextFile("GraphNote/save_old.json", {
       baseDir: BaseDirectory.Document,
     });
 
@@ -69,7 +69,7 @@ async function readJSON(): Promise<NodeUnion[] | null> {
 
     return nodes;
   } catch (err) {
-    console.error("Failed to read or parse GraphNote/save.json:", err);
+    console.error("Failed to read or parse GraphNote/save_old.json:", err);
     return null;
   }
 }
