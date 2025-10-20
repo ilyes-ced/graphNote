@@ -39,9 +39,7 @@ export default (node: DocumentProps) => {
     <div>
       <Switch fallback={<div>Not Found</div>}>
         <Match when={node.docType === "widget"}>
-          <div>
-            <PDFViewerComponent pdfFilePath={node.path} />
-          </div>
+          <div class="p-5">widget</div>
         </Match>
         <Match when={node.docType === "card"}>test1</Match>
         <Match when={node.docType === "reader"}>

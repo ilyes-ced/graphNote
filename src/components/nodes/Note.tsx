@@ -1,19 +1,12 @@
 import { Note } from "../../types";
-import { changeToUrlNode, updateNote } from "@/shared/update";
+import { changeToUrlNode, updateNote, updateZIndex } from "@/shared/update";
 import { debounce } from "@/shared/utils";
 
 import StarterKit from "@tiptap/starter-kit";
 import { createTiptapEditor } from "solid-tiptap";
-import Blockquote from "@tiptap/extension-blockquote";
 import Highlight from "@tiptap/extension-highlight";
 import Typography from "@tiptap/extension-typography";
 import { TextStyle } from "@tiptap/extension-text-style";
-import Heading from "@tiptap/extension-heading";
-import { BulletList, ListItem, OrderedList } from "@tiptap/extension-list";
-import Strike from "@tiptap/extension-strike";
-import Underline from "@tiptap/extension-underline";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { setStore } from "../../shared/store";
@@ -57,6 +50,7 @@ export default (node: NoteProps) => {
   const editor = createTiptapEditor(() => ({
     element: editorRef!,
     onFocus({ editor }) {
+      updateZIndex(node.id);
       setStore("noteEditor", editor);
       setStore("activeSidebar", "noteStyles");
     },
@@ -104,7 +98,7 @@ export default (node: NoteProps) => {
   }));
 
   return (
-    <div class="p-5 ">
+    <div class="p-5">
       {/*JSON.stringify(store.activeTags)*/}
 
       <div id="editor" ref={editorRef}></div>

@@ -2,6 +2,7 @@ import { createSignal, For, onCleanup } from "solid-js";
 import Svg from "../nodes/Svg";
 import { newNode } from "@/shared/update";
 import { NodeType } from "@/types";
+import { Portal } from "solid-js/web";
 
 const icons = [
   // basic blocks
@@ -106,38 +107,42 @@ export default () => {
   });
 
   return (
-    <div class="h-full overflow-hidden w-[65px] p-4 bg-card">
-      <div class="flex flex-col space-y-4 overflow-x-visible relative">
-        <For each={icons} fallback={<div>Loading...</div>}>
-          {(icon) => (
-            <div
-              class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
-              onMouseDown={startDragging(icon.name)}
-            >
-              <Svg
-                width={icon.width}
-                height={icon.height}
-                classes=""
-                icon_name={icon.name}
-              />
-              <div class=""></div>
+    <>
+      <div class="h-full overflow-hidden w-[65px] p-4 bg-card">
+        <div class="flex flex-col space-y-4 overflow-x-visible relative">
+          <For each={icons} fallback={<div>Loading...</div>}>
+            {(icon) => (
+              <div
+                class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
+                onMouseDown={startDragging(icon.name)}
+              >
+                <Svg
+                  width={icon.width}
+                  height={icon.height}
+                  classes=""
+                  icon_name={icon.name}
+                />
+                <div class=""></div>
 
-              <span class="text-sm">{icon.name}</span>
-            </div>
-          )}
-        </For>
+                <span class="text-sm">{icon.name}</span>
+              </div>
+            )}
+          </For>
+        </div>
       </div>
 
-      <div
-        class="absolute bg-red-900 p-4 z-[1000]"
-        style={{
-          display: dragging() ? "block" : "none",
-          top: `${dragPos().y}px`,
-          left: `${dragPos().x}px`,
-        }}
-      >
-        note template
-      </div>
-    </div>
+      <Portal>
+        <div
+          class="absolute bg-card z-50 pointer-events-none w-[300px] p-5"
+          style={{
+            display: dragging() ? "block" : "none",
+            top: `${dragPos().y}px`,
+            left: `${dragPos().x}px`,
+          }}
+        >
+          New Note
+        </div>
+      </Portal>
+    </>
   );
 };

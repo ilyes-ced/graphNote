@@ -1,4 +1,4 @@
-import { createSignal, For, onMount } from "solid-js";
+import { createSignal, For } from "solid-js";
 import {
   DragDropProvider,
   DragDropSensors,
@@ -8,7 +8,7 @@ import {
   closestCenter,
 } from "@thisbeyond/solid-dnd";
 import { useDragDropContext } from "@thisbeyond/solid-dnd";
-import { NodeUnion, Task, Todo as TodoType } from "../../types";
+import { Task, Todo as TodoType } from "../../types";
 import { updateTask } from "@/shared/update";
 import { debounce } from "@/shared/utils";
 import { IconMenu2 } from "@tabler/icons-solidjs";
@@ -52,6 +52,16 @@ const handleTaskChange = (
   value: string | boolean
 ) => {
   updateTaskDebounce(nodeId, index, value);
+};
+
+const handleKeyDown = (e: KeyboardEvent, index: number) => {
+  if (e.key === "Tab") {
+    console.log(index);
+    e.preventDefault();
+    //TODO increase tab
+  } else if (e.key === "Backspace") {
+    //TODO delete if empty
+  }
 };
 
 // === Main Component ===
@@ -157,6 +167,7 @@ const TaskItem = (props: TaskItemProps) => {
           <span
             class="taskitem-text cursor-text text-foreground outline-0 overflow-hidden text-ellipsis whitespace-nowrap"
             contentEditable={true}
+            onKeyDown={(e) => handleKeyDown(e, props.index)}
             onInput={(e) => {
               handleTaskChange(
                 props.nodeId,

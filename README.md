@@ -19,15 +19,16 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 # Road to production ready
 
 - [ ] make Todo widget more usable
-  - [ ] reorder items
+  - [x] reorder items
   - [ ] enter to create new item
   - [ ] backspace to delete item
   - [ ] tab to add indent to item
   - [ ] multi line paste create an item for each line
 - [ ] polish the drag and drop from the sidebar
-- [ ] fix the viewport:
-  - [ ] scroll right and bottom
-  - [ ] placing item outside tyo the right or left extends the canvas
+- [x] fix the viewport:
+  - [x] scroll right and bottom
+  - [x] placing item outside tyo the right or left extends the canvas
+- [ ] fix the selection on NoteType
 
 # Polishing
 

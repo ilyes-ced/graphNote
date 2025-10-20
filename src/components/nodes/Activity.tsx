@@ -171,7 +171,7 @@ export default (node: ActivityProps) => {
         ></div>
       </Show>
 
-      <div class="p-5 ">
+      <div class="p-5  overflow-auto">
         {/* title */}
         <div class="flex mb-4">
           <div class="ActivityButton1 border-2 border-border size-14 flex justify-center items-center">
