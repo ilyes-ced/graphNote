@@ -18,12 +18,12 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 
 # Road to production ready
 
-- [ ] make Todo widget more usable
+- [x] make Todo widget more usable
   - [x] reorder items
-  - [ ] enter to create new item
-  - [ ] backspace to delete item
-  - [ ] tab to add indent to item
-  - [ ] multi line paste create an item for each line
+  - [x] enter to create new item
+  - [x] backspace to delete item
+  - [x] tab to add indent to item
+  - [x] multi line paste create an item for each line
 - [ ] polish the drag and drop from the sidebar
 - [x] fix the viewport:
   - [x] scroll right and bottom
@@ -35,3 +35,4 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [ ] stop the selection on Notes when draging items
 - [ ] color selector sometimes changes automatically
 - [ ] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
+- [ ] paste nodes: pasted the current state of the nodes not the state at the time of the copy

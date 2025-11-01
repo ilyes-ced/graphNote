@@ -26,6 +26,18 @@ export default (node: UrlProps) => {
     favicon: "placeholder.png",
   });
 
+  function matchYoutubeUrl(url: string): boolean {
+    const pattern =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/.+$/;
+    return pattern.test(url);
+  }
+  function getYouTubeEmbedUrl(url: string): string | null {
+    const match = url.match(
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+  }
+
   const isValidUrl = (url: string): boolean => {
     return true;
   };
@@ -60,11 +72,30 @@ export default (node: UrlProps) => {
 
   return (
     <div class="space-y-2">
-      <img
-        class="url_thumbnail pointer-events-none"
-        src={metaData().image}
-        alt=""
-      />
+      {matchYoutubeUrl(node.url) ? (
+        <div>
+          <iframe
+            width="100%"
+            src={getYouTubeEmbedUrl(node.url) ?? ""}
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />{" "}
+          <iframe
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            allowfullscreen
+          ></iframe>
+        </div>
+      ) : (
+        <div>
+          <img
+            class="url_thumbnail pointer-events-none"
+            src={metaData().image}
+            alt=""
+          />
+        </div>
+      )}
 
       <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
         <div class="url_container flex flex-row items-center space-x-2">
@@ -91,13 +122,3 @@ export default (node: UrlProps) => {
     </div>
   );
 };
-
-/*
-      also check if url is for example a vedio fromn youtube to be able to watch
-      it also check if its a valid url if a new note is created and its nothing
-      but an url it should be transformed to an Url Node also in case there no
-      connection div
-      
-      here thumbnail and url and a descriptiopn
-
-*/

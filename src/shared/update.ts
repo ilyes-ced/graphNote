@@ -275,7 +275,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
       return {
         ...base,
         title: "",
-        tasks: [],
+        tasks: [{ text: "test", check: false, nestLevel: 0 }],
       } satisfies Todo;
 
     case NodeType.Table:

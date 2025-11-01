@@ -23,7 +23,7 @@ export default (node: Column) => {
   const updateTitle = debounce((newValue: string) => {
     console.log("Debounced update:", newValue);
     updateColumnTitle(node.id, newValue);
-  }, 3000);
+  }, 300);
 
   const handleInput = () => {
     const newText = editableDiv?.innerText || "";

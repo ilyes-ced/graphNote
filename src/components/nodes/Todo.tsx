@@ -1,4 +1,4 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, For, from } from "solid-js";
 import {
   DragDropProvider,
   DragDropSensors,
@@ -9,7 +9,7 @@ import {
 } from "@thisbeyond/solid-dnd";
 import { useDragDropContext } from "@thisbeyond/solid-dnd";
 import { Task, Todo as TodoType } from "../../types";
-import { updateTask } from "@/shared/update";
+import { reorderTasks, updateTask } from "@/shared/update";
 import { debounce } from "@/shared/utils";
 import { IconMenu2 } from "@tabler/icons-solidjs";
 
@@ -26,14 +26,17 @@ type SortableItemProps = {
   id: string;
   nodeId: string;
   index: number;
+  handleKeyDown: Function;
+  handlePaste: Function;
 };
 
 type TaskItemProps = TaskWithId & {
   nodeId: string;
   index: number;
+  handleKeyDown: Function;
+  handlePaste: Function;
 };
 
-// === Utils ===
 const generateId = (() => {
   let counter = 0;
   return () => `task-id-${counter++}`;
@@ -43,7 +46,7 @@ const updateTaskDebounce = debounce(
   (nodeId: string, index: number, value: string | boolean) => {
     updateTask(nodeId, value, index);
   },
-  3000
+  300
 );
 
 const handleTaskChange = (
@@ -54,17 +57,6 @@ const handleTaskChange = (
   updateTaskDebounce(nodeId, index, value);
 };
 
-const handleKeyDown = (e: KeyboardEvent, index: number) => {
-  if (e.key === "Tab") {
-    console.log(index);
-    e.preventDefault();
-    //TODO increase tab
-  } else if (e.key === "Backspace") {
-    //TODO delete if empty
-  }
-};
-
-// === Main Component ===
 export default (node: TodoProps) => {
   // Wrap tasks with local _id
   const wrapTasksWithIds = (tasks: Task[]): TaskWithId[] =>
@@ -86,15 +78,250 @@ export default (node: TodoProps) => {
       const fromIndex = ids().indexOf(draggable.id);
       const toIndex = ids().indexOf(droppable.id);
 
+      let itemsAfter = 0;
+      let count = 1;
+      while (true) {
+        if (fromIndex + count > items().length - 1) break;
+        if (items()[fromIndex + count].nestLevel === 0) break;
+        count++;
+        itemsAfter++;
+      }
+
       if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
         const updated = [...items()];
-        const [moved] = updated.splice(fromIndex, 1);
-        updated.splice(toIndex, 0, moved);
+        const moved = updated.splice(fromIndex, 1 + itemsAfter);
+        console.log(moved);
+        for (let index = 0; index < moved.length; index++) {
+          updated.splice(toIndex + index, 0, moved[index]);
+        }
         setItems(updated);
       }
     }
 
+    const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs);
+    reorderTasks(node.id, newArray);
+
     setActiveId(null);
+  };
+  const handleKeyDown = (e: KeyboardEvent, index: number) => {
+    const target = e.currentTarget as HTMLElement;
+    const text = target.textContent?.trim() ?? "";
+
+    const selection = window.getSelection();
+    const range =
+      selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+    const caretOffset = range ? range.startOffset : 0;
+
+    if (["Tab", "Backspace", "Enter", "ArrowUp", "ArrowDown"].includes(e.key)) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        setItems((prev) => {
+          const updated = [...prev];
+          const current = prev[index];
+          const newTask: TaskWithId = {
+            _id: generateId(),
+            text: "",
+            check: false,
+            nestLevel: current.nestLevel,
+          };
+          updated.splice(index + 1, 0, newTask);
+          return updated;
+        });
+
+        const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs);
+        reorderTasks(node.id, newArray);
+
+        queueMicrotask(() => {
+          const editableElements = document.querySelectorAll(".taskitem-text");
+          const newTarget = editableElements[index + 1] as HTMLElement;
+          if (newTarget) newTarget.focus();
+        });
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        const currentText = target.textContent?.trim() ?? "";
+
+        if (currentText === "" && items()[index].nestLevel > 0) {
+          setItems((prev) =>
+            prev.map((task, i) =>
+              i === index
+                ? { ...task, text: currentText, nestLevel: task.nestLevel - 1 }
+                : task
+            )
+          );
+
+          const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs);
+          reorderTasks(node.id, newArray);
+
+          queueMicrotask(() => {
+            const editableElements =
+              document.querySelectorAll(".taskitem-text");
+            const newTarget = editableElements[index] as HTMLElement;
+            if (newTarget) {
+              newTarget.focus();
+              const sel = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(newTarget);
+              range.collapse(false);
+              sel?.removeAllRanges();
+              sel?.addRange(range);
+            }
+          });
+          return;
+        }
+
+        if (currentText === "" && items()[index].nestLevel === 0) {
+          setItems((prev) => {
+            const updated = [...prev];
+            updated.splice(index, 1);
+            return updated;
+          });
+
+          const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs);
+          reorderTasks(node.id, newArray);
+
+          queueMicrotask(() => {
+            const editableElements =
+              document.querySelectorAll(".taskitem-text");
+            const newTarget =
+              (editableElements[index - 1] as HTMLElement) ||
+              editableElements[0];
+            if (newTarget) {
+              newTarget.focus();
+              const sel = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(newTarget);
+              range.collapse(false);
+              sel?.removeAllRanges();
+              sel?.addRange(range);
+            }
+          });
+          return;
+        }
+
+        const range =
+          selection && selection.rangeCount > 0
+            ? selection.getRangeAt(0)
+            : null;
+        if (range?.startOffset === 0 && currentText !== "") {
+          return;
+        }
+      }
+
+      if (e.key === "Tab") {
+        e.preventDefault();
+
+        const currentText = target.textContent || "";
+        setItems((prev) =>
+          prev.map((task, i) =>
+            i === index
+              ? { ...task, text: currentText, nestLevel: task.nestLevel + 1 }
+              : task
+          )
+        );
+
+        const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs);
+        reorderTasks(node.id, newArray);
+
+        queueMicrotask(() => {
+          const editableElements = document.querySelectorAll(".taskitem-text");
+          const newTarget = editableElements[index] as HTMLElement;
+          if (newTarget) {
+            newTarget.focus();
+            const sel = window.getSelection();
+            const range = document.createRange();
+            range.setStart(newTarget.firstChild || newTarget, caretOffset);
+            range.collapse(true);
+            sel?.removeAllRanges();
+            sel?.addRange(range);
+          }
+        });
+        return;
+      }
+
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+
+        const editableElements = Array.from(
+          document.querySelectorAll<HTMLElement>(".taskitem-text")
+        );
+
+        const currentIndex = index;
+        let newIndex = currentIndex;
+
+        if (e.key === "ArrowUp" && currentIndex > 0) {
+          newIndex = currentIndex - 1;
+        } else if (
+          e.key === "ArrowDown" &&
+          currentIndex < editableElements.length - 1
+        ) {
+          newIndex = currentIndex + 1;
+        }
+
+        const newTarget = editableElements[newIndex];
+        if (newTarget) {
+          newTarget.focus();
+          const sel = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(newTarget);
+          range.collapse(false);
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+        }
+        return;
+      }
+    }
+  };
+
+  const handlePaste = (e: ClipboardEvent, index: number) => {
+    e.preventDefault();
+
+    const clipboardData = e.clipboardData.getData("text");
+    const lines = clipboardData.split(/\r?\n/).filter(Boolean);
+
+    if (lines.length === 0) return;
+
+    setItems((prev) => {
+      const updated = [...prev];
+
+      // Update current task with first line
+      updated[index] = {
+        ...updated[index],
+        text: lines[0],
+      };
+
+      // Insert new lines as new tasks after current
+      const newTasks: TaskWithId[] = lines.slice(1).map((line) => ({
+        _id: generateId(),
+        text: line,
+        check: false,
+        nestLevel: updated[index].nestLevel, // preserve nest level
+      }));
+
+      updated.splice(index + 1, 0, ...newTasks);
+
+      return updated;
+    });
+
+    const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs);
+    reorderTasks(node.id, newArray);
+
+    queueMicrotask(() => {
+      // Focus last pasted task
+      const editableElements =
+        document.querySelectorAll<HTMLElement>(".taskitem-text");
+      const newTarget = editableElements[index + lines.length - 1];
+      if (newTarget) {
+        newTarget.focus();
+        const sel = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(newTarget);
+        range.collapse(false);
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+    });
   };
 
   return (
@@ -117,6 +344,8 @@ export default (node: TodoProps) => {
                   id={task._id}
                   nodeId={node.id}
                   index={i()}
+                  handleKeyDown={handleKeyDown}
+                  handlePaste={handlePaste}
                 />
               )}
             </For>
@@ -124,7 +353,7 @@ export default (node: TodoProps) => {
         </SortableProvider>
 
         <DragOverlay>
-          <div class="sortable bg-red-700 text-white p-4 rounded shadow z-50">
+          <div class="sortable hidden bg-red-700 text-white p-4 rounded shadow z-50">
             {activeId()}/tt
           </div>
         </DragOverlay>
@@ -147,7 +376,13 @@ const SortableItem = (props: SortableItemProps) => {
         "transition-transform": !!state.active.draggable,
       }}
     >
-      <TaskItem {...props.task} index={props.index} nodeId={props.nodeId} />
+      <TaskItem
+        {...props.task}
+        index={props.index}
+        nodeId={props.nodeId}
+        handleKeyDown={props.handleKeyDown}
+        handlePaste={props.handlePaste}
+      />
       <IconMenu2 class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100 " />
     </div>
   );
@@ -157,17 +392,18 @@ const SortableItem = (props: SortableItemProps) => {
 const TaskItem = (props: TaskItemProps) => {
   return (
     <div
+      class="w-full"
       style={{
         "margin-left": `${props.nestLevel * 18}px`,
       }}
     >
-      <div class="flex items-start justify-between">
-        <div class="inline-flex items-center space-x-2">
+      <div class="flex items-start justify-between w-full">
+        <div class="flex items-center space-x-2 w-full items-start">
           <Checkbox {...props} />
           <span
-            class="taskitem-text cursor-text text-foreground outline-0 overflow-hidden text-ellipsis whitespace-nowrap"
+            class="taskitem-text cursor-text text-foreground outline-0 overflow-hidden text-ellipsis text-pretty wrap-break-word leading-4 w-full"
             contentEditable={true}
-            onKeyDown={(e) => handleKeyDown(e, props.index)}
+            onKeyDown={(e) => props.handleKeyDown(e, props.index)}
             onInput={(e) => {
               handleTaskChange(
                 props.nodeId,
@@ -175,6 +411,7 @@ const TaskItem = (props: TaskItemProps) => {
                 e.currentTarget.textContent || ""
               );
             }}
+            onPaste={(e) => props.handlePaste(e, props.index)}
           >
             {props.text}
           </span>

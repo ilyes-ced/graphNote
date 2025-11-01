@@ -13,7 +13,7 @@ const updateTaskDebounce = debounce(
   (nodeId: string, index: number, value: string | boolean) => {
     updateTask(nodeId, value, index);
   },
-  3000
+  300
 );
 
 const handleTaskChange = (

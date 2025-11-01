@@ -45,7 +45,7 @@ export default (node: NoteProps) => {
   const updateText = debounce((newValue: string) => {
     console.log("Debounced update:", newValue);
     updateNote(node.id, newValue);
-  }, 3000);
+  }, 300);
 
   const editor = createTiptapEditor(() => ({
     element: editorRef!,
