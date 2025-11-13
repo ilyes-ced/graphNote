@@ -1,5 +1,4 @@
 import { createSignal, onMount, onCleanup } from "solid-js";
-import { store } from "../../shared/store";
 import { findNodeById } from "@/shared/update";
 import { Edge } from "@/types";
 
@@ -38,7 +37,7 @@ export default function CurveFromMiddle(props: Edge) {
 
   onMount(() => {
     updatePositions();
-    const interval = setInterval(updatePositions, 100); // update as nodes may move
+    const interval = setInterval(updatePositions, 0); // update as nodes may move
     onCleanup(() => clearInterval(interval));
   });
 
@@ -94,8 +93,8 @@ export default function CurveFromMiddle(props: Edge) {
         onMouseDown={onMouseDown}
       />
       {/* Endpoints: will have thier own control to bind them to a node */}
-      <circle cx={start().x} cy={start().y} r="5" fill="black" />
-      <circle cx={end().x} cy={end().y} r="5" fill="black" />
+      <circle cx={start().x} cy={start().y} r="5" fill="green" />
+      <circle cx={end().x} cy={end().y} r="5" fill="green" />
     </svg>
   );
 }

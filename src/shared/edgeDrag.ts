@@ -19,9 +19,3 @@ export function useDraggable(edge: NodeUnion, ignoredClasses?: string[]) {
     startDrag,
   };
 }
-
-/**
- *
- * addSelected(e, node.id);
- *
- */

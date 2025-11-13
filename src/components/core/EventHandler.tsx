@@ -3,6 +3,8 @@ import { listen } from "@tauri-apps/api/event";
 import { setStore, store } from "../../shared/store";
 import { payload } from "@/types";
 import { recieveDragNDropFile } from "@/shared/utils";
+import { readImage, readText } from "@tauri-apps/plugin-clipboard-manager";
+
 import {
   addNode,
   findNodeById,
@@ -23,11 +25,12 @@ export default (props: any) => {
   //listen("tauri://drag-leave", (event) => {});
 
   onMount(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
       // You can add logic here like:
       if (e.ctrlKey) {
         switch (e.key) {
           case "c": // copy
+            // TODO: read the content of the clipboard
             store.selectedNodes.forEach((selectedNode) => {
               let node = findNodeById(selectedNode);
               if (node) setStore("copiedNodes", (nodes) => [...nodes, node]);
@@ -37,14 +40,22 @@ export default (props: any) => {
           case "v": // paste
             // paste the selected nodes as is but change Ids
             // also increment x and y by a little in case of paste in the same position
-            store.copiedNodes.forEach((copiedNode) => {
-              addNode({
-                ...copiedNode,
-                id: generateNewId(),
-                x: copiedNode.x + 30,
-                y: copiedNode.y + 30,
-              });
-            });
+            console.log("||||||||||||||||||||||||||||||||");
+            const content = await readText();
+            console.log(content);
+            console.log("||||||||||||||||||||||||||||||||");
+            const img = await readImage();
+            console.log(img);
+            console.log("||||||||||||||||||||||||||||||||");
+            // TODO: read the content of the clipboard
+            //store.copiedNodes.forEach((copiedNode) => {
+            //  addNode({
+            //    ...copiedNode,
+            //    id: generateNewId(),
+            //    x: copiedNode.x + 30,
+            //    y: copiedNode.y + 30,
+            //  });
+            //});
             break;
           case "z": // undo
             break;

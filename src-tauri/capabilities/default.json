@@ -12,6 +12,17 @@
     "fs:allow-home-write",
     "fs:allow-document-write-recursive",
     "fs:allow-document-read-recursive",
-    { "identifier": "fs:scope", "allow": [{ "path": "~/Documents" }] }
+    "clipboard-manager:allow-read-text",
+    "clipboard-manager:allow-read-image",
+    "clipboard-manager:allow-write-text",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        {
+          "path": "~/Documents"
+        }
+      ]
+    },
+    "clipboard-manager:default"
   ]
 }

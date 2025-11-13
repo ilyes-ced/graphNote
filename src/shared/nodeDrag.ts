@@ -129,7 +129,17 @@ export function useDraggable(
       console.log("did not move so single click");
       console.log("=================================================");
       if ((e.target as HTMLElement).closest(ignoredSelectors)) return;
-      addSelected(e, node.id);
+      if (store.selectedNodes.size === 0) {
+        const newSet = new Set([node.id]);
+        setStore("selectedNodes", newSet);
+      } else {
+        if (e.ctrlKey) {
+          addSelected(e, node.id);
+        } else {
+          const newSet = new Set([node.id]);
+          setStore("selectedNodes", newSet);
+        }
+      }
       return;
     }
 

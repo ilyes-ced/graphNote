@@ -36,6 +36,8 @@ export default (props: any) => {
         class=""
         onClick={(e) => {
           // could cause issues in the future not sure
+          console.log("canvas click");
+          console.log(e.target, e.currentTarget);
           if (e.target !== e.currentTarget) return;
           console.log("canvas click");
           e.stopPropagation();

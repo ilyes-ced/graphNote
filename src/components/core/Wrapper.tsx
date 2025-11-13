@@ -29,7 +29,7 @@ export default () => {
           <Pan>
             <ViewPort>
               <Nodes />
-              {/* <Edges /> */}
+              <Edges />
             </ViewPort>
             <MiniMap />
             <Controls />
