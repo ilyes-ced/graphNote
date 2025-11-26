@@ -116,8 +116,9 @@ const updatePosition = (nodeId: string, x: number, y: number) => {
     if (y > 0) setStore("nodes", activeBoardId, index, "y", y);
   }
 
-  saveChanges();
+  // saveChanges();
 };
+
 //? update node position for arrow keys
 const incremenSelectedNodesPositions = (x: number, y: number) => {
   store.selectedNodes.forEach((selectedNode) => {

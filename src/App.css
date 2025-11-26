@@ -136,6 +136,7 @@ body,
   will-change: transform;
 }
 
+/* not used for the animation of drag for nodes */
 .node-animation {
   /* transition: transform 0.2s ease-out; */
   transition: transform 0.15s cubic-bezier(0.33, 1, 0.68, 1);

@@ -36,3 +36,13 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [ ] color selector sometimes changes automatically
 - [ ] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
 - [ ] paste nodes: pasted the current state of the nodes not the state at the time of the copy
+
+# optimization
+
+- [ ] cache images and big data points
+- [ ] stop writing to file when moving nodes
+- [ ]
+
+# fixes
+
+- [ ] youtube videos not working ==> download them with yt-dlp and display them as video

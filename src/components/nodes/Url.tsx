@@ -74,6 +74,7 @@ export default (node: UrlProps) => {
     <div class="space-y-2">
       {matchYoutubeUrl(node.url) ? (
         <div>
+          {/*
           <iframe
             width="100%"
             src={getYouTubeEmbedUrl(node.url) ?? ""}
@@ -86,6 +87,8 @@ export default (node: UrlProps) => {
             src="https://www.youtube.com/embed/dQw4w9WgXcQ"
             allowfullscreen
           ></iframe>
+          */}
+          youtube vid
         </div>
       ) : (
         <div>
