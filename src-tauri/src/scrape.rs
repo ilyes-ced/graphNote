@@ -1,10 +1,57 @@
 use reqwest::blocking::Client;
 use scraper::{Html, Selector};
-use serde_json::json;
+use serde_json::{json, Value};
+use tauri_plugin_cache::CacheExt;
 use url::Url;
 
+async fn get_cache(url: &String, app_handle: tauri::AppHandle) -> Result<Value, bool> {
+    // Access the cache
+    let cache = app_handle.cache();
+
+    let value: Option<Value> = cache.get(&url).map_err(|e| e.to_string()).unwrap();
+
+    //println!("=================>>>>> inside get_cache: {:?}", value);
+
+    match value {
+        Some(values) => return Ok(values),
+        None => return Err(false),
+    }
+}
+
+async fn save_cache(url: &String, data: &Value, app_handle: tauri::AppHandle) -> Result<(), ()> {
+    let cache = app_handle.cache();
+
+    // println!(
+    //     "=================>>>>> inside saving cache |||||||||||||||||||||||||||| {:?}",
+    //     data
+    // );
+
+    // Store a value with TTL
+    let options = Some(tauri_plugin_cache::SetItemOptions {
+        ttl: Some(60),
+        compress: None,           // Use default compression setting
+        compression_method: None, // Use default compression method
+    });
+
+    cache
+        .set(url.to_string(), data, options)
+        .map_err(|e| e.to_string())
+        .unwrap();
+
+    return Ok(());
+}
+
 #[tauri::command]
-pub async fn scrape_url(url: String) -> Result<serde_json::Value, String> {
+pub async fn scrape_url(url: String, app_handle: tauri::AppHandle) -> Result<Value, String> {
+    //let data = get_cache(&url, app_handle.clone()).await;
+    if let Ok(cached) = get_cache(&url, app_handle.clone()).await {
+        println!("url '{}' is cached", url);
+        return Ok(cached);
+    }
+
+    // println!("=================>>>>> recieved from get_cache: {:?}", data);
+    let url_clone = url.clone();
+
     let meta = tauri::async_runtime::spawn_blocking(move || {
         println!("[scrape_url] Scraping URL: {}", url);
 
@@ -156,5 +203,6 @@ pub async fn scrape_url(url: String) -> Result<serde_json::Value, String> {
     .map_err(|e: tauri::Error| format!("Task failed: {}", e))?
     .map_err(|e: tauri::Error| format!("Scrape failed: {}", e))?;
 
+    let _ = save_cache(&url_clone, &meta, app_handle).await;
     Ok(meta)
 }

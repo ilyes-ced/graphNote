@@ -116,6 +116,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.14)
+      tauri-plugin-cache-api:
+        specifier: ^0.1.5
+        version: 0.1.5
       tinymce-solid:
         specifier: ^0.0.10
         version: 0.0.10
@@ -1949,6 +1952,9 @@ packages:
   tar@7.5.1:
     resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
     engines: {node: '>=18'}
+
+  tauri-plugin-cache-api@0.1.5:
+    resolution: {integrity: sha512-wNhvhanmB47d18hy7Xom3uY/LRzSM/E7z8SFELPffpVHvNcBLJyWqAqqNkj1WjT+4dr8J45YQmqJMCcKUi0Jyg==}
 
   tinycolor2@1.6.0:
     resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
@@ -3802,6 +3808,10 @@ snapshots:
       minipass: 7.1.2
       minizlib: 3.1.0
       yallist: 5.0.0
+
+  tauri-plugin-cache-api@0.1.5:
+    dependencies:
+      '@tauri-apps/api': 2.8.0
 
   tinycolor2@1.6.0: {}
 
