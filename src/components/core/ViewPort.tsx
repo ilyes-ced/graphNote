@@ -35,6 +35,7 @@ export default (props: any) => {
       <div
         class=""
         onClick={(e) => {
+          // todo: thisa  no longer works because the svgs for the arrows take all the screen and they are on to to be visible so they are clicked instead of  the intended canvas
           // could cause issues in the future not sure
           console.log("canvas click");
           console.log(e.target, e.currentTarget);

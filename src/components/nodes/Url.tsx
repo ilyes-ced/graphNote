@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { createSignal, onMount, Show } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { Url } from "../../types";
 import { useDraggable } from "@/shared/nodeDrag";
 
@@ -95,6 +95,7 @@ export default (node: UrlProps) => {
           <img
             class="url_thumbnail pointer-events-none"
             src={metaData().image}
+            loading="lazy"
             alt=""
           />
         </div>
@@ -105,6 +106,7 @@ export default (node: UrlProps) => {
           <img
             class="url_thumbnail size-4"
             src={metaData().favicon}
+            loading="lazy"
             alt="favicon"
           />
           <div>

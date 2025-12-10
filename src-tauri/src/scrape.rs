@@ -21,20 +21,18 @@ async fn get_cache(url: &String, app_handle: tauri::AppHandle) -> Result<Value, 
 async fn save_cache(url: &String, data: &Value, app_handle: tauri::AppHandle) -> Result<(), ()> {
     let cache = app_handle.cache();
 
+    let compress_options = Some(tauri_plugin_cache::SetItemOptions {
+        ttl: Some(31536000),
+        compress: Some(false),
+        compression_method: None,
+    });
     // println!(
     //     "=================>>>>> inside saving cache |||||||||||||||||||||||||||| {:?}",
     //     data
     // );
 
-    // Store a value with TTL
-    let options = Some(tauri_plugin_cache::SetItemOptions {
-        ttl: Some(60),
-        compress: None,           // Use default compression setting
-        compression_method: None, // Use default compression method
-    });
-
     cache
-        .set(url.to_string(), data, options)
+        .set(url.to_string(), data, compress_options)
         .map_err(|e| e.to_string())
         .unwrap();
 
@@ -211,6 +209,7 @@ pub async fn scrape_url(url: String, app_handle: tauri::AppHandle) -> Result<Val
     let elapsed = now.elapsed();
     println!("scrapping Elapsed: {:.2?}", elapsed);
 
+    println!("caching  {:?}", meta);
     let _ = save_cache(&url_clone, &meta, app_handle).await;
     Ok(meta)
 }

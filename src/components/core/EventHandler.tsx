@@ -6,9 +6,7 @@ import { recieveDragNDropFile } from "@/shared/utils";
 import { readImage, readText } from "@tauri-apps/plugin-clipboard-manager";
 
 import {
-  addNode,
   findNodeById,
-  generateNewId,
   incremenSelectedNodesPositions,
   removeNodeById,
 } from "@/shared/update";

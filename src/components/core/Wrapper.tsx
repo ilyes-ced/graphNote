@@ -31,7 +31,10 @@ export default () => {
               <Nodes />
               <Edges />
             </ViewPort>
-            <MiniMap />
+            {/*
+              //? put later when its functional
+              <MiniMap />
+            */}
             <Controls />
           </Pan>
         </Zoom>

@@ -1,5 +1,6 @@
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { setStore, store } from "../../shared/store";
+import { listen } from "@tauri-apps/api/event";
 
 export default (props: any) => {
   const [isDragging, setIsDragging] = createSignal(false);
@@ -23,12 +24,18 @@ export default (props: any) => {
 
       // todo: limit the movement on the other side as well, do the same thing on the scroll too
       // limiting the movement to the size of the viewport, not sure if i really should
-      if (store.viewport.x + dx <= 500 * store.viewport.scale) {
+      if (
+        (store.viewport.x + dx) * store.viewport.scale <=
+        500 * store.viewport.scale
+      ) {
         setStore("viewport", "x", (prev) => prev + dx);
       } else {
         setStore("viewport", "x", 500 * store.viewport.scale);
       }
-      if (store.viewport.y + dy <= 500 * store.viewport.scale) {
+      if (
+        (store.viewport.y + dy) * store.viewport.scale <=
+        500 * store.viewport.scale
+      ) {
         setStore("viewport", "y", (prev) => prev + dy);
       } else {
         setStore("viewport", "y", 500 * store.viewport.scale);
@@ -42,6 +49,7 @@ export default (props: any) => {
   };
 
   const stopDragging = () => {
+    console.log("stopping the drag now");
     setIsDragging(false);
   };
 
@@ -62,10 +70,15 @@ export default (props: any) => {
     //}
   };
 
+  listen("tauri://blur", (event) => {
+    console.log("mouse left thew window from tauri");
+  });
+
   onMount(() => {
-    window.addEventListener("blur", stopDragging);
+    //window.addEventListener("blur", stopDragging);
+
     onCleanup(() => {
-      window.removeEventListener("blur", stopDragging);
+      //window.removeEventListener("blur", stopDragging);
     });
   });
 

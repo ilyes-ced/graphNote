@@ -85,6 +85,7 @@ export default function CurveFromMiddle(props: Edge) {
       />
       {/* Draggable control point */}
       <circle
+        class="pointer-events-auto"
         cx={control().x}
         cy={control().y}
         r="8"

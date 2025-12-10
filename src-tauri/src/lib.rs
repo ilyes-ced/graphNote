@@ -1,6 +1,6 @@
 mod scrape;
-
 use scrape::scrape_url;
+use tauri::Manager;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -14,13 +14,22 @@ pub fn run() {
         cache_dir: Some("graphNote_cache".into()), // Custom subdirectory within app's cache directory
         cache_file_name: Some("cache_data.json".into()), // Custom cache file name
         cleanup_interval: Some(31536000),          // Clean expired items every 1 year i think
-        default_compression: Some(true),           // Enable compression by default
+        default_compression: None,                 // Enable compression by default
         compression_level: Some(7),                // Higher compression level (0-9, where 9 is max)
         compression_threshold: Some(4096),         // Only compress items larger than 4KB
         compression_method: Some(tauri_plugin_cache::CompressionMethod::Zlib), // Default compression algorithm
     };
 
     tauri::Builder::default()
+        .setup(|app| {
+            #[cfg(debug_assertions)] // only include this code on debug builds
+            {
+                let window = app.get_webview_window("main").unwrap();
+                window.open_devtools();
+                window.close_devtools();
+            }
+            Ok(())
+        })
         .plugin(tauri_plugin_cache::init_with_config(cache_config))
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_fs::init())

@@ -8,7 +8,10 @@ import { EdgeType } from "@/types";
 
 export default () => {
   return (
-    <div id="edges" class="size-full">
+    <div id="edges" class="size-full pointer-events-none">
+      {/*
+      pointer-events-none add this when we are done fixing the dots dragging
+      */}
       <For each={store.edges[store.activeBoards.at(-1)?.id ?? "home"]}>
         {(edge) => (
           <Switch fallback={<div>Not Found</div>}>
