@@ -51,9 +51,9 @@ export function useDraggable(
     //? other thatn that im not sure
     if (node.type === NodeType.Image) e.preventDefault();
 
-    // dont accept middle mouse click
     console.log("dragging", node.id, is_child);
-    if (e.button !== 0) return;
+    // dont accept middle mouse click, as well as ctrl click
+    if (e.button !== 0 || e.ctrlKey) return;
     // if it is not a child ignore elemnts with these classNames
 
     //? maybe should handle it in its file

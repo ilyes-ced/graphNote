@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import { setStore, store } from "../../shared/store";
 
 export default (props: any) => {
@@ -41,6 +41,10 @@ export default (props: any) => {
     setIsDragging(false);
   };
 
+  const stopDragging = () => {
+    setIsDragging(false);
+  };
+
   const handleWheel = (e: WheelEvent) => {
     //TODO: make the scroll speed user defined maybe
     //if (!e.ctrlKey) {
@@ -57,6 +61,13 @@ export default (props: any) => {
     //  });
     //}
   };
+
+  onMount(() => {
+    window.addEventListener("blur", stopDragging);
+    onCleanup(() => {
+      window.removeEventListener("blur", stopDragging);
+    });
+  });
 
   return (
     <div

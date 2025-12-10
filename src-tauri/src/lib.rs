@@ -13,7 +13,7 @@ pub fn run() {
     let cache_config = tauri_plugin_cache::CacheConfig {
         cache_dir: Some("graphNote_cache".into()), // Custom subdirectory within app's cache directory
         cache_file_name: Some("cache_data.json".into()), // Custom cache file name
-        cleanup_interval: Some(120),               // Clean expired items every 120 seconds
+        cleanup_interval: Some(31536000),          // Clean expired items every 1 year i think
         default_compression: Some(true),           // Enable compression by default
         compression_level: Some(7),                // Higher compression level (0-9, where 9 is max)
         compression_threshold: Some(4096),         // Only compress items larger than 4KB

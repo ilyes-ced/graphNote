@@ -7,7 +7,7 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 pnpm tauri dev
 # building
 
 ```
-NO_STRIP=true pnpm tauri build --verbose
+GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 NO_STRIP=true pnpm tauri build
 ```
 
 # running
@@ -29,6 +29,7 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
   - [x] scroll right and bottom
   - [x] placing item outside tyo the right or left extends the canvas
 - [ ] fix the selection on NoteType
+- [ ] scroll becomes finniky when zoom is used, change zoom target to an outside element
 
 # Polishing
 

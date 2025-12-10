@@ -44,14 +44,20 @@ async fn save_cache(url: &String, data: &Value, app_handle: tauri::AppHandle) ->
 #[tauri::command]
 pub async fn scrape_url(url: String, app_handle: tauri::AppHandle) -> Result<Value, String> {
     //let data = get_cache(&url, app_handle.clone()).await;
+
+    use std::time::Instant;
+    let now = Instant::now();
     if let Ok(cached) = get_cache(&url, app_handle.clone()).await {
         println!("url '{}' is cached", url);
+        let elapsed = now.elapsed();
+        println!("caching Elapsed: {:.2?}", elapsed);
         return Ok(cached);
     }
 
     // println!("=================>>>>> recieved from get_cache: {:?}", data);
     let url_clone = url.clone();
 
+    let now = Instant::now();
     let meta = tauri::async_runtime::spawn_blocking(move || {
         println!("[scrape_url] Scraping URL: {}", url);
 
@@ -202,6 +208,8 @@ pub async fn scrape_url(url: String, app_handle: tauri::AppHandle) -> Result<Val
     .await
     .map_err(|e: tauri::Error| format!("Task failed: {}", e))?
     .map_err(|e: tauri::Error| format!("Scrape failed: {}", e))?;
+    let elapsed = now.elapsed();
+    println!("scrapping Elapsed: {:.2?}", elapsed);
 
     let _ = save_cache(&url_clone, &meta, app_handle).await;
     Ok(meta)
