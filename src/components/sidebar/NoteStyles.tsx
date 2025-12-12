@@ -59,7 +59,7 @@ export default () => {
             {(icon) => (
               <div>
                 <button
-                  class="icon rounded cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square  hover:bg-muted-foreground transition-colors duration-150 ease-in-out"
+                  class="icon cursor-pointer flex flex-col justify-center items-center z-10 bg-accent aspect-square  hover:bg-muted-foreground transition-colors duration-150 ease-in-out"
                   classList={{
                     "bg-primary": store.noteEditor
                       ? isStyleActive(store.noteEditor, icon.name)

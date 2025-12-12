@@ -113,7 +113,7 @@ export default () => {
           <For each={icons} fallback={<div>Loading...</div>}>
             {(icon) => (
               <div
-                class="icon rounded-md cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
+                class="icon cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
                 onMouseDown={startDragging(icon.name)}
               >
                 <Svg

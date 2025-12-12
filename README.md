@@ -30,17 +30,21 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
   - [x] placing item outside tyo the right or left extends the canvas
 - [ ] fix the selection on NoteType
 - [ ] scroll becomes finniky when zoom is used, change zoom target to an outside element
+- [ ] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
+- [ ] redo + undo (or git versioning system)
+- [ ] make child nodes selectable
 
 # Polishing
 
 - [ ] stop the selection on Notes when draging items
-- [ ] color selector sometimes changes automatically
+- [ ] color selector sometimes changes automatically (rbg(25, 25, 25))
 - [ ] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
 - [ ] paste nodes: pasted the current state of the nodes not the state at the time of the copy
 
 # optimization
 
-- [ ] cache images and big data points
+- [x] cache url scrapping (backend)
+- [ ] cache scrapping images (frontend)
 - [ ] stop writing to file when moving nodes
 - [ ]
 

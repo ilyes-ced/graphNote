@@ -15,6 +15,119 @@ export default (props: any) => {
     }
   };
 
+  function moveViewport(dx: number, dy: number) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const scaledW = store.viewport.width * store.viewport.scale;
+    const scaledH = store.viewport.height * store.viewport.scale;
+
+    const maxX = 0;
+    const maxY = 0;
+
+    const minX = vw - scaledW;
+    const minY = vh - scaledH;
+
+    let newX = store.viewport.x + dx;
+    let newY = store.viewport.y + dy;
+
+    if (newX > maxX) newX = maxX;
+    if (newX < minX) newX = minX;
+    if (newY > maxY) newY = maxY;
+    if (newY < minY) newY = minY;
+
+    setStore("viewport", "x", newX);
+    setStore("viewport", "y", newY);
+  }
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging()) return;
+
+    const dx = e.clientX - lastMouse.x;
+    const dy = e.clientY - lastMouse.y;
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const scaledW = store.viewport.width * store.viewport.scale;
+    const scaledH = store.viewport.height * store.viewport.scale;
+
+    // The canvas should not move past 0 (top and left)
+    const maxX = 0;
+    const maxY = 0;
+
+    // The canvas should not move beyond its far edges
+    const minX = vw - scaledW;
+    const minY = vh - scaledH;
+
+    let newX = store.viewport.x + dx;
+    let newY = store.viewport.y + dy;
+
+    // Clamp properly
+    if (newX > maxX) newX = maxX;
+    if (newX < minX) newX = minX;
+    if (newY > maxY) newY = maxY;
+    if (newY < minY) newY = minY;
+
+    moveViewport(dx, dy);
+
+    lastMouse = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = (e: MouseEvent) => {
+    setIsDragging(false);
+  };
+
+  const stopDragging = () => {
+    console.log("stopping the drag now");
+    setIsDragging(false);
+  };
+
+  listen("tauri://blur", (event) => {
+    console.log("mouse left thew window from tauri");
+  });
+  onMount(() => {
+    window.addEventListener("blur", stopDragging);
+
+    onCleanup(() => {
+      window.removeEventListener("blur", stopDragging);
+    });
+  });
+
+  const handleWheel = (e: WheelEvent) => {
+    if (e.ctrlKey) return;
+
+    const axis = e.shiftKey ? "x" : "y";
+    const dist =
+      axis === "y" ? (e.deltaY > 0 ? -100 : 100) : e.deltaX > 0 ? -100 : 100;
+
+    moveViewport(axis === "x" ? dist : 0, axis === "y" ? dist : 0);
+  };
+
+  return (
+    <div
+      onmousedown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onWheel={handleWheel}
+      id="pan"
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        overflow: "hidden",
+      }}
+    >
+      {store.viewport.x}/{store.viewport.y}
+      {props.children}
+    </div>
+  );
+};
+
+/**
+  //? the panning lets you go outside 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging()) {
       const dx = e.clientX - lastMouse.x;
@@ -49,64 +162,43 @@ export default (props: any) => {
     }
   };
 
-  const handleMouseUp = (e: MouseEvent) => {
-    setIsDragging(false);
+
+  //? the doesnt panning lets you go outside the canvas 
+    const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging()) return;
+
+    const dx = e.clientX - lastMouse.x;
+    const dy = e.clientY - lastMouse.y;
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const scaledW = store.viewport.width * store.viewport.scale;
+    const scaledH = store.viewport.height * store.viewport.scale;
+
+    // The canvas should not move past 0 (top and left)
+    const maxX = 0;
+    const maxY = 0;
+
+    // The canvas should not move beyond its far edges
+    const minX = vw - scaledW;
+    const minY = vh - scaledH;
+
+    let newX = store.viewport.x + dx;
+    let newY = store.viewport.y + dy;
+
+    // Clamp properly
+    if (newX > maxX) newX = maxX;
+    if (newX < minX) newX = minX;
+    if (newY > maxY) newY = maxY;
+    if (newY < minY) newY = minY;
+
+    setStore("viewport", "x", newX);
+    setStore("viewport", "y", newY);
+
+    lastMouse = { x: e.clientX, y: e.clientY };
   };
-
-  const stopDragging = () => {
-    console.log("stopping the drag now");
-    setIsDragging(false);
-  };
-
-  const handleWheel = (e: WheelEvent) => {
-    //TODO: make the scroll speed user defined maybe
-    //if (!e.ctrlKey) {
-    //  //* scroll speed
-    //  const sp = 70;
-    //
-    //  const axis = e.shiftKey ? "x" : "y";
-    //  const direction =
-    //    axis === "y" ? (e.deltaY > 0 ? sp : -sp) : e.deltaX > 0 ? sp : -sp;
-    //
-    //  setStore("viewport", axis, (prev) => {
-    //    const newValue = prev - direction;
-    //    return newValue <= 0 ? newValue : 0;
-    //  });
-    //}
-  };
-
-  listen("tauri://blur", (event) => {
-    console.log("mouse left thew window from tauri");
-  });
-
-  onMount(() => {
-    window.addEventListener("blur", stopDragging);
-
-    onCleanup(() => {
-      window.removeEventListener("blur", stopDragging);
-    });
-  });
-
-  return (
-    <div
-      onmousedown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onWheel={handleWheel}
-      id="pan"
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        top: 0,
-        left: 0,
-      }}
-    >
-      {store.viewport.x}/{store.viewport.y}
-      {props.children}
-    </div>
-  );
-};
+ */
 
 /*
 import { createSignal, onCleanup, onMount } from "solid-js";

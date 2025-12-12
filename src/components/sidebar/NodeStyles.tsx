@@ -48,7 +48,7 @@ export default () => {
       >
         {/* colors menu toggle */}
         <div>
-          <div class="icon rounded flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500">
+          <div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500">
             <div class="flex flex-col size-full p-2">
               <div
                 class="border-b-0 h-1/6 w-full"

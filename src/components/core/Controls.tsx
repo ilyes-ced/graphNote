@@ -27,11 +27,11 @@ export default () => {
       id="controls"
       class="flex flex-row items-center justify-center absolute left-2.5 bottom-2.5 z-50"
     >
-      <div onClick={() => Zoom(-1)} class={classes + " rounded-l-md"}>
+      <div onClick={() => Zoom(-1)} class={classes}>
         -
       </div>
       <div class={classes}>{Math.round(store.viewport.scale * 100)}%</div>
-      <div onClick={() => Zoom(1)} class={classes + "  rounded-r-md"}>
+      <div onClick={() => Zoom(1)} class={classes}>
         +
       </div>
     </div>

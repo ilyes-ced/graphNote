@@ -27,12 +27,12 @@ export default (props: any) => {
         left: 0,
         width: "100%",
         height: "100%",
-        overflow: "auto", // optional
+        // overflow: "auto", // optional
         "z-index": 10, // above background
+        overflow: "hidden",
       }}
     >
       <div
-        class=""
         onClick={(e) => {
           // todo: thisa  no longer works because the svgs for the arrows take all the screen and they are on to to be visible so they are clicked instead of  the intended canvas
           // could cause issues in the future not sure
@@ -54,7 +54,7 @@ export default (props: any) => {
         style={{
           // border: "1px solid yellow",
           transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
-          "transform-origin": "50% 50%",
+          "transform-origin": "0px 0px",
           transition: "all 0.2s ease-out",
           "min-height": "100%",
           "min-width": "100%",

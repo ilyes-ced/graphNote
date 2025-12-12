@@ -36,7 +36,7 @@ export default () => {
               return (
                 <>
                   <div
-                    class="p-[5px] border-2 border-border rounded-[5px] transition duration-100 ease-out"
+                    class="p-[5px] border-2 border-border transition duration-100 ease-out"
                     classList={{
                       breadcrumb_path: true,
                       "hover:bg-primary": !(
@@ -84,5 +84,5 @@ export default () => {
   );
 };
 <div class="absolute h-full w-30 p-3">
-  <div class="border border-border p-2 rounded-md h-full bg-card  flex flex-col space-y-4 overflow-x-visible "></div>
+  <div class="border border-border p-2 h-full bg-card  flex flex-col space-y-4 overflow-x-visible "></div>
 </div>;

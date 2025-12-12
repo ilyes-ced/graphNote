@@ -58,7 +58,7 @@ export default () => {
   const colorSelections = [<BgColors />, <StripColors />];
 
   const groupClasses =
-    "flex items-center justify-center w-1/2 p-2 aspect-2/1 rounded cursor-pointer transition-colors duration-200 ease-in-out hover:bg-primary";
+    "flex items-center justify-center w-1/2 p-2 aspect-2/1 cursor-pointer transition-colors duration-200 ease-in-out hover:bg-primary";
   return (
     <div
       class={`z-50 transition-all duration-200 ease-in-out absolute top-4 left-4 [box-shadow:5px_5px_var(--color-primary)]
