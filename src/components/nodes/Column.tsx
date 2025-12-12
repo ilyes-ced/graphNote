@@ -11,9 +11,10 @@ import Image from "../nodes/Image";
 import NodeWrapper from "../core/NodeWrapper";
 import Color from "../nodes/Color";
 import Activity from "../nodes/Activity";
-import { updateColumnTitle } from "@/shared/update";
+import { updateNodeTitle } from "@/shared/update";
 import { debounce } from "@/shared/utils";
 import Document from "../nodes/Document";
+import EditableTitle from "./EditableTitle";
 
 export default (node: Column) => {
   const [editable, setEditable] = createSignal<boolean>(false);
@@ -22,7 +23,7 @@ export default (node: Column) => {
 
   const updateTitle = debounce((newValue: string) => {
     console.log("Debounced update:", newValue);
-    updateColumnTitle(node.id, newValue);
+    updateNodeTitle(node.id, newValue);
   }, 300);
 
   const handleInput = () => {
@@ -44,24 +45,11 @@ export default (node: Column) => {
       >
         <Svg width={16} height={16} classes="" icon_name={"collapse"} />
       </div>
-      <div
-        ref={editableDiv}
-        class="title text-xl font-extrabold mb-2 text-center focus:outline-0"
-        classList={{ titleHandle: editable() }}
-        contentEditable={editable()}
-        onClick={() => {
-          setEditable(true);
-          setStore("selectedNodes", new Set());
-        }}
-        style={{
-          cursor: editable() ? "text" : "",
-        }}
-        onBlur={() => setEditable(false)}
-        onInput={handleInput}
-        onKeyDown={handleKeyDown}
-      >
-        {node.title}
+
+      <div class="title text-xl font-extrabold mb-2 text-center focus:outline-0">
+        <EditableTitle nodeId={node.id} title={node.title} />
       </div>
+
       <div class="subtitle mb-4 text-center">subtitle</div>
       <div
         class="children_container flex flex-col"

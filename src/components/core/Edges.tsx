@@ -8,7 +8,7 @@ import { EdgeType } from "@/types";
 
 export default () => {
   return (
-    <div id="edges" class="size-full pointer-events-none">
+    <div id="edges" class="size-full">
       {/*
       pointer-events-none add this when we are done fixing the dots dragging
       */}

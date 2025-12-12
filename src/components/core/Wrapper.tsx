@@ -29,7 +29,9 @@ export default () => {
           <Pan>
             <ViewPort>
               <Nodes />
+              {/*
               <Edges />
+              */}
             </ViewPort>
             {/*
               //? put later when its functional

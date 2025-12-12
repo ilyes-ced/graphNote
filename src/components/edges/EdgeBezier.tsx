@@ -15,24 +15,25 @@ export default function CurveFromMiddle(props: Edge) {
 
     if (!srcNode || !distNode) return;
 
-    // Assume node position is stored as node.x and node.y
     const startPos = {
       x: srcNode.x + (srcNode.width ?? 300) / 2,
       y: srcNode.y,
     };
     const endPos = {
-      x: distNode.x + (srcNode.width ?? 300) / 2,
+      x: distNode.x + (distNode.width ?? 300) / 2,
       y: distNode.y,
     };
 
     setStart(startPos);
     setEnd(endPos);
 
-    // Set control to be the midpoint vertically offset for default curve
-    setControl({
-      x: (startPos.x + endPos.x) / 2,
-      y: Math.min(startPos.y, endPos.y) - 200, // adjust curve height
-    });
+    // Only update control if NOT dragging
+    if (!dragging()) {
+      setControl({
+        x: (startPos.x + endPos.x) / 2,
+        y: Math.min(startPos.y, endPos.y) - 200,
+      });
+    }
   };
 
   onMount(() => {
@@ -41,7 +42,11 @@ export default function CurveFromMiddle(props: Edge) {
     onCleanup(() => clearInterval(interval));
   });
 
-  const getMousePos = (e) => {
+  const getMousePos = (e: {
+    currentTarget: { closest: (arg0: string) => any };
+    clientX: any;
+    clientY: any;
+  }) => {
     const svg = e.currentTarget.closest("svg");
     const pt = svg.createSVGPoint();
     pt.x = e.clientX;
@@ -52,7 +57,7 @@ export default function CurveFromMiddle(props: Edge) {
 
   const onMouseDown = () => setDragging(true);
   const onMouseUp = () => setDragging(false);
-  const onMouseMove = (e) => {
+  const onMouseMove = (e: any) => {
     if (!dragging()) return;
     setControl(getMousePos(e));
   };
@@ -85,7 +90,6 @@ export default function CurveFromMiddle(props: Edge) {
       />
       {/* Draggable control point */}
       <circle
-        class="pointer-events-auto"
         cx={control().x}
         cy={control().y}
         r="8"

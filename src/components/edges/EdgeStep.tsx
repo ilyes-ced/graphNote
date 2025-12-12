@@ -1,5 +1,4 @@
 import { createSignal, onMount, onCleanup } from "solid-js";
-import { store } from "../../shared/store";
 import { findNodeById } from "@/shared/update";
 import { Edge } from "@/types";
 

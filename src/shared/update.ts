@@ -451,7 +451,7 @@ const changeToUrlNode = (nodeId: string, url: string) => {
   saveChanges();
 };
 
-const updateColumnTitle = (nodeId: string, newValue: string) => {
+const updateNodeTitle = (nodeId: string, newValue: string) => {
   for (const [parentId, nodeList] of Object.entries(store.nodes)) {
     const index = nodeList.findIndex((n) => n.id === nodeId);
     if (index !== -1) {
@@ -552,7 +552,7 @@ export {
   updateNodeColor,
   changeToUrlNode,
   unsetStripColor,
-  updateColumnTitle,
+  updateNodeTitle,
   newImageNode,
   updateActivityCounter,
   reorderTasks,

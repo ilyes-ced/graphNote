@@ -10,6 +10,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { setStore } from "../../shared/store";
+import { untrack } from "solid-js";
 
 type NoteProps = Note & {
   is_child?: boolean;
@@ -63,12 +64,8 @@ export default (node: NoteProps) => {
         setStore("activeTags", getActiveTagsAtCursor());
       }, 0);
 
-      console.log(editor.getJSON());
       const text = editor.getText().trim();
-      console.log(text);
       const urlRegex = /^(https?:\/\/[^\s]+)$/;
-      console.log(urlRegex.test(text));
-
       if (urlRegex.test(text)) {
         console.log("here we change this this note node to a url node");
         changeToUrlNode(node.id, text);
@@ -94,7 +91,7 @@ export default (node: NoteProps) => {
       // ListItem,
       TextAlign,
     ],
-    content: JSON.parse(node.text),
+    content: JSON.parse(untrack(() => node.text)),
   }));
 
   return (

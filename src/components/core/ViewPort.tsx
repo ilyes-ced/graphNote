@@ -20,7 +20,6 @@ export default (props: any) => {
 
   return (
     <div
-      class=""
       id="viewport"
       style={{
         position: "absolute",
@@ -29,7 +28,7 @@ export default (props: any) => {
         width: "100%",
         height: "100%",
         overflow: "auto", // optional
-        "z-index": 1, // above background
+        "z-index": 10, // above background
       }}
     >
       <div

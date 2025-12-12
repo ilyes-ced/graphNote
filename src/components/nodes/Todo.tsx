@@ -12,6 +12,7 @@ import { Task, Todo as TodoType } from "../../types";
 import { reorderTasks, updateTask } from "@/shared/update";
 import { debounce } from "@/shared/utils";
 import { IconMenu2 } from "@tabler/icons-solidjs";
+import EditableTitle from "./EditableTitle";
 
 // === Types ===
 type TodoProps = TodoType & {
@@ -327,6 +328,9 @@ export default (node: TodoProps) => {
   return (
     <div class="p-5">
       <div class="text-2xl font-bold mb-4">Task List</div>
+      <div class="text-2xl font-bold mb-4">
+        <EditableTitle nodeId={node.id} title={node.title || "Title?"} />
+      </div>
 
       <DragDropProvider
         onDragStart={onDragStart}
