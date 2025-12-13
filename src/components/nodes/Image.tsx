@@ -10,6 +10,7 @@ export default (node: ImageProps) => {
   const [imgSrc, setImgSrc] = createSignal("");
 
   const readImage = async (imgPath: string): Promise<string> => {
+    console.info("loading image with the url:", imgPath);
     const bytes = await readFile(imgPath, {
       baseDir: BaseDirectory.Document,
     });

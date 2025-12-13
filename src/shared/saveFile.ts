@@ -52,7 +52,7 @@ export default async (
     });
     console.info("finished copying:", path, "to:", fullPath);
 
-    return { res: true, text: fullPath };
+    return { res: true, text: fullPath.split("/").splice(-1)[0] };
   } catch (error) {
     console.log("error copying the file: ", error);
     return { res: false, text: error as string };

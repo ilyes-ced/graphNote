@@ -357,7 +357,7 @@ export default (node: TodoProps) => {
         </SortableProvider>
 
         <DragOverlay>
-          <div class="sortable hidden bg-red-700 text-white p-4 rounded shadow z-50">
+          <div class="sortable hidden bg-red-700 p-4 rounded shadow z-50">
             {activeId()}/tt
           </div>
         </DragOverlay>
@@ -405,7 +405,7 @@ const TaskItem = (props: TaskItemProps) => {
         <div class="flex items-center space-x-2 w-full items-start">
           <Checkbox {...props} />
           <span
-            class="taskitem-text cursor-text text-foreground outline-0 overflow-hidden text-ellipsis text-pretty wrap-break-word leading-4 w-full"
+            class="taskitem-text cursor-text outline-0 overflow-hidden text-ellipsis text-pretty wrap-break-word leading-4 w-full"
             contentEditable={true}
             onKeyDown={(e) => props.handleKeyDown(e, props.index)}
             onInput={(e) => {
@@ -434,9 +434,9 @@ const Checkbox = (props: TaskItemProps) => {
         onInput={() =>
           handleTaskChange(props.nodeId, props.index, !props.check)
         }
-        class="peer size-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-foreground checked:bg-primary/80 checked:border-primary"
+        class="peer size-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border checked:bg-primary/80 checked:border-primary"
       />
-      <span class="absolute text-white opacity-0 peer-checked:opacity-100 flex items-center justify-center">
+      <span class="absolute opacity-0 peer-checked:opacity-100 flex items-center justify-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="size-3/4"

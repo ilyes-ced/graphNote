@@ -2,9 +2,7 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "opener:default",
@@ -14,9 +12,12 @@
     "fs:allow-home-write",
     "fs:allow-document-write-recursive",
     "fs:allow-document-read-recursive",
+
+    "clipboard-manager:default",
     "clipboard-manager:allow-read-text",
     "clipboard-manager:allow-read-image",
     "clipboard-manager:allow-write-text",
+
     {
       "identifier": "fs:scope",
       "allow": [
@@ -25,7 +26,6 @@
         }
       ]
     },
-    "clipboard-manager:default",
     "cache:default"
   ]
 }
