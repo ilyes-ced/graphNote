@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, untrack } from "solid-js";
 import { setStore } from "../../shared/store";
 import { updateNodeTitle } from "@/shared/update";
 import { debounce } from "@/shared/utils";
@@ -43,7 +43,7 @@ export default (props: { nodeId: string; title: string }) => {
       onInput={handleInput}
       onKeyDown={handleKeyDown}
     >
-      {props.title}
+      {untrack(() => props.title)}
     </div>
   );
 };

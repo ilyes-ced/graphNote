@@ -24,7 +24,7 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
   - [x] backspace to delete item
   - [x] tab to add indent to item
   - [x] multi line paste create an item for each line
-- [ ] polish the drag and drop from the sidebar
+- [ ] polish the drag and drop from the sidebar (fix exact position)
 - [x] fix the viewport:
   - [x] scroll right and bottom
   - [x] placing item outside tyo the right or left extends the canvas
@@ -51,3 +51,5 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 # fixes
 
 - [ ] youtube videos not working ==> download them with yt-dlp and display them as video
+- [ ] reset viewport data on board change
+- [ ] maybe dont delete other used boards when changing (because when going back it causes a refresh (bad UX))

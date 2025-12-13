@@ -130,16 +130,21 @@ export function useDraggable(
       console.log("=================================================");
       if ((e.target as HTMLElement).closest(ignoredSelectors)) return;
       if (store.selectedNodes.size === 0) {
+        console.warn("first selected node");
         const newSet = new Set([node.id]);
         setStore("selectedNodes", newSet);
       } else {
-        if (e.ctrlKey) {
+        console.warn("else else");
+        if (e.shiftKey) {
+          console.warn("should be second selected node");
           addSelected(e, node.id);
         } else {
+          console.warn("new first selected node");
           const newSet = new Set([node.id]);
           setStore("selectedNodes", newSet);
         }
       }
+      console.info(store.selectedNodes);
       return;
     }
 

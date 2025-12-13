@@ -10,7 +10,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { setStore } from "../../shared/store";
-import { untrack } from "solid-js";
+import { createSignal, untrack } from "solid-js";
 
 type NoteProps = Note & {
   is_child?: boolean;
@@ -41,6 +41,7 @@ function getActiveTagsAtCursor(): string[] {
 }
 
 export default (node: NoteProps) => {
+  const [editable, setEditable] = createSignal(false);
   let editorRef!: HTMLDivElement;
 
   const updateText = debounce((newValue: string) => {
@@ -50,15 +51,29 @@ export default (node: NoteProps) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorRef!,
+    editable: editable(),
     onFocus({ editor }) {
+      if (!editable()) return;
       updateZIndex(node.id);
       setStore("noteEditor", editor);
       setStore("activeSidebar", "noteStyles");
     },
+    onBlur({ event }) {
+      // Ignore blur caused by clicking inside Tiptap’s UI (menus, buttons)
+      if (event?.relatedTarget instanceof HTMLElement) {
+        const el = event.relatedTarget;
+        if (editorRef.contains(el)) return;
+      }
+
+      // Disable editing again
+      setEditable(false);
+    },
+
     onSelectionUpdate() {
       setStore("activeTags", getActiveTagsAtCursor());
     },
     onUpdate({ editor }) {
+      if (!editable()) return;
       //? there is a short loss of focus when pressing a style for the text to update and for the cursor to focus again so we need this timeout to make sure we get the active tags after the cursor is focused back
       setTimeout(() => {
         setStore("activeTags", getActiveTagsAtCursor());
@@ -91,14 +106,23 @@ export default (node: NoteProps) => {
       // ListItem,
       TextAlign,
     ],
+    //? take the value from the store but make it none reactive because we than edit it manually and the same changes are saved to file, the reason for unbinding the reactivity is because when we are focused and make changes those same changes that are written are saved to file/store and are refreshed as if they are new values (bad behaviour)
     content: JSON.parse(untrack(() => node.text)),
   }));
 
+  const activateEditor = () => {
+    if (editable()) return;
+
+    setEditable(true);
+    editor()?.setEditable(true);
+    editor()?.commands.focus("end");
+  };
+
   return (
-    <div class="p-5">
+    <div class="p-5" ondblclick={activateEditor}>
       {/*JSON.stringify(store.activeTags)*/}
 
-      <div id="editor" ref={editorRef}></div>
+      <div id={editable() ? "editor" : ""} ref={editorRef}></div>
     </div>
   );
 };

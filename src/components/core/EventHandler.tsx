@@ -29,10 +29,31 @@ export default (props: any) => {
         switch (e.key) {
           case "c": // copy
             // TODO: read the content of the clipboard
-            store.selectedNodes.forEach((selectedNode) => {
-              let node = findNodeById(selectedNode);
-              if (node) setStore("copiedNodes", (nodes) => [...nodes, node]);
-            });
+
+            const selection = window.getSelection();
+            const textIsSelected =
+              selection !== null && selection.toString().length > 0;
+
+            console.info("triggered the copy logicx", textIsSelected);
+
+            if (!textIsSelected) {
+              if (store.selectedNodes.size > 0) {
+                console.info("copying nodes here");
+                var copiedNodes = {
+                  id: "special graphNote JSON format 058192",
+                  copiedNodes: [],
+                };
+                store.selectedNodes.forEach((selectedNode) => {
+                  console.info(selectedNode);
+                  console.info(findNodeById(selectedNode));
+                  //TODO: dont save to copied nodes, save as json structure and on paste read the data if its json our format data we create those nodes, maybe add special key at the start to make sure not all json is transformed to nodes
+                  let node = findNodeById(selectedNode);
+                  copiedNodes.push(node);
+                  // if (node)
+                  //   setStore("copiedNodes", (nodes) => [...nodes, node]);
+                });
+              }
+            }
 
             break;
           case "v": // paste

@@ -9,11 +9,11 @@ export default () => {
     let scale = store.viewport.scale;
 
     if (zoom > 0) {
-      if (scale <= 0.7) return;
-      scale -= 0.1;
-    } else {
       if (scale >= 1.5) return;
       scale += 0.1;
+    } else {
+      if (scale <= 0.75) return;
+      scale -= 0.1;
     }
     setStore("viewport", {
       scale: scale,
