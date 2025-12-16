@@ -1,6 +1,8 @@
 import { onMount, createSignal } from "solid-js";
 import { readFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 import { Image } from "../../types";
+import { documentDir, join } from "@tauri-apps/api/path";
+import { convertFileSrc } from "@tauri-apps/api/core";
 
 type ImageProps = Image & {
   is_child?: boolean;
@@ -26,14 +28,26 @@ export default (node: ImageProps) => {
 
   onMount(async () => {
     try {
+      //?  causes plugin:fs|read_file with 240-180 ms of latency
       setImgSrc(
         `data:image/png;base64,${await readImage(`GraphNote/${node.path}`)}`
       );
+      //?  causes plugin:path|resolve_directoryreadfile with 270-210 ms of latency
+      //const fullPath = await join(await documentDir(), "GraphNote", node.path);
+      //console.log("--------------------------------", fullPath);
+      //setImgSrc(convertFileSrc(fullPath));
     } catch (err) {
-      console.error("Failed to load image:", err);
+      //console.error("Failed to load image:", err);
       setImgSrc(
         `data:image/png;base64,${await readImage("GraphNote/placeholder.png")}`
       );
+      console.error("Failed to load image:", err);
+      //const fullPath = await join(
+      //  await documentDir(),
+      //  "GraphNote/placeholder.png"
+      //);
+      //console.log("--------------------------------", fullPath);
+      //setImgSrc(convertFileSrc(fullPath));
     }
   });
 

@@ -30,7 +30,8 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
   - [x] placing item outside tyo the right or left extends the canvas
 - [ ] fix the selection on NoteType
 - [ ] scroll becomes finniky when zoom is used, change zoom target to an outside element
-- [ ] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
+- [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
+  - [ ] finish the image copy pasting
 - [ ] redo + undo (or git versioning system)
 - [ ] make child nodes selectable
 
@@ -45,7 +46,7 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 
 - [x] cache url scrapping (backend)
 - [ ] cache scrapping images (frontend)
-- [ ] stop writing to file when moving nodes
+- [x] stop writing to file when moving nodes
 - [ ]
 
 # fixes
@@ -54,3 +55,4 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [ ] reset viewport data on board change
 - [ ] maybe dont delete other used boards when changing (because when going back it causes a refresh (bad UX))
 - [ ] copy pasting nodes when focused on text pastes both on text and on nodes
+- [ ] improve image loading performance

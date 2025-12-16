@@ -17,8 +17,6 @@ type MetaData = {
 //TODO: add cashing system
 //TODO: store them Documents/graphnote/cache and search there first if it doesnt exist do scrape_url
 export default (node: UrlProps) => {
-  const { startDrag } = useDraggable(node, node.is_child);
-
   const [metaData, setMetaData] = createSignal<MetaData>({
     title: "placeholder",
     description: "placeholder",
@@ -31,22 +29,6 @@ export default (node: UrlProps) => {
       /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/.+$/;
     return pattern.test(url);
   }
-  function getYouTubeEmbedUrl(url: string): string | null {
-    const match = url.match(
-      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-    );
-    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
-  }
-
-  const isValidUrl = (url: string): boolean => {
-    return true;
-  };
-
-  const isYoutubeUrl = (url: string): boolean => {
-    return true;
-  };
-
-  let invalidUrlDiv = <div id="invalid_url">The url provided is invalid</div>;
 
   const getMetaData = async (url: string): Promise<MetaData | null> => {
     try {
@@ -59,14 +41,28 @@ export default (node: UrlProps) => {
     }
   };
 
+  const [downloadedPath, setDownloadedPath] = createSignal<string | null>(null);
+  const [progress, setProgress] = createSignal<number>(0);
+  const [loading, setLoading] = createSignal(false);
+
   onMount(() => {
-    // Defer to next microtask to avoid blocking render
-    queueMicrotask(() => {
-      getMetaData(node.url).then((res) => {
-        if (res) {
-          setMetaData(res);
-        }
-      });
+    queueMicrotask(async () => {
+      const url = node.url;
+
+      // First, check or download
+      setLoading(true);
+      try {
+        const path = await invoke<string>("download_youtube", { url });
+        setDownloadedPath(path);
+      } catch (e) {
+        console.error("Download failed", e);
+      } finally {
+        setLoading(false);
+      }
+
+      // Then fetch metadata
+      const meta = await getMetaData(url);
+      if (meta) setMetaData(meta);
     });
   });
 
@@ -74,21 +70,10 @@ export default (node: UrlProps) => {
     <div class="space-y-2">
       {matchYoutubeUrl(node.url) ? (
         <div>
-          {/*
-          <iframe
-            width="100%"
-            src={getYouTubeEmbedUrl(node.url) ?? ""}
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          />{" "}
-          <iframe
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-            allowfullscreen
-          ></iframe>
-          */}
-          youtube vid
+          {loading() && <div>Downloading... {progress()}%</div>}
+          {!loading() && downloadedPath() && (
+            <video controls width="100%" src={`file://${downloadedPath()}`} />
+          )}
         </div>
       ) : (
         <div>

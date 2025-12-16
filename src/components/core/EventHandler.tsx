@@ -70,7 +70,7 @@ function extractImageReference(text: string): ImageReference {
 
   // Local file path
   const localMatch = text.match(LOCAL_PATH_REGEX);
-  console.log(localMatch);
+  console.log("localMatch", localMatch);
 
   if (localMatch) {
     return { type: "local", value: localMatch[1] };
@@ -184,7 +184,6 @@ export default (props: any) => {
             try {
               const img = await readImage();
               console.log(img);
-
               //todo: create new image node on mouse cursor pos
               // make use of those in utils.ts
             } catch (e) {
