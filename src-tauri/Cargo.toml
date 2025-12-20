@@ -31,7 +31,7 @@ tauri-plugin-clipboard-manager = "2"
 tauri-plugin-cache = "0.1.5"
 dashmap= "6.1.0"
 once_cell= "1.21.3"
-
+chrono = "0.4.42"
 
 # for devtools in realse builds
 #[profile.release.package.wry]

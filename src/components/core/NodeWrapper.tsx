@@ -46,6 +46,8 @@ const ignoredClasses = (
         return {
           classes: ["activityCell", "ch-subdomain-bg", "activityChangers"],
         };
+      case NodeType.Url:
+        return { tags: ["video"] };
 
       default:
         return {};

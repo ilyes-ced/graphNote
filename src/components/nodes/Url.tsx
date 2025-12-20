@@ -1,7 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { createSignal, onMount } from "solid-js";
 import { Url } from "../../types";
-import { useDraggable } from "@/shared/nodeDrag";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -41,38 +40,57 @@ export default (node: UrlProps) => {
     }
   };
 
-  const [downloadedPath, setDownloadedPath] = createSignal<string | null>(null);
-  const [progress, setProgress] = createSignal<number>(0);
-  const [loading, setLoading] = createSignal(false);
+  // const [downloadedPath, setDownloadedPath] = createSignal<string | null>(null);
+  // const [progress, setProgress] = createSignal<number>(0);
+  // const [loading, setLoading] = createSignal(false);
 
+  //onMount(() => {
+  //  queueMicrotask(async () => {
+  //    const url = node.url;
+  //
+  //    // First, check or download
+  //    // if (matchYoutubeUrl(node.url)) {
+  //    //   setLoading(true);
+  //    //   try {
+  //    //     const path = await invoke<string>("download_youtube", { url });
+  //    //     setDownloadedPath(convertFileSrc(path));
+  //    //   } catch (e) {
+  //    //     console.error("Download failed", e);
+  //    //   } finally {
+  //    //     setLoading(false);
+  //    //   }
+  //    // }
+  //
+  //    // Then fetch metadata
+  //    const meta = await getMetaData(url);
+  //    if (meta) setMetaData(meta);
+  //  });
+  //});
   onMount(() => {
-    queueMicrotask(async () => {
-      const url = node.url;
-
-      // First, check or download
-      setLoading(true);
-      try {
-        const path = await invoke<string>("download_youtube", { url });
-        setDownloadedPath(path);
-      } catch (e) {
-        console.error("Download failed", e);
-      } finally {
-        setLoading(false);
-      }
-
-      // Then fetch metadata
-      const meta = await getMetaData(url);
-      if (meta) setMetaData(meta);
+    // Defer to next microtask to avoid blocking render
+    queueMicrotask(() => {
+      getMetaData(node.url).then((res) => {
+        if (res) {
+          console.log("==========================");
+          console.log("==========================");
+          console.log(res);
+          console.log("==========================");
+          console.log("==========================");
+          setMetaData(res);
+        }
+      });
     });
   });
 
   return (
     <div class="space-y-2">
+      {/*
       {matchYoutubeUrl(node.url) ? (
         <div>
+          {downloadedPath()}
           {loading() && <div>Downloading... {progress()}%</div>}
           {!loading() && downloadedPath() && (
-            <video controls width="100%" src={`file://${downloadedPath()}`} />
+            <video controls width="100%" src={downloadedPath()!} />
           )}
         </div>
       ) : (
@@ -85,6 +103,16 @@ export default (node: UrlProps) => {
           />
         </div>
       )}
+ */}
+
+      <div>
+        <img
+          class="url_thumbnail pointer-events-none"
+          src={metaData().image}
+          loading="lazy"
+          alt=""
+        />
+      </div>
 
       <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
         <div class="url_container flex flex-row items-center space-x-2">

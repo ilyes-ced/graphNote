@@ -1,12 +1,15 @@
 import { createStore } from "solid-js/store";
 import { NodeUnion, Edge } from "../types";
 import { Editor } from "@tiptap/core";
+import { Action } from "@/actionTypes";
 
 interface GlobalStore {
   //? no board id is "home"
   //? < board nodeID, nodes>
   nodes: Record<string, NodeUnion[]>;
   edges: Record<string, Edge[]>;
+
+  actionHistory: Action[];
 
   panZoom: number | null;
   snapGrid: [number, number] | null;
@@ -37,6 +40,8 @@ interface GlobalStore {
 const [store, setStore] = createStore<GlobalStore>({
   nodes: {},
   edges: {},
+
+  actionHistory: [],
 
   panZoom: null,
   snapGrid: [10, 10],
