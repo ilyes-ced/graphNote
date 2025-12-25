@@ -63,7 +63,7 @@ const [store, setStore] = createStore<GlobalStore>({
     y: 0,
     width: 0,
     height: 0,
-    scale: 1,
+    scale: 0.8,
   },
 });
 

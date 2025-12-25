@@ -39,6 +39,22 @@ async function readJSON(): Promise<{
   if (nodesText) nodes = parseNodesData(nodesText);
   if (edgesText) edges = parseEdgesData(edgesText);
 
+  //? temporary: make backups of the nodes file each time the app is opened incase the json file gets borked
+  const datetime = new Date().toISOString().replace(/[:.]/g, "-"); // safe for filesystems
+  console.info("date time:", datetime);
+
+  const fileName = `GraphNote/nodesBackup/nodes_${datetime}.json`;
+  console.info("file name:", fileName);
+  let nodesTextBackup = await readOrCreateFiles(
+    "GraphNote/nodesBackup",
+    fileName
+  );
+  const nodesJson = JSON.stringify(nodes, null, 2);
+  await writeTextFile(fileName, nodesJson, {
+    baseDir: BaseDirectory.Document,
+  });
+  /////////////////////////////////////////////////////////////////////
+
   return { nodes, edges };
 }
 
@@ -92,17 +108,14 @@ const readOrCreateFiles = async (
   filePath: string
 ): Promise<string | null> => {
   try {
-    // maybe make them user defined later
-    // const folderPath = "GraphNote";
-    // const filePath = "GraphNote/save.json";
     /////////////////////////////////////////////////////////
-    // check folder exists of not create
     const folderExists = await exists(folderPath, {
       baseDir: BaseDirectory.Document,
     });
+
     if (!folderExists) {
       console.info("Creating directory:", folderPath);
-      await mkdir("GraphNote", {
+      await mkdir(folderPath, {
         baseDir: BaseDirectory.Document,
         recursive: true,
       });
@@ -113,6 +126,7 @@ const readOrCreateFiles = async (
     const fileExists = await exists(filePath, {
       baseDir: BaseDirectory.Document,
     });
+
     if (!fileExists) {
       console.info("Creating empty JSON file:", filePath);
       // empty json objects array // must be array

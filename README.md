@@ -56,3 +56,4 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [ ] maybe dont delete other used boards when changing (because when going back it causes a refresh (bad UX))
 - [ ] copy pasting nodes when focused on text pastes both on text and on nodes
 - [ ] improve image loading performance
+- [ ] make the height multiples of 10

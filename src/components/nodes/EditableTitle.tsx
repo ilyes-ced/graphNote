@@ -8,6 +8,17 @@ export default (props: { nodeId: string; title: string }) => {
 
   let editableDiv!: HTMLDivElement;
 
+  const placeCaretAtEnd = (el: HTMLElement) => {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    range.selectNodeContents(el);
+    range.collapse(false); // false = end
+
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  };
+
   const updateTitle = debounce((newValue: string) => {
     console.log("Debounced update:", newValue);
     updateNodeTitle(props.nodeId, newValue);
@@ -33,8 +44,11 @@ export default (props: { nodeId: string; title: string }) => {
       onDblClick={() => {
         setEditable(true);
         setStore("selectedNodes", new Set());
-        // focus on the click locatiomn
-        setTimeout(() => editableDiv.focus(), 0);
+
+        setTimeout(() => {
+          editableDiv.focus();
+          placeCaretAtEnd(editableDiv);
+        }, 0);
       }}
       style={{
         cursor: editable() ? "text" : "",
