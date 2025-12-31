@@ -34,6 +34,7 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
   - [ ] finish the image copy pasting
 - [ ] redo + undo (or git versioning system)
 - [ ] make child nodes selectable
+- [ ] test animejs and neodrag again thier animations were smoother
 
 # Polishing
 
