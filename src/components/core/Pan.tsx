@@ -1,116 +1,100 @@
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { setStore, store } from "../../shared/store";
-import { listen } from "@tauri-apps/api/event";
 
 export default (props: any) => {
   const [isDragging, setIsDragging] = createSignal(false);
   let lastMouse = { x: 0, y: 0 };
 
-  const handleMouseDown = (e: MouseEvent) => {
-    if (e.which === 2 || e.ctrlKey) {
-      // Middle click, or control
+  function getBounds() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const scaledW = store.viewport.width * store.viewport.scale;
+    const scaledH = store.viewport.height * store.viewport.scale;
+
+    // If canvas is smaller than viewport → center it
+    const minX = Math.min(0, vw - scaledW);
+    const minY = Math.min(0, vh - scaledH);
+    const maxX = 0;
+    const maxY = 0;
+
+    return { minX, maxX, minY, maxY };
+  }
+
+  function clampViewport(x: number, y: number) {
+    const { minX, maxX, minY, maxY } = getBounds();
+
+    return {
+      x: Math.max(minX, Math.min(maxX, x)),
+      y: Math.max(minY, Math.min(maxY, y)),
+    };
+  }
+
+  function moveViewport(dx: number, dy: number) {
+    const next = clampViewport(
+      store.viewport.x + dx,
+      store.viewport.y + dy
+    );
+
+    setStore("viewport", "x", next.x);
+    setStore("viewport", "y", next.y);
+  }
+
+  const handlePointerDown = (e: PointerEvent) => {
+    // Middle mouse OR ctrl + left
+    if (e.button === 1 || (e.button === 0 && e.ctrlKey)) {
       e.preventDefault();
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
       setIsDragging(true);
       lastMouse = { x: e.clientX, y: e.clientY };
     }
   };
 
-  function moveViewport(dx: number, dy: number) {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    const scaledW = store.viewport.width * store.viewport.scale;
-    const scaledH = store.viewport.height * store.viewport.scale;
-
-    const maxX = 0;
-    const maxY = 0;
-
-    const minX = vw - scaledW;
-    const minY = vh - scaledH;
-
-    let newX = store.viewport.x + dx;
-    let newY = store.viewport.y + dy;
-
-    if (newX > maxX) newX = maxX;
-    if (newX < minX) newX = minX;
-    if (newY > maxY) newY = maxY;
-    if (newY < minY) newY = minY;
-
-    setStore("viewport", "x", newX);
-    setStore("viewport", "y", newY);
-  }
-
-  const handleMouseMove = (e: MouseEvent) => {
+  const handlePointerMove = (e: PointerEvent) => {
     if (!isDragging()) return;
 
     const dx = e.clientX - lastMouse.x;
     const dy = e.clientY - lastMouse.y;
-
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    const scaledW = store.viewport.width * store.viewport.scale;
-    const scaledH = store.viewport.height * store.viewport.scale;
-
-    // The canvas should not move past 0 (top and left)
-    const maxX = 0;
-    const maxY = 0;
-
-    // The canvas should not move beyond its far edges
-    const minX = vw - scaledW;
-    const minY = vh - scaledH;
-
-    let newX = store.viewport.x + dx;
-    let newY = store.viewport.y + dy;
-
-    // Clamp properly
-    if (newX > maxX) newX = maxX;
-    if (newX < minX) newX = minX;
-    if (newY > maxY) newY = maxY;
-    if (newY < minY) newY = minY;
 
     moveViewport(dx, dy);
 
     lastMouse = { x: e.clientX, y: e.clientY };
   };
 
-  const handleMouseUp = (e: MouseEvent) => {
-    setIsDragging(false);
-  };
-
   const stopDragging = () => {
-    console.log("stopping the drag now");
     setIsDragging(false);
   };
-
-  listen("tauri://blur", (event) => {
-    console.log("mouse left thew window from tauri");
-  });
-  onMount(() => {
-    window.addEventListener("blur", stopDragging);
-
-    onCleanup(() => {
-      window.removeEventListener("blur", stopDragging);
-    });
-  });
 
   const handleWheel = (e: WheelEvent) => {
     if (e.ctrlKey) return;
 
-    const axis = e.shiftKey ? "x" : "y";
-    const dist =
-      axis === "y" ? (e.deltaY > 0 ? -100 : 100) : e.deltaX > 0 ? -100 : 100;
+    e.preventDefault();
 
-    moveViewport(axis === "x" ? dist : 0, axis === "y" ? dist : 0);
+    const speed = 100;
+    const dx = e.shiftKey ? -Math.sign(e.deltaX) * speed : 0;
+    const dy = !e.shiftKey ? -Math.sign(e.deltaY) * speed : 0;
+
+    moveViewport(dx, dy);
   };
+
+  onMount(() => {
+    window.addEventListener("blur", stopDragging);
+    window.addEventListener("pointerup", stopDragging);
+    window.addEventListener("pointercancel", stopDragging);
+
+    onCleanup(() => {
+      window.removeEventListener("blur", stopDragging);
+      window.removeEventListener("pointerup", stopDragging);
+      window.removeEventListener("pointercancel", stopDragging);
+    });
+  });
 
   return (
     <div
-      onmousedown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onWheel={handleWheel}
       id="pan"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onWheel={handleWheel}
       style={{
         width: "100%",
         height: "100%",
@@ -118,6 +102,7 @@ export default (props: any) => {
         top: 0,
         left: 0,
         overflow: "hidden",
+        touchAction: "none",
       }}
     >
       {store.viewport.x}/{store.viewport.y}
@@ -125,185 +110,3 @@ export default (props: any) => {
     </div>
   );
 };
-
-/**
-  //? the panning lets you go outside 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging()) {
-      const dx = e.clientX - lastMouse.x;
-      const dy = e.clientY - lastMouse.y;
-
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-
-      // Canvas scaled dimensions
-      const scaledWidth = store.viewport.width * store.viewport.scale;
-      const scaledHeight = store.viewport.height * store.viewport.scale;
-
-      // Limits: keep at least 25% of the viewport visible
-      const minX = -scaledWidth + viewportWidth * 0.5;
-      const maxX = viewportWidth * 0.5;
-      const minY = -scaledHeight + viewportHeight * 0.5;
-      const maxY = viewportHeight * 0.5;
-
-      // Update X with boundaries
-      let newX = store.viewport.x + dx;
-      if (newX < minX) newX = minX;
-      if (newX > maxX) newX = maxX;
-      setStore("viewport", "x", newX);
-
-      // Update Y with boundaries
-      let newY = store.viewport.y + dy;
-      if (newY < minY) newY = minY;
-      if (newY > maxY) newY = maxY;
-      setStore("viewport", "y", newY);
-
-      lastMouse = { x: e.clientX, y: e.clientY };
-    }
-  };
-
-
-  //? the doesnt panning lets you go outside the canvas 
-    const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging()) return;
-
-    const dx = e.clientX - lastMouse.x;
-    const dy = e.clientY - lastMouse.y;
-
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    const scaledW = store.viewport.width * store.viewport.scale;
-    const scaledH = store.viewport.height * store.viewport.scale;
-
-    // The canvas should not move past 0 (top and left)
-    const maxX = 0;
-    const maxY = 0;
-
-    // The canvas should not move beyond its far edges
-    const minX = vw - scaledW;
-    const minY = vh - scaledH;
-
-    let newX = store.viewport.x + dx;
-    let newY = store.viewport.y + dy;
-
-    // Clamp properly
-    if (newX > maxX) newX = maxX;
-    if (newX < minX) newX = minX;
-    if (newY > maxY) newY = maxY;
-    if (newY < minY) newY = minY;
-
-    setStore("viewport", "x", newX);
-    setStore("viewport", "y", newY);
-
-    lastMouse = { x: e.clientX, y: e.clientY };
-  };
- */
-
-/*
-import { createSignal, onCleanup, onMount } from "solid-js";
-import { setStore, store } from "../../shared/store";
-import { listen } from "@tauri-apps/api/event";
-
-export default (props: any) => {
-  const [isDragging, setIsDragging] = createSignal(false);
-  let lastMouse = { x: 0, y: 0 };
-
-  const handleMouseDown = (e: MouseEvent) => {
-    if (e.which === 2 || e.ctrlKey) {
-      // Middle click, or control
-      e.preventDefault();
-      setIsDragging(true);
-      lastMouse = { x: e.clientX, y: e.clientY };
-    }
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging()) {
-      const dx = e.clientX - lastMouse.x;
-      const dy = e.clientY - lastMouse.y;
-
-      //TODO could be better to limit it based if the viewport is still in view
-
-      // todo: limit the movement on the other side as well, do the same thing on the scroll too
-      // limiting the movement to the size of the viewport, not sure if i really should
-      if (
-        (store.viewport.x + dx) * store.viewport.scale <=
-        500 * store.viewport.scale
-      ) {
-        setStore("viewport", "x", (prev) => prev + dx);
-      } else {
-        setStore("viewport", "x", 500 * store.viewport.scale);
-      }
-      if (
-        (store.viewport.y + dy) * store.viewport.scale <=
-        500 * store.viewport.scale
-      ) {
-        setStore("viewport", "y", (prev) => prev + dy);
-      } else {
-        setStore("viewport", "y", 500 * store.viewport.scale);
-      }
-      lastMouse = { x: e.clientX, y: e.clientY };
-    }
-  };
-
-  const handleMouseUp = (e: MouseEvent) => {
-    setIsDragging(false);
-  };
-
-  const stopDragging = () => {
-    console.log("stopping the drag now");
-    setIsDragging(false);
-  };
-
-  const handleWheel = (e: WheelEvent) => {
-    //TODO: make the scroll speed user defined maybe
-    //if (!e.ctrlKey) {
-    //  //* scroll speed
-    //  const sp = 70;
-    //
-    //  const axis = e.shiftKey ? "x" : "y";
-    //  const direction =
-    //    axis === "y" ? (e.deltaY > 0 ? sp : -sp) : e.deltaX > 0 ? sp : -sp;
-    //
-    //  setStore("viewport", axis, (prev) => {
-    //    const newValue = prev - direction;
-    //    return newValue <= 0 ? newValue : 0;
-    //  });
-    //}
-  };
-
-  listen("tauri://blur", (event) => {
-    console.log("mouse left thew window from tauri");
-  });
-
-  onMount(() => {
-    //window.addEventListener("blur", stopDragging);
-
-    onCleanup(() => {
-      //window.removeEventListener("blur", stopDragging);
-    });
-  });
-
-  return (
-    <div
-      onmousedown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onWheel={handleWheel}
-      id="pan"
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        top: 0,
-        left: 0,
-      }}
-    >
-      {store.viewport.x}/{store.viewport.y}
-      {props.children}
-    </div>
-  );
-};
-
-*/

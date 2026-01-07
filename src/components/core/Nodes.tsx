@@ -24,18 +24,12 @@ export default () => {
       console.log(nodes);
       nodes.forEach((node) => {
         const rect = node.getBoundingClientRect();
-        if (node.id === "block_10") {
-          console.log("===================");
-          console.log("===================");
-          console.log("===================");
-          console.log("===================");
-          console.log(rect);
-        }
         if (rect.x + rect.width > maxWidth)
-          maxWidth = Math.round((rect.x + rect.width + 50) / 10) * 10;
+          maxWidth = Math.round(((rect.x + rect.width) / store.viewport.scale + 50) / 10) * 10;
         if (rect.y + rect.height > maxHeight)
-          maxHeight = Math.round((rect.y + rect.height + 50) / 10) * 10;
+          maxHeight = Math.round(((rect.y + rect.height) / store.viewport.scale + 50) / 10) * 10;
       });
+
       console.log("changing viewport size to:", maxWidth, maxHeight);
       setStore("viewport", {
         width: maxWidth,

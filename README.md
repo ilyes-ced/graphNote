@@ -54,7 +54,20 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 
 - [ ] youtube videos not working ==> download them with yt-dlp and display them as video
 - [ ] reset viewport data on board change
-- [ ] maybe dont delete other used boards when changing (because when going back it causes a refresh (bad UX))
+- [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))
 - [ ] copy pasting nodes when focused on text pastes both on text and on nodes
 - [ ] improve image loading performance
 - [ ] make the height multiples of 10
+- [ ] when a board or column is deleted, in nodes.json delete their object
+- [ ] when note is selected and focused arrows to change cursor position move the node as well 
+
+
+
+
+
+
+# "unknown path" error for ~/Documents
+
+sudo pacman -S xdg-user-dirs
+
+xdg-user-dirs-update

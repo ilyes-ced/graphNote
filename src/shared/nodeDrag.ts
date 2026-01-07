@@ -35,14 +35,14 @@ export function useDraggable(
   const threshold = 1;
   const ignoredSelectors =
     (ignoredElements?.classes?.length || 0) > 0 ||
-    (ignoredElements?.ids?.length || 0) > 0 ||
-    (ignoredElements?.tags?.length || 0) > 0
+      (ignoredElements?.ids?.length || 0) > 0 ||
+      (ignoredElements?.tags?.length || 0) > 0
       ? [
-          ".child_node",
-          ...(ignoredElements?.classes || []).map((cls) => `.${cls}`),
-          ...(ignoredElements?.ids || []).map((id) => `#${id}`),
-          ...(ignoredElements?.tags || []),
-        ].join(", ")
+        ".child_node",
+        ...(ignoredElements?.classes || []).map((cls) => `.${cls}`),
+        ...(ignoredElements?.ids || []).map((id) => `#${id}`),
+        ...(ignoredElements?.tags || []),
+      ].join(", ")
       : ".child_node";
 
   const startDrag = (e: PointerEvent) => {
@@ -225,14 +225,14 @@ export function useDraggable(
       const bottomEdge = node.y + height;
 
       if (rightEdge > store.viewport.width) {
-        const newWidth = Math.round((rightEdge + 50) / 10) * 10;
+        const newWidth = Math.round((rightEdge + 200) / 10) * 10;
         setStore("viewport", {
           width: Math.max(newWidth, store.viewport.width),
         });
       }
 
       if (bottomEdge > store.viewport.height) {
-        const newHeight = Math.round((bottomEdge + 50) / 10) * 10;
+        const newHeight = Math.round((bottomEdge + 200) / 10) * 10;
         setStore("viewport", {
           height: Math.max(newHeight, store.viewport.height),
         });
