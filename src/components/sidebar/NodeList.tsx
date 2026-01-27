@@ -3,6 +3,7 @@ import Svg from "../nodes/Svg";
 import { newNode } from "@/shared/update";
 import { NodeType } from "@/types";
 import { Portal } from "solid-js/web";
+import { store } from "@/shared/store";
 
 const icons = [
   // basic blocks
@@ -49,7 +50,7 @@ const handleMouseMove = (e: MouseEvent) => {
 };
 
 const handleMouseUp = () => {
-  newNode(findType(cloneType() ?? ""), dragPos().x, dragPos().y);
+  newNode(findType(cloneType() ?? ""), (dragPos().x / store.viewport.scale) - 50, (dragPos().y / store.viewport.scale) - 50);
   setDragging(false);
   setCloneType(null);
 
@@ -138,8 +139,10 @@ export default () => {
             display: dragging() ? "block" : "none",
             top: `${dragPos().y}px`,
             left: `${dragPos().x}px`,
+            scale: store.viewport.scale
           }}
         >
+          {dragPos().x} /// {dragPos().y}
           New Note
         </div>
       </Portal>

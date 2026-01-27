@@ -344,7 +344,7 @@ const newNode = (type: NodeType, x: number, y: number) => {
   const activeBoardId = getActiveBoardId();
 
   //todo: adjust the x and y to scale as well
-
+  console.log("creatign a new node with coords : ", x, y)
   let snappedX: number, snappedY: number;
   if (store.snapGrid) {
     snappedX = Math.round(x / 10) * 10;

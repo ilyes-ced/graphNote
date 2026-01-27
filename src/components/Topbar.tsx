@@ -24,7 +24,7 @@ export default () => {
   return (
     <div
       id="topbar"
-      class="h-[50px] border-b border-border flex flex-row justify-between items-center bg-card px-8"
+      class="h-[50px] border-b border-border flex flex-row justify-between items-center bg-card px-2"
     >
       <div
         id="breadcrumb"

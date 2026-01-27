@@ -29,10 +29,10 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
   - [x] scroll right and bottom
   - [x] placing item outside tyo the right or left extends the canvas
 - [ ] fix the selection on NoteType
-- [ ] scroll becomes finniky when zoom is used, change zoom target to an outside element
+- [x] scroll becomes finniky when zoom is used, change zoom target to an outside element
 - [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
   - [ ] finish the image copy pasting
-- [ ] redo + undo (or git versioning system)
+- [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
 - [ ] make child nodes selectable
 - [ ] test animejs and neodrag again thier animations were smoother
 
@@ -40,13 +40,13 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 
 - [ ] stop the selection on Notes when draging items
 - [ ] color selector sometimes changes automatically (rbg(25, 25, 25))
-- [ ] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
+- [x] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
 - [ ] paste nodes: pasted the current state of the nodes not the state at the time of the copy
 
 # optimization
 
 - [x] cache url scrapping (backend)
-- [ ] cache scrapping images (frontend)
+- [ ] cache scrapping images (frontend) (investigation needed on the performance first)
 - [x] stop writing to file when moving nodes
 - [ ]
 
@@ -60,13 +60,16 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [ ] make the height multiples of 10
 - [ ] when a board or column is deleted, in nodes.json delete their object
 - [ ] when note is selected and focused arrows to change cursor position move the node as well 
+- [ ] when deletin nodes, if they have resources (images, files . . .) delete them
+- [ ] when deleting nodes the styles sidebar should be hidden
+
+# extra features
+- [ ] add ability to pin certain nodes
 
 
 
 
-
-
-# "unknown path" error for ~/Documents
+# fix for the error: "unknown path" error for ~/Documents
 
 sudo pacman -S xdg-user-dirs
 

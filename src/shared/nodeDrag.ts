@@ -221,8 +221,8 @@ export function useDraggable(
       const width = rect.width / scale;
       const height = rect.height / scale;
 
-      const rightEdge = node.x + width;
-      const bottomEdge = node.y + height;
+      const rightEdge = node.x + width + 50;
+      const bottomEdge = node.y + height + 50;
 
       if (rightEdge > store.viewport.width) {
         const newWidth = Math.round((rightEdge + 200) / 10) * 10;
