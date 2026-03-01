@@ -34,7 +34,6 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
   - [ ] finish the image copy pasting
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
 - [ ] make child nodes selectable
-- [ ] test animejs and neodrag again thier animations were smoother
 
 # Polishing
 
@@ -48,6 +47,7 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [x] cache url scrapping (backend)
 - [ ] cache scrapping images (frontend) (investigation needed on the performance first)
 - [x] stop writing to file when moving nodes
+- [ ] test animejs and neodrag again thier animations were smoother
 - [ ]
 
 # fixes
@@ -65,6 +65,7 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 
 # extra features
 - [ ] add ability to pin certain nodes
+- [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
 
 
 

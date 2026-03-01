@@ -24,9 +24,9 @@ export default () => {
       setColor2(node?.top_strip_color ?? "#333333");
       setColor3(
         node?.textColor ??
-          getComputedStyle(document.documentElement)
-            .getPropertyValue("--color-foreground")
-            .trim()
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--color-foreground")
+          .trim()
       );
     }
   };

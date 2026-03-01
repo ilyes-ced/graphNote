@@ -83,7 +83,7 @@ import {
   addNode,
   findNodeById,
   generateNewId,
-  incremenSelectedNodesPositions,
+  incrementSelectedNodesPositions,
   newImageNode,
   removeNodeById,
 } from "@/shared/update";
@@ -214,16 +214,16 @@ export default (props: any) => {
 
           // move selected nodes
           case "ArrowUp":
-            incremenSelectedNodesPositions(0, -10);
+            incrementSelectedNodesPositions(0, -10);
             break;
           case "ArrowDown":
-            incremenSelectedNodesPositions(0, 10);
+            incrementSelectedNodesPositions(0, 10);
             break;
           case "ArrowLeft":
-            incremenSelectedNodesPositions(-10, 0);
+            incrementSelectedNodesPositions(-10, 0);
             break;
           case "ArrowRight":
-            incremenSelectedNodesPositions(10, 0);
+            incrementSelectedNodesPositions(10, 0);
             break;
           default:
             break;

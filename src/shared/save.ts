@@ -45,7 +45,7 @@ async function readJSON(): Promise<{
 
   const fileName = `GraphNote/nodesBackup/nodes_${datetime}.json`;
   console.info("file name:", fileName);
-  let nodesTextBackup = await readOrCreateFiles(
+  await readOrCreateFiles(
     "GraphNote/nodesBackup",
     fileName
   );

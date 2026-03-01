@@ -75,7 +75,7 @@ export default (props: nodeProps) => {
     props.node.type === NodeType.Color
       ? 150
       : store.nodes[getActiveBoardId()].find((n) => n.id === props.node.id)
-          ?.width ?? undefined;
+        ?.width ?? undefined;
 
   const { width, startResize } = useResize(initWidth, (newWidth: number) => {
     updateNodeWidth(props.node.id, newWidth);
@@ -102,8 +102,8 @@ export default (props: nodeProps) => {
         width: props.isChildNode
           ? "100%"
           : width()
-          ? `${width()}px`
-          : "fit-content",
+            ? `${width()}px`
+            : "fit-content",
         background: props.node.color, //? if this doesnt exist, .node in App.css will take care of it
         "z-index": props.node.zIndex,
         transform: `translate3d(${props.node.x}px, ${props.node.y}px, 0)`,

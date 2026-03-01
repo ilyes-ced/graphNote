@@ -2,6 +2,7 @@ import { createStore } from "solid-js/store";
 import { NodeUnion, Edge } from "../types";
 import { Editor } from "@tiptap/core";
 import { Action } from "@/actionTypes";
+import { actions } from "./actions";
 
 interface GlobalStore {
   //? no board id is "home"
@@ -35,6 +36,13 @@ interface GlobalStore {
     height: number;
     scale: number;
   };
+
+
+  // each action is put here
+  actions: actions[];
+  // each undo action is put here for redo (ctrl+y) when new actions are added to actions ARRAY, undoneActions is emptied 
+  // 
+  undoneActions: actions[];
 }
 
 const [store, setStore] = createStore<GlobalStore>({
@@ -65,6 +73,9 @@ const [store, setStore] = createStore<GlobalStore>({
     height: 0,
     scale: 1,
   },
+
+  actions: [],
+  undoneActions: [],
 });
 
 export { store, setStore };

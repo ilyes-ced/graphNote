@@ -63,8 +63,7 @@ export default function CurveFromMiddle(props: Edge) {
   };
 
   const d = () =>
-    `M ${start().x} ${start().y} Q ${control().x} ${control().y} ${end().x} ${
-      end().y
+    `M ${start().x} ${start().y} Q ${control().x} ${control().y} ${end().x} ${end().y
     }`;
 
   return (

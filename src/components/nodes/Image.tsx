@@ -1,8 +1,6 @@
 import { onMount, createSignal } from "solid-js";
 import { readFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 import { Image } from "../../types";
-import { documentDir, join } from "@tauri-apps/api/path";
-import { convertFileSrc } from "@tauri-apps/api/core";
 
 type ImageProps = Image & {
   is_child?: boolean;
@@ -19,7 +17,7 @@ export default (node: ImageProps) => {
 
     const base64 = btoa(
       Array.from(bytes)
-        .map((b) => String.fromCharCode(b))
+        .map((b: any) => String.fromCharCode(b))
         .join("")
     );
 

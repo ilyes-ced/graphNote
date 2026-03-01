@@ -14,7 +14,14 @@ const loadNodes = async () => {
 
 export default () => {
   onMount(async () => {
-    await loadNodes();
+
+    try {
+      await loadNodes();
+    } catch (error) {
+      console.log("error loading nodes:")
+      console.log(error)
+    }
+
   });
 
   return (

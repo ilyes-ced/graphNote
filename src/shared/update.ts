@@ -1,4 +1,3 @@
-import { SetStoreFunction } from "solid-js/store";
 import {
   Board,
   Image,
@@ -16,6 +15,7 @@ import {
 } from "../types";
 import { setStore, store } from "@/shared/store";
 import { saveChanges } from "./utils";
+import { actionsMiddleware } from "./actions";
 
 const updateTask = (
   nodeId: string,
@@ -120,7 +120,7 @@ const updatePosition = (nodeId: string, x: number, y: number) => {
 };
 
 //? update node position for arrow keys
-const incremenSelectedNodesPositions = (x: number, y: number) => {
+const incrementSelectedNodesPositions = (x: number, y: number) => {
   store.selectedNodes.forEach((selectedNode) => {
     const activeBoardId = getActiveBoardId();
     const boardNodes = store.nodes[activeBoardId] ?? [];
@@ -533,28 +533,81 @@ const newDocumentNode = (
 
   saveChanges();
 };
+
+// export {
+//   updateNote,
+//   updateZIndex,
+//   updatePosition,
+//   incrementSelectedNodesPositions,
+//   updateChildPosition,
+//   getActiveBoardId,
+//   isColumn,
+//   findNodeById,
+//   findParentIdByNodeId,
+//   removeNodeById,
+//   addNode,
+//   generateNewId,
+//   updateNodeWidth,
+//   newNode,
+//   updateTask,
+//   updateNodeColor,
+//   changeToUrlNode,
+//   unsetStripColor,
+//   updateNodeTitle,
+//   newImageNode,
+//   updateActivityCounter,
+//   reorderTasks,
+//   newDocumentNode,
+// };
+// 
+
+//! very lazy behavior i know
+const wrappedUpdateNote = actionsMiddleware(updateNote);
+const wrappedUpdateZIndex = actionsMiddleware(updateZIndex);
+const wrappedUpdatePosition = actionsMiddleware(updatePosition);
+const wrappedIncrementSelectedNodesPositions = actionsMiddleware(incrementSelectedNodesPositions);
+const wrappedUpdateChildPosition = actionsMiddleware(updateChildPosition);
+const wrappedGetActiveBoardId = actionsMiddleware(getActiveBoardId);
+const wrappedIsColumn = actionsMiddleware(isColumn);
+const wrappedFindNodeById = actionsMiddleware(findNodeById);
+const wrappedFindParentIdByNodeId = actionsMiddleware(findParentIdByNodeId);
+const wrappedRemoveNodeById = actionsMiddleware(removeNodeById);
+const wrappedAddNode = actionsMiddleware(addNode);
+const wrappedGenerateNewId = actionsMiddleware(generateNewId);
+const wrappedUpdateNodeWidth = actionsMiddleware(updateNodeWidth);
+const wrappedNewNode = actionsMiddleware(newNode);
+const wrappedUpdateTask = actionsMiddleware(updateTask);
+const wrappedUpdateNodeColor = actionsMiddleware(updateNodeColor);
+const wrappedChangeToUrlNode = actionsMiddleware(changeToUrlNode);
+const wrappedUnsetStripColor = actionsMiddleware(unsetStripColor);
+const wrappedUpdateNodeTitle = actionsMiddleware(updateNodeTitle);
+const wrappedNewImageNode = actionsMiddleware(newImageNode);
+const wrappedUpdateActivityCounter = actionsMiddleware(updateActivityCounter);
+const wrappedReorderTasks = actionsMiddleware(reorderTasks);
+const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode);
+
 export {
-  updateNote,
-  updateZIndex,
-  updatePosition,
-  incremenSelectedNodesPositions,
-  updateChildPosition,
-  getActiveBoardId,
-  isColumn,
-  findNodeById,
-  findParentIdByNodeId,
-  removeNodeById,
-  addNode,
-  generateNewId,
-  updateNodeWidth,
-  newNode,
-  updateTask,
-  updateNodeColor,
-  changeToUrlNode,
-  unsetStripColor,
-  updateNodeTitle,
-  newImageNode,
-  updateActivityCounter,
-  reorderTasks,
-  newDocumentNode,
+  wrappedUpdateNote as updateNote,
+  wrappedUpdateZIndex as updateZIndex,
+  wrappedUpdatePosition as updatePosition,
+  wrappedIncrementSelectedNodesPositions as incrementSelectedNodesPositions,
+  wrappedUpdateChildPosition as updateChildPosition,
+  wrappedGetActiveBoardId as getActiveBoardId,
+  wrappedIsColumn as isColumn,
+  wrappedFindNodeById as findNodeById,
+  wrappedFindParentIdByNodeId as findParentIdByNodeId,
+  wrappedRemoveNodeById as removeNodeById,
+  wrappedAddNode as addNode,
+  wrappedGenerateNewId as generateNewId,
+  wrappedUpdateNodeWidth as updateNodeWidth,
+  wrappedNewNode as newNode,
+  wrappedUpdateTask as updateTask,
+  wrappedUpdateNodeColor as updateNodeColor,
+  wrappedChangeToUrlNode as changeToUrlNode,
+  wrappedUnsetStripColor as unsetStripColor,
+  wrappedUpdateNodeTitle as updateNodeTitle,
+  wrappedNewImageNode as newImageNode,
+  wrappedUpdateActivityCounter as updateActivityCounter,
+  wrappedReorderTasks as reorderTasks,
+  wrappedNewDocumentNode as newDocumentNode,
 };

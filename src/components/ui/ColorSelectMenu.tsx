@@ -62,11 +62,10 @@ export default () => {
   return (
     <div
       class={`z-50 transition-all duration-200 ease-in-out absolute top-4 left-4 [box-shadow:5px_5px_var(--color-primary)]
-          ${
-            store.showColorMenu
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-95 pointer-events-none"
-          }`}
+          ${store.showColorMenu
+          ? "opacity-100 scale-100"
+          : "opacity-0 scale-95 pointer-events-none"
+        }`}
     >
       <div
         id="colorSelectMenu"
