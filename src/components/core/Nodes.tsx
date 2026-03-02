@@ -39,7 +39,8 @@ export default () => {
   });
 
   return (
-    <div id="nodes" class="bg-red-600" ref={nodesRef}>
+    < div id="nodes" class="bg-red-600" ref={nodesRef} >
+      {JSON.stringify(store.actionsHistory)}
       <For each={store.nodes[store.activeBoards.at(-1)?.id ?? "home"]}>
         {(node) => (
           <div>
@@ -81,6 +82,6 @@ export default () => {
           </div>
         )}
       </For>
-    </div>
+    </div >
   );
 };

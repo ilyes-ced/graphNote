@@ -107,7 +107,9 @@ export default (node: NoteProps) => {
       TextAlign,
     ],
     //? take the value from the store but make it none reactive because we than edit it manually and the same changes are saved to file, the reason for unbinding the reactivity is because when we are focused and make changes those same changes that are written are saved to file/store and are refreshed as if they are new values (bad behaviour)
-    content: JSON.parse(untrack(() => node.text)),
+    // content: JSON.parse(untrack(() => node.text)),
+    //? but we need tracked for the undo/redo functionality
+    content: JSON.parse(node.text),
   }));
 
   const activateEditor = () => {

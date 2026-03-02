@@ -17,6 +17,9 @@ import { setStore, store } from "@/shared/store";
 import { saveChanges } from "./utils";
 import { actionsMiddleware } from "./actions";
 
+
+
+/*
 const updateTask = (
   nodeId: string,
   value: string | boolean,
@@ -69,18 +72,56 @@ const updateTask = (
 
   saveChanges();
 };
+*/
+const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) => {
+  for (const [parentId, nodes] of Object.entries(store.nodes)) {
+    const nodeIndex = nodes.findIndex(n => n.id === nodeId);
+    if (nodeIndex === -1) continue;
+
+    const node = nodes[nodeIndex];
+    if (!("tasks" in node) || !Array.isArray(node.tasks) || !node.tasks[taskIndex]) continue;
+
+    const oldValue = node.tasks[taskIndex][typeof value === "boolean" ? "check" : "text"];
+    const key = typeof value === "boolean" ? "check" : "text";
+
+    setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, value);
+    saveChanges();
+
+    return {
+      undo() {
+        setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, oldValue);
+        saveChanges();
+      },
+      redo() {
+        setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, value);
+        saveChanges();
+      },
+    };
+  }
+};
 
 //? update Note text content
 const updateNote = (nodeId: string, newValue: string) => {
   for (const [parentId, nodeList] of Object.entries(store.nodes)) {
     const index = nodeList.findIndex((n) => n.id === nodeId);
     if (index !== -1) {
+      const oldValue = store.nodes[parentId][index].text;
       setStore("nodes", parentId, index, "text", newValue);
-      break;
+      saveChanges();
+
+      return {
+        undo() {
+          setStore("nodes", parentId, index, "text", oldValue);
+          saveChanges();
+        },
+        redo() {
+          setStore("nodes", parentId, index, "text", newValue);
+          saveChanges();
+        },
+      };
     }
   }
 
-  saveChanges();
 };
 
 const getActiveBoardId = (): string => {
@@ -91,47 +132,111 @@ const getActiveBoardId = (): string => {
 //TODO: change to indlude only the current active board
 //TODO: change to include child elemnts as well
 const updateZIndex = (nodeId: string) => {
-  const activeBoardId = getActiveBoardId();
+  const activeBoardId = store.activeBoards.at(-1)?.id;
   if (!activeBoardId) return;
 
   const boardNodes = store.nodes[activeBoardId] ?? [];
-  const max_z_index = Math.max(...boardNodes.map((node) => node.zIndex ?? 0));
+  const index = boardNodes.findIndex(n => n.id === nodeId);
+  if (index === -1) return;
 
-  const index = boardNodes.findIndex((n) => n.id === nodeId);
-  if (index !== -1) {
-    setStore("nodes", activeBoardId, index, "zIndex", max_z_index + 1);
-  }
+  const oldZ = boardNodes[index].zIndex ?? 0;
+  const newZ = Math.max(...boardNodes.map(n => n.zIndex ?? 0)) + 1;
 
-  // no need to save here
+  setStore("nodes", activeBoardId, index, "zIndex", newZ);
+
+  return {
+    undo() {
+      setStore("nodes", activeBoardId, index, "zIndex", oldZ);
+    },
+    redo() {
+      setStore("nodes", activeBoardId, index, "zIndex", newZ);
+    },
+  };
 };
 
 //? update node position
+
+
+const updateMovingPosition = (nodeId: string, x: number, y: number) => {
+  const activeBoardId = getActiveBoardId();
+  const boardNodes = store.nodes[activeBoardId] ?? [];
+  const index = boardNodes.findIndex((n) => n.id === nodeId);
+  if (index !== -1) {
+    if (x > 0) setStore("nodes", activeBoardId, index, "x", x);
+    if (y > 0) setStore("nodes", activeBoardId, index, "y", y);
+
+  }
+};
+
 const updatePosition = (nodeId: string, x: number, y: number) => {
   const activeBoardId = getActiveBoardId();
   const boardNodes = store.nodes[activeBoardId] ?? [];
 
   const index = boardNodes.findIndex((n) => n.id === nodeId);
   if (index !== -1) {
+    const oldX = boardNodes[index].x;
+    const oldY = boardNodes[index].y;
+
+
     if (x > 0) setStore("nodes", activeBoardId, index, "x", x);
     if (y > 0) setStore("nodes", activeBoardId, index, "y", y);
+    saveChanges();
+
+    return {
+      undo() {
+        setStore("nodes", activeBoardId, index, "x", oldX);
+        setStore("nodes", activeBoardId, index, "y", oldY);
+        saveChanges();
+      },
+      redo() {
+        setStore("nodes", activeBoardId, index, "x", x);
+        setStore("nodes", activeBoardId, index, "y", y);
+        saveChanges();
+      },
+    };
   }
 
-  // saveChanges();
+  saveChanges();
 };
 
 //? update node position for arrow keys
-const incrementSelectedNodesPositions = (x: number, y: number) => {
-  store.selectedNodes.forEach((selectedNode) => {
-    const activeBoardId = getActiveBoardId();
-    const boardNodes = store.nodes[activeBoardId] ?? [];
+const incrementSelectedNodesPositions = (dx: number, dy: number) => {
+  const activeBoardId = store.activeBoards.at(-1)?.id;
+  if (!activeBoardId) return;
 
-    const index = boardNodes.findIndex((n) => n.id === selectedNode);
-    if (index !== -1) {
-      if (x) setStore("nodes", activeBoardId, index, "x", (prev) => prev + x);
-      if (y) setStore("nodes", activeBoardId, index, "y", (prev) => prev + y);
-    }
+  const affected = Array.from(store.selectedNodes)
+    .map(id => {
+      const index = (store.nodes[activeBoardId] ?? []).findIndex(n => n.id === id);
+      if (index === -1) return null;
+      const node = store.nodes[activeBoardId][index];
+      return { index, oldX: node.x, oldY: node.y, newX: node.x + dx, newY: node.y + dy };
+    })
+    .filter(Boolean) as { index: number; oldX: number; oldY: number; newX: number; newY: number }[];
+
+  if (!affected.length) return;
+
+  affected.forEach(n => {
+    setStore("nodes", activeBoardId, n.index, "x", n.newX);
+    setStore("nodes", activeBoardId, n.index, "y", n.newY);
   });
   saveChanges();
+
+  return {
+    undo() {
+      affected.forEach(n => {
+        setStore("nodes", activeBoardId, n.index, "x", n.oldX);
+        setStore("nodes", activeBoardId, n.index, "y", n.oldY);
+      });
+      saveChanges();
+    },
+    redo() {
+      affected.forEach(n => {
+        setStore("nodes", activeBoardId, n.index, "x", n.newX);
+        setStore("nodes", activeBoardId, n.index, "y", n.newY);
+      });
+      saveChanges();
+    },
+  };
 };
 
 //? update node wdith
@@ -172,6 +277,42 @@ const updateChildPosition = (nodeId: string, x: number, y: number) => {
 
   saveChanges();
 };
+/* //! very funcky
+const updateChildPosition = (nodeId: string, x: number, y: number) => {
+  const activeBoardId = store.activeBoards.at(-1)?.id;
+  if (!activeBoardId) return;
+
+  outerLoop: for (const parentNode of store.nodes[activeBoardId] ?? []) {
+    if (parentNode.type !== NodeType.Column) continue;
+
+    const childNodes = store.nodes[parentNode.id] ?? [];
+    for (let i = 0; i < childNodes.length; i++) {
+      const node = childNodes[i];
+      if (node.id === nodeId) {
+        const oldX = node.x;
+        const oldY = node.y;
+
+        setStore("nodes", parentNode.id, i, "x", x);
+        setStore("nodes", parentNode.id, i, "y", y);
+        saveChanges();
+
+        return {
+          undo() {
+            setStore("nodes", parentNode.id, i, "x", oldX);
+            setStore("nodes", parentNode.id, i, "y", oldY);
+            saveChanges();
+          },
+          redo() {
+            setStore("nodes", parentNode.id, i, "x", x);
+            setStore("nodes", parentNode.id, i, "y", y);
+            saveChanges();
+          },
+        };
+      }
+    }
+  }
+};
+*/
 
 const isColumn = (nodeId: string): boolean => {
   const activeBoardId = getActiveBoardId();
@@ -201,21 +342,33 @@ const findParentIdByNodeId = (nodeId: string): string | null => {
 };
 
 const removeNodeById = (nodeId: string, parentId?: string) => {
-  let space;
-  if (parentId) {
-    space = parentId;
-  } else {
-    space = getActiveBoardId();
-  }
+  const activeBoardId = store.activeBoards.at(-1)?.id;
+  const targetId = parentId ?? activeBoardId;
+  if (!targetId) return;
 
-  const updated = store.nodes[space]?.filter((n) => n.id !== nodeId);
-  if (updated) {
-    setStore("nodes", space, updated);
-  }
+  const currentNodes = store.nodes[targetId] ?? [];
+  const index = currentNodes.findIndex(n => n.id === nodeId);
+  if (index === -1) return;
 
+  const removedNode = currentNodes[index];
+  const updated = [...currentNodes.slice(0, index), ...currentNodes.slice(index + 1)];
+  setStore("nodes", targetId, updated);
   saveChanges();
+
+  return {
+    undo() {
+      setStore("nodes", targetId, currentNodes);
+      saveChanges();
+    },
+    redo() {
+      setStore("nodes", targetId, updated);
+      saveChanges();
+    },
+  };
 };
 
+
+/*
 const addNode = (
   newNode: NodeUnion,
   // x: number,
@@ -233,6 +386,31 @@ const addNode = (
 
   saveChanges();
 };
+*/
+//! when putting child in coolumn and doing undo, it goes out of parent but not back to canvas
+//! also the opposit doesnt work
+const addNode = (newNode: NodeUnion, targetNodeId?: string) => {
+  const activeBoardId = store.activeBoards.at(-1)?.id;
+  const targetId = targetNodeId ?? activeBoardId;
+  if (!targetId) return;
+
+  const currentNodes = store.nodes[targetId] ?? [];
+
+  setStore("nodes", targetId, [...currentNodes, newNode]);
+  saveChanges();
+
+  return {
+    undo() {
+      setStore("nodes", targetId, currentNodes);
+      saveChanges();
+    },
+    redo() {
+      setStore("nodes", targetId, [...currentNodes, newNode]);
+      saveChanges();
+    },
+  };
+};
+
 
 const generateNewId = (): string => {
   const allNodes = Object.values(store.nodes).flat();
@@ -389,32 +567,40 @@ const newImageNode = (img: string, x: number, y: number) => {
 };
 
 //? update node colors, fg or bg or strip
-const updateNodeColor = (
-  nodeId: string,
-  type: "bg" | "fg" | "strip",
-  color: ColorType
-) => {
-  const activeBoardId = getActiveBoardId();
+const updateNodeColor = (nodeId: string, type: "bg" | "fg" | "strip", color: ColorType) => {
+  const activeBoardId = store.activeBoards.at(-1)?.id;
+  if (!activeBoardId) return;
+
   const boardNodes = store.nodes[activeBoardId] ?? [];
+  const index = boardNodes.findIndex(n => n.id === nodeId);
+  if (index === -1) return;
 
-  const index = boardNodes.findIndex((n) => n.id === nodeId);
-  if (index !== -1) {
-    switch (type) {
-      case "bg":
-        setStore("nodes", activeBoardId, index, "color", color);
-        break;
-      case "fg":
-        setStore("nodes", activeBoardId, index, "textColor", color);
-        break;
-      case "strip":
-        setStore("nodes", activeBoardId, index, "top_strip_color", color);
-        break;
-      default:
-        break;
-    }
+  let oldValue: any;
+  switch (type) {
+    case "bg": oldValue = boardNodes[index].color; setStore("nodes", activeBoardId, index, "color", color); break;
+    case "fg": oldValue = boardNodes[index].textColor; setStore("nodes", activeBoardId, index, "textColor", color); break;
+    case "strip": oldValue = boardNodes[index].top_strip_color; setStore("nodes", activeBoardId, index, "top_strip_color", color); break;
   }
-
   saveChanges();
+
+  return {
+    undo() {
+      switch (type) {
+        case "bg": setStore("nodes", activeBoardId, index, "color", oldValue); break;
+        case "fg": setStore("nodes", activeBoardId, index, "textColor", oldValue); break;
+        case "strip": setStore("nodes", activeBoardId, index, "top_strip_color", oldValue); break;
+      }
+      saveChanges();
+    },
+    redo() {
+      switch (type) {
+        case "bg": setStore("nodes", activeBoardId, index, "color", color); break;
+        case "fg": setStore("nodes", activeBoardId, index, "textColor", color); break;
+        case "strip": setStore("nodes", activeBoardId, index, "top_strip_color", color); break;
+      }
+      saveChanges();
+    },
+  };
 };
 
 const unsetStripColor = () => {
@@ -489,15 +675,25 @@ const updateActivityCounter = (
 };
 
 const reorderTasks = (nodeId: string, tasks: Task[]) => {
-  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
-    const nodeIndex = nodeList.findIndex((node) => node.id === nodeId);
+  for (const [parentId, nodes] of Object.entries(store.nodes)) {
+    const index = nodes.findIndex(n => n.id === nodeId);
+    if (index === -1) continue;
 
-    if (nodeIndex !== -1) {
-      setStore("nodes", parentId, nodeIndex, "tasks", tasks);
-    }
+    const oldTasks = nodes[index].tasks ?? [];
+    setStore("nodes", parentId, index, "tasks", tasks);
+    saveChanges();
+
+    return {
+      undo() {
+        setStore("nodes", parentId, index, "tasks", oldTasks);
+        saveChanges();
+      },
+      redo() {
+        setStore("nodes", parentId, index, "tasks", tasks);
+        saveChanges();
+      },
+    };
   }
-
-  saveChanges();
 };
 
 const newDocumentNode = (
@@ -590,6 +786,7 @@ export {
   wrappedUpdateNote as updateNote,
   wrappedUpdateZIndex as updateZIndex,
   wrappedUpdatePosition as updatePosition,
+  updateMovingPosition,
   wrappedIncrementSelectedNodesPositions as incrementSelectedNodesPositions,
   wrappedUpdateChildPosition as updateChildPosition,
   wrappedGetActiveBoardId as getActiveBoardId,

@@ -327,7 +327,6 @@ export default (node: TodoProps) => {
 
   return (
     <div class="p-5">
-      <div class="text-2xl font-bold mb-4">Task List</div>
       <div class="text-2xl font-bold mb-4">
         <EditableTitle nodeId={node.id} title={node.title || "Title?"} />
       </div>

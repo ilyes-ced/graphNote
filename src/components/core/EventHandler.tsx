@@ -88,6 +88,7 @@ import {
   removeNodeById,
 } from "@/shared/update";
 import saveFile from "@/shared/saveFile";
+import { redo, undo } from "@/shared/actions";
 
 export default (props: any) => {
   listen<payload>("tauri://drag-drop", (event) => {
@@ -192,8 +193,10 @@ export default (props: any) => {
 
             break;
           case "z": // undo
+            undo()
             break;
           case "y": // redo
+            redo()
             break;
           case "f": // search
             break;

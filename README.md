@@ -33,6 +33,15 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
   - [ ] finish the image copy pasting
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
+  - [ ] fix:
+    - [ ] updatePosition (when letting go 2 different positions are recorded) 
+    - [ ] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposit doesnt work)
+    - [ ] updateTask (does nothing)
+    - [ ] reorderTasks (does nothing)
+  - [ ] not done yet:
+    - [ ] newNode
+    - [ ] newImageNode  
+    - [ ] newDocumentNode 
 - [ ] make child nodes selectable
 
 # Polishing

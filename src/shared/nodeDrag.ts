@@ -7,6 +7,7 @@ import {
   findNodeById,
   isColumn,
   updateChildPosition,
+  updateMovingPosition,
   updatePosition,
   updateZIndex,
 } from "./update";
@@ -96,7 +97,7 @@ export function useDraggable(
     //TODO: updating store on every move might be bad for performance
     //TODO: make it change the translate values of the HTMLdiv and on drag end update the store positions
     if (!is_child) {
-      updatePosition(node.id, x, y);
+      updateMovingPosition(node.id, x, y);
     } else {
       updateChildPosition(node.id, x, y);
     }
