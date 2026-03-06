@@ -5,19 +5,22 @@ import { store } from "./store";
 // TODO: make debounce for disk write operation, to avoid writing too much to disk
 async function saveNodesJSON() {
   let nodes = store.nodes;
-  const nodesJson = JSON.stringify(nodes, null, 2);
-  fetch("http://localhost:3000/api/data")
-    .then(res => res.json())
-    .then(data => console.log(data));
-  // await writeTextFile("GraphNote/nodes.json", nodesJson, {
-  //   baseDir: BaseDirectory.Document,
-  // });
+  await fetch("http://localhost:3001/saveNodes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(nodes),
+  });
 }
 async function saveEdgesJSON() {
-  let nodes = store.nodes;
-  const nodesJson = JSON.stringify(nodes, null, 2);
-  await writeTextFile("GraphNote/nodes_old.json", nodesJson, {
-    baseDir: BaseDirectory.Document,
+  let edges = store.edges;
+  await fetch("http://localhost:3001/saveEdges", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(edges),
   });
 }
 
@@ -26,29 +29,32 @@ async function readJSON(): Promise<{
   nodes: Record<string, NodeUnion[]> | null;
   edges: Record<string, Edge[]> | null;
 } | null> {
-  let nodesText = await readOrCreateFiles("GraphNote", "GraphNote/nodes.json");
-  let edgesText = await readOrCreateFiles("GraphNote", "GraphNote/edges.json");
+  // read nodes and edges
+  const res = await fetch("http://localhost:3001/readGraph");
+  const data = await res.json();
 
   let nodes = null;
   let edges = null;
 
-  if (nodesText) nodes = parseNodesData(nodesText);
-  if (edgesText) edges = parseEdgesData(edgesText);
+  if (data.nodes) nodes = parseNodesData(JSON.stringify(data.nodes));
+  if (data.edges) edges = parseEdgesData(JSON.stringify(data.edges));
 
   //? temporary: make backups of the nodes file each time the app is opened incase the json file gets borked
   const datetime = new Date().toISOString().replace(/[:.]/g, "-"); // safe for filesystems
   console.info("date time:", datetime);
 
-  const fileName = `GraphNote/nodesBackup/nodes_${datetime}.json`;
-  console.info("file name:", fileName);
-  await readOrCreateFiles(
-    "GraphNote/nodesBackup",
-    fileName
-  );
-  const nodesJson = JSON.stringify(nodes, null, 2);
-  await writeTextFile(fileName, nodesJson, {
-    baseDir: BaseDirectory.Document,
-  });
+
+  //TODO replace this tauri logic
+  // const fileName = `GraphNote/nodesBackup/nodes_${datetime}.json`;
+  // console.info("file name:", fileName);
+  // await readOrCreateFiles(
+  //   "GraphNote/nodesBackup",
+  //   fileName
+  // );
+  // const nodesJson = JSON.stringify(nodes, null, 2);
+  // await writeTextFile(fileName, nodesJson, {
+  //   baseDir: BaseDirectory.Document,
+  // });
   /////////////////////////////////////////////////////////////////////
 
   return { nodes, edges };
@@ -94,6 +100,7 @@ const parseNodesData = (text: string): Record<string, NodeUnion[]> => {
 
   return finalNodes;
 };
+
 const parseEdgesData = (text: string): Record<string, Edge[]> => {
   const finalEdges: Record<string, Edge[]> = JSON.parse(text);
   return finalEdges;
@@ -104,41 +111,23 @@ const readOrCreateFiles = async (
   filePath: string
 ): Promise<string | null> => {
   try {
-    /////////////////////////////////////////////////////////
-    const folderExists = await exists(folderPath, {
-      baseDir: BaseDirectory.Document,
+    const res = await fetch("http://localhost:3001/readFile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ folderPath, filePath }),
     });
 
-    if (!folderExists) {
-      console.info("Creating directory:", folderPath);
-      await mkdir(folderPath, {
-        baseDir: BaseDirectory.Document,
-        recursive: true,
-      });
-      console.info("Created directory:", folderPath);
+    if (!res.ok) {
+      throw new Error("Failed to read file");
     }
-    /////////////////////////////////////////////////////////
-    // check save file exists of not create it with an empty array
-    const fileExists = await exists(filePath, {
-      baseDir: BaseDirectory.Document,
-    });
 
-    if (!fileExists) {
-      console.info("Creating empty JSON file:", filePath);
-      // empty json objects array // must be array
-      await writeTextFile(filePath, JSON.stringify({}, null, 2), {
-        baseDir: BaseDirectory.Document,
-      });
-    }
-    /////////////////////////////////////////////////////////
+    const data = await res.json();
 
-    const text = await readTextFile(filePath, {
-      baseDir: BaseDirectory.Document,
-    });
-
-    return text;
+    return data.text ?? null;
   } catch (err) {
-    console.error(`Failed to read or parse ${filePath}:`, err);
+    console.error(`Failed to read or create ${filePath}:`, err);
     return null;
   }
 };

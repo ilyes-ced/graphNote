@@ -1,4 +1,4 @@
-# restart_with_bun_backend
+# backend
 
 To install dependencies:
 

@@ -16,7 +16,10 @@ const loadNodes = async () => {
   console.info("///////////////")
   fetch("http://localhost:3001/getNodes")
     .then(res => res.json())
-    .then(data => console.log(data));
+    .then(data => {
+      console.log(data);
+      setStore("nodes", data ?? []);
+    });
 
 
   // const initStore = await readJSON();
