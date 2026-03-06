@@ -19,8 +19,7 @@ import { actionsMiddleware } from "./actions";
 
 
 
-/*
-const updateTask = (
+const updateTaskOG = (
   nodeId: string,
   value: string | boolean,
   taskIndex: number
@@ -72,7 +71,8 @@ const updateTask = (
 
   saveChanges();
 };
-*/
+
+
 const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) => {
   for (const [parentId, nodes] of Object.entries(store.nodes)) {
     const nodeIndex = nodes.findIndex(n => n.id === nodeId);

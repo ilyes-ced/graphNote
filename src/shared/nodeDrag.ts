@@ -28,10 +28,13 @@ export function useDraggable(
   is_child: boolean = false,
   ignoredElements?: { tags?: string[]; classes?: string[]; ids?: string[] }
 ) {
+  let element: HTMLElement | null = null;
   let startX = 0;
   let startY = 0;
   let initialMouseX = 0;
   let initialMouseY = 0;
+  let currentX = 0;
+  let currentY = 0;
   let targets = document.querySelectorAll(".column, .board");
   const threshold = 1;
   const ignoredSelectors =
@@ -47,6 +50,9 @@ export function useDraggable(
       : ".child_node";
 
   const startDrag = (e: PointerEvent) => {
+    element = e.currentTarget as HTMLElement;
+    console.info("moving:", element);
+
     if (store.showColorMenu) setStore("showColorMenu", false);
     //? at leastit helps with removing the ghost when dragging an image
     //? other thatn that im not sure
@@ -97,7 +103,13 @@ export function useDraggable(
     //TODO: updating store on every move might be bad for performance
     //TODO: make it change the translate values of the HTMLdiv and on drag end update the store positions
     if (!is_child) {
-      updateMovingPosition(node.id, x, y);
+      currentX = Math.max(-1, x);
+      currentY = Math.max(-1, y);
+
+      // fast DOM update
+      if (element) {
+        element.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      }
     } else {
       updateChildPosition(node.id, x, y);
     }
@@ -147,6 +159,15 @@ export function useDraggable(
       }
       console.info(store.selectedNodes);
       return;
+    } else {
+      // not fully tested could cause issues with child nodes later
+      const scale = store.viewport?.scale ?? 1;
+      let x = (e.clientX - store.viewport.x) / scale - startX;
+      let y = (e.clientY - store.viewport.y) / scale - startY;
+
+      currentX = Math.max(0, x);
+      currentY = Math.max(0, y);
+      updateMovingPosition(node.id, x, y);
     }
 
     //? for transfering children to other nodes

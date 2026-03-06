@@ -44,6 +44,54 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
     - [ ] newDocumentNode 
 - [ ] make child nodes selectable
 
+
+```
+// ------------------ DOCUMENT / IMAGE ------------------
+const newNode = (node: NodeUnion) => {
+  const activeBoardId = store.activeBoards.at(-1)?.id;
+  if (!activeBoardId) return;
+
+  const prevNodes = store.nodes[activeBoardId] ?? [];
+  setStore("nodes", activeBoardId, [...prevNodes, node]);
+  saveChanges();
+
+  return {
+    undo() {
+      setStore("nodes", activeBoardId, prevNodes);
+      saveChanges();
+    },
+    redo() {
+      setStore("nodes", activeBoardId, [...prevNodes, node]);
+      saveChanges();
+    },
+  };
+};
+
+const newImageNode = (img: string, x: number, y: number) => {
+  const node = {
+    id: `node_${Date.now()}`,
+    type: NodeType.Image,
+    path: img,
+    x, y, width: 300, index: 0, title: "Untitled", description: "",
+  } as NodeUnion;
+
+  return newNode(node);
+};
+
+const newDocumentNode = (path: string, x: number, y: number, docType: string) => {
+  const node = {
+    id: `node_${Date.now()}`,
+    type: NodeType.Document,
+    path, docType,
+    x, y, width: 300, index: 0, description: "test",
+  } as NodeUnion;
+
+  return newNode(node);
+};
+```
+
+
+
 # Polishing
 
 - [ ] stop the selection on Notes when draging items

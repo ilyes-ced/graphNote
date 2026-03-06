@@ -82,9 +82,11 @@ export default (props: nodeProps) => {
   });
 
   //TODO: fix each node type classname, and the ignored classes in the drag
+  let el!: HTMLDivElement;
 
   return (
     <div
+      ref={el}
       onPointerDown={startDrag}
       class={`${props.node.type.toLowerCase()}`}
       classList={{
