@@ -1,0 +1,88 @@
+{
+    "home": [
+        {
+            "id": "node_4",
+            "type": "Column",
+            "width": 300,
+            "x": 470,
+            "y": 60,
+            "index": 0,
+            "title": "New Column",
+            "zIndex": 2,
+            "color": "#F59E0B",
+            "textColor": "#3B82F6"
+        },
+        {
+            "id": "node_5",
+            "type": "Note",
+            "width": 300,
+            "x": 720,
+            "y": 190,
+            "index": 0,
+            "text": "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\"}]}",
+            "zIndex": 0
+        },
+        {
+            "id": "node_7",
+            "type": "Column",
+            "width": 300,
+            "x": 150,
+            "y": 112,
+            "index": 0,
+            "title": "New Column",
+            "zIndex": 5
+        },
+        {
+            "id": "node_8",
+            "type": "Column",
+            "width": 300,
+            "x": 370,
+            "y": 440,
+            "index": 0,
+            "title": "New Column",
+            "zIndex": 6
+        }
+    ],
+    "node_4": [
+        {
+            "id": "node_3",
+            "type": "Note",
+            "width": 300,
+            "x": 0,
+            "y": 0,
+            "index": 2,
+            "text": "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"fqw qd opqwkd q[wd \"}]}]}",
+            "zIndex": 1
+        }
+    ],
+    "node_7": [],
+    "node_8": [
+        {
+            "id": "node_6",
+            "type": "Todo",
+            "width": 300,
+            "x": 0,
+            "y": 0,
+            "index": 0,
+            "title": "Title?f qw dqw qw ",
+            "tasks": [
+                {
+                    "text": "test",
+                    "check": true,
+                    "nestLevel": 0
+                },
+                {
+                    "text": "",
+                    "check": false,
+                    "nestLevel": 0
+                },
+                {
+                    "text": "",
+                    "check": false,
+                    "nestLevel": 1
+                }
+            ],
+            "zIndex": 4
+        }
+    ]
+}
