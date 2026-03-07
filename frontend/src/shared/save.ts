@@ -40,21 +40,23 @@ async function readJSON(): Promise<{
   if (data.edges) edges = parseEdgesData(JSON.stringify(data.edges));
 
   //? temporary: make backups of the nodes file each time the app is opened incase the json file gets borked
-  const datetime = new Date().toISOString().replace(/[:.]/g, "-"); // safe for filesystems
-  console.info("date time:", datetime);
+  const datetime = new Date().toISOString().replace(/[:.]/g, "-");
 
+  const folderPath = "GraphNote/nodesBackup";
+  const filePath = `${folderPath}/nodes_${datetime}.json`;
 
-  //TODO replace this tauri logic
-  // const fileName = `GraphNote/nodesBackup/nodes_${datetime}.json`;
-  // console.info("file name:", fileName);
-  // await readOrCreateFiles(
-  //   "GraphNote/nodesBackup",
-  //   fileName
-  // );
-  // const nodesJson = JSON.stringify(nodes, null, 2);
-  // await writeTextFile(fileName, nodesJson, {
-  //   baseDir: BaseDirectory.Document,
-  // });
+  console.info("file name:", filePath);
+
+  const nodesJson = JSON.stringify(nodes, null, 2);
+
+  await fetch("http://localhost:3001/writeFile", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      filePath,
+      text: nodesJson,
+    }),
+  });
   /////////////////////////////////////////////////////////////////////
 
   return { nodes, edges };
