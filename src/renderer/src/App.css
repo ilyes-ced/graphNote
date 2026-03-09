@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+/* 
+@tailwind base;
+@tailwind components;
+*/
+@tailwind utilities;
+
+/* https://ui.shadcn.com/themes */
+@theme {
+  --color-background: oklch(0.141 0.005 285.823);
+  --color-foreground: oklch(0.985 0 0);
+  --color-card: oklch(0.21 0.006 285.885);
+  --color-card-foreground: oklch(0.985 0 0);
+  --color-popover: oklch(0.21 0.006 285.885);
+  --color-popover-foreground: oklch(0.985 0 0);
+  --color-primary: oklch(0.65 0.2173 36.85);
+  --color-primary-foreground: oklch(0.98 0.016 73.684);
+  --color-secondary: oklch(0.274 0.006 286.033);
+  --color-secondary-foreground: oklch(0.985 0 0);
+  --color-muted: oklch(0.274 0.006 286.033);
+  --color-muted-foreground: oklch(0.705 0.015 286.067);
+  --color-accent: oklch(0.274 0.006 286.033);
+  --color-accent-foreground: oklch(0.985 0 0);
+  --color-destructive: oklch(0.704 0.191 22.216);
+  --color-border: oklch(1 0 0 / 10%);
+  --color-input: oklch(1 0 0 / 15%);
+  --color-ring: oklch(0.646 0.222 41.116);
+  --color-chart-1: oklch(0.488 0.243 264.376);
+  --color-chart-2: oklch(0.696 0.17 162.48);
+  --color-chart-3: oklch(0.769 0.188 70.08);
+  --color-chart-4: oklch(0.627 0.265 303.9);
+  --color-chart-5: oklch(0.645 0.246 16.439);
+  --color-sidebar: oklch(0.21 0.006 285.885);
+  --color-sidebar-foreground: oklch(0.985 0 0);
+  --color-sidebar-primary: oklch(0.646 0.222 41.116);
+  --color-sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+  --color-sidebar-accent: oklch(0.274 0.006 286.033);
+  --color-sidebar-accent-foreground: oklch(0.985 0 0);
+  --color-sidebar-border: oklch(1 0 0 / 10%);
+  --color-sidebar-ring: oklch(0.646 0.222 41.116);
+}
+
+/********************************************************/
+
+div {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: 14px;
+  /* FONT STYLE HERE */
+  font-family: "Times New Roman", Times, serif;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+}
+
+body,
+#root {
+  width: 100%;
+  height: 100%;
+
+  /* disable text selection */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.child_container_hover {
+  opacity: 0.5;
+  transition: opacity 0.3s ease-out;
+}
+
+/*? works the same without it but if anything happens this might be the issue*/
+/*
+#wrapper,
+#eventhandler,
+#zoom,
+#pan,
+#nodes,
+#background {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+*/
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-corner {
+  background: var(--color-background);
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#viewport-content {
+  background-image: radial-gradient(#88888830 1px, transparent 0);
+  background-size: 10px 10px;
+  background-position: -20px -20px;
+}
+
+.node {
+  position: absolute;
+}
+
+.child_node,
+.node {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-background);
+  cursor: grab;
+  will-change: transform;
+}
+
+/* not used for the animation of drag for nodes */
+.node-animation {
+  /* transition: transform 0.2s ease-out; */
+  transition: transform 0.15s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.column {
+  /*for hen you exit animation*/
+  transition: opacity 0.3s ease-out;
+}
+
+.selected_node {
+  border: 1px solid white !important;
+}
+
+.wiggle-me {
+  background-color: var(--color-card);
+  animation: wiggle 0.75s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-0.25deg);
+  }
+  50% {
+    transform: rotate(0.25deg);
+  }
+  75% {
+    transform: rotate(-0.25deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.tiptap {
+  @apply focus:outline-0 cursor-text select-none;
+
+  ul {
+    @apply list-disc pl-4;
+  }
+  ol {
+    @apply list-decimal pl-4;
+  }
+  blockquote {
+    @apply p-4 border-l-4 border-primary bg-background/50;
+  }
+  h1 {
+    @apply text-5xl font-extrabold;
+  }
+  h2 {
+    @apply text-4xl font-bold;
+  }
+  h3 {
+    @apply text-3xl font-bold;
+  }
+  h4 {
+    @apply text-2xl font-bold;
+  }
+  h5 {
+    @apply text-xl font-bold;
+  }
+  h6 {
+    @apply text-lg font-bold;
+  }
+  pre {
+    @apply border border-accent rounded px-2;
+  }
+}
+
+/* cal-heatmap styles  */
+#ch-tooltip {
+  z-index: 1000;
+}
+.ch-subdomain-bg {
+  cursor: pointer;
+}
+
+/* cal-heatmap color change transition  */
+.ActivityButton1,
+.ActivityButton2,
+.activityTitle,
+.activityDesc,
+.ch-plugin-calendar-label-text,
+.ch-domain-text,
+.ch-subdomain-bg,
+.ch-subdomain-text {
+  transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* color picker styling */
+.color-dropdown {
+  background-color: var(--color-card) !important;
+  border-width: 2px !important;
+  border-color: var(--color-border) !important;
+  padding: 20px !important;
+  border-radius: 0px !important;
+  box-shadow: 5px 5px var(--color-primary) !important;
+}
+
+.btn-appearance {
+  border-radius: 0px !important;
+
+  display: flex;
+  justify-items: center;
+  align-items: center;
+
+  padding: 0px 20px 0px 20px !important;
+}
+
+.picker-toggle,
+.color-picker {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
