@@ -183,3 +183,71 @@ ipcMain.handle('readImage', async (_event, filePath: string) => {
     const data = await fs.readFile(path.join(basePath, filePath));
     return data;
 });
+
+
+// duplicated in Url.tsx in the frontend
+type MetaData = {
+    title: string;
+    description: string;
+    image: string;
+    favicon: string;
+};
+
+import * as cheerio from "cheerio";
+
+ipcMain.handle("scrapeUrl", async (_event, url: string): Promise<MetaData> => {
+    try {
+        const res = await fetch(url, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (compatible; URLPreviewBot/1.0)"
+            }
+        });
+
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+
+        const html = await res.text();
+        const $ = cheerio.load(html);
+
+        let title = $("meta[property='og:title']").attr("content")
+            || $("meta[name='twitter:title']").attr("content")
+            || $("title").text()
+            || "placeholder";
+
+        let description = $("meta[property='og:description']").attr("content")
+            || $("meta[name='twitter:description']").attr("content")
+            || $("meta[name='description']").attr("content")
+            || "placeholder";
+
+        let image = $("meta[property='og:image']").attr("content")
+            || $("meta[name='twitter:image']").attr("content")
+            || $("link[rel='image_src']").attr("href")
+            || $("img").first().attr("src")
+            || "placeholder.png";
+
+        let favicon = $("link[rel='icon']").attr("href")
+            || $("link[rel='shortcut icon']").attr("href")
+            || $("link[rel='apple-touch-icon']").attr("href")
+            || "placeholder.png";
+
+        // Normalize relative URLs
+        const baseUrl = new URL(url);
+
+        if (image && !image.startsWith("http")) {
+            image = new URL(image, baseUrl).toString();
+        }
+        if (favicon && !favicon.startsWith("http")) {
+            favicon = new URL(favicon, baseUrl).toString();
+        }
+        console.log("got the data")
+        console.log({ title, description, image, favicon })
+        return { title, description, image, favicon };
+    } catch (err) {
+        console.error("Failed to scrape URL:", err);
+        return {
+            title: "placeholder",
+            description: "placeholder",
+            image: "placeholder.png",
+            favicon: "placeholder.png",
+        };
+    }
+});

@@ -32,6 +32,9 @@ const api = {
     writeNodeFile: (data: any) =>
         ipcRenderer.invoke("writeNodeFile", data),
 
+    scrapeUrl: (data: any) =>
+        ipcRenderer.invoke("scrapeUrl", data),
+
 
 }
 

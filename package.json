@@ -23,9 +23,6 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "electron-updater": "^6.3.9",
-    "solid-devtools": "^0.34.3",
-    "vite": "^7.1.4",
     "@kobalte/core": "^0.13.11",
     "@neodrag/solid": "3.0.0-next.8",
     "@tabler/icons-solidjs": "^3.35.0",
@@ -49,38 +46,40 @@
     "@tiptap/starter-kit": "^3.7.0",
     "arrows-svg": "^1.8.1",
     "cal-heatmap": "^4.2.4",
+    "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
+    "electron-updater": "^6.3.9",
     "solid-color": "^0.0.6",
     "solid-colorful": "^0.0.2",
+    "solid-devtools": "^0.34.3",
     "solid-js": "^1.9.9",
     "solid-tiptap": "^0.8.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
-    "tinymce-solid": "^0.0.10"
-  
+    "tinymce-solid": "^0.0.10",
+    "vite": "^7.1.4"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.1.0",
     "@electron-toolkit/tsconfig": "^2.0.0",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@types/node": "^24.7.2",
+    "autoprefixer": "^10.4.21",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
     "electron-vite": "^5.0.0",
     "eslint": "^9.39.1",
     "eslint-plugin-solid": "^0.14.5",
+    "postcss": "^8.5.6",
     "prettier": "^3.7.4",
+    "router": "^2.2.0",
     "solid-js": "^1.9.10",
+    "tailwindcss": "^4.1.14",
     "typescript": "^5.9.3",
     "vite": "^7.2.6",
-    "vite-plugin-solid": "^2.11.10",
-    "@tailwindcss/postcss": "^4.1.14",
-    "@types/node": "^24.7.2",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "router": "^2.2.0",
-    "tailwindcss": "^4.1.14"
-  
+    "vite-plugin-solid": "^2.11.10"
   }
 }

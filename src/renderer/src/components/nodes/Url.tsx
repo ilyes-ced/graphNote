@@ -30,7 +30,8 @@ export default (node: UrlProps) => {
 
   const getMetaData = async (url: string): Promise<MetaData | null> => {
     try {
-      const message = await invoke<MetaData>("scrape_url", { url });
+      //const message = await invoke<MetaData>("scrape_url", { url });
+      const message = await window.api.scrapeUrl(url);
       // console.log("Received message:", message);
       return message;
     } catch (error) {

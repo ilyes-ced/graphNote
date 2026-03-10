@@ -13,6 +13,7 @@ declare global {
       getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>;
       copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>;
       readImage: (filePath: string) => Promise<Buffer>;
+      scrapeUrl: (data: string) => Promise<any>;
     };
   }
 }

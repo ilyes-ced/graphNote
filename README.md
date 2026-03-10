@@ -25,8 +25,8 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [ ] polish the drag and drop from the sidebar (fix exact position)
 - [x] fix the viewport:
   - [x] scroll right and bottom
-  - [x] placing item outside tyo the right or left extends the canvas
-- [ ] fix the selection on NoteType
+  - [x] placing item outside to the right or left extends the canvas
+- [x] fix the selection on NoteType
 - [x] scroll becomes finniky when zoom is used, change zoom target to an outside element
 - [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
   - [ ] finish the image copy pasting
@@ -91,17 +91,17 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 
 # Polishing
 
-- [ ] stop the selection on Notes when draging items
+- [x] stop the selection on Notes when dragging items (no longer an issue in electron)
 - [ ] color selector sometimes changes automatically (rbg(25, 25, 25))
 - [x] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
 - [ ] paste nodes: pasted the current state of the nodes not the state at the time of the copy
 
 # optimization
 
-- [x] cache url scrapping (backend)
+- [ ] cache url scrapping (backend)
 - [ ] cache scrapping images (frontend) (investigation needed on the performance first)
 - [x] stop writing to file when moving nodes
-- [ ] test animejs and neodrag again thier animations were smoother
+- [x] test animejs and neodrag again their animations were smoother (the issue was tauri not which DnD library was used, in electron all DnD libraries are the same smoothness, even my custom implementation)
 - [ ]
 
 # fixes
@@ -117,10 +117,15 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 - [ ] when deleting nodes, if they have resources (images, files . . .) delete them
 - [ ] when deleting nodes the styles sidebar should be hidden
 - [ ] when adding new images, increase thier z index
+- [ ] Url node: when url is blank allow user to write it down
+- [ ] cant place nodes on the corner
 
 # extra features
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
+- [ ] add the user settings to allow the user to choose wether to cache/download:
+  - [ ] Urls thunmbnails
+  - [ ] Videos
 
 
 
