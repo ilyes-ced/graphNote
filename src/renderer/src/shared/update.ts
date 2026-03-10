@@ -562,6 +562,7 @@ const newImageNode = (img: string, x: number, y: number) => {
   };
 
   setStore("nodes", activeBoardId, (nodes = []) => [...nodes, imageNode]);
+  updateZIndex(imageNode.id);
 
   saveChanges();
 };

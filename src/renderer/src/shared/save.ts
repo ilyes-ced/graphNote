@@ -4,12 +4,12 @@ import { store } from "./store";
 //? saves the JSON object as file
 // TODO: make debounce for disk write operation, to avoid writing too much to disk
 async function saveNodesJSON() {
-  let nodes = store.nodes;
+  let nodes = JSON.parse(JSON.stringify(store.nodes));
   await window.api.saveNodes(nodes);
 }
 
 async function saveEdgesJSON() {
-    let edges = store.edges;
+  let edges = JSON.parse(JSON.stringify(store.edges));
   await window.api.saveEdges(edges);
 }
 
@@ -93,17 +93,6 @@ const parseEdgesData = (text: string): Record<string, Edge[]> => {
   return finalEdges;
 };
 
-const readOrCreateFiles = async (
-  folderPath: string,
-  filePath: string
-): Promise<string | null> => {
-  try {
-    const text = await window.api.readFile({ folderPath, filePath });
-    return text ?? null;
-  } catch (err) {
-    console.error(`Failed to read or create ${filePath}:`, err);
-    return null;
-  }
-};
+
 
 export { saveNodesJSON, saveEdgesJSON, readJSON };

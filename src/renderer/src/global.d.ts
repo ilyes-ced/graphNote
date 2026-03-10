@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
   interface Window {
@@ -11,6 +11,8 @@ declare global {
       writeFile: (data: { filePath: string; text: string }) => Promise<{ success: boolean; path: string }>;
       getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>;
       copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>;
+      readImage: (string) => Promise<Buffer>;
+      writeNodeFile: (string) => Promise<any>;
     };
   }
 }

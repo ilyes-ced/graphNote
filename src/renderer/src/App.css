@@ -149,7 +149,7 @@ body,
   transition: opacity 0.3s ease-out;
 }
 
-.selected_node {
+.selected_node:not(.board) {
   border: 1px solid white !important;
 }
 

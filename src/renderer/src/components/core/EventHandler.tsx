@@ -1,6 +1,6 @@
 import { onMount, onCleanup } from "solid-js";
 import { setStore, store } from "../../shared/store";
-import { NodeUnion, Payload, payload } from "@/types";
+import { NodeUnion, Payload } from "../../types";
 import { recieveDragNDropFile } from "../../shared/utils";
 
 type NodesCopyPaste = {
@@ -94,35 +94,36 @@ export default (props: any) => {
 
 
   document.addEventListener("dragover", (event) => {
-    event.preventDefault(); // allow drop
+    event.preventDefault();
   });
-
-  document.addEventListener("drop", (event: DragEvent) => {
+  document.addEventListener("drop", async (event: DragEvent) => {
     event.preventDefault();
     if (!event.dataTransfer) return;
 
     const files = Array.from(event.dataTransfer.files);
 
-    const payload: Payload = {
-      paths: files.map(f => f.webkitRelativePath || f.name),
-      position: {
-        x: event.clientX,
-        y: event.clientY
-      },
-      id: Date.now()
-    };
+    let filesData: {
+      name: string,
+      data: Uint8Array
+    }[] = [];
+    for (const file of files) {
+      const buffer = await file.arrayBuffer();
 
-    console.info("////////////////////////////")
-    console.info("////////////////////////////")
-    console.info("////////////////////////////")
-    console.info("////////////////////////////")
-    console.log(payload);
-    console.log(event.dataTransfer.files);
-    console.log(event.dataTransfer);
+      console.log("name:", file.name);
+      console.log("size:", file.size);
+      console.log("bytes:", buffer.byteLength);
 
+      filesData.push({
+        name: file.name,
+        // not sure if Uint8Array or Buffer is best for performance
+        data: new Uint8Array(buffer)
+      })
+    }
+    // send the data to the backend to save it
     recieveDragNDropFile({
-      payload
-    } as Event & { payload: Payload });
+      files: filesData,
+      position: { x: event.x, y: event.y },
+    });
   });
 
 
@@ -169,7 +170,7 @@ export default (props: any) => {
               try {
                 const parsedNodes: NodesCopyPaste = JSON.parse(content);
                 //! maybe add this not sure?
-                // if (parsedNodes === "our special test") {}
+                // if (parsedNodes === "special graphNote JSON format 058192") {}
                 //? creating the pasted nodes
                 console.log(isTypeNodesCopyPaste(parsedNodes));
                 parsedNodes.nodes.forEach((copiedNode) => {

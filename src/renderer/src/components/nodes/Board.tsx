@@ -77,7 +77,8 @@ export default (node: BoardProps) => {
       >
         <IconCode class="size-full p-2" />
       </div>
-      <div class="text_container flex flex-col justify-center items-center">
+      <div class="text_container flex flex-col justify-center items-center" style={{ color: node.textColor ?? "var(--color-foreground)" }}
+      >
         <div
           classList={{
             "board_text mt-2.5 mb-1.5 text-nowrap": !node.is_child,
@@ -95,6 +96,6 @@ export default (node: BoardProps) => {
           content
         </div>
       </div>
-    </div>
+    </div >
   );
 };

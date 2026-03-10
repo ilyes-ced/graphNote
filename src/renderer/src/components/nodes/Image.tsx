@@ -8,43 +8,36 @@ type ImageProps = Image & {
 export default (node: ImageProps) => {
   const [imgSrc, setImgSrc] = createSignal("");
 
-  const readImage = async (imgPath: string): Promise<string> => {
-    console.info("loading image with the url:", imgPath);
-    const bytes = await readFile(imgPath, {
-      baseDir: BaseDirectory.Document,
+
+  const uint8ArrayToDataUrl = async (bytes: Uint8Array, mime = "image/png") => {
+    const blob = new Blob([bytes], { type: mime });
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
     });
+  };
 
-    const base64 = btoa(
-      Array.from(bytes)
-        .map((b: any) => String.fromCharCode(b))
-        .join("")
-    );
 
-    return base64;
+  const readImage = async (imgPath: string): Promise<string> => {
+    try {
+      const bytes = await window.api.readImage(imgPath);
+      const ext = imgPath.split('.').pop()?.toLowerCase() || 'png';
+      const mime = `image/${ext}`;
+      const dataUrl = await uint8ArrayToDataUrl(bytes, mime);
+      return dataUrl
+    } catch (err) {
+      console.error("Failed to read image:", err);
+      return "";
+    }
   };
 
   onMount(async () => {
     try {
-      //?  causes plugin:fs|read_file with 240-180 ms of latency
-      setImgSrc(
-        `data:image/png;base64,${await readImage(`GraphNote/${node.path}`)}`
-      );
-      //?  causes plugin:path|resolve_directoryreadfile with 270-210 ms of latency
-      //const fullPath = await join(await documentDir(), "GraphNote", node.path);
-      //console.log("--------------------------------", fullPath);
-      //setImgSrc(convertFileSrc(fullPath));
+      setImgSrc(await readImage(node.path));
     } catch (err) {
-      //console.error("Failed to load image:", err);
-      setImgSrc(
-        `data:image/png;base64,${await readImage("GraphNote/placeholder.png")}`
-      );
-      console.error("Failed to load image:", err);
-      //const fullPath = await join(
-      //  await documentDir(),
-      //  "GraphNote/placeholder.png"
-      //);
-      //console.log("--------------------------------", fullPath);
-      //setImgSrc(convertFileSrc(fullPath));
+      setImgSrc(await readImage("placeholder.png"));
     }
   });
 

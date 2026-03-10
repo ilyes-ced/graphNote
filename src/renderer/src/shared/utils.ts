@@ -1,6 +1,6 @@
 import { setStore, store } from "./store";
 import { saveEdgesJSON, saveNodesJSON } from "./save";
-import { Payload } from "@/types";
+import { Payload } from "../types";
 import saveFile from "./saveFile";
 import { newDocumentNode, newImageNode } from "./update";
 
@@ -68,24 +68,23 @@ const fileCategories = {
   text: ["txt", "md", "log"],
 };
 
-const recieveDragNDropFile = (event: Event<Payload>) => {
-  console.log("event :", event);
+const recieveDragNDropFile = (payload: Payload) => {
+  console.log("payload :", payload);
 
-  const payload = event.payload;
 
-  console.log("file path:", payload.paths);
+  console.log("file path:", payload.files.length);
   console.log("file pos:", payload.position);
 
-  if (!payload.paths || payload.paths.length === 0) return;
+  if (!payload.files || payload.files.length === 0) return;
 
-  payload.paths.forEach(async (filePath, index) => {
-    const result = await saveFile(filePath);
+  payload.files.forEach(async (fileData, index) => {
+    const result = await saveFile(fileData);
     if (result.res) {
       // add file to nodes store
       console.log("+===============================");
-      console.log(filePath.split(".").splice(-1)[0].toLowerCase());
+      console.log(fileData.name.split(".").splice(-1)[0].toLowerCase());
 
-      const fileExt = filePath.split(".").splice(-1)[0].toLowerCase();
+      const fileExt = fileData.name.split(".").splice(-1)[0].toLowerCase();
 
       let fileType = "unknown";
       for (const [category, extensions] of Object.entries(fileCategories)) {
@@ -99,14 +98,11 @@ const recieveDragNDropFile = (event: Event<Payload>) => {
       switch (fileType) {
         //todo: add the item to the nodes store depending on the fileType
         case "image":
-          const imgPos = event.payload.position;
-          console.log(event.payload.position);
-          console.log(event.payload.paths);
-          console.info("test");
+          const imgPos = payload.position;
           newImageNode(
             result.text,
-            imgPos.x + index * 300,
-            imgPos.y + index * 300
+            imgPos.x + index * 30,
+            imgPos.y + index * 30
           );
           break;
         case "video":
@@ -114,15 +110,13 @@ const recieveDragNDropFile = (event: Event<Payload>) => {
         case "music":
           break;
         case "document":
-          const docPos = event.payload.position;
+          const docPos = payload.position;
           newDocumentNode(
             result.text,
-            docPos.x + index * 300,
-            docPos.y + index * 300,
+            docPos.x + index * 30,
+            docPos.y + index * 30,
             "widget"
           );
-
-          console.log("we recieved a pdf file");
           break;
         case "code":
           break;

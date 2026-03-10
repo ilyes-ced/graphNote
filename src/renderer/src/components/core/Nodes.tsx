@@ -46,7 +46,7 @@ export default () => {
             {node.type === NodeType.Board ? (
               <Board {...node} />
             ) : (
-              <NodeWrapper node={node}>
+              < NodeWrapper node={node}>
                 <Switch fallback={<div>Not Found</div>}>
                   <Match when={node.type === NodeType.Column}>
                     <Column {...node} />
@@ -79,8 +79,9 @@ export default () => {
               </NodeWrapper>
             )}
           </div>
-        )}
-      </For>
+        )
+        }
+      </For >
     </div >
   );
 };

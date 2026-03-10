@@ -146,41 +146,40 @@ ipcMain.handle("getAvailableFilePath", async (_, { path: inputPath }) => {
 });
 
 
-ipcMain.handle("copyFileUnique", async (_, { path: inputPath }) => {
+ipcMain.handle(
+    "writeNodeFile",
+    async (_event, { name: inputName, data }: { name: string; data: Uint8Array }) => {
+        ensureDir()
 
-    const folder = "GraphNote";
-    const fileName = path.basename(inputPath);
+        let counter = 0;
+        let finalName = "";
+        let finalPath = "";
 
-    let counter = 0;
-    let finalPath = "";
+        // Determine unique file name
+        while (true) {
+            finalName =
+                counter === 0 ? inputName : getNextName(inputName, counter);
+            finalPath = path.join(basePath, finalName);
 
-    await mkdir(path.join(baseDir, folder), { recursive: true });
-
-    while (true) {
-
-        const name =
-            counter === 0
-                ? fileName
-                : getNextName(fileName, counter);
-
-        const fullPath = path.join(baseDir, folder, name);
-
-        try {
-            await fs.access(fullPath);
-        } catch {
-            finalPath = fullPath;
-            break;
+            try {
+                await fs.access(finalPath);
+                counter++;
+            } catch {
+                break;
+            }
         }
 
-        counter++;
+        await fs.writeFile(finalPath, data);
+
+        return {
+            res: true,
+            text: finalName,
+            path: finalPath
+        };
     }
+);
 
-    const source = path.join(baseDir, inputPath);
-
-    await fsCopyFile(source, finalPath);
-
-    return {
-        res: true,
-        text: path.basename(finalPath)
-    };
+ipcMain.handle('readImage', async (_event, filePath: string) => {
+    const data = await fs.readFile(path.join(basePath, filePath));
+    return data;
 });

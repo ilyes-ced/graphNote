@@ -4,9 +4,11 @@ type HEX = `#${string}`;
 type ColorType = RGB | RGBA | HEX;
 
 interface Payload {
-  paths: string[];
+  files: {
+    name: string,
+    data: Uint8Array
+  }[],
   position: { x: number; y: number };
-  id: number;
 }
 
 type Task = { text: string; check: boolean; nestLevel: number };
