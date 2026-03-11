@@ -92,7 +92,6 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 # Polishing
 
 - [x] stop the selection on Notes when dragging items (no longer an issue in electron)
-- [ ] color selector sometimes changes automatically (rbg(25, 25, 25))
 - [x] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
 - [ ] paste nodes: pasted the current state of the nodes not the state at the time of the copy
 
@@ -102,10 +101,10 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 - [ ] cache scrapping images (frontend) (investigation needed on the performance first)
 - [x] stop writing to file when moving nodes
 - [x] test animejs and neodrag again their animations were smoother (the issue was tauri not which DnD library was used, in electron all DnD libraries are the same smoothness, even my custom implementation)
-- [ ]
 
 # fixes
 
+- [ ] color selector sometimes changes automatically (rbg(25, 25, 25))
 - [ ] youtube videos not working ==> download them with yt-dlp and display them as video
 - [ ] reset viewport data on board change
 - [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))

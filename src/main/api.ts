@@ -1,13 +1,26 @@
 import { ipcMain } from "electron";
-import { mkdir, copyFile as fsCopyFile } from "fs/promises";
+import { mkdir } from "fs/promises";
 import path from "path";
 import fs from "fs/promises";
+import * as cheerio from "cheerio";
 
 const basePath = "/home/clippy/Documents/GraphNote";
 const baseDir = "/home/clippy/Documents";
-
 const nodesPath = `${basePath}/nodes.json`;
 const edgesPath = `${basePath}/edges.json`;
+
+
+
+
+// duplicated in Url.tsx in the frontend
+type MetaData = {
+    title: string;
+    description: string;
+    image: string;
+    favicon: string;
+};
+
+
 
 function getNextName(fileName: string, counter: number) {
     const ext = path.extname(fileName);
@@ -52,6 +65,10 @@ async function writeJSON(filePath: string, data: any) {
 
 ipcMain.handle("getNodes", async () => {
     return await readJSON(nodesPath);
+});
+
+ipcMain.handle("getEdges", async () => {
+    return await readJSON(edgesPath);
 });
 
 ipcMain.handle("saveNodes", async (_, nodes) => {
@@ -185,15 +202,7 @@ ipcMain.handle('readImage', async (_event, filePath: string) => {
 });
 
 
-// duplicated in Url.tsx in the frontend
-type MetaData = {
-    title: string;
-    description: string;
-    image: string;
-    favicon: string;
-};
 
-import * as cheerio from "cheerio";
 
 ipcMain.handle("scrapeUrl", async (_event, url: string): Promise<MetaData> => {
     try {
@@ -238,11 +247,8 @@ ipcMain.handle("scrapeUrl", async (_event, url: string): Promise<MetaData> => {
         if (favicon && !favicon.startsWith("http")) {
             favicon = new URL(favicon, baseUrl).toString();
         }
-        console.log("got the data")
-        console.log({ title, description, image, favicon })
         return { title, description, image, favicon };
     } catch (err) {
-        console.error("Failed to scrape URL:", err);
         return {
             title: "placeholder",
             description: "placeholder",
@@ -251,3 +257,33 @@ ipcMain.handle("scrapeUrl", async (_event, url: string): Promise<MetaData> => {
         };
     }
 });
+
+
+ipcMain.handle("backUpSave", async () => {
+    const nodes = await readJSON(nodesPath);
+    const edges = await readJSON(nodesPath);
+
+    backup("nodes", JSON.stringify(nodes))
+    backup("edges", JSON.stringify(edges))
+});
+const backup = async (type: "nodes" | "edges", data: any) => {
+    const datetime = new Date().toISOString().replace(/[:.]/g, "-");
+    console.log(datetime)
+    const folderPath = `GraphNote/${type}Backup`;
+    const filePath = `${folderPath}/${type}_${datetime}.json`;
+    console.log(filePath)
+
+    const fullFile = path.join(baseDir, filePath);
+    if (!fullFile.startsWith(baseDir)) {
+        throw new Error("Invalid path");
+    }
+
+    const dir = path.dirname(fullFile);
+    await mkdir(dir, { recursive: true });
+
+    await fs.writeFile(fullFile, data);
+    return {
+        success: true,
+        path: fullFile
+    };
+}

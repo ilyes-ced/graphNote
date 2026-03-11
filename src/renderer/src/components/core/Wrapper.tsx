@@ -30,8 +30,8 @@ export default () => {
             <ViewPort>
               <Nodes />
               {/*
-              <Edges />
               */}
+              <Edges />
             </ViewPort>
             {/*
               //? put later when its functional

@@ -5,6 +5,9 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
     getNodes: () => ipcRenderer.invoke("getNodes"),
 
+
+    getEdges: () => ipcRenderer.invoke("getEdges"),
+
     saveNodes: (nodes: any) =>
         ipcRenderer.invoke("saveNodes", nodes),
 
@@ -34,6 +37,9 @@ const api = {
 
     scrapeUrl: (data: any) =>
         ipcRenderer.invoke("scrapeUrl", data),
+
+    backUpSave: () =>
+        ipcRenderer.invoke("backUpSave"),
 
 
 }

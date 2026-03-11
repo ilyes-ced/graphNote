@@ -29,20 +29,7 @@ async function readJSON(): Promise<{
   if (data.edges) edges = parseEdgesData(JSON.stringify(data.edges));
 
   //? temporary: make backups of the nodes file each time the app is opened incase the json file gets borked
-  const datetime = new Date().toISOString().replace(/[:.]/g, "-");
-
-  const folderPath = "GraphNote/nodesBackup";
-  const filePath = `${folderPath}/nodes_${datetime}.json`;
-
-  console.info("file name:", filePath);
-
-  const nodesJson = JSON.stringify(nodes, null, 2);
-
-  await window.api.writeFile({
-    filePath,
-    text: nodesJson,
-  });
-  /////////////////////////////////////////////////////////////////////
+  await window.api.backUpSave();
 
   return { nodes, edges };
 }

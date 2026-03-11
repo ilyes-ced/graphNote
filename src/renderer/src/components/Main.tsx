@@ -4,38 +4,23 @@ import Wrapper from "./core/Wrapper.tsx";
 
 
 const loadNodes = async () => {
+  await window.api.backUpSave();
 
-
-  console.info("///////////////")
-  console.info("///////////////")
-  console.info("///////////////")
-  console.info("///////////////")
-  console.info("///////////////")
-
-  if (!window.api) {
-    throw new Error('window.api is not available — preload did not load correctly');
-  } else {
-    console.info(window.api)
-
-  }
   try {
     const data = await window.api.getNodes();
-    console.log(data);
     setStore("nodes", data ?? []);
   } catch (err) {
     console.error("Failed to get nodes:", err);
   }
 
-
-  // const initStore = await readJSON();
-  // if (initStore) {
-  //   setStore("nodes", initStore?.nodes ?? []);
-  //   setStore("edges", initStore?.edges ?? []);
-  // }
+  try {
+    const data = await window.api.getEdges();
+    console.log("edges", data ?? []);
+    setStore("edges", data ?? []);
+  } catch (err) {
+    console.error("Failed to get edges:", err);
+  }
 };
-
-
-
 
 export default () => {
   onMount(async () => {

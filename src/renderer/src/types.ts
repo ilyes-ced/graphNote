@@ -164,7 +164,7 @@ interface BaseEdge {
   srcNodeId: string;
   distNodeId: string;
   color?: string; // default foreground
-  stroke?: string; // default 2
+  stroke?: number; // default 2
   label?: string; // default none
   style?: string; // solid, dashed ...., default solid
   // type?: string; // straight, bezier, step curved >>>> default bezier

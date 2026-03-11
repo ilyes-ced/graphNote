@@ -13,24 +13,24 @@ const bgColorList: ColorType[] = [
   getComputedStyle(document.documentElement)
     .getPropertyValue("--color-card")
     .trim() as ColorType,
-  "#EF4444",
-  "#F59E0B",
-  "#10B981",
-  "#3B82F6",
-  "#8B5CF6",
-  "#EC4899",
+  "#f54a00",
+  "#fd9a00",
+  "#00bc7d",
+  "#1447e6",
+  "#ad46ff",
+  "#ff2056",
 ];
 
 const textColorList: ColorType[] = [
   getComputedStyle(document.documentElement)
     .getPropertyValue("--color-foreground")
     .trim() as ColorType,
-  "#EF4444",
-  "#F59E0B",
-  "#10B981",
-  "#3B82F6",
-  "#8B5CF6",
-  "#EC4899",
+  "#f54a00",
+  "#fd9a00",
+  "#00bc7d",
+  "#1447e6",
+  "#ad46ff",
+  "#ff2056",
 ];
 
 type comboType = { bg: ColorType; fg: ColorType };
@@ -44,12 +44,12 @@ const textBgComboColorList: comboType[] = [
       .trim() as ColorType,
   },
   {
-    bg: "#F59E0B",
-    fg: "#8B5CF6",
+    bg: "#fd9a00",
+    fg: "#ad46ff",
   },
   {
-    bg: "#EF4444",
-    fg: "#8B5CF6",
+    bg: "#f54a00",
+    fg: "#ad46ff",
   },
 ];
 

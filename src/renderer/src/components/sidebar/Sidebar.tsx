@@ -1,4 +1,4 @@
-import { createEffect, Match, Switch } from "solid-js";
+import { createEffect } from "solid-js";
 import { store } from "../../shared/store";
 import NodeList from "./NodeList";
 import NoteStyles from "./NoteStyles";
@@ -10,13 +10,13 @@ import NodeStyles from "./NodeStyles";
 // on release we take its position and create a new item there
 
 createEffect(() => {
-  console.info("store value serelcterd nodes is changed");
+  console.info("store value selected nodes is changed");
   // const nodes = store.selectedNodes; // this access tracks reactivity
 });
 
 export default () => {
   return (
-    <div class="flex overflow-hidden h-full w-[65px] border-r border-border">
+    <div class="flex overflow-hidden h-full w-[65px]">
       {/* Nodes Sidebar */}
 
       <div

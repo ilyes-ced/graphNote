@@ -5,15 +5,17 @@ declare global {
     electron: ElectronAPI
     api: {
       getNodes: () => Promise<any>;
+      getEdges: () => Promise<any>;
       saveNodes: (nodes: any) => Promise<any>;
       saveEdges: (edges: any) => Promise<any>;
       readGraph: () => Promise<any>;
       readFile: (data: { folderPath: string; filePath: string }) => Promise<string | null>;
-      writeFile: (data: { filePath: string; text: string }) => Promise<any>;
+      writeFile: (data: { text: string }) => Promise<any>;
       getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>;
       copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>;
       readImage: (filePath: string) => Promise<Buffer>;
       scrapeUrl: (data: string) => Promise<any>;
+      backUpSave: () => Promise<any>;
     };
   }
 }

@@ -1,75 +1,82 @@
-import { createSignal, onMount, onCleanup } from "solid-js";
-import { findNodeById } from "../../shared/update";
-import { Edge } from "@/types";
+import { createSignal, createEffect } from "solid-js";
+import { Edge } from "../../types";
+import { watchElementPosition } from "./utils";
 
-export default function CurveFromMiddle(props: Edge) {
+
+
+export default function BezierEdgeArrow(props: Edge) {
+  const srcPos = watchElementPosition(props.srcNodeId);
+  const distPos = watchElementPosition(props.distNodeId);
+
   const [start, setStart] = createSignal({ x: 0, y: 0 });
   const [end, setEnd] = createSignal({ x: 0, y: 0 });
   const [control, setControl] = createSignal({ x: 0, y: 0 });
 
   const [dragging, setDragging] = createSignal(false);
 
-  const updatePositions = () => {
-    const srcNode = findNodeById(props.srcNodeId);
-    const distNode = findNodeById(props.distNodeId);
+  // update start, end, and control points
+  createEffect(() => {
+    const s = srcPos();
+    const d = distPos();
+    if (!s || !d) return;
 
-    if (!srcNode || !distNode) return;
-
-    const startPos = {
-      x: srcNode.x + (srcNode.width ?? 300) / 2,
-      y: srcNode.y,
-    };
-    const endPos = {
-      x: distNode.x + (distNode.width ?? 300) / 2,
-      y: distNode.y,
-    };
+    const startPos = { x: s.x + s.width / 2, y: s.y + s.height / 2 };
+    const endPos = { x: d.x + d.width / 2, y: d.y + d.height / 2 };
 
     setStart(startPos);
     setEnd(endPos);
 
-    // Only update control if NOT dragging
     if (!dragging()) {
+      // simple default control above the middle
       setControl({
         x: (startPos.x + endPos.x) / 2,
-        y: Math.min(startPos.y, endPos.y) - 200,
+        y: Math.min(startPos.y, endPos.y) - 100, // curve upward
       });
     }
-  };
-
-  onMount(() => {
-    updatePositions();
-    const interval = setInterval(updatePositions, 0); // update as nodes may move
-    onCleanup(() => clearInterval(interval));
   });
 
-  const getMousePos = (e: {
-    currentTarget: { closest: (arg0: string) => any };
-    clientX: any;
-    clientY: any;
-  }) => {
-    const svg = e.currentTarget.closest("svg");
+  // convert mouse coordinates to SVG coordinates
+  const getMousePos = (e: MouseEvent) => {
+    const svg = e.currentTarget as SVGSVGElement;
     const pt = svg.createSVGPoint();
     pt.x = e.clientX;
     pt.y = e.clientY;
-    const cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
-    return { x: cursorpt.x, y: cursorpt.y };
+    return pt.matrixTransform(svg.getScreenCTM()?.inverse());
   };
 
   const onMouseDown = () => setDragging(true);
   const onMouseUp = () => setDragging(false);
-  const onMouseMove = (e: any) => {
+  const onMouseMove = (e: MouseEvent) => {
     if (!dragging()) return;
     setControl(getMousePos(e));
   };
 
-  const d = () =>
-    `M ${start().x} ${start().y} Q ${control().x} ${control().y} ${end().x} ${end().y
-    }`;
+  const d = () => {
+    const s = start();
+    const e = end();
+    const c = control();
+    if (!s || !e || !c) return "";
+    return `M ${s.x} ${s.y} Q ${c.x} ${c.y} ${e.x} ${e.y}`;
+  };
 
   return (
-    <svg class="size-full" onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
-      {/* Curve */}
-      <path d={d()} stroke="blue" fill="transparent" stroke-width="2" />
+    <svg
+      class="absolute top-0 left-0 w-full h-full pointer-events-none"
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+    >
+      {/* Bezier curve */}
+      <path
+        d={d()}
+        stroke={props.color ?? "blue"}
+        fill="transparent"
+        stroke-width={props.stroke ?? 2}
+        pointer-events="stroke" // only the stroke is clickable
+        onClick={() => console.log("Bezier arrow clicked!")}
+      />
+
+
       {/* Optional control lines */}
       <line
         x1={start().x}
@@ -87,30 +94,21 @@ export default function CurveFromMiddle(props: Edge) {
         stroke="blue"
         stroke-dasharray="3"
       />
-      {/* Draggable control point */}
+
+      {/* Optional: draggable control point */}
       <circle
         cx={control().x}
         cy={control().y}
         r="8"
         fill="red"
         cursor="pointer"
+        pointer-events="auto"
         onMouseDown={onMouseDown}
       />
-      {/* Endpoints: will have thier own control to bind them to a node */}
+
+      {/* Endpoints */}
       <circle cx={start().x} cy={start().y} r="5" fill="green" />
       <circle cx={end().x} cy={end().y} r="5" fill="green" />
     </svg>
   );
 }
-/**
-  interface Edge {}
-
-      <svg width="500" height="500" style="border: 1px solid #ccc;">
-        <path
-          d="M 50 100 C 150 0, 250 200, 350 100"
-          stroke="black"
-          stroke-width="2"
-          fill="none"
-        />
-      </svg>
- */

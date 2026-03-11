@@ -1,56 +1,54 @@
-import { createSignal, onMount, onCleanup } from "solid-js";
-import { findNodeById } from "../../shared/update";
-import { Edge } from "@/types";
+import { createSignal, createEffect } from "solid-js";
+import { Edge } from "../../types";
+import { watchElementPosition } from "./utils";
+
 
 export default function StepEdgeArrow(props: Edge) {
+  const srcPos = watchElementPosition(props.srcNodeId);
+  const distPos = watchElementPosition(props.distNodeId);
+
   const [start, setStart] = createSignal({ x: 0, y: 0 });
   const [end, setEnd] = createSignal({ x: 0, y: 0 });
 
-  const updatePositions = () => {
-    const srcNode = findNodeById(props.srcNodeId);
-    const distNode = findNodeById(props.distNodeId);
+  createEffect(() => {
+    const s = srcPos();
+    const d = distPos();
 
-    if (!srcNode || !distNode) return;
+    if (!s || !d) return;
 
-    const startPos = {
-      x: srcNode.x + (srcNode.width ?? 300) / 2,
-      y: srcNode.y,
-    };
-    const endPos = {
-      x: distNode.x + (distNode.width ?? 300) / 2,
-      y: distNode.y,
-    };
+    setStart({
+      x: s.x + s.width / 2,
+      y: s.y + s.height / 2,
+    });
 
-    setStart(startPos);
-    setEnd(endPos);
-  };
-
-  onMount(() => {
-    updatePositions();
-    const interval = setInterval(updatePositions, 100);
-    onCleanup(() => clearInterval(interval));
+    setEnd({
+      x: d.x + d.width / 2,
+      y: d.y + d.height / 2,
+    });
   });
 
-  // 🧠 Step path logic (horizontal-first)
   const d = () => {
     const s = start();
     const e = end();
+    if (!s || !e) return "";
+
     const midX = (s.x + e.x) / 2;
 
-    return `M ${s.x} ${s.y} L ${midX} ${s.y} L ${midX} ${e.y} L ${e.x} ${e.y}`;
+    return `M ${s.x} ${s.y} L ${s.x} ${e.y - 25} L ${midX} ${e.y - 25} L ${midX} ${e.y - 25} L ${e.x} ${e.y - 25} L ${e.x} ${e.y}`;
   };
 
   return (
     <svg class="size-full pointer-events-none absolute top-0 left-0">
-      {/* Step Line */}
       <path
         d={d()}
         stroke={props.color ?? "blue"}
         fill="none"
         stroke-width={props.stroke ?? 2}
+        pointer-events="stroke"
+        onClick={() => console.log("Arrow clicked!")}
       />
 
-      {/* Optional: Endpoints */}
+      {/* Optional endpoints */}
       <circle cx={start().x} cy={start().y} r="4" fill="black" />
       <circle cx={end().x} cy={end().y} r="4" fill="black" />
     </svg>

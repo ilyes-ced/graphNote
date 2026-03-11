@@ -71,11 +71,6 @@ export default (node: UrlProps) => {
     queueMicrotask(() => {
       getMetaData(node.url).then((res) => {
         if (res) {
-          console.log("==========================");
-          console.log("==========================");
-          console.log(res);
-          console.log("==========================");
-          console.log("==========================");
           setMetaData(res);
         }
       });

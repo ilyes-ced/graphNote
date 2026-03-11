@@ -21,7 +21,7 @@ export default () => {
       let maxWidth = 0;
       let maxHeight = 0;
       const nodes = Array.from(nodesRef.getElementsByClassName("node"));
-      console.log(nodes);
+
       nodes.forEach((node) => {
         const rect = node.getBoundingClientRect();
         if (rect.x + rect.width > maxWidth)
@@ -30,7 +30,7 @@ export default () => {
           maxHeight = Math.round(((rect.y + rect.height) / store.viewport.scale + 50) / 10) * 10;
       });
 
-      console.log("changing viewport size to:", maxWidth, maxHeight);
+      // console.log("changing viewport size to:", maxWidth, maxHeight);
       setStore("viewport", {
         width: maxWidth,
         height: maxHeight,

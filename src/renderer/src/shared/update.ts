@@ -766,7 +766,6 @@ const wrappedIncrementSelectedNodesPositions = actionsMiddleware(incrementSelect
 const wrappedUpdateChildPosition = actionsMiddleware(updateChildPosition);
 const wrappedGetActiveBoardId = actionsMiddleware(getActiveBoardId);
 const wrappedIsColumn = actionsMiddleware(isColumn);
-const wrappedFindNodeById = actionsMiddleware(findNodeById);
 const wrappedFindParentIdByNodeId = actionsMiddleware(findParentIdByNodeId);
 const wrappedRemoveNodeById = actionsMiddleware(removeNodeById);
 const wrappedAddNode = actionsMiddleware(addNode);
@@ -792,7 +791,7 @@ export {
   wrappedUpdateChildPosition as updateChildPosition,
   wrappedGetActiveBoardId as getActiveBoardId,
   wrappedIsColumn as isColumn,
-  wrappedFindNodeById as findNodeById,
+  findNodeById,
   wrappedFindParentIdByNodeId as findParentIdByNodeId,
   wrappedRemoveNodeById as removeNodeById,
   wrappedAddNode as addNode,
