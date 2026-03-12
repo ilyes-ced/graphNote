@@ -1,11 +1,11 @@
 import { createSignal, createEffect } from "solid-js";
 import { Edge } from "../../types";
-import { edgePoint, watchElementPosition } from "./utils";
+import { edgePoint, getPorts, sidePoint, watchElementPosition } from "./utils";
 
 
-export default function StepEdgeArrow(props: Edge) {
-  const srcPos = watchElementPosition(props.srcNodeId);
-  const distPos = watchElementPosition(props.distNodeId);
+export default function StepEdgeArrow(edge: Edge) {
+  const srcPos = watchElementPosition(edge.srcNodeId);
+  const distPos = watchElementPosition(edge.distNodeId);
 
   const [start, setStart] = createSignal({ x: 0, y: 0 });
   const [end, setEnd] = createSignal({ x: 0, y: 0 });
@@ -19,13 +19,15 @@ export default function StepEdgeArrow(props: Edge) {
 
     if (!s || !d) return;
 
-    const startCenter = { x: s.x + s.width / 2, y: s.y + s.height / 2 };
-    const endCenter = { x: d.x + d.width / 2, y: d.y + d.height / 2 };
+    const ports = getPorts(s, d);
 
-    setStart(startCenter);
-    setEnd(endCenter);
+    const startPoint = sidePoint(s, ports.src);
+    const endPoint = sidePoint(d, ports.dst);
 
-    setArrowEnd(edgePoint(d, startCenter));
+    setStart(startPoint);
+    setArrowEnd(endPoint);
+
+    //setArrowEnd(edgePoint(d, startCenter));
   });
 
   const d = () => {
@@ -39,24 +41,31 @@ export default function StepEdgeArrow(props: Edge) {
     <svg class="size-full pointer-events-none absolute top-0 left-0">
       <defs>
         <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="10"
-          refY="3.5"
+          id={`arrowhead_${edge.id}`}
+          markerWidth="8"
+          markerHeight="8"
+          refX="7"
+          refY="4"
           orient="auto"
           markerUnits="strokeWidth"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill={props.color ?? "blue"} />
+          <polyline
+            points="0,1 7,4 0,7"
+            fill="none"
+            stroke={edge.color ?? "blue"}
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </marker>
       </defs>
       <path
         d={d()}
-        stroke={props.color ?? "blue"}
+        stroke={edge.color ?? "blue"}
         fill="none"
-        stroke-width={props.stroke ?? 2}
+        stroke-width={edge.stroke ?? 2}
         pointer-events="stroke"
-        marker-end="url(#arrowhead)" // attach the arrowhead
+        marker-end={`url(#arrowhead_${edge.id})`} // attach the arrowhead
         onClick={() => console.log("Arrow clicked!")}
       />
 

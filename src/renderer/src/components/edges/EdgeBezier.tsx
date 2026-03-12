@@ -4,9 +4,9 @@ import { watchElementPosition } from "./utils";
 
 
 
-export default function BezierEdgeArrow(props: Edge) {
-  const srcPos = watchElementPosition(props.srcNodeId);
-  const distPos = watchElementPosition(props.distNodeId);
+export default function BezierEdgeArrow(edge: Edge) {
+  const srcPos = watchElementPosition(edge.srcNodeId);
+  const distPos = watchElementPosition(edge.distNodeId);
 
   const [start, setStart] = createSignal({ x: 0, y: 0 });
   const [end, setEnd] = createSignal({ x: 0, y: 0 });
@@ -66,14 +66,44 @@ export default function BezierEdgeArrow(props: Edge) {
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
     >
-      {/* Bezier curve */}
+      {/* Bezier curve 
       <path
         d={d()}
-        stroke={props.color ?? "blue"}
+        stroke={edge.color ?? "blue"}
         fill="transparent"
-        stroke-width={props.stroke ?? 2}
+        stroke-width={edge.stroke ?? 2}
         pointer-events="stroke" // only the stroke is clickable
         onClick={() => console.log("Bezier arrow clicked!")}
+      />
+      */}
+      <defs>
+        <marker
+          id={`arrowhead_${edge.id}`}
+          markerWidth="8"
+          markerHeight="8"
+          refX="7"
+          refY="4"
+          orient="auto"
+          markerUnits="strokeWidth"
+        >
+          <polyline
+            points="0,1 7,4 0,7"
+            fill="none"
+            stroke={edge.color ?? "blue"}
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </marker>
+      </defs>
+      <path
+        d={d()}
+        stroke={edge.color ?? "blue"}
+        fill="none"
+        stroke-width={edge.stroke ?? 2}
+        pointer-events="stroke"
+        marker-end={`url(#arrowhead_${edge.id})`} // attach the arrowhead
+        onClick={() => console.log("Arrow clicked!")}
       />
 
 

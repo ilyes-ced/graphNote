@@ -67,3 +67,53 @@ export function edgePoint(rect: any, target: any) {
         y: cy + dy * scale,
     };
 };
+
+type Side = "top" | "bottom" | "left" | "right";
+
+export function sidePoint(rect: any, side: Side) {
+    switch (side) {
+        case "top":
+            return { x: rect.x + rect.width / 2, y: rect.y };
+        case "bottom":
+            return { x: rect.x + rect.width / 2, y: rect.y + rect.height };
+        case "left":
+            return { x: rect.x, y: rect.y + rect.height / 2 };
+        case "right":
+            return { x: rect.x + rect.width, y: rect.y + rect.height / 2 };
+    }
+}
+export function getPorts(src: any, dst: any) {
+    const scx = src.x + src.width / 2;
+    const scy = src.y + src.height / 2;
+
+    const dcx = dst.x + dst.width / 2;
+    const dcy = dst.y + dst.height / 2;
+
+    const dx = dcx - scx;
+    const dy = dcy - scy;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+        // horizontal
+        if (dx > 0) {
+            return { src: "right", dst: "left" };
+        } else {
+            return { src: "left", dst: "right" };
+        }
+    } else {
+        // vertical
+        if (dy > 0) {
+            return { src: "bottom", dst: "top" };
+        } else {
+            return { src: "top", dst: "bottom" };
+        }
+    }
+}
+
+export function portVector(side: Side, gap = 30) {
+    switch (side) {
+        case "top": return { x: 0, y: -gap };
+        case "bottom": return { x: 0, y: gap };
+        case "left": return { x: -gap, y: 0 };
+        case "right": return { x: gap, y: 0 };
+    }
+}

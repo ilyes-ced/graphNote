@@ -1,64 +1,97 @@
 import { createSignal, createEffect } from "solid-js";
 import { Edge } from "../../types";
-import { edgePoint, watchElementPosition } from "./utils";
+import { edgePoint, getPorts, offsetPoint, portVector, sidePoint, watchElementPosition } from "./utils";
 
 
-export default function StepEdgeArrow(props: Edge) {
-  const srcPos = watchElementPosition(props.srcNodeId);
-  const distPos = watchElementPosition(props.distNodeId);
+export default function StepEdgeArrow(edge: Edge) {
+  const srcPos = watchElementPosition(edge.srcNodeId);
+  const distPos = watchElementPosition(edge.distNodeId);
 
   const [start, setStart] = createSignal({ x: 0, y: 0 });
   const [end, setEnd] = createSignal({ x: 0, y: 0 });
   const [arrowEnd, setArrowEnd] = createSignal({ x: 0, y: 0 });
+
+  type Side = "top" | "bottom" | "left" | "right";
+  const [srcSide, setSrcSide] = createSignal<Side>("right");
+  const [dstSide, setDstSide] = createSignal<Side>("left");
 
   createEffect(() => {
     const s = srcPos();
     const d = distPos();
 
     if (!s || !d) return;
+    const ports = getPorts(s, d);
 
-    const startCenter = { x: s.x + s.width / 2, y: s.y + s.height / 2 };
-    const endCenter = { x: d.x + d.width / 2, y: d.y + d.height / 2 };
+    setSrcSide(ports.src);
+    setDstSide(ports.dst);
 
-    setStart(startCenter);
-    setEnd(endCenter);
+    const startPoint = sidePoint(s, ports.src);
+    const endPoint = sidePoint(d, ports.dst);
 
-    setArrowEnd(edgePoint(d, startCenter));
+    setStart(startPoint);
+    setArrowEnd(endPoint);
   });
 
   const d = () => {
     const s = start();
     const e = arrowEnd();
+
+    const sSide = srcSide();
+    const eSide = dstSide();
+
     if (!s || !e) return "";
 
-    const midX = (s.x + e.x) / 2;
+    const gap = 30;
 
-    return `M ${s.x} ${s.y} L ${s.x} ${e.y - 25} L ${midX} ${e.y - 25} L ${midX} ${e.y - 25} L ${e.x} ${e.y - 25}`;
+    const sv = portVector(sSide, gap);
+    const ev = portVector(eSide, gap);
+
+    const p1 = { x: s.x + sv.x, y: s.y + sv.y };
+    const p4 = { x: e.x + ev.x, y: e.y + ev.y };
+
+    const midX = (p1.x + p4.x) / 2;
+    const midY = (p1.y + p4.y) / 2;
+
+    return `
+    M ${s.x} ${s.y}
+    L ${p1.x} ${p1.y}
+    L ${midX} ${p1.y}
+    L ${midX} ${p4.y}
+    L ${p4.x} ${p4.y}
+    L ${e.x} ${e.y}
+  `;
   };
 
   return (
     <svg class="size-full pointer-events-none absolute top-0 left-0">
       <defs>
         <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="10"
-          refY="3.5"
+          id={`arrowhead_${edge.id}`}
+          markerWidth="8"
+          markerHeight="8"
+          refX="7"
+          refY="4"
           orient="auto"
           markerUnits="strokeWidth"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill={props.color ?? "blue"} />
+          <polyline
+            points="0,1 7,4 0,7"
+            fill="none"
+            stroke={edge.color ?? "blue"}
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </marker>
       </defs>
 
       <path
         d={d()}
-        stroke={props.color ?? "blue"}
+        stroke={edge.color ?? "blue"}
         fill="none"
-        stroke-width={props.stroke ?? 2}
+        stroke-width={edge.stroke ?? 2}
         pointer-events="stroke"
-        marker-end="url(#arrowhead)"
+        marker-end={`url(#arrowhead_${edge.id})`}
         onClick={() => console.log("Arrow clicked!")}
       />
 
@@ -68,3 +101,4 @@ export default function StepEdgeArrow(props: Edge) {
     </svg>
   );
 }
+

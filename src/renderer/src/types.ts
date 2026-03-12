@@ -161,6 +161,7 @@ enum EdgeType {
 }
 
 interface BaseEdge {
+  id: string;
   srcNodeId: string;
   distNodeId: string;
   color?: string; // default foreground
