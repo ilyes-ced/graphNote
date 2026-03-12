@@ -45,3 +45,25 @@ export function watchElementPosition(id: string) {
 
     return state;
 }
+
+
+
+export function edgePoint(rect: any, target: any) {
+    const cx = rect.x + rect.width / 2;
+    const cy = rect.y + rect.height / 2;
+    const dx = target.x - cx;
+    const dy = target.y - cy;
+
+    const w = rect.width / 2;
+    const h = rect.height / 2;
+
+    // Calculate scale to intersect rectangle edge
+    const scaleX = Math.abs(dx) > 0 ? w / Math.abs(dx) : Infinity;
+    const scaleY = Math.abs(dy) > 0 ? h / Math.abs(dy) : Infinity;
+    const scale = Math.min(scaleX, scaleY);
+
+    return {
+        x: cx + dx * scale,
+        y: cy + dy * scale,
+    };
+};

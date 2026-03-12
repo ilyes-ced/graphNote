@@ -118,6 +118,7 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 - [ ] when adding new images, increase thier z index
 - [ ] Url node: when url is blank allow user to write it down
 - [ ] cant place nodes on the corner
+- [ ] edges node move detection createEffect keeps firing over and over endlessly without anything being done
 
 # extra features
 - [ ] add ability to pin certain nodes
