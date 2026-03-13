@@ -107,11 +107,10 @@ ipcMain.handle("readFile", async (_, { folderPath, filePath }) => {
 });
 
 
-ipcMain.handle("writeFile", async (_, { filePath, text }) => {
+ipcMain.handle("writeFile", async (_, { text, data }) => {
+    const fullFile = path.join(basePath, text);
 
-    const fullFile = path.join(baseDir, filePath);
-
-    if (!fullFile.startsWith(baseDir)) {
+    if (!fullFile.startsWith(basePath)) {
         throw new Error("Invalid path");
     }
 
@@ -119,11 +118,31 @@ ipcMain.handle("writeFile", async (_, { filePath, text }) => {
 
     await mkdir(dir, { recursive: true });
 
-    await fs.writeFile(fullFile, text);
+    ensureDir()
+
+    let counter = 0;
+    let finalName = "";
+    let finalPath = "";
+
+    // Determine unique file name
+    while (true) {
+        finalName =
+            counter === 0 ? text : getNextName(text, counter);
+        finalPath = path.join(basePath, finalName);
+
+        try {
+            await fs.access(finalPath);
+            counter++;
+        } catch {
+            break;
+        }
+    }
+
+    await fs.writeFile(finalPath, data);
 
     return {
         success: true,
-        path: fullFile
+        path: finalName
     };
 });
 

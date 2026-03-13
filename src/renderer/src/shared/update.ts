@@ -511,6 +511,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
         ...base,
         // TODO: Fill once you define what Activity contains
         width: undefined,
+        progress: {}
       } as Activity;
 
     default:

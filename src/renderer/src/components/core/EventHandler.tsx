@@ -1,6 +1,6 @@
 import { onMount, onCleanup } from "solid-js";
 import { setStore, store } from "../../shared/store";
-import { NodeUnion, Payload } from "../../types";
+import { NodeUnion } from "../../types";
 import { recieveDragNDropFile } from "../../shared/utils";
 
 type NodesCopyPaste = {
@@ -22,6 +22,12 @@ function isTypeNodesCopyPaste(value: unknown): value is NodesCopyPaste {
 //   console.info("text is selected:", textIsSelected);
 //   return textIsSelected;
 // };
+
+function imgNameGen(type: string): string {
+  const extension = type.split("/")[1]; // png, jpeg, etc
+  const filename = `pasted-image-${Date.now()}.${extension}`;
+  return filename
+}
 
 function isTextLikeElementFocused(): boolean {
   let el = document.activeElement as Element | null;
@@ -58,6 +64,8 @@ function extractImageReference(text: string): ImageReference {
 
   // <img src="...">
   const imgMatch = text.match(IMG_TAG_REGEX);
+  console.log("url", imgMatch);
+
   if (imgMatch) {
     return { type: "url", value: imgMatch[1] };
   }
@@ -139,12 +147,13 @@ export default (props: any) => {
         switch (e.key) {
           case "c": // copy
             // TODO: read the content of the clipboard
-
+            //? make sure no text input is selected before copying nodes data
             if (!isTextLikeElementFocused()) {
               if (store.selectedNodes.size > 0) {
                 console.info("copying nodes here");
                 var copiedNodes: NodesCopyPaste = {
-                  id: "special graphNote JSON format 058192",
+                  //? this special string is to to make sure we are pasting our nodes, itrs like a secret key very unlikly for the user to use
+                  id: "special_graphNote_JSON_format_058192",
                   nodes: [],
                 };
                 store.selectedNodes.forEach((selectedNode) => {
@@ -158,19 +167,21 @@ export default (props: any) => {
                   // if (node)
                   //   setStore("copiedNodes", (nodes) => [...nodes, node]);
                 });
-                await writeText(JSON.stringify(copiedNodes));
+                //? write the data to clipboard
+                navigator.clipboard.writeText(JSON.stringify(copiedNodes));
               }
             }
 
             break;
           case "v": // paste
+            //? read from clipboard
+            // const content = await readText();
+            const content = await navigator.clipboard.readText();
+            console.log("copied content");
+            console.log(content);
             try {
-              const content = await readText();
-              console.log(content);
               try {
                 const parsedNodes: NodesCopyPaste = JSON.parse(content);
-                //! maybe add this not sure?
-                // if (parsedNodes === "special graphNote JSON format 058192") {}
                 //? creating the pasted nodes
                 console.log(isTypeNodesCopyPaste(parsedNodes));
                 parsedNodes.nodes.forEach((copiedNode) => {
@@ -185,28 +196,41 @@ export default (props: any) => {
                 // nothing todo here (normal text was copied)
                 // check if any text is selecte, if not check if its an image
                 if (!isTextLikeElementFocused()) {
+                  //? here is for those when you copy an image a link is copied instead of the actual binary data
+                  //? here means the pasted was not nodes, and scince we know its pasted into text inputs because of !isTextLikeElementFocused(), its either an iamge or nothing we should care about
                   console.log(
-                    "+=============================================== here we add the image"
+                    "+=============================================== here means the pasted was not nodes"
                   );
-                  const imgRef = extractImageReference(content);
-                  console.log("imgRef");
-                  console.log(imgRef);
-                  if (!imgRef) return;
-                  console.log("imgRef");
+                  console.log(content)
+                  console.log()
+                  content.split("\n").forEach(async Image => {
+                    console.log(Image)
+                    const imgRef = extractImageReference(Image);
+                    console.log("imgRef");
+                    console.log(imgRef);
+                    if (!imgRef) throw new Error("not a valid img url");
+                    console.log("imgRef");
 
-                  if (imgRef.type === "local") {
-                    //copy using tauri copyfile
-                    const result = await saveFile(imgRef.value);
-                    if (result.res) {
-                      //TODO: fix x,y to be as the mouse
-                      newImageNode(result.text, 0, 0);
-                    } else {
-                      console.error("failed to save file:", result.text);
+
+                    if (imgRef.type === "local") {
+                      // image file path name not binary data
+                      console.log(imgRef.value)
+                      console.log(new TextEncoder().encode(imgRef.value))
+                      console.log(new TextEncoder().encode(imgRef.value).length)
+                      //copy using tauri copyfile
+                      console.log(Image.split("/").pop() ?? "image.png")
+                      const res = await window.api.writeFile({ text: Image.split("/").pop() ?? "image.png", data: new TextEncoder().encode(imgRef.value) })
+                      if (res.path) {
+                        //TODO: fix x,y to be as the mouse
+                        newImageNode(res.path, 0, 0);
+                      } else {
+                        console.error("failed to save file:", res.path);
+                      }
+                    } else if (imgRef.type === "url") {
+                      //TODO: download image to our save folder and create the image node
+                      //await downloadImage(imgRef.value);
                     }
-                  } else if (imgRef.type === "url") {
-                    //TODO: download image to our save folder and create the image node
-                    //await downloadImage(imgRef.value);
-                  }
+                  });
                 }
               }
             } catch (e) {
@@ -214,13 +238,43 @@ export default (props: any) => {
             }
 
             try {
-              const img = await readImage();
-              console.log(img);
+              console.log("fwoiejfpowiejf")
+              const possibleBinImgsData = await navigator.clipboard.read();
+              for (const item of possibleBinImgsData) {
+                for (const type of item.types) {
+                  if (type.startsWith("image/")) {
+                    const blob = await item.getType(type);
+
+                    const arrayBuffer = await blob.arrayBuffer();
+                    const uint8Array = new Uint8Array(arrayBuffer);
+
+                    console.log("Image binary size:", uint8Array.length);
+                    // give name to image
+                    // here send request to save image
+                    try {
+                      const res = await window.api.writeFile({ text: imgNameGen(type), data: uint8Array })
+                      //TODO: fix x,y to be as the mouse
+                      if (res.path) {
+                        //TODO: fix x,y to be as the mouse
+                        newImageNode(res.path, 0, 0);
+                      } else {
+                        console.error("failed to save file:", res.path);
+                      }
+                      // create the node here
+                    } catch (error) {
+                      console.warn("failed to save the binary copied image", error);
+                    }
+                  }
+                }
+              }
+              console.log(possibleBinImgsData);
+              console.log(possibleBinImgsData.length);
               //todo: create new image node on mouse cursor pos
               // make use of those in utils.ts
             } catch (e) {
               console.warn("the pasted was not an image", e);
             }
+
 
             break;
           case "z": // undo

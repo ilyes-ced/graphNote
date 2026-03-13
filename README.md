@@ -1,19 +1,3 @@
-# dev
-
-```
-GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 pnpm tauri dev
-```
-
-# building
-
-```
-GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 NO_STRIP=true pnpm tauri build
-```
-
-# running
-
-GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bundle/appimage/graphnote_0.1.0_amd64.AppImage
-
 # Road to production ready
 
 - [x] make Todo widget more usable
@@ -30,6 +14,8 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bun
 - [x] scroll becomes finniky when zoom is used, change zoom target to an outside element
 - [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
   - [ ] finish the image copy pasting
+    - [x] binary data iamges
+    - [ ] images URLs
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
   - [ ] fix:
     - [ ] updatePosition (when letting go 2 different positions are recorded) 
@@ -104,7 +90,7 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 
 # fixes
 
-- [ ] color selector sometimes changes automatically (rbg(25, 25, 25))
+- [x] color selector sometimes changes automatically (rbg(25, 25, 25)) (doesnt seem to remain a problem in electron)
 - [ ] youtube videos not working ==> download them with yt-dlp and display them as video
 - [ ] reset viewport data on board change
 - [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))
@@ -129,9 +115,30 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 
 
 
+# encryption
+leave the encryption feature to last because once its implemented we cant manipulate the data as we want
+
+
+
+# Old tauri specific
 
 # fix for the error: "unknown path" error for ~/Documents
 
 sudo pacman -S xdg-user-dirs
 
 xdg-user-dirs-update
+
+
+
+
+# dev
+```
+GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 pnpm tauri dev
+```
+
+# building
+```
+GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 NO_STRIP=true pnpm tauri build
+```
+# running
+GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bundle/appimage/graphnote_0.1.0_amd64.AppImage

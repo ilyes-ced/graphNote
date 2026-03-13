@@ -10,7 +10,7 @@ declare global {
       saveEdges: (edges: any) => Promise<any>;
       readGraph: () => Promise<any>;
       readFile: (data: { folderPath: string; filePath: string }) => Promise<string | null>;
-      writeFile: (data: { text: string }) => Promise<any>;
+      writeFile: (data: { text: string, data: Uint8Array }) => Promise<any>;
       getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>;
       copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>;
       readImage: (filePath: string) => Promise<Buffer>;
