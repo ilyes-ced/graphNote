@@ -41,6 +41,9 @@ const api = {
     backUpSave: () =>
         ipcRenderer.invoke("backUpSave"),
 
+    downloadImgUrl: (data: any) =>
+        ipcRenderer.invoke("downloadImgUrl", data),
+
 
 }
 

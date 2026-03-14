@@ -1,5 +1,8 @@
 import { createSignal, onMount } from "solid-js";
 import { Url } from "../../types";
+import EditableTitle from "./EditableTitle";
+import { IconLink } from "@tabler/icons-solidjs";
+import { updateURL } from "../../shared/update";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -66,7 +69,8 @@ export default (node: UrlProps) => {
   //    if (meta) setMetaData(meta);
   //  });
   //});
-  onMount(() => {
+
+  const fetchMetaData = () => {
     // Defer to next microtask to avoid blocking render
     queueMicrotask(() => {
       getMetaData(node.url).then((res) => {
@@ -75,8 +79,30 @@ export default (node: UrlProps) => {
         }
       });
     });
+  }
+
+  onMount(() => {
+    fetchMetaData()
   });
 
+  const transformUrl = (e: any) => {
+    const input = e.target as HTMLInputElement;
+    const value = input.value;
+    try {
+      new URL(value);
+      //? disable inout on seccfull URL to avoid it double firing once we press enter than unfocus the input 
+      input.disabled = true;
+      updateURL(node.id, value)
+      fetchMetaData()
+    } catch {
+      console.log("invalid url format")
+      input.value = ""
+      input.placeholder = "invalid URL, try again"
+    }
+  }
+
+
+  //? "wait_load" class name is needed for elements that take time to load the assets like url images
   return (
     <div class="space-y-2">
       {/*
@@ -99,39 +125,51 @@ export default (node: UrlProps) => {
         </div>
       )}
  */}
-
-      <div>
-        <img
-          class="url_thumbnail pointer-events-none"
-          src={metaData().image}
-          loading="lazy"
-          alt=""
-        />
-      </div>
-
-      <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
-        <div class="url_container flex flex-row items-center space-x-2">
-          <img
-            class="url_thumbnail size-4"
-            src={metaData().favicon}
-            loading="lazy"
-            alt="favicon"
-          />
-          <div>
-            <a class="url text-xs font-bold text-foreground" href={node.url}>
-              {node.url}
-            </a>
-          </div>
+      {node.url === "" ? (
+        <div class="flex items-center space-x-2 px-5" >
+          <IconLink />
+          <input type="text" placeholder="input your URL here" class="url_input p-5 size-full outline-0"
+            onBlur={transformUrl}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") transformUrl(e);
+            }} />
         </div>
-
+      ) : (
         <div>
-          <a class="underline text-primary font-extrabold" href={node.url}>
-            {metaData().title}
-          </a>
-        </div>
+          <div>
+            <img
+              class="wait_load url_thumbnail pointer-events-none"
+              src={metaData().image}
+              loading="eager"
+              alt=""
+            />
+          </div>
 
-        <div class="url_description text-xs">{metaData().description}</div>
-      </div>
+          <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
+            <div class="url_container flex flex-row items-center space-x-2">
+              <img
+                class="url_thumbnail size-4"
+                src={metaData().favicon}
+                loading="lazy"
+                alt="favicon"
+              />
+              <div>
+                <a class="url text-xs font-bold text-foreground" href={node.url}>
+                  {node.url}
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <a class="underline text-primary font-extrabold" href={node.url}>
+                {metaData().title}
+              </a>
+            </div>
+
+            <div class="url_description text-xs">{metaData().description}</div>
+          </div></div>
+      )}
+
     </div>
   );
 };

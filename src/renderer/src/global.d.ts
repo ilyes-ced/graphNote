@@ -16,6 +16,7 @@ declare global {
       writeNodeFile: (string) => Promise<any>;
       scrapeUrl: (string) => Promise<any>;
       backUpSave: () => Promise<any>;
+      downloadImgUrl: (string) => Promise<any>;
     };
   }
 }

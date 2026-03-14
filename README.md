@@ -15,7 +15,9 @@
 - [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
   - [ ] finish the image copy pasting
     - [x] binary data iamges
+    - [x] local image paths
     - [ ] images URLs
+    - [ ] add and test other file types too
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
   - [ ] fix:
     - [ ] updatePosition (when letting go 2 different positions are recorded) 
@@ -90,22 +92,23 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 
 # fixes
 
-- [x] color selector sometimes changes automatically (rbg(25, 25, 25)) (doesnt seem to remain a problem in electron)
+- [x] color selector sometimes changes automatically (rbg(25, 25, 25)) (doesnt seem to remain a problem in electron) (seems to only happen when a node is selected and code is edited and saved)
 - [ ] youtube videos not working ==> download them with yt-dlp and display them as video
 - [ ] reset viewport data on board change
 - [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))
 - [ ] copy pasting nodes when focused on text pastes both on text and on nodes
 - [ ] improve image loading performance
-- [ ] make the height multiples of 10
+- [x] make the height multiples of 10
+  - [ ] still not perfect, things look slightly offcenter, and Image nodes have a small border at the bottom
 - [ ] when a board or column is deleted, in nodes.json delete their object
 - [ ] when note is selected and focused arrows to change cursor position move the node as well 
 - [ ] when deleting nodes, if they have resources (images, files . . .) delete them
 - [ ] when deleting nodes the styles sidebar should be hidden
 - [ ] when adding new images, increase thier z index
-- [ ] Url node: when url is blank allow user to write it down
+- [x] Url node: when url is blank allow user to write it down
 - [ ] cant place nodes on the corner
 - [ ] edges node move detection createEffect keeps firing over and over endlessly without anything being done
-
+- [ ] when pasting url in a new note node, some issues happen when it transforms
 # extra features
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
@@ -119,6 +122,19 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 leave the encryption feature to last because once its implemented we cant manipulate the data as we want
 
 
+
+
+
+
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
 
 # Old tauri specific
 

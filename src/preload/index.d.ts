@@ -16,6 +16,7 @@ declare global {
       readImage: (filePath: string) => Promise<Buffer>;
       scrapeUrl: (data: string) => Promise<any>;
       backUpSave: () => Promise<any>;
+      downloadImgUrl: (imgUrl: string) => Promise<any>;
     };
   }
 }

@@ -1,4 +1,4 @@
-import { JSX, Show } from "solid-js";
+import { JSX, Show, createSignal, onCleanup, onMount } from "solid-js";
 import { NodeType, NodeUnion } from "../../types";
 import { useDraggable } from "../../shared/nodeDrag";
 import { useResize } from "../../shared/useResize";
@@ -47,7 +47,7 @@ const ignoredClasses = (
           classes: ["activityCell", "ch-subdomain-bg", "activityChangers"],
         };
       case NodeType.Url:
-        return { tags: ["video"] };
+        return { tags: ["video"], classes: ["url_input"] };
 
       default:
         return {};
@@ -63,65 +63,88 @@ const ignoredClasses = (
   };
 };
 
-export default (props: nodeProps) => {
+export default (node: nodeProps) => {
+  const [padding, setPadding] = createSignal(0)
   const { startDrag } = useDraggable(
-    props.node,
-    props.isChildNode,
-    ignoredClasses(props.node.type)
+    node.node,
+    node.isChildNode,
+    ignoredClasses(node.node.type)
   );
 
   //? if node is color than its half the width because it looks niced small
   const initWidth =
-    props.node.type === NodeType.Color
+    node.node.type === NodeType.Color
       ? 150
-      : store.nodes[getActiveBoardId()].find((n) => n.id === props.node.id)
+      : store.nodes[getActiveBoardId()].find((n) => n.id === node.node.id)
         ?.width ?? undefined;
 
   const { width, startResize } = useResize(initWidth, (newWidth: number) => {
-    updateNodeWidth(props.node.id, newWidth);
+    updateNodeWidth(node.node.id, newWidth);
   });
 
   //TODO: fix each node type classname, and the ignored classes in the drag
   let el!: HTMLDivElement;
+  //? this obsever is only here to detect when the height change on the nodes start of life to make it multiples of 10 in height, after its updated the first time its immediatly remvoed as its not needed
+  let observer: ResizeObserver;
+  onMount(async () => {
+    observer = new ResizeObserver(entries => {
+      const height = entries[0].contentRect.height;
+      const [_, gy] = store.snapGrid ? store.snapGrid : [1, 1];
+      const newH = Math.ceil((height ?? 0) / gy) * gy
+      setPadding(newH - height)
+      //? should remove it but, its needed for delayed nodes like URL and IMAGES, and resize
+      //observer.disconnect();
+    });
+    observer.observe(el);
+  });
+  onCleanup(() => {
+    observer.disconnect();
+  })
+
 
   return (
     <div
-      ref={el}
       onPointerDown={startDrag}
-      class={`${props.node.type.toLowerCase()}`}
+      class={`${node.node.type.toLowerCase()}`}
       classList={{
-        child_node: props.isChildNode,
-        "node group/resize": !props.isChildNode,
-        selected_node: store.selectedNodes.has(props.node.id),
-        "group/collapse ": props.node.type === NodeType.Column,
+        child_node: node.isChildNode,
+        "node group/resize": !node.isChildNode,
+        selected_node: store.selectedNodes.has(node.node.id),
+        "group/collapse ": node.node.type === NodeType.Column,
         "flex flex-col justify-center items-center":
-          props.node.type === NodeType.Board,
+          node.node.type === NodeType.Board,
         "flex flex-row justify-start p-2 pl-2.5":
-          props.node.type === NodeType.Board && props.isChildNode,
+          node.node.type === NodeType.Board && node.isChildNode,
       }}
-      id={props.node.id}
+      id={node.node.id}
       style={{
-        width: props.isChildNode
+        width: node.isChildNode
           ? "100%"
           : width()
             ? `${width()}px`
             : "fit-content",
-        background: props.node.color, //? if this doesnt exist, .node in App.css will take care of it
-        "z-index": props.node.zIndex,
-        transform: `translate3d(${props.node.x}px, ${props.node.y}px, 0)`,
-        color: props.node.textColor ?? "var(--color-foreground)",
+        background: node.node.color, //? if this doesnt exist, .node in App.css will take care of it
+        "z-index": node.node.zIndex,
+        transform: `translate3d(${node.node.x}px, ${node.node.y}px, 0)`,
+        color: node.node.textColor ?? "var(--color-foreground)",
       }}
     >
       {/* width() */}
-      {/* props.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
-      <Show when={props.node.top_strip_color}>
+      {/* node.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
+      <Show when={node.node.top_strip_color}>
         <div
           class="top_strip absolute top-0 left-0 h-1 w-full"
-          style={{ background: props.node.top_strip_color }}
+          style={{ background: node.node.top_strip_color }}
         ></div>
       </Show>
-      {props.children}
-      <Show when={!props.isChildNode}>
+      <div class="child_div" ref={el}>
+        {node.children}
+      </div>
+      <div class="spacer" style={{
+        'padding-top': `${padding()}px`,
+        background: "transparent"
+      }}></div>
+      <Show when={!node.isChildNode}>
         <ResizeHandle startResizeFunction={startResize} />
       </Show>
     </div>

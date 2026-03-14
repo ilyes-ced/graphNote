@@ -56,6 +56,9 @@ type ImageReference =
 function extractImageReference(text: string): ImageReference {
   //? might need more in the future not sure if there are more formats
   const IMG_TAG_REGEX = /<img\s+[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/i;
+  const IMA_URL_REGEX =
+    /(https?:\/\/[^\s"'<>]+?\.(?:png|jpg|jpeg|gif|webp|svg|bmp|avif|tiff))(?:\?[^\s"'<>]*)?/i;
+
   const LOCAL_PATH_REGEX =
     /^(\/(?:[^\/]+\/)*[^\/]+\.(png|jpg|jpeg|gif|webp|bmp|svg))$/i;
 
@@ -65,15 +68,21 @@ function extractImageReference(text: string): ImageReference {
   // <img src="...">
   const imgMatch = text.match(IMG_TAG_REGEX);
   console.log("url", imgMatch);
-
   if (imgMatch) {
     return { type: "url", value: imgMatch[1] };
   }
 
+  // https image URLs
+  const imgUrlMatch = text.match(IMA_URL_REGEX);
+  console.log("https url", imgUrlMatch);
+  if (imgUrlMatch) {
+    return { type: "url", value: imgUrlMatch[1] };
+  }
+
+
   // Local file path
   const localMatch = text.match(LOCAL_PATH_REGEX);
   console.log("localMatch", localMatch);
-
   if (localMatch) {
     return { type: "local", value: localMatch[1] };
   }
@@ -229,6 +238,9 @@ export default (props: any) => {
                     } else if (imgRef.type === "url") {
                       //TODO: download image to our save folder and create the image node
                       //await downloadImage(imgRef.value);
+                      const res = await window.api.downloadImgUrl(imgRef.value)
+                      console.log(res)
+
                     }
                   });
                 }

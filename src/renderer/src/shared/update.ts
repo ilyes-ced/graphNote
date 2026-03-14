@@ -121,7 +121,31 @@ const updateNote = (nodeId: string, newValue: string) => {
       };
     }
   }
+};
 
+//? update URL node url
+const updateURL = (nodeId: string, newValue: string) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      const oldValue = store.nodes[parentId][index].url;
+      console.log(oldValue)
+      console.log(newValue)
+      setStore("nodes", parentId, index, "url", newValue);
+      saveChanges();
+
+      return {
+        undo() {
+          setStore("nodes", parentId, index, "url", oldValue);
+          saveChanges();
+        },
+        redo() {
+          setStore("nodes", parentId, index, "url", newValue);
+          saveChanges();
+        },
+      };
+    }
+  }
 };
 
 const getActiveBoardId = (): string => {
@@ -169,6 +193,7 @@ const updateMovingPosition = (nodeId: string, x: number, y: number) => {
 };
 
 const updatePosition = (nodeId: string, x: number, y: number) => {
+  console.info("updating the position of node: ", nodeId, x, y)
   const activeBoardId = getActiveBoardId();
   const boardNodes = store.nodes[activeBoardId] ?? [];
 
@@ -761,6 +786,7 @@ const newDocumentNode = (
 
 //! very lazy behavior i know
 const wrappedUpdateNote = actionsMiddleware(updateNote);
+const wrappedupdateURL = actionsMiddleware(updateURL);
 const wrappedUpdateZIndex = actionsMiddleware(updateZIndex);
 const wrappedUpdatePosition = actionsMiddleware(updatePosition);
 const wrappedIncrementSelectedNodesPositions = actionsMiddleware(incrementSelectedNodesPositions);
@@ -785,6 +811,7 @@ const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode);
 
 export {
   wrappedUpdateNote as updateNote,
+  wrappedupdateURL as updateURL,
   wrappedUpdateZIndex as updateZIndex,
   wrappedUpdatePosition as updatePosition,
   updateMovingPosition,

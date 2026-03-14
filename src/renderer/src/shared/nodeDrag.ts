@@ -4,10 +4,8 @@ import { NodeType, type NodeUnion } from "../types";
 import { addSelected, saveChanges } from "./utils";
 import moveNode from "./moveNode";
 import {
-  findNodeById,
   isColumn,
   updateChildPosition,
-  updateMovingPosition,
   updatePosition,
   updateZIndex,
 } from "./update";
@@ -58,7 +56,6 @@ export function useDraggable(
     //? other thatn that im not sure
     if (node.type === NodeType.Image) e.preventDefault();
 
-    console.log("dragging", node.id, is_child);
     // dont accept middle mouse click, as well as ctrl click
     if (e.button !== 0 || e.ctrlKey) return;
     // if it is not a child ignore elemnts with these classNames
@@ -138,46 +135,26 @@ export function useDraggable(
     const deltaY = Math.abs((e?.clientY ?? 0) - initialMouseY);
     const didMove = deltaX > threshold || deltaY > threshold;
     if (!didMove && e) {
-      console.log("=================================================");
-      console.log("did not move so single click");
-      console.log("=================================================");
       if ((e.target as HTMLElement).closest(ignoredSelectors)) return;
       if (store.selectedNodes.size === 0) {
-        console.warn("first selected node");
         const newSet = new Set([node.id]);
         setStore("selectedNodes", newSet);
       } else {
-        console.warn("else else");
         if (e.shiftKey) {
-          console.warn("should be second selected node");
           addSelected(e, node.id);
         } else {
-          console.warn("new first selected node");
           const newSet = new Set([node.id]);
           setStore("selectedNodes", newSet);
         }
       }
-      console.info(store.selectedNodes);
       return;
-    } else {
-      // not fully tested could cause issues with child nodes later
-      const scale = store.viewport?.scale ?? 1;
-      let x = (e.clientX - store.viewport.x) / scale - startX;
-      let y = (e.clientY - store.viewport.y) / scale - startY;
-
-      currentX = Math.max(0, x);
-      currentY = Math.max(0, y);
-      updateMovingPosition(node.id, x, y);
     }
 
     //? for transfering children to other nodes
-    /////////////////////////////////////////////////////////
-    console.log("dropping a node", node.id, is_child);
-
+    let movedToOtherNode = false;
     const targets = document.querySelectorAll(
       `.column:not(#${node.id}), .board:not(#${node.id})` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
     );
-    let movedToOtherNode = false;
     // todo: stop foreeach when finished
     targets.forEach((target) => {
       //! fix this e. error
@@ -186,9 +163,8 @@ export function useDraggable(
 
       if (is_child) {
         if (isInside) {
-          movedToOtherNode = true;
-          console.error("this is the end herer");
           moveNode(node.id, target.id, true);
+          movedToOtherNode = true;
         }
       } else {
         if (isInside) {
@@ -198,6 +174,7 @@ export function useDraggable(
       }
     });
 
+    //? moved inside this canvas
     if (!movedToOtherNode) {
       if (is_child) {
         const targets = document.querySelectorAll(`#${node.id}`);
@@ -209,29 +186,16 @@ export function useDraggable(
         //TODO: snap to grid
       } else {
         //? snap to grid if it is defined
-        if (store.snapGrid) {
-          const [gx, gy] = store.snapGrid;
-          const nodeInStore = findNodeById(node.id);
-          // if (!nodeInStore) return;
-          const snappedX = Math.round((nodeInStore?.x ?? 0) / gx) * gx;
-          const snappedY = Math.round((nodeInStore?.y ?? 0) / gy) * gy;
-          // Skip if already snapped
-          // if (nodeInStore?.x === snappedX && nodeInStore.y === snappedY) return;
-          // Defer snapping to next frame to allow transition animation
-          console.info(snappedX, snappedY);
-          requestAnimationFrame(() => {
-            updatePosition(node.id, snappedX, snappedY);
-            saveChanges();
-          });
-        } else {
-          //! untested
-          requestAnimationFrame(() => {
-            const nodeInStore = findNodeById(node.id);
-            //todo: fix later
-            updatePosition(node.id, nodeInStore?.x ?? 0, nodeInStore?.y ?? 0);
-            saveChanges();
-          });
-        }
+        const [gx, gy] = store.snapGrid ? store.snapGrid : [1, 1];
+        const scale = store.viewport?.scale ?? 1;
+        let x = (e.clientX - store.viewport.x) / scale - startX;
+        let y = (e.clientY - store.viewport.y) / scale - startY;
+        currentX = Math.max(0, x);
+        currentY = Math.max(0, y);
+        const snappedX = Math.round((currentX ?? 0) / gx) * gx;
+        const snappedY = Math.round((currentY ?? 0) / gy) * gy;
+        console.info(snappedX, snappedY);
+        updatePosition(node.id, snappedX, snappedY);
       }
     }
 

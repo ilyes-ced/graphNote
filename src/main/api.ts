@@ -306,3 +306,20 @@ const backup = async (type: "nodes" | "edges", data: any) => {
         path: fullFile
     };
 }
+
+
+
+
+ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
+    console.log("lllllllllllllllllllllllllll")
+    console.log(imgUrl)
+    console.log("lllllllllllllllllllllllllll")
+    const res = await fetch(imgUrl);
+    console.log(res)
+    // maybe using wget is the best method
+
+    return {
+        success: true,
+        path: imgUrl
+    };
+});

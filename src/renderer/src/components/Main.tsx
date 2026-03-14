@@ -15,7 +15,6 @@ const loadNodes = async () => {
 
   try {
     const data = await window.api.getEdges();
-    console.log("edges", data ?? []);
     setStore("edges", data ?? []);
   } catch (err) {
     console.error("Failed to get edges:", err);
