@@ -39,6 +39,12 @@ export default (node: BoardProps) => {
     ]);
     //? when changing workspace deselect selected nodes
     setStore("selectedNodes", new Set([]));
+
+    // reset viewport data
+    setStore("viewport", {
+      x: 0,
+      y: 0,
+    });
   };
 
   //Todo: remove this later it causes it to be undraggable in the ref={}

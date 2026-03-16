@@ -98,7 +98,6 @@ import {
   newImageNode,
   removeNodeById,
 } from "../../shared/update";
-import saveFile from "../../shared/saveFile";
 import { redo, undo } from "../../shared/actions";
 
 export default (props: any) => {
@@ -146,6 +145,7 @@ export default (props: any) => {
 
 
   // todo: use later to add some styles
+  // todo: fix for electron
   //listen("tauri://drag-enter", (event) => {});
   //listen("tauri://drag-leave", (event) => {});
 
@@ -155,8 +155,6 @@ export default (props: any) => {
       if (e.ctrlKey) {
         switch (e.key) {
           case "c": // copy
-            // TODO: read the content of the clipboard
-            //? make sure no text input is selected before copying nodes data
             if (!isTextLikeElementFocused()) {
               if (store.selectedNodes.size > 0) {
                 console.info("copying nodes here");
@@ -166,17 +164,11 @@ export default (props: any) => {
                   nodes: [],
                 };
                 store.selectedNodes.forEach((selectedNode) => {
-                  console.info(selectedNode);
-                  console.info(findNodeById(selectedNode));
-                  //TODO: dont save to copied nodes, save as json structure and on paste read the data if its json our format data we create those nodes, maybe add special key at the start to make sure not all json is transformed to nodes
                   let node = findNodeById(selectedNode);
                   if (node) {
                     copiedNodes.nodes.push(node);
                   }
-                  // if (node)
-                  //   setStore("copiedNodes", (nodes) => [...nodes, node]);
                 });
-                //? write the data to clipboard
                 navigator.clipboard.writeText(JSON.stringify(copiedNodes));
               }
             }

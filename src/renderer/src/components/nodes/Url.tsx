@@ -75,6 +75,7 @@ export default (node: UrlProps) => {
     queueMicrotask(() => {
       getMetaData(node.url).then((res) => {
         if (res) {
+          console.log(res)
           setMetaData(res);
         }
       });
@@ -155,17 +156,17 @@ export default (node: UrlProps) => {
                   left: 0,
                   width: '100%',
                   height: '100%',
-                  border: '0'
                 }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen
               ></iframe>
             </div>
           ) : (
-            <div class="relative border">
-              <div class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center" onClick={() => setIsPlaying(true)}>
-                <IconPlayerPlayFilled />
-              </div>
+            <div class="relative flex items-center justify-center">
+              {
+                matchYoutubeUrl(node.url) && <div class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center" onClick={() => setIsPlaying(true)}>
+                  <IconPlayerPlayFilled />
+                </div>}
               <img
                 class="wait_load url_thumbnail pointer-events-none"
                 src={metaData().image}

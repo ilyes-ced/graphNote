@@ -90,20 +90,9 @@ export default (node: NoteProps) => {
     },
     extensions: [
       StarterKit,
-      // Strike,
-      // Underline,
-      // Paragraph,
-      // Text,
-      // Blockquote,
       Highlight,
       Typography,
       TextStyle,
-      // Heading.configure({
-      //   levels: [1, 2, 3, 4, 5, 6],
-      // }),
-      // BulletList,
-      // OrderedList,
-      // ListItem,
       TextAlign,
     ],
     //? take the value from the store but make it none reactive because we than edit it manually and the same changes are saved to file, the reason for unbinding the reactivity is because when we are focused and make changes those same changes that are written are saved to file/store and are refreshed as if they are new values (bad behaviour)

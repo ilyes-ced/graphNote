@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, shell } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
@@ -63,5 +63,6 @@ if (process.contextIsolated) {
     // @ts-ignore (define in dts)
     window.api = api
 }
+
 
 

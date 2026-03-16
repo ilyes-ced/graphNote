@@ -127,8 +127,6 @@ export default (node: nodeProps) => {
         "z-index": node.node.zIndex,
         transform: `translate3d(${node.node.x}px, ${node.node.y}px, 0)`,
         color: node.node.textColor ?? "var(--color-foreground)",
-        'padding-top': `${padding() / 2}px`,
-        'padding-bottom': `${padding() / 2}px`,
       }}
     >
       {/* width() */}
@@ -140,6 +138,7 @@ export default (node: nodeProps) => {
         ></div>
       </Show>
       <div class="child_div" ref={el}>
+        {/* padding(): this padding is maybe best given to the child to decide its position based on the node for better appearance and more consistency */}
         {node.children}
       </div>
       <Show when={!node.isChildNode}>

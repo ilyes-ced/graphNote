@@ -1,5 +1,7 @@
 import { createEffect, onMount } from "solid-js";
 import { setStore, store } from "../../shared/store";
+import { NodeType } from "../../types";
+import { newNode } from "../../shared/update";
 
 export default (props: any) => {
   onMount(async () => {
@@ -48,6 +50,9 @@ export default (props: any) => {
           if (e.target !== e.currentTarget) return;
           console.log("canvas double click");
           e.stopPropagation();
+          console.log(e.clientX)
+          console.log(e.clientY)
+          newNode(NodeType.Note, ((e.clientX - 65) / store.viewport.scale), ((e.clientY - 50) / store.viewport.scale));
         }}
         id="viewport-content"
         style={{

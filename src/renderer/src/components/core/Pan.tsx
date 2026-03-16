@@ -102,7 +102,6 @@ export default (props: any) => {
         top: 0,
         left: 0,
         overflow: "hidden",
-        touchAction: "none",
       }}
     >
       {store.viewport.x}/{store.viewport.y}

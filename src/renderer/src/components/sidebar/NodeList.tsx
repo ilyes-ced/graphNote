@@ -61,8 +61,6 @@ const handleMouseUp = () => {
 };
 
 const findType = (type: string): NodeType => {
-  console.log("PPPPPPPPPPPPPPPPPPPPPPPP");
-  console.log(type);
   switch (type) {
     case "note":
       return NodeType.Note;

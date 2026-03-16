@@ -1,6 +1,7 @@
 import { onMount } from "solid-js";
 import { setStore, store } from "../shared/store.tsx";
 import Wrapper from "./core/Wrapper.tsx";
+import Settings from "./core/Settings.tsx";
 
 
 const loadNodes = async () => {
@@ -43,6 +44,7 @@ export default () => {
 
   return (
     <div id="main" class="relative h-full w-[calc(100%-65px)] overflow-hidden">
+      <Settings />
       <Wrapper />
     </div>
   );

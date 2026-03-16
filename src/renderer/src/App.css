@@ -287,6 +287,10 @@ body,
   box-shadow: 5px 5px var(--color-primary) !important;
 }
 
+#settings_modal_content{
+  box-shadow: 5px 5px var(--color-primary) !important;
+}
+
 .btn-appearance {
   border-radius: 0px !important;
 

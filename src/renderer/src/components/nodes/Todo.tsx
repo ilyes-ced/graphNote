@@ -1,4 +1,4 @@
-import { createSignal, For, from } from "solid-js";
+import { createSignal, For } from "solid-js";
 import {
   DragDropProvider,
   DragDropSensors,

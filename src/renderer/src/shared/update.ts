@@ -18,61 +18,6 @@ import { saveChanges } from "./utils";
 import { actionsMiddleware } from "./actions";
 
 
-
-const updateTaskOG = (
-  nodeId: string,
-  value: string | boolean,
-  taskIndex: number
-) => {
-  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
-    const nodeIndex = nodeList.findIndex((node) => node.id === nodeId);
-    let updatedField: string;
-
-    if (typeof value === "boolean") {
-      updatedField = "check";
-    } else if (typeof value === "string") {
-      updatedField = "text";
-    } else {
-      return;
-    }
-
-    if (nodeIndex !== -1) {
-      // Make sure it's a Todo with a tasks array
-      const node = store.nodes[parentId][nodeIndex];
-      if (
-        "tasks" in node &&
-        Array.isArray(node.tasks) &&
-        node.tasks[taskIndex]
-      ) {
-        console.log(
-          "Updating:",
-          parentId,
-          nodeIndex,
-          "tasks",
-          taskIndex,
-          updatedField,
-          value
-        );
-        setStore(
-          "nodes",
-          parentId,
-          nodeIndex,
-          "tasks",
-          taskIndex,
-          updatedField,
-          value
-        );
-      } else {
-        console.warn("Node found but tasks array or index is invalid");
-      }
-      break;
-    }
-  }
-
-  saveChanges();
-};
-
-
 const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) => {
   for (const [parentId, nodes] of Object.entries(store.nodes)) {
     const nodeIndex = nodes.findIndex(n => n.id === nodeId);
@@ -168,14 +113,14 @@ const updateZIndex = (nodeId: string) => {
 
   setStore("nodes", activeBoardId, index, "zIndex", newZ);
 
-  return {
-    undo() {
-      setStore("nodes", activeBoardId, index, "zIndex", oldZ);
-    },
-    redo() {
-      setStore("nodes", activeBoardId, index, "zIndex", newZ);
-    },
-  };
+  // return {
+  //   undo() {
+  //     setStore("nodes", activeBoardId, index, "zIndex", oldZ);
+  //   },
+  //   redo() {
+  //     setStore("nodes", activeBoardId, index, "zIndex", newZ);
+  //   },
+  // };
 };
 
 //? update node position
@@ -375,8 +320,21 @@ const removeNodeById = (nodeId: string, parentId?: string) => {
   const index = currentNodes.findIndex(n => n.id === nodeId);
   if (index === -1) return;
 
-  const removedNode = currentNodes[index];
+
   const updated = [...currentNodes.slice(0, index), ...currentNodes.slice(index + 1)];
+
+
+  const type = currentNodes[index].type;
+  if ([NodeType.Board, NodeType.Column].includes(type)) {
+    //TODO: delete its nested nodes, while keeping them restorable
+    console.log("deleting:", type)
+  } else if ([NodeType.Image, NodeType.Document].includes(type)) {
+    //TODO: delete the file from the GraphNote folder
+    console.log("deleting:", type)
+  } else if ([NodeType.Url].includes(type)) {
+    //? for later when we add downloading the youtube video, we delete it if the URL is deleted
+  }
+
   setStore("nodes", targetId, updated);
   saveChanges();
 
@@ -542,28 +500,40 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
     default:
       throw new Error(`Unsupported node type: ${type}`);
   }
-};
+}
+
 
 const newNode = (type: NodeType, x: number, y: number) => {
   const activeBoardId = getActiveBoardId();
 
   //todo: adjust the x and y to scale as well
-  console.log("creatign a new node with coords : ", x, y)
-  let snappedX: number, snappedY: number;
+  console.log("creating a new node with coords : ", x, y)
+  let [snappedX, snappedY] = [x, y];
   if (store.snapGrid) {
     snappedX = Math.round(x / 10) * 10;
     snappedY = Math.round(y / 10) * 10;
   }
 
-  setStore("nodes", activeBoardId, (nodes = []) => [
-    ...nodes,
-    generateNewNode(type, snappedX ?? x, snappedY ?? y),
-  ]);
+  const node = generateNewNode(type, snappedX ?? x, snappedY ?? y);
 
+  setStore("nodes", activeBoardId, (nodes = []) => [...nodes, node]);
   saveChanges();
+
+
+  return {
+    undo() {
+      setStore("nodes", activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== node.id));
+      saveChanges();
+    },
+    redo() {
+      setStore("nodes", activeBoardId, (nodes = []) => [...nodes, node]);
+      saveChanges();
+    },
+  };
 };
 
 const newImageNode = (img: string, x: number, y: number) => {
+  console.log("new image node")
   const activeBoardId = getActiveBoardId();
 
   //todo: adjust the x and y to scale as well
@@ -589,8 +559,18 @@ const newImageNode = (img: string, x: number, y: number) => {
 
   setStore("nodes", activeBoardId, (nodes = []) => [...nodes, imageNode]);
   updateZIndex(imageNode.id);
-
   saveChanges();
+
+  return {
+    undo() {
+      setStore("nodes", activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== imageNode.id));
+      saveChanges();
+    },
+    redo() {
+      setStore("nodes", activeBoardId, (nodes = []) => [...nodes, imageNode]);
+      saveChanges();
+    },
+  };
 };
 
 //? update node colors, fg or bg or strip
@@ -660,7 +640,6 @@ const changeToUrlNode = (nodeId: string, url: string) => {
       break;
     }
   }
-
   saveChanges();
 };
 
@@ -668,12 +647,26 @@ const updateNodeTitle = (nodeId: string, newValue: string) => {
   for (const [parentId, nodeList] of Object.entries(store.nodes)) {
     const index = nodeList.findIndex((n) => n.id === nodeId);
     if (index !== -1) {
+      const oldTitle = nodeList[index].title;
+
       setStore("nodes", parentId, index, "title", newValue);
+      saveChanges();
+
+      return {
+        undo() {
+          setStore("nodes", parentId, index, "title", oldTitle);
+          saveChanges();
+        },
+        redo() {
+          setStore("nodes", parentId, index, "title", newValue);
+          saveChanges();
+        },
+      };
+
+
       break;
     }
   }
-
-  saveChanges();
 };
 
 const updateActivityCounter = (
@@ -702,21 +695,26 @@ const updateActivityCounter = (
 };
 
 const reorderTasks = (nodeId: string, tasks: Task[]) => {
+  console.log("reorder tasks")
   for (const [parentId, nodes] of Object.entries(store.nodes)) {
     const index = nodes.findIndex(n => n.id === nodeId);
     if (index === -1) continue;
 
-    const oldTasks = nodes[index].tasks ?? [];
+    const oldTasks = [...(nodes[index].tasks ?? [])];
+    const newTasks = [...tasks];
+
     setStore("nodes", parentId, index, "tasks", tasks);
     saveChanges();
 
     return {
       undo() {
+        console.log("task reorder undo", oldTasks)
         setStore("nodes", parentId, index, "tasks", oldTasks);
         saveChanges();
       },
       redo() {
-        setStore("nodes", parentId, index, "tasks", tasks);
+        console.log("task reorder redo", newTasks)
+        setStore("nodes", parentId, index, "tasks", newTasks);
         saveChanges();
       },
     };

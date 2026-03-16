@@ -1,4 +1,23 @@
-# Road to production ready
+
+# Polishing
+
+- [x] stop the selection on Notes when dragging items (no longer an issue in electron)
+- [x] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
+- [x] paste nodes: pasted the current state of the nodes not the state at the time of the copy
+
+# optimization
+
+- [ ] cache url scrapping (backend)
+- [ ] cache scrapping images (frontend) (investigation needed on the performance first)
+- [x] stop writing to file when moving nodes
+- [x] test animejs and neodrag again their animations were smoother (the issue was tauri not which DnD library was used, in electron all DnD libraries are the same smoothness, even my custom implementation)
+
+- [ ] remove all unneeded imports and functions and comments 
+- [ ] refactor the backend code to be more readable and coherent
+
+
+
+# fixes
 
 - [x] make Todo widget more usable
   - [x] reorder items
@@ -20,86 +39,28 @@
     - [ ] add and test other file types too
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
   - [ ] fix:
-    - [ ] updatePosition (when letting go 2 different positions are recorded) 
-    - [ ] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposit doesnt work)
-    - [ ] updateTask (does nothing)
+    - [x] updatePosition (when letting go 2 different positions are recorded) 
+    - [x] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposit doesnt work)
+    - [x] updateTask (does nothing)
     - [ ] reorderTasks (does nothing)
+    - [ ] editable Title (on column and TODO), works on COlumn but not on TODO
   - [ ] not done yet:
-    - [ ] newNode
-    - [ ] newImageNode  
+    - [x] newNode
+    - [x] newImageNode  
     - [ ] newDocumentNode 
+    - [ ] child nodes moves 
 - [ ] make child nodes selectable
-
-```
-// ------------------ DOCUMENT / IMAGE ------------------
-const newNode = (node: NodeUnion) => {
-  const activeBoardId = store.activeBoards.at(-1)?.id;
-  if (!activeBoardId) return;
-
-  const prevNodes = store.nodes[activeBoardId] ?? [];
-  setStore("nodes", activeBoardId, [...prevNodes, node]);
-  saveChanges();
-
-  return {
-    undo() {
-      setStore("nodes", activeBoardId, prevNodes);
-      saveChanges();
-    },
-    redo() {
-      setStore("nodes", activeBoardId, [...prevNodes, node]);
-      saveChanges();
-    },
-  };
-};
-
-const newImageNode = (img: string, x: number, y: number) => {
-  const node = {
-    id: `node_${Date.now()}`,
-    type: NodeType.Image,
-    path: img,
-    x, y, width: 300, index: 0, title: "Untitled", description: "",
-  } as NodeUnion;
-
-  return newNode(node);
-};
-
-const newDocumentNode = (path: string, x: number, y: number, docType: string) => {
-  const node = {
-    id: `node_${Date.now()}`,
-    type: NodeType.Document,
-    path, docType,
-    x, y, width: 300, index: 0, description: "test",
-  } as NodeUnion;
-
-  return newNode(node);
-};
-```
-
-
-
-# Polishing
-
-- [x] stop the selection on Notes when dragging items (no longer an issue in electron)
-- [x] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
-- [ ] paste nodes: pasted the current state of the nodes not the state at the time of the copy
-
-# optimization
-
-- [ ] cache url scrapping (backend)
-- [ ] cache scrapping images (frontend) (investigation needed on the performance first)
-- [x] stop writing to file when moving nodes
-- [x] test animejs and neodrag again their animations were smoother (the issue was tauri not which DnD library was used, in electron all DnD libraries are the same smoothness, even my custom implementation)
-
-# fixes
-
+- [ ] Board node becomes invisible when dragged (started when moving to electron)
 - [x] color selector sometimes changes automatically (rbg(25, 25, 25)) (doesnt seem to remain a problem in electron) (seems to only happen when a node is selected and code is edited and saved)
 - [x] youtube videos not working ==> download them with yt-dlp and display them as video (they work on electron as embedded)
-- [ ] reset viewport data on board change
+- [ ] taskLists when writing in one of them they always start writing in another one, the same between them all (started when switching to electron)
+- [x] reset viewport data on board change (reset x,y , not zoom)
 - [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))
-- [ ] copy pasting nodes when focused on text pastes both on text and on nodes
+- [x] copy pasting nodes when focused on text pastes both on text and on nodes
 - [ ] improve image loading performance
 - [x] make the height multiples of 10
   - [ ] still not perfect, things look slightly offcenter, and Image nodes have a small border at the bottom
+  - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down 
 - [ ] when a board or column is deleted, in nodes.json delete their object
 - [ ] when note is selected and focused arrows to change cursor position move the node as well 
 - [ ] when deleting nodes, if they have resources (images, files . . .) delete them
@@ -111,13 +72,19 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 - [ ] when pasting url in a new note node, some issues happen when it transforms
 - [ ] for URL youtube Videos, make it download the video and use a custom video player
   - [ ] give the user the option to use embedded youtube video or locally download the videos 
-- [ ] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
+- [x] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
+
+
 # extra features
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
 - [ ] add the user settings to allow the user to choose wether to cache/download:
   - [ ] Urls thunmbnails
   - [ ] Videos
+- [ ] css bg color is brighter and paler than it should be 
+- [ ] opening URLs: dont open the url in the electron app send it to the default browser
+- [ ] right click menu
+- [ ] daily tasks node
 
 
 
@@ -129,6 +96,12 @@ leave the encryption feature to last because once its implemented we cant manipu
 
 
 
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
+-----------------------------
 -----------------------------
 -----------------------------
 -----------------------------

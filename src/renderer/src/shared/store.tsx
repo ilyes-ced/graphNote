@@ -8,6 +8,7 @@ interface Command {
   redo(): void
 }
 
+export const defaultViewportZoom = .8
 
 interface GlobalStore {
   //? no board id is "home"
@@ -74,7 +75,7 @@ const [store, setStore] = createStore<GlobalStore>({
     y: 0,
     width: 4000, // 4000 to make sure to target most resolutions like 4k 
     height: 4000,
-    scale: .8,
+    scale: defaultViewportZoom,
   },
 
   actionsHistory: [],
