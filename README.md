@@ -93,7 +93,7 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 # fixes
 
 - [x] color selector sometimes changes automatically (rbg(25, 25, 25)) (doesnt seem to remain a problem in electron) (seems to only happen when a node is selected and code is edited and saved)
-- [ ] youtube videos not working ==> download them with yt-dlp and display them as video
+- [x] youtube videos not working ==> download them with yt-dlp and display them as video (they work on electron as embedded)
 - [ ] reset viewport data on board change
 - [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))
 - [ ] copy pasting nodes when focused on text pastes both on text and on nodes
@@ -109,6 +109,9 @@ const newDocumentNode = (path: string, x: number, y: number, docType: string) =>
 - [ ] cant place nodes on the corner
 - [ ] edges node move detection createEffect keeps firing over and over endlessly without anything being done
 - [ ] when pasting url in a new note node, some issues happen when it transforms
+- [ ] for URL youtube Videos, make it download the video and use a custom video player
+  - [ ] give the user the option to use embedded youtube video or locally download the videos 
+- [ ] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
 # extra features
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas

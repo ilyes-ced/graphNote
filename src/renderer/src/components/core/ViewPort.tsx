@@ -4,7 +4,6 @@ import { setStore, store } from "../../shared/store";
 export default (props: any) => {
   onMount(async () => {
     // maybe here we should read all the components positions, lenghts and widths to define the size of #viewport-content
-
     const stop = createEffect(() => {
       if (store.nodes) {
         //? exteremly wierd behaviour: when those console.log lines are uncommented, adding nodes to other column doesnt work and the addNode function doesnt trigger at all in the moveNode.ts file

@@ -1,5 +1,5 @@
 import { onMount } from "solid-js";
-import { setStore } from "../shared/store.tsx";
+import { setStore, store } from "../shared/store.tsx";
 import Wrapper from "./core/Wrapper.tsx";
 
 
@@ -23,6 +23,14 @@ const loadNodes = async () => {
 
 export default () => {
   onMount(async () => {
+    // make the grid pattern take all space
+    const size = document.getElementById("main")?.getBoundingClientRect()
+    if (size) {
+      setStore("viewport", {
+        width: (size.width / store.viewport.scale),
+        height: (size.height / store.viewport.scale),
+      });
+    }
 
     try {
       await loadNodes();

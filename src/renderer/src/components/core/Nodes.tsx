@@ -20,20 +20,25 @@ export default () => {
     setTimeout(() => {
       let maxWidth = 0;
       let maxHeight = 0;
-      const nodes = Array.from(nodesRef.getElementsByClassName("node"));
-
+      const nodes = Array.from(document.getElementsByClassName("node"));
       nodes.forEach((node) => {
         const rect = node.getBoundingClientRect();
-        if (rect.x + rect.width > maxWidth)
-          maxWidth = Math.round(((rect.x + rect.width) / store.viewport.scale + 50) / 10) * 10;
-        if (rect.y + rect.height > maxHeight)
-          maxHeight = Math.round(((rect.y + rect.height) / store.viewport.scale + 50) / 10) * 10;
-      });
+        const nodeRight = rect.x + rect.width;
+        if (nodeRight > maxWidth) {
+          maxWidth = nodeRight;
+        }
 
-      // console.log("changing viewport size to:", maxWidth, maxHeight);
+        const nodeBottom = rect.y + rect.height;
+        if (nodeBottom > maxHeight) {
+          maxHeight = nodeBottom;
+        }
+      });
+      maxWidth = Math.round((maxWidth + 50) / 10) * 10;
+      maxHeight = Math.round((maxHeight + 50) / 10) * 10;
+
       setStore("viewport", {
-        width: maxWidth,
-        height: maxHeight,
+        width: Math.max(maxWidth / store.viewport.scale, store.viewport.width),
+        height: Math.max(maxHeight / store.viewport.scale, store.viewport.height),
       });
     }, 1000);
   });

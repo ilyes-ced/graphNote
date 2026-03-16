@@ -1,7 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 import { Url } from "../../types";
-import EditableTitle from "./EditableTitle";
-import { IconLink } from "@tabler/icons-solidjs";
+import { IconLink, IconPlayerPlayFilled } from "@tabler/icons-solidjs";
 import { updateURL } from "../../shared/update";
 
 type UrlProps = Url & {
@@ -24,6 +23,7 @@ export default (node: UrlProps) => {
     image: "placeholder.png",
     favicon: "placeholder.png",
   });
+  const [isPlaying, setIsPlaying] = createSignal(false);
 
   function matchYoutubeUrl(url: string): boolean {
     const pattern =
@@ -100,7 +100,11 @@ export default (node: UrlProps) => {
       input.placeholder = "invalid URL, try again"
     }
   }
-
+  function getYouTubeVideoId(url: string) {
+    const regex = /(?:youtube\.com\/.*v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
 
   //? "wait_load" class name is needed for elements that take time to load the assets like url images
   return (
@@ -128,7 +132,7 @@ export default (node: UrlProps) => {
       {node.url === "" ? (
         <div class="flex items-center space-x-2 px-5" >
           <IconLink />
-          <input type="text" placeholder="input your URL here" class="url_input p-5 size-full outline-0"
+          <input type="text" placeholder="input your URL here" class="url_input p-5 size-full outline-0 border"
             onBlur={transformUrl}
             onKeyDown={(e) => {
               if (e.key === "Enter") transformUrl(e);
@@ -136,14 +140,41 @@ export default (node: UrlProps) => {
         </div>
       ) : (
         <div>
-          <div>
-            <img
-              class="wait_load url_thumbnail pointer-events-none"
-              src={metaData().image}
-              loading="eager"
-              alt=""
-            />
-          </div>
+
+          {matchYoutubeUrl(node.url) && isPlaying() ? (
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              "padding-bottom": '56.25%' /* 16:9 aspect ratio = 9 / 16 * 100 */
+            }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${getYouTubeVideoId(node.url)}?autoplay=1`}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  border: '0'
+                }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          ) : (
+            <div class="relative border">
+              <div class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center" onClick={() => setIsPlaying(true)}>
+                <IconPlayerPlayFilled />
+              </div>
+              <img
+                class="wait_load url_thumbnail pointer-events-none"
+                src={metaData().image}
+                loading="eager"
+                alt=""
+              />
+            </div>
+          )}
+
 
           <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
             <div class="url_container flex flex-row items-center space-x-2">

@@ -72,9 +72,9 @@ const [store, setStore] = createStore<GlobalStore>({
   viewport: {
     x: 0,
     y: 0,
-    width: 0,
-    height: 0,
-    scale: 1,
+    width: 4000, // 4000 to make sure to target most resolutions like 4k 
+    height: 4000,
+    scale: .8,
   },
 
   actionsHistory: [],

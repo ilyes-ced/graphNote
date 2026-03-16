@@ -127,6 +127,8 @@ export default (node: nodeProps) => {
         "z-index": node.node.zIndex,
         transform: `translate3d(${node.node.x}px, ${node.node.y}px, 0)`,
         color: node.node.textColor ?? "var(--color-foreground)",
+        'padding-top': `${padding() / 2}px`,
+        'padding-bottom': `${padding() / 2}px`,
       }}
     >
       {/* width() */}
@@ -140,10 +142,6 @@ export default (node: nodeProps) => {
       <div class="child_div" ref={el}>
         {node.children}
       </div>
-      <div class="spacer" style={{
-        'padding-top': `${padding()}px`,
-        background: "transparent"
-      }}></div>
       <Show when={!node.isChildNode}>
         <ResizeHandle startResizeFunction={startResize} />
       </Show>
