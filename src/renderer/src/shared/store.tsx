@@ -49,6 +49,9 @@ interface GlobalStore {
   // undoneActions: Actions[];
   actionsHistory: Command[],
   historyPointer: number;
+
+
+  settingsModal: boolean;
 }
 
 const [store, setStore] = createStore<GlobalStore>({
@@ -80,6 +83,8 @@ const [store, setStore] = createStore<GlobalStore>({
 
   actionsHistory: [],
   historyPointer: -1,
+
+  settingsModal: false,
 });
 
 export { store, setStore };

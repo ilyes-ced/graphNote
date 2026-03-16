@@ -72,7 +72,7 @@ export default () => {
       </div>
 
       <div class="flex justify-center items-center space-x-4">
-        <Button variant={"secondary"}>
+        <Button variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
           <IconSettings />
         </Button>
 
