@@ -4,7 +4,6 @@ import { NodeType, type NodeUnion } from "../types";
 import { addSelected, saveChanges } from "./utils";
 import moveNode from "./moveNode";
 import {
-  isColumn,
   updateChildPosition,
   updatePosition,
   updateZIndex,
@@ -100,8 +99,8 @@ export function useDraggable(
     //TODO: updating store on every move might be bad for performance
     //TODO: make it change the translate values of the HTMLdiv and on drag end update the store positions
     if (!is_child) {
-      currentX = Math.max(0, x);
-      currentY = Math.max(0, y);
+      currentX = Math.max(0, Number(x) || 0);
+      currentY = Math.max(0, Number(y) || 0);
 
       // fast DOM update
       if (element) {
@@ -111,15 +110,17 @@ export function useDraggable(
       updateChildPosition(node.id, x, y);
     }
 
-    const nodeIsColumn = isColumn(node.id);
 
     //! could cause some performance issues if there is alot of column nodes on the canvas
     //* introducting debounce can reduce the number of calls and improve performance
     targets.forEach((target) => {
       const isInside = isOverlapping(e.clientX, e.clientY, target);
-      if (isInside && !nodeIsColumn) {
+      const sameType = target.classList.contains(node.type.toLowerCase());
+      if (isInside && !sameType) {
+        console.log("adding teh child_container_hover to ", target.id)
         target.classList.add("child_container_hover");
       } else {
+        console.info("removing the child_container_hover from", target.id)
         target.classList.remove("child_container_hover");
       }
     });

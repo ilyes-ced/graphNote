@@ -50,7 +50,7 @@ export default (node: Column) => {
         <EditableTitle nodeId={node.id} title={node.title} />
       </div>
 
-      <div class="subtitle mb-4 text-center">{store.nodes[node.id].length} cards</div>
+      <div class="subtitle mb-4 text-center">{store.nodes[node.id]?.length ?? 0} cards</div>
       <div
         class="children_container flex flex-col"
         style={{ position: "relative" }}

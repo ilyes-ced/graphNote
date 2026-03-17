@@ -302,6 +302,7 @@ export default (props: any) => {
             store.selectedNodes.forEach((selectedNode) => {
               removeNodeById(selectedNode);
             });
+            setStore("selectedNodes", new Set())
             break;
 
           // move selected nodes

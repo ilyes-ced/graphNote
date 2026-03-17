@@ -284,16 +284,6 @@ const updateChildPosition = (nodeId: string, x: number, y: number) => {
 };
 */
 
-const isColumn = (nodeId: string): boolean => {
-  const activeBoardId = getActiveBoardId();
-  const nodesInActiveBoard = store.nodes[activeBoardId] ?? [];
-
-  const isColumn = nodesInActiveBoard.some(
-    (storeNode) => storeNode.id === nodeId && storeNode.type === NodeType.Column
-  );
-
-  return isColumn;
-};
 
 const findNodeById = (nodeId: string): NodeUnion | undefined => {
   for (const nodes of Object.values(store.nodes)) {
@@ -321,30 +311,37 @@ const removeNodeById = (nodeId: string, parentId?: string) => {
   if (index === -1) return;
 
 
+  const removedNode = currentNodes[index];
+  const removedNodeChildren = store.nodes[removedNode.id];
   const updated = [...currentNodes.slice(0, index), ...currentNodes.slice(index + 1)];
+
 
 
   const type = currentNodes[index].type;
   if ([NodeType.Board, NodeType.Column].includes(type)) {
     //TODO: delete its nested nodes, while keeping them restorable
-    console.log("deleting:", type)
+    console.log("deleting:", removedNode.id)
+    console.log("deleting:", removedNodeChildren)
   } else if ([NodeType.Image, NodeType.Document].includes(type)) {
     //TODO: delete the file from the GraphNote folder
-    console.log("deleting:", type)
+    // restoring Media might be impossible or hard
   } else if ([NodeType.Url].includes(type)) {
     //? for later when we add downloading the youtube video, we delete it if the URL is deleted
   }
 
   setStore("nodes", targetId, updated);
+  setStore("nodes", removedNode.id, undefined!);
   saveChanges();
 
   return {
     undo() {
       setStore("nodes", targetId, currentNodes);
+      setStore("nodes", removedNode.id, removedNodeChildren);
       saveChanges();
     },
     redo() {
       setStore("nodes", targetId, updated);
+      setStore("nodes", removedNode.id, undefined!);
       saveChanges();
     },
   };
@@ -790,7 +787,6 @@ const wrappedUpdatePosition = actionsMiddleware(updatePosition);
 const wrappedIncrementSelectedNodesPositions = actionsMiddleware(incrementSelectedNodesPositions);
 const wrappedUpdateChildPosition = actionsMiddleware(updateChildPosition);
 const wrappedGetActiveBoardId = actionsMiddleware(getActiveBoardId);
-const wrappedIsColumn = actionsMiddleware(isColumn);
 const wrappedFindParentIdByNodeId = actionsMiddleware(findParentIdByNodeId);
 const wrappedRemoveNodeById = actionsMiddleware(removeNodeById);
 const wrappedAddNode = actionsMiddleware(addNode);
@@ -816,7 +812,6 @@ export {
   wrappedIncrementSelectedNodesPositions as incrementSelectedNodesPositions,
   wrappedUpdateChildPosition as updateChildPosition,
   wrappedGetActiveBoardId as getActiveBoardId,
-  wrappedIsColumn as isColumn,
   findNodeById,
   wrappedFindParentIdByNodeId as findParentIdByNodeId,
   wrappedRemoveNodeById as removeNodeById,

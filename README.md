@@ -25,7 +25,7 @@
   - [x] backspace to delete item
   - [x] tab to add indent to item
   - [x] multi line paste create an item for each line
-- [ ] polish the drag and drop from the sidebar (fix exact position)
+- [x] polish the drag and drop from the sidebar (fix exact position)
 - [x] fix the viewport:
   - [x] scroll right and bottom
   - [x] placing item outside to the right or left extends the canvas
@@ -40,7 +40,7 @@
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
   - [ ] fix:
     - [x] updatePosition (when letting go 2 different positions are recorded) 
-    - [x] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposit doesnt work)
+    - [x] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposite doesnt work)
     - [x] updateTask (does nothing)
     - [ ] reorderTasks (does nothing)
     - [ ] editable Title (on column and TODO), works on COlumn but not on TODO
@@ -49,8 +49,10 @@
     - [x] newImageNode  
     - [ ] newDocumentNode 
     - [ ] child nodes moves 
+    - [ ] changing Note to Url
 - [ ] make child nodes selectable
-- [ ] Board node becomes invisible when dragged (started when moving to electron)
+- [x] Board node becomes invisible when dragged (started when moving to electron)
+- [x] Column node doesnt become invisible when dragging board node
 - [x] color selector sometimes changes automatically (rbg(25, 25, 25)) (doesnt seem to remain a problem in electron) (seems to only happen when a node is selected and code is edited and saved)
 - [x] youtube videos not working ==> download them with yt-dlp and display them as video (they work on electron as embedded)
 - [ ] taskLists when writing in one of them they always start writing in another one, the same between them all (started when switching to electron)
@@ -61,11 +63,11 @@
 - [x] make the height multiples of 10
   - [ ] still not perfect, things look slightly offcenter, and Image nodes have a small border at the bottom
   - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down 
-- [ ] when a board or column is deleted, in nodes.json delete their object
+- [x] when a board or column is deleted, in nodes.json delete their object
 - [ ] when note is selected and focused arrows to change cursor position move the node as well 
 - [ ] when deleting nodes, if they have resources (images, files . . .) delete them
-- [ ] when deleting nodes the styles sidebar should be hidden
-- [ ] when adding new images, increase thier z index
+- [x] when deleting nodes the styles sidebar should be hidden
+- [x] when adding new images, increase thier z index
 - [x] Url node: when url is blank allow user to write it down
 - [ ] cant place nodes on the corner
 - [ ] edges node move detection createEffect keeps firing over and over endlessly without anything being done

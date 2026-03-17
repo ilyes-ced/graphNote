@@ -163,7 +163,7 @@ body,
 }
 
 #viewport-content {
-  background-image: radial-gradient(#88888830 1px, transparent 0);
+  background-image: radial-gradient(#88888810 1px, transparent 0);
   background-size: 10px 10px;
   background-position: -20px -20px;
 }

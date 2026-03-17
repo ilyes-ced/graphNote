@@ -1,7 +1,7 @@
 import { onMount } from "solid-js";
-import { setStore, store } from "../shared/store.tsx";
-import Wrapper from "./core/Wrapper.tsx";
-import Settings from "./core/Settings.tsx";
+import { setStore, store } from "../shared/store";
+import Wrapper from "./core/Wrapper";
+import Settings from "./core/Settings";
 
 
 const loadNodes = async () => {

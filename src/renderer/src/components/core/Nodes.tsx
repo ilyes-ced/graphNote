@@ -14,8 +14,6 @@ import Document from "../nodes/Document";
 import NodeWrapper from "./NodeWrapper";
 
 export default () => {
-  let nodesRef!: HTMLDivElement;
-
   onMount(() => {
     setTimeout(() => {
       let maxWidth = 0;
@@ -44,7 +42,7 @@ export default () => {
   });
 
   return (
-    < div id="nodes" class="bg-red-600" ref={nodesRef} >
+    < div id="nodes"  >
       <For each={store.nodes[store.activeBoards.at(-1)?.id ?? "home"]}>
         {(node) => (
           <div>

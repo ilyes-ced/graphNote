@@ -50,12 +50,11 @@ const handleMouseMove = (e: MouseEvent) => {
 };
 
 const handleMouseUp = () => {
-  newNode(findType(cloneType() ?? ""), (dragPos().x / store.viewport.scale) - 50, (dragPos().y / store.viewport.scale) - 50);
+  newNode(findType(cloneType() ?? ""), ((dragPos().x - 65) / store.viewport.scale), ((dragPos().y - 50) / store.viewport.scale));
   setDragging(false);
   setCloneType(null);
 
   // here we add to the store
-
   window.removeEventListener("mousemove", handleMouseMove);
   window.removeEventListener("mouseup", handleMouseUp);
 };
@@ -135,9 +134,10 @@ export default () => {
           class="absolute bg-card z-50 pointer-events-none w-[300px] p-5"
           style={{
             display: dragging() ? "block" : "none",
-            top: `${dragPos().y}px`,
-            left: `${dragPos().x}px`,
-            scale: store.viewport.scale
+            top: `${(dragPos().y)}px`,
+            left: `${(dragPos().x)}px`,
+            transform: `scale(${store.viewport.scale})`,
+            "transform-origin": "top left"
           }}
         >
           {dragPos().x} /// {dragPos().y}
