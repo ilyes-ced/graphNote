@@ -1,7 +1,7 @@
 import { store, setStore } from "../../shared/store";
 
 export default (props: any) => {
-  let zoomable: HTMLDivElement;
+  let zoomable!: HTMLDivElement;
 
   const handleWheel = async (e: WheelEvent) => {
     if (e.ctrlKey) {

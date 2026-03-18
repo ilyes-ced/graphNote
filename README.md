@@ -61,7 +61,7 @@
 - [x] copy pasting nodes when focused on text pastes both on text and on nodes
 - [ ] improve image loading performance
 - [x] make the height multiples of 10
-  - [ ] still not perfect, things look slightly offcenter, and Image nodes have a small border at the bottom
+  - [ ] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
   - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down 
 - [x] when a board or column is deleted, in nodes.json delete their object
 - [ ] when note is selected and focused arrows to change cursor position move the node as well 
@@ -75,6 +75,9 @@
 - [ ] for URL youtube Videos, make it download the video and use a custom video player
   - [ ] give the user the option to use embedded youtube video or locally download the videos 
 - [x] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
+- [ ] edges
+  - [ ] edges are not adjusted to scale
+- [ ] the new snap to grid is not working properly (not consistent)
 
 
 # extra features

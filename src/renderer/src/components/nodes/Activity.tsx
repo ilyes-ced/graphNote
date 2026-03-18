@@ -1,5 +1,5 @@
 import { onMount, Show, createSignal, createEffect } from "solid-js";
-import { Activity } from "@/types";
+import { Activity } from "../../types";
 
 import CalHeatmap from "cal-heatmap";
 import "cal-heatmap/cal-heatmap.css";
@@ -44,7 +44,7 @@ export default (node: ActivityProps) => {
   });
 
   createEffect(() => {
-    const color = node.textColor ?? "var(--color-primary)";
+    const _color = node.textColor ?? "var(--color-primary)";
     updateCellStyles();
   });
 
@@ -64,7 +64,7 @@ export default (node: ActivityProps) => {
           radius: 0,
           width: 15,
           height: 15,
-          label: function (timestamp: any, value: any) {
+          label: function (_timestamp: any, value: any) {
             return `${value ?? ""}`;
           },
           style: {
@@ -119,7 +119,7 @@ export default (node: ActivityProps) => {
       ]
     );
 
-    cal.on("click", (event: any, timestamp: any, value: any) => {
+    cal.on("click", (_event: any, timestamp: any, value: any) => {
       setIsOpen(true);
       setActiveDate(new Date(timestamp).toISOString().split("T")[0]);
       console.log(

@@ -8,7 +8,7 @@ import {
 } from "@tabler/icons-solidjs";
 
 export default () => {
-  const breadcrumbsClick = (index: number, id: string) => {
+  const breadcrumbsClick = (index: number) => {
     console.log("+++++++++++++++++++++++++++++++++");
     console.log("+++++++++++++++++++++++++++++++++");
     console.log("+++++++++++++++++++++++++++++++++");
@@ -48,7 +48,7 @@ export default () => {
                     }}
                     onClick={() =>
                       !(index() === store.activeBoards.length - 1)
-                        ? breadcrumbsClick(index(), breadcrumb.id)
+                        ? breadcrumbsClick(index())
                         : undefined
                     }
                     style={{

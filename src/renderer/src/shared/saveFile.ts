@@ -1,25 +1,25 @@
 
-function getNextName(name: string, counter: number) {
-  const nameParts = name.split(".");
-  const ext = nameParts.length > 1 ? "." + nameParts.pop() : "";
-  const baseName = nameParts.join(".");
+// function getNextName(name: string, counter: number) {
+//   const nameParts = name.split(".");
+//   const ext = nameParts.length > 1 ? "." + nameParts.pop() : "";
+//   const baseName = nameParts.join(".");
 
-  let newName = name;
+//   let newName = name;
 
-  newName = `${baseName}${counter}${ext}`;
+//   newName = `${baseName}${counter}${ext}`;
 
-  return newName;
-}
+//   return newName;
+// }
 
-const checkFile = async (filePath: string): Promise<string> => {
-  try {
-    const data = await window.api.getAvailableFilePath({ path: filePath });
-    return data.path;
-  } catch (err) {
-    console.error("Error getting available file path:", err);
-    throw err;
-  }
-};
+// const checkFile = async (filePath: string): Promise<string> => {
+//   try {
+//     const data = await window.api.getAvailableFilePath({ path: filePath });
+//     return data.path;
+//   } catch (err) {
+//     console.error("Error getting available file path:", err);
+//     throw err;
+//   }
+// };
 
 //* true=succefully copied, string=error message
 export default async (

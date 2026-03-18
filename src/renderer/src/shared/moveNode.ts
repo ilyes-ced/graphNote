@@ -1,5 +1,4 @@
-import { ChildNode, NodeType } from "../types";
-import { store, setStore } from "./store";
+import { store } from "./store";
 import {
   addNode,
   findNodeById,

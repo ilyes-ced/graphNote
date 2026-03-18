@@ -335,8 +335,8 @@ export default (props: any) => {
     <div
       id="eventhandler"
       onContextMenu={(e) => {
-        // e.preventDefault(); // prevent browser context menu
-        // console.log("this is opening the context menu");
+        e.preventDefault(); // prevent browser context menu
+        console.log("this is opening the context menu");
       }}
     >
       {props.children}

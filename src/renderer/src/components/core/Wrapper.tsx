@@ -2,7 +2,7 @@ import ColorSelectMenu from "../ui/ColorSelectMenu";
 import Controls from "./Controls";
 import Edges from "./Edges";
 import EventHandler from "./EventHandler";
-import MiniMap from "./MiniMap";
+// import MiniMap from "./MiniMap";
 import Nodes from "./Nodes";
 import Pan from "./Pan";
 import ViewPort from "./ViewPort";

@@ -26,7 +26,7 @@ const ToggleSettings = [
         "value": true,
     }
 ]
-const FileSettings = [
+const _FileSettings = [
     {
         "name": "Set app data folder location",
         "description": "Choose which folder the app saves all the data, nodes, images, videos",

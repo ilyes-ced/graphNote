@@ -26,7 +26,7 @@ export const TableHeader = (props: ComponentProps<"thead">) => {
 };
 
 export const TableBody = (props: ComponentProps<"tbody">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+  const [_local, rest] = splitProps(props, ["class"]);
 
   return <tbody {...rest} />;
 };

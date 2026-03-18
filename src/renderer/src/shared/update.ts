@@ -787,7 +787,6 @@ const wrappedUpdatePosition = actionsMiddleware(updatePosition);
 const wrappedIncrementSelectedNodesPositions = actionsMiddleware(incrementSelectedNodesPositions);
 const wrappedUpdateChildPosition = actionsMiddleware(updateChildPosition);
 const wrappedGetActiveBoardId = actionsMiddleware(getActiveBoardId);
-const wrappedFindParentIdByNodeId = actionsMiddleware(findParentIdByNodeId);
 const wrappedRemoveNodeById = actionsMiddleware(removeNodeById);
 const wrappedAddNode = actionsMiddleware(addNode);
 const wrappedGenerateNewId = actionsMiddleware(generateNewId);
@@ -813,7 +812,7 @@ export {
   wrappedUpdateChildPosition as updateChildPosition,
   wrappedGetActiveBoardId as getActiveBoardId,
   findNodeById,
-  wrappedFindParentIdByNodeId as findParentIdByNodeId,
+  findParentIdByNodeId,
   wrappedRemoveNodeById as removeNodeById,
   wrappedAddNode as addNode,
   wrappedGenerateNewId as generateNewId,

@@ -132,7 +132,6 @@ export default function BezierEdgeArrow(edge: Edge) {
         r="8"
         fill="red"
         cursor="pointer"
-        pointer-events="auto"
         onMouseDown={onMouseDown}
       />
 

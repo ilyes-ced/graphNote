@@ -1,6 +1,6 @@
 import { createSignal, createEffect } from "solid-js";
 import { Edge } from "../../types";
-import { edgePoint, getPorts, offsetPoint, portVector, sidePoint, watchElementPosition } from "./utils";
+import { getPorts, portVector, sidePoint, watchElementPosition } from "./utils";
 
 
 export default function StepEdgeArrow(edge: Edge) {

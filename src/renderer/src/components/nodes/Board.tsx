@@ -11,24 +11,24 @@ type BoardProps = Board & {
 export default (node: BoardProps) => {
   const { startDrag } = useDraggable(node, node.is_child);
 
-  const iconType = (icon_path: string): "svg" | "img" => {
-    console.log(icon_path);
-    console.log();
-
-    switch (icon_path.split(".").slice(-1)[0]) {
-      case "svg":
-        return "svg";
-      case "png":
-        return "img";
-      case "jpg":
-        return "img";
-      case "jpeg":
-        return "img";
-
-      default:
-        return "img";
-    }
-  };
+  //const iconType = (icon_path: string): "svg" | "img" => {
+  //  console.log(icon_path);
+  //  console.log();
+  //
+  //  switch (icon_path.split(".").slice(-1)[0]) {
+  //    case "svg":
+  //      return "svg";
+  //    case "png":
+  //      return "img";
+  //    case "jpg":
+  //      return "img";
+  //    case "jpeg":
+  //      return "img";
+  //
+  //    default:
+  //      return "img";
+  //  }
+  //};
 
   const handleDoubleClick = () => {
     console.error("double clicked the board", node.id);

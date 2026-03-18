@@ -99,8 +99,10 @@ export function useDraggable(
     //TODO: updating store on every move might be bad for performance
     //TODO: make it change the translate values of the HTMLdiv and on drag end update the store positions
     if (!is_child) {
-      currentX = Math.max(0, Number(x) || 0);
-      currentY = Math.max(0, Number(y) || 0);
+      console.log(x, y)
+      // todo: needs fixing
+      currentX = Math.max(0, x > 0 ? x : 0);
+      currentY = Math.max(0, y > 0 ? y : 0);
 
       // fast DOM update
       if (element) {
