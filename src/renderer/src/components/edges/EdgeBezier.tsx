@@ -1,6 +1,6 @@
 import { createSignal, createEffect } from "solid-js";
 import { Edge } from "../../types";
-import { watchElementPosition } from "./utils";
+import { getRectIntersection, watchElementPosition } from "./utils";
 
 
 
@@ -51,17 +51,34 @@ export default function BezierEdgeArrow(edge: Edge) {
     setControl(getMousePos(e));
   };
 
+
   const d = () => {
     const s = start();
     const e = end();
     const c = control();
-    if (!s || !e || !c) return "";
-    return `M ${s.x} ${s.y} Q ${c.x} ${c.y} ${e.x} ${e.y}`;
+    const dNode = distPos();
+
+    if (!s || !e || !c || !dNode) return "";
+
+    const intersection = getRectIntersection(
+      c.x,
+      c.y,
+      e.x,
+      e.y,
+      {
+        x: dNode.x,
+        y: dNode.y,
+        width: dNode.width,
+        height: dNode.height,
+      }
+    );
+
+    return `M ${s.x} ${s.y} Q ${c.x} ${c.y} ${intersection.x} ${intersection.y}`;
   };
 
   return (
     <svg
-      class="absolute top-0 left-0 w-full h-full pointer-events-none"
+      class="absolute top-0 left-0 w-full h-full pointer-events-none z-10000000"
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}

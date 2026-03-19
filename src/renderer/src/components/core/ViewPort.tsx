@@ -37,6 +37,7 @@ export default (props: any) => {
           e.stopPropagation();
           console.log(e.clientX)
           console.log(e.clientY)
+          // todo: gets mouse Pos in the window not in the canvas, if we pan to the right and double click the node is created on the left side of the viewport 
           newNode(NodeType.Note, ((e.clientX - 65) / store.viewport.scale), ((e.clientY - 50) / store.viewport.scale));
         }}
         id="viewport-content"

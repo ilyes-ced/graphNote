@@ -117,3 +117,51 @@ export function portVector(side: Side, gap = 30) {
         case "right": return { x: gap, y: 0 };
     }
 }
+
+
+export function getRectIntersection(
+    cx: number,
+    cy: number,
+    tx: number,
+    ty: number,
+    rect: { x: number; y: number; width: number; height: number }
+) {
+    const dx = tx - cx;
+    const dy = ty - cy;
+
+    const left = rect.x;
+    const right = rect.x + rect.width;
+    const top = rect.y;
+    const bottom = rect.y + rect.height;
+
+    const candidates: { x: number; y: number; t: number }[] = [];
+
+    if (dx !== 0) {
+        const t1 = (left - cx) / dx;
+        const y1 = cy + t1 * dy;
+        if (t1 > 0 && y1 >= top && y1 <= bottom)
+            candidates.push({ x: left, y: y1, t: t1 });
+
+        const t2 = (right - cx) / dx;
+        const y2 = cy + t2 * dy;
+        if (t2 > 0 && y2 >= top && y2 <= bottom)
+            candidates.push({ x: right, y: y2, t: t2 });
+    }
+
+    if (dy !== 0) {
+        const t3 = (top - cy) / dy;
+        const x3 = cx + t3 * dx;
+        if (t3 > 0 && x3 >= left && x3 <= right)
+            candidates.push({ x: x3, y: top, t: t3 });
+
+        const t4 = (bottom - cy) / dy;
+        const x4 = cx + t4 * dx;
+        if (t4 > 0 && x4 >= left && x4 <= right)
+            candidates.push({ x: x4, y: bottom, t: t4 });
+    }
+
+    if (candidates.length === 0) return { x: tx, y: ty };
+
+    candidates.sort((a, b) => a.t - b.t);
+    return { x: candidates[0].x, y: candidates[0].y };
+}

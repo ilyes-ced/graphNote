@@ -8,7 +8,7 @@ interface Command {
   redo(): void
 }
 
-export const defaultViewportZoom = .8
+export const defaultViewportZoom = 1//.8
 
 interface GlobalStore {
   //? no board id is "home"

@@ -38,7 +38,7 @@ export default function StepEdgeArrow(edge: Edge) {
   };
 
   return (
-    <svg class="size-full pointer-events-none absolute top-0 left-0">
+    <svg class="size-full pointer-events-none absolute top-0 left-0 z-10000000">
       <defs>
         <marker
           id={`arrowhead_${edge.id}`}

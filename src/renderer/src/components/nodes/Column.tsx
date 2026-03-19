@@ -1,4 +1,4 @@
-import { Show, For, Match, Switch, createSignal } from "solid-js";
+import { Show, For, Match, Switch } from "solid-js";
 import { NodeType, Column } from "../../types";
 import Svg from "./Svg";
 import Note from "./Note";
@@ -17,24 +17,12 @@ import Document from "../nodes/Document";
 import EditableTitle from "./EditableTitle";
 
 export default (node: Column) => {
-  const [editable, setEditable] = createSignal<boolean>(false);
-
   let editableDiv!: HTMLDivElement;
 
   const updateTitle = debounce((newValue: string) => {
     console.log("Debounced update:", newValue);
     updateNodeTitle(node.id, newValue);
   }, 300);
-
-  const handleInput = () => {
-    const newText = editableDiv?.innerText || "";
-    updateTitle(newText);
-  };
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // Prevents new line
-    }
-  };
 
   return (
     <div class="content flex flex-col p-2">

@@ -139,7 +139,7 @@ export default (node: nodeProps) => {
       </Show>
       <div class="child_div" ref={el}>
         {/* padding(): this padding is maybe best given to the child to decide its position based on the node for better appearance and more consistency */}
-        give to child: {padding()}
+        {/* give to child: {padding()} */}
         {node.children}
       </div>
       <Show when={!node.isChildNode}>

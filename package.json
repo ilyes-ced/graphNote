@@ -59,6 +59,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
     "electron-updater": "^6.3.9",
+    "pdfvuer": "^1.10.0",
     "solid-color": "^0.0.6",
     "solid-colorful": "^0.0.2",
     "solid-devtools": "^0.34.3",
