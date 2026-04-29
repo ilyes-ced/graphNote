@@ -455,7 +455,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
     case NodeType.Board:
       return {
         ...base,
-        name: "New Board",
+        title: "New Board",
         icon_path: "",
       } satisfies Board;
 

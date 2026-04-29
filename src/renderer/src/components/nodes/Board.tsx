@@ -3,6 +3,8 @@ import { setStore, store } from "../../shared/store";
 import { useDraggable } from "../../shared/nodeDrag";
 import { findNodeById } from "../../shared/update";
 import { IconCode } from "@tabler/icons-solidjs";
+import EditableTitle from "./EditableTitle";
+
 
 type BoardProps = Board & {
   is_child?: boolean;
@@ -35,7 +37,7 @@ export default (node: BoardProps) => {
     const board = findNodeById(node.id);
     setStore("activeBoards", (items) => [
       ...items,
-      { name: (board as Board).name, id: (board as Board).id },
+      { title: (board as Board).title, id: (board as Board).id },
     ]);
     //? when changing workspace deselect selected nodes
     setStore("selectedNodes", new Set([]));
@@ -50,15 +52,11 @@ export default (node: BoardProps) => {
   //Todo: remove this later it causes it to be undraggable in the ref={}
   return (
     <div
-      onDblClick={handleDoubleClick}
       onPointerDown={startDrag}
-      class="board flex flex-col justify-center items-center"
+      class="board flex flex-col justify-center items-center "
       classList={{
-        child_node: node.is_child,
-        node: !node.is_child,
-
-        "flex flex-row justify-start p-2 pl-2.5 border": node.is_child,
-        selected_node: store.selectedNodes.has(node.id),
+        "node border-none! px-11 py-2": !node.is_child,
+        "child_node flex flex-row justify-start p-2 pl-2.5 ": node.is_child,
       }}
       id={node.id}
       style={{
@@ -72,11 +70,15 @@ export default (node: BoardProps) => {
       }}
     >
       <div
-        class="board_icon flex flex-col justify-center items-center"
+        onDblClick={handleDoubleClick}
+        class="board_icon flex flex-col justify-center items-center cursor-pointer border-2 border-transparent"
+        classList={{
+          "border-white": store.selectedNodes.has(node.id)
+        }}
         style={{
           background: node.color ? node.color : "var(--color-primary)",
-          width: node.is_child ? "50px" : "60px",
-          height: node.is_child ? "50px" : "60px",
+          width: "60px",
+          height: "60px",
           "margin-right": node.is_child ? "10px" : "",
           "border-radius": node.is_child ? "10px" : "15px",
         }}
@@ -91,7 +93,7 @@ export default (node: BoardProps) => {
             "board_text_child self-start mb-1.5": node.is_child,
           }}
         >
-          {node.name}
+          <EditableTitle nodeId={node.id} title={node.title} />
         </div>
         <div
           classList={{
@@ -99,7 +101,7 @@ export default (node: BoardProps) => {
             "board_content_child text-grey self-start": node.is_child,
           }}
         >
-          content
+          <div class="subtitle text-center">{store.nodes[node.id]?.length ?? 0} cards</div>
         </div>
       </div>
     </div >

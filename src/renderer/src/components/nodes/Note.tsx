@@ -40,9 +40,12 @@ function getActiveTagsAtCursor(): string[] {
   return getClosestTags(element);
 }
 
+
+
 export default (node: NoteProps) => {
   const [editable, setEditable] = createSignal(false);
   let editorRef!: HTMLDivElement;
+  let savedSelection: any = null;
 
   const updateText = debounce((newValue: string) => {
     console.log("Debounced update:", newValue);
@@ -59,6 +62,9 @@ export default (node: NoteProps) => {
       setStore("activeSidebar", "noteStyles");
     },
     onBlur({ event }) {
+      console.log(editor()?.state.selection)
+      savedSelection = editor()?.state.selection;
+
       // Ignore blur caused by clicking inside Tiptap’s UI (menus, buttons)
       if (event?.relatedTarget instanceof HTMLElement) {
         const el = event.relatedTarget;
@@ -106,8 +112,28 @@ export default (node: NoteProps) => {
 
     setEditable(true);
     editor()?.setEditable(true);
-    editor()?.commands.focus("end");
+    console.log(savedSelection)
+    console.log(savedSelection)
+    console.log(savedSelection)
+    editor()?.commands.focus(savedSelection ?? "end");
   };
+
+
+  // Also handle Electron window blur
+  window.addEventListener('blur', () => {
+    if (editor) {
+      savedSelection = editor()?.state.selection;
+    }
+  });
+  window.addEventListener('focus', () => {
+    console.log("refocused now", node.id)
+    if (editor && savedSelection) {
+      console.log("refocused now2", node.id)
+      console.log(savedSelection)
+      editor()?.commands.focus();
+      editor()?.commands.setTextSelection(savedSelection);
+    }
+  });
 
   return (
     <div class="p-5" ondblclick={activateEditor}>

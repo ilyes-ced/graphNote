@@ -57,7 +57,7 @@ export default () => {
                         : "default",
                     }}
                   >
-                    [logo]{breadcrumb.name}
+                    [logo]{breadcrumb.title}
                   </div>
                   {!(index() === store.activeBoards.length - 1) && (
                     <span class="self-center mx-1 my-0 ">

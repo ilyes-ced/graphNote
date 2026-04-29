@@ -67,11 +67,10 @@ export default (props: any) => {
 
   const handleWheel = (e: WheelEvent) => {
     if (e.ctrlKey) return;
-
     e.preventDefault();
 
     const speed = 100;
-    const dx = e.shiftKey ? -Math.sign(e.deltaX) * speed : 0;
+    const dx = e.shiftKey ? -Math.sign(e.deltaY) * speed : 0;
     const dy = !e.shiftKey ? -Math.sign(e.deltaY) * speed : 0;
 
     moveViewport(dx, dy);

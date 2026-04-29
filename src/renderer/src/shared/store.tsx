@@ -19,7 +19,7 @@ interface GlobalStore {
   panZoom: number | null;
   snapGrid: [number, number] | null;
 
-  activeBoards: { name: string; id: string }[];
+  activeBoards: { title: string; id: string }[];
   activeSidebar: "nodes" | "noteStyles" | "nodeStyles";
   showColorMenu: boolean;
 
@@ -61,7 +61,7 @@ const [store, setStore] = createStore<GlobalStore>({
   panZoom: null,
   snapGrid: [10, 10],
 
-  activeBoards: [{ name: "home", id: "home" }],
+  activeBoards: [{ title: "home", id: "home" }],
   activeSidebar: "nodes",
   showColorMenu: false,
   noteEditor: null,

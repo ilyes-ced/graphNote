@@ -120,7 +120,7 @@ interface Color extends Node, ChildNode {
 }
 
 interface Board extends Node, ChildNode {
-  name: string;
+  title: string;
   icon_path: string;
 }
 interface Image extends Node, ChildNode {

@@ -78,6 +78,8 @@
 - [ ] edges
   - [ ] edges are not adjusted to scale
 - [ ] the new snap to grid is not working properly (not consistent)
+- [ ] bezier edge needs to adjust for scale
+- [ ] when note node is focused disable the arrows to move the node 
 
 
 # extra features
