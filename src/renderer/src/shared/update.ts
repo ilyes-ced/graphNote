@@ -722,7 +722,6 @@ const newDocumentNode = (
   path: string,
   x: number,
   y: number,
-  docType: string
 ) => {
   const activeBoardId = getActiveBoardId();
 
@@ -744,7 +743,6 @@ const newDocumentNode = (
     index: 0,
     path: path,
     description: "test",
-    docType: docType,
   };
 
   setStore("nodes", activeBoardId, (nodes = []) => [...nodes, docNode]);

@@ -1,5 +1,6 @@
-import { Match, onMount, Switch } from "solid-js";
+import { onMount } from "solid-js";
 import { Document } from "../../types";
+import Svg from "./Svg";
 
 type DocumentProps = Document & {
   is_child?: boolean;
@@ -11,20 +12,25 @@ export default (node: DocumentProps) => {
 
   return (
     <div>
-      <Switch fallback={<div>Not Found</div>}>
-        <Match when={node.docType === "widget"}>
-          <div class="p-5">widget</div>
-        </Match>
-        <Match when={node.docType === "card"}>test1</Match>
-        <Match when={node.docType === "reader"}>
-          <div>
-            <div>
-              PDF document
-            </div>
-            <div>{node.path.split("/")[1]}</div>
+      <div class="flex flex-row p-2 space-x-2">
+        <div class="flex items-center justify-center">
+          <Svg
+            width={40}
+            height={40}
+            classes=""
+            icon_name={"pdf"}
+          />
+        </div>
+        <div class="flex flex-col">
+          <div class="text-lg font-extrabold">doc name</div>
+
+          <div class="flex flex-row space-x-2">
+            <div class="down_pdf underline cursor-pointer hover:text-primary transition-colors duration-200" >Download</div>
+            <div class="open_pdf underline cursor-pointer hover:text-primary transition-colors duration-200" >Open</div>
+            <div>11 MB</div>
           </div>
-        </Match>
-      </Switch>
+        </div>
+      </div>
     </div>
   );
 };

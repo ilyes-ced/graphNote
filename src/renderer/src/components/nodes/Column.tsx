@@ -34,7 +34,7 @@ export default (node: Column) => {
         <Svg width={16} height={16} classes="" icon_name={"collapse"} />
       </div>
 
-      <div class="title text-xl font-extrabold mb-2 text-center focus:outline-0">
+      <div class="title text-xl font-extrabold mb-2 text-center focus:outline-0 titleHandle">
         <EditableTitle nodeId={node.id} title={node.title} />
       </div>
 

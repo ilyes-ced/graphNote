@@ -144,11 +144,6 @@ interface Drawing extends Node, ChildNode { }
 interface Sketch extends Node, ChildNode { }
 interface Document extends Node, ChildNode {
   path: string;
-  // widget = like board small round
-  // widget = you see file first page, name, download, open, size
-  // reader = custom make it a full readable widget
-  docType: "widget" | "card" | "reader";
-  // appears only in card docType
   description: string;
 }
 

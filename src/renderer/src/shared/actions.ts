@@ -89,7 +89,6 @@
 //     id: string,
 //     x: number,
 //     y: number,
-//     docType: string
 // }
 // 
 // 

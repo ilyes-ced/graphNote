@@ -48,6 +48,8 @@ const ignoredClasses = (
         };
       case NodeType.Url:
         return { tags: ["video"], classes: ["url_input"] };
+      case NodeType.Document:
+        return { classes: ["down_pdf", "open_pdf"] };
 
       default:
         return {};
