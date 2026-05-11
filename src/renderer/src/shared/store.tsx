@@ -52,6 +52,10 @@ interface GlobalStore {
 
 
   settingsModal: boolean;
+
+
+  pdfFile: String | null;
+
 }
 
 const [store, setStore] = createStore<GlobalStore>({
@@ -85,6 +89,8 @@ const [store, setStore] = createStore<GlobalStore>({
   historyPointer: -1,
 
   settingsModal: false,
+
+  pdfFile: null
 });
 
 export { store, setStore };
