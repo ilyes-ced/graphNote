@@ -80,6 +80,8 @@
 - [ ] the new snap to grid is not working properly (not consistent)
 - [ ] bezier edge needs to adjust for scale
 - [ ] when note node is focused disable the arrows to move the node 
+- [ ] in nodes.tsx settimeout to wait for url nodes to load needs to go
+- [ ] cache URL nodes
 
 
 # extra features

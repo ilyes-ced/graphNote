@@ -17,6 +17,7 @@ declare global {
       scrapeUrl: (string) => Promise<any>;
       backUpSave: () => Promise<any>;
       downloadImgUrl: (string) => Promise<any>;
+      cacheYoutubeVid: (title: string) => Promise<string>
     };
   }
 }

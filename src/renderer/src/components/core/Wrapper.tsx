@@ -1,3 +1,4 @@
+import { onMount } from "solid-js";
 import ColorSelectMenu from "../ui/ColorSelectMenu";
 import Controls from "./Controls";
 import Edges from "./Edges";
@@ -7,6 +8,8 @@ import Nodes from "./Nodes";
 import Pan from "./Pan";
 import ViewPort from "./ViewPort";
 import Zoom from "./Zoom";
+import { setStore, store } from "../../shared/store";
+
 
 /*
 wrapper: control width and height
@@ -20,6 +23,59 @@ wrapper: control width and height
 */
 
 export default () => {
+
+
+  onMount(() => {
+    setTimeout(() => {
+
+
+
+      Object.entries(store.edges).forEach(([nodeId, edges]) => {
+        //TODO: maybe later do this only for the active board and, and make it a functiona that is called each time a board is changed
+
+
+
+
+        edges.forEach((edge) => {
+
+          //@ts-ignore //? because its loaded in the index as a .min.js file
+          const ourLine = new LeaderLine(
+            document.getElementById(edge.srcNodeId),
+            document.getElementById(edge.distNodeId),
+            {
+              color: edge.color,
+              outline: true,
+              endPlugOutline: true,
+              endPlugSize: 1.5,
+              middleLabel: edge.label,
+              path: edge.type
+            }
+          );
+
+
+          setStore("arrowLines", (prev) => {
+            const next = new Map(prev);
+            next.set(
+              edge.srcNodeId,
+              [...(next.get(edge.srcNodeId) || []), ourLine]
+            );
+            return next;
+          });
+          setStore("arrowLines", (prev) => {
+            const next = new Map(prev);
+            next.set(
+              edge.distNodeId,
+              [...(next.get(edge.distNodeId) || []), ourLine]
+            );
+            return next;
+          });
+        })
+      });
+
+    }, 2000)
+  })
+
+
   // wrapper width and lenght are defined in the store
   return (
     <div id="wrapper">
@@ -30,8 +86,8 @@ export default () => {
             <ViewPort>
               <Nodes />
               {/*
-              */}
               <Edges />
+              */}
             </ViewPort>
             {/*
               //? put later when its functional

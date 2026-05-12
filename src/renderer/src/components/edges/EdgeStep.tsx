@@ -56,7 +56,7 @@ export default function StepEdgeArrow(edge: Edge) {
     M ${s.x} ${s.y}
     L ${p1.x} ${p1.y}
     L ${midX} ${p1.y}
-    L ${midX} ${p4.y}
+    L ${midX} ${midY}
     L ${p4.x} ${p4.y}
     L ${e.x} ${e.y}
   `;

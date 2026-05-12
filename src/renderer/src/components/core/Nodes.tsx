@@ -15,6 +15,7 @@ import NodeWrapper from "./NodeWrapper";
 
 export default () => {
   onMount(() => {
+    //! needs to change, used to wait for urls to load
     setTimeout(() => {
       let maxWidth = 0;
       let maxHeight = 0;
@@ -31,8 +32,8 @@ export default () => {
           maxHeight = nodeBottom;
         }
       });
-      maxWidth = Math.round((maxWidth + 50) / 10) * 10;
-      maxHeight = Math.round((maxHeight + 50) / 10) * 10;
+      maxWidth = Math.round((maxWidth + 300) / 10) * 10;
+      maxHeight = Math.round((maxHeight + 300) / 10) * 10;
 
       setStore("viewport", {
         width: Math.max(maxWidth / store.viewport.scale, store.viewport.width),

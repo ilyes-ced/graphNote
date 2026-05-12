@@ -126,6 +126,11 @@ export function useDraggable(
         target.classList.remove("child_container_hover");
       }
     });
+
+
+    store.arrowLines.get(node.id)?.forEach(line => {
+      line.position();
+    });
   };
 
   const onUp = (e: PointerEvent) => {

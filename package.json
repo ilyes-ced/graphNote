@@ -59,6 +59,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
     "electron-updater": "^6.3.9",
+    "leader-line": "^1.0.8",
     "pdfjs-dist": "^5.7.284",
     "solid-color": "^0.0.6",
     "solid-colorful": "^0.0.2",

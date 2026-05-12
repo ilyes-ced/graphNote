@@ -150,12 +150,14 @@ interface Document extends Node, ChildNode {
 ////////////////////////////////////////////////
 
 enum EdgeType {
-  Bezier = "Bezier",
-  Straight = "Straight",
-  Step = "Step",
+  straight = "straight",
+  arc = "arc",
+  fluid = "fluid",
+  magnet = "magnet",
+  grid = "grid",
 }
 
-interface BaseEdge {
+interface Edge {
   id: string;
   srcNodeId: string;
   distNodeId: string;
@@ -163,23 +165,23 @@ interface BaseEdge {
   stroke?: number; // default 2
   label?: string; // default none
   style?: string; // solid, dashed ...., default solid
-  // type?: string; // straight, bezier, step curved >>>> default bezier
+  type?: EdgeType; // straight, bezier, step curved >>>> default bezier
   srcArrowHead?: string; // default none
   DistArrowHead?: string; // default normal arrow head
 }
-interface BezierEdge extends BaseEdge {
-  type: EdgeType.Bezier;
-  curvature?: number;
-}
-interface StraightEdge extends BaseEdge {
-  type: EdgeType.Straight;
-  sharpness?: number;
-}
-interface StepEdge extends BaseEdge {
-  type: EdgeType.Step;
-  stepDirection?: "horizontal" | "vertical";
-}
-type Edge = BezierEdge | StraightEdge | StepEdge;
+// interface BezierEdge extends BaseEdge {
+//   // type: EdgeType.Bezier;
+//   curvature?: number;
+// }
+// interface StraightEdge extends BaseEdge {
+//   // type: EdgeType.Straight;
+//   sharpness?: number;
+// }
+// interface StepEdge extends BaseEdge {
+//   // type: EdgeType.Step;
+//   stepDirection?: "horizontal" | "vertical";
+// }
+// type Edge = BezierEdge | StraightEdge | StepEdge;
 
 ////////////////////////////////////////////////
 

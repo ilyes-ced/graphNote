@@ -2,6 +2,7 @@ import { createSignal, onMount } from "solid-js";
 import { Url } from "../../types";
 import { IconLink, IconPlayerPlayFilled } from "@tabler/icons-solidjs";
 import { updateURL } from "../../shared/update";
+import { store } from "../../shared/store";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -82,8 +83,13 @@ export default (node: UrlProps) => {
     });
   }
 
-  onMount(() => {
+  onMount(async () => {
     fetchMetaData()
+    if (store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url)) {
+      console.info("sending the to the youtubeVidCache function")
+      var ff = await window.api.cacheYoutubeVid(node.url);
+      console.info(ff)
+    }
   });
 
   const transformUrl = (e: any) => {

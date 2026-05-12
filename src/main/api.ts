@@ -323,3 +323,20 @@ ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
         path: imgUrl
     };
 });
+
+
+
+
+ipcMain.handle("cacheYoutubeVid", async (_, title: string) => {
+    console.log("lllllllllllllllllllllllllll")
+    console.log("inside the cacheYoutubeVid function")
+    console.log(title)
+    console.log("lllllllllllllllllllllllllll")
+
+    return {
+        success: true,
+        message: "succ or failure not sure yet",
+    };
+});
+
+

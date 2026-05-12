@@ -10,6 +10,13 @@ interface Command {
 
 export const defaultViewportZoom = 1//.8
 
+
+
+interface UserConfig {
+  pdfReaderType: "side" | "modal",
+  youtubeVidCache: boolean, //? if set to true, youtube videos will be downloaded
+}
+
 interface GlobalStore {
   //? no board id is "home"
   //? < board nodeID, nodes>
@@ -41,6 +48,8 @@ interface GlobalStore {
     scale: number;
   };
 
+  arrowLines: Map<String, any[]>,
+
 
   // each action is put here
   // actionsHistory: Actions[];
@@ -55,6 +64,9 @@ interface GlobalStore {
 
 
   pdfFile: String | null;
+
+  userConfig: UserConfig;
+
 
 }
 
@@ -85,12 +97,19 @@ const [store, setStore] = createStore<GlobalStore>({
     scale: defaultViewportZoom,
   },
 
+  arrowLines: new Map<string, any[]>(),
+
   actionsHistory: [],
   historyPointer: -1,
 
   settingsModal: false,
 
-  pdfFile: null
+  pdfFile: null,
+
+  userConfig: {
+    pdfReaderType: "side",
+    youtubeVidCache: true,
+  },
 });
 
 export { store, setStore };
