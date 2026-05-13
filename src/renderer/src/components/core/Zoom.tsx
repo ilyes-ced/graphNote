@@ -1,4 +1,5 @@
 import { store, setStore } from "../../shared/store";
+import { updateArrowsPositions } from "../../shared/utils";
 
 export default (props: any) => {
   let zoomable!: HTMLDivElement;
@@ -16,6 +17,7 @@ export default (props: any) => {
         if (newScale >= 1.5) return;
         newScale += 0.1;
       }
+
 
       //  if (!zoomable) return;
       //  const rect = zoomable.getBoundingClientRect();
@@ -36,6 +38,16 @@ export default (props: any) => {
         //x: newX,
         //y: newY,
       });
+
+
+
+
+
+
+      updateArrowsPositions()
+
+
+
     }
   };
 

@@ -77,9 +77,9 @@ export default (node: DocumentProps) => {
       .promise;
     const pageNumber = 1;
     const page = await pdf.getPage(pageNumber);
-    const scale = 1;
+    const scale = store.userConfig.pdfScale;
     const viewport = page.getViewport({ scale });
-    const canvas = document.getElementById('pdfContainer');
+    const canvas = document.getElementById(`pdfContainer_${node.id}`);
     if (!canvas) return;
     if (!(canvas instanceof HTMLCanvasElement)) return;
     const context = canvas.getContext('2d');
@@ -96,7 +96,7 @@ export default (node: DocumentProps) => {
   return (
     <div class="flex flex-col  space-y-2">
       <div class="flex items-center justify-center">
-        <canvas class="w-full" id="pdfContainer"></canvas>
+        <canvas class="w-full" id={`pdfContainer_${node.id}`}></canvas>
       </div>
       <div class="flex flex-row p-2 space-x-2">
         <div class="flex items-center justify-center">
@@ -117,6 +117,6 @@ export default (node: DocumentProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };

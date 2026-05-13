@@ -16,7 +16,7 @@ createEffect(() => {
 
 export default () => {
   return (
-    <div class="flex flex-none overflow-hidden h-full w-[65px] border-r border-border">
+    <div class="flex flex-none overflow-hidden h-full w-[65px] border-r border-border z-1000">
       {/* Nodes Sidebar */}
 
       <div

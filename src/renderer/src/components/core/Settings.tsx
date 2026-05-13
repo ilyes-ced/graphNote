@@ -39,7 +39,7 @@ export default () => {
     return (
         <Show when={store.settingsModal === true}>
             <Portal>
-                <div class="z-50 absolute top-0 left-0 size-full  backdrop-blur-md" onClick={() => setStore("settingsModal", false)}>
+                <div class="z-10000 absolute top-0 left-0 size-full  backdrop-blur-md" onClick={() => setStore("settingsModal", false)}>
                     <div onClick={(e) => e.stopPropagation()} id="settings_modal_content" class="bg-background absolute w-5xl aspect-video top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-primary animate-[modalIn_0.25s_ease]">
 
                         <div class="flex flex-col w-full">

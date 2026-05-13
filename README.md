@@ -82,9 +82,12 @@
 - [ ] when note node is focused disable the arrows to move the node 
 - [ ] in nodes.tsx settimeout to wait for url nodes to load needs to go
 - [ ] cache URL nodes
+- [x] arrows stay in the same position like absolute when you move the canvas
+- [x] update arrows when you zoom and move the canvas
 
 
 # extra features
+- [ ] add another type of Note node, using typst as an external library
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
 - [ ] add the user settings to allow the user to choose wether to cache/download:

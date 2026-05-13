@@ -1,5 +1,6 @@
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { setStore, store } from "../../shared/store";
+import { updateArrowsPositions } from "../../shared/utils";
 
 export default (props: any) => {
   const [isDragging, setIsDragging] = createSignal(false);
@@ -74,6 +75,7 @@ export default (props: any) => {
     const dy = !e.shiftKey ? -Math.sign(e.deltaY) * speed : 0;
 
     moveViewport(dx, dy);
+    updateArrowsPositions()
   };
 
   onMount(() => {

@@ -15,6 +15,7 @@ export const defaultViewportZoom = 1//.8
 interface UserConfig {
   pdfReaderType: "side" | "modal",
   youtubeVidCache: boolean, //? if set to true, youtube videos will be downloaded
+  pdfScale: number, //? for pdf reader clarity, 1 is blurry 1.5 is decent any more takes very long to laod
 }
 
 interface GlobalStore {
@@ -107,8 +108,9 @@ const [store, setStore] = createStore<GlobalStore>({
   pdfFile: null,
 
   userConfig: {
-    pdfReaderType: "side",
+    pdfReaderType: "modal",
     youtubeVidCache: true,
+    pdfScale: 1.5,
   },
 });
 

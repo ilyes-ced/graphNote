@@ -296,7 +296,11 @@ export default (props: any) => {
       } else {
         switch (e.key) {
           case "Escape":
+            //? deselect nodes
             setStore("selectedNodes", new Set());
+            //? close modals
+            setStore("pdfFile", null);
+            setStore("settingsModal", false);
             break;
           case "Delete":
             store.selectedNodes.forEach((selectedNode) => {

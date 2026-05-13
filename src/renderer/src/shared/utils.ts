@@ -135,4 +135,28 @@ const recieveDragNDropFile = (payload: Payload) => {
   });
 };
 
-export { addSelected, debounce, saveChanges, recieveDragNDropFile };
+
+
+const updateArrowsPositions = () => {
+
+
+
+  //? to keep update thier positions during the animation
+  //! probably bad for perforamce
+  const interval = setInterval(() => {
+    store.arrowLines.forEach((v, k) => {
+      v.forEach(line => {
+        line.position()
+      });
+    })
+  }, 1);
+  setTimeout(() => {
+    clearInterval(interval);
+  }, 250);
+
+};
+
+
+export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions };
+
+
