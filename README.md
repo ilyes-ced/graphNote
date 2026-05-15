@@ -85,6 +85,8 @@
 - [ ] load arrows once both nodes are ready
 - [ ] todo node sometimes doesnt save changed text
 - [ ] when zooming, make it point to or from the mouse cursor
+- [ ] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
+- [ ] for todo make the title optional
 
 
 
@@ -104,7 +106,7 @@
 
 # encryption
 leave the encryption feature to last because once its implemented we cant manipulate the data as we want
-
+- [ ] for enxryption maybe encrypt each file indivudually and load them when needed
 
 
 

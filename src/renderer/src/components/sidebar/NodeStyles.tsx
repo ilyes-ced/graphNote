@@ -1,6 +1,7 @@
 import { setStore, store } from "../../shared/store";
-import { findNodeById } from "../../shared/update";
-import { createEffect, createSignal } from "solid-js";
+import { findNodeById, getActiveBoardId, toggleTitle } from "../../shared/update";
+import { Show, createEffect, createSignal, onMount } from "solid-js";
+import { NodeType } from "../../types";
 
 createEffect(() => {
   console.log(store.selectedNodes);
@@ -15,6 +16,9 @@ export default () => {
   const [color1, setColor1] = createSignal("#EC4899");
   const [color2, setColor2] = createSignal("#8B5CF6");
   const [color3, setColor3] = createSignal("#8B5CF6");
+
+  const [allTodo, setAllTodo] = createSignal(false);
+
 
   const setColors = () => {
     const nodeId = store.selectedNodes.values().next().value;
@@ -39,6 +43,31 @@ export default () => {
     } else {
     }
   });
+
+
+
+
+  onMount(() => {
+    createEffect(() => {
+      const selected = store.selectedNodes
+      const selectedNodes = store.nodes[getActiveBoardId()].filter(user => selected.has(user.id));
+      if (selectedNodes.every((node) => node.type === NodeType.Todo)) {
+        setAllTodo(true)
+      } else {
+        setAllTodo(false)
+      }
+    });
+  })
+
+  const toggleTitles = () => {
+    store.selectedNodes.forEach(node => {
+      toggleTitle(node, "title")
+    });
+  }
+
+
+
+
 
   return (
     <div class="h-full overflow-hidden w-[65px] p-4 bg-card ">
@@ -68,6 +97,31 @@ export default () => {
           <p class="text-sm text-center">colors</p>
         </div>
       </div>
+
+
+
+
+
+
+
+      <Show when={allTodo()}>
+        <div
+          class="flex group/hov flex-col space-y-4 overflow-x-visible relative transition duration-200 ease-out hover:translate-x-2 cursor-pointer "
+          onClick={toggleTitles}
+
+        >
+          <div>
+            <div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500">
+              <div class="flex justify-center items-center size-full p-2">
+
+              </div>
+            </div>
+            <p class="text-sm text-center">toggle title</p>
+          </div>
+        </div>
+      </Show>
+
+
     </div>
   );
 };

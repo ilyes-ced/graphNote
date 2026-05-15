@@ -1,4 +1,4 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import {
   DragDropProvider,
   DragDropSensors,
@@ -173,7 +173,7 @@ export default (node: TodoProps) => {
           return;
         }
 
-        if (currentText === "" && items()[index].nestLevel === 0) {
+        if (currentText === "" && items()[index].nestLevel === 0 && items().length > 1) {
           setItems((prev) => {
             const updated = [...prev];
             updated.splice(index, 1);
@@ -328,9 +328,12 @@ export default (node: TodoProps) => {
 
   return (
     <div class="p-5" ref={containerRef} >
-      <div class="text-2xl font-bold mb-4">
-        <EditableTitle nodeId={node.id} title={node.title || "Title?"} />
-      </div>
+
+      <Show when={node.title != ""}>
+        <div class="text-2xl font-bold mb-4">
+          <EditableTitle nodeId={node.id} title={node.title || ""} />
+        </div>
+      </Show>
 
       <DragDropProvider
         onDragStart={onDragStart}
@@ -396,7 +399,7 @@ const SortableItem = (props: SortableItemProps) => {
 const TaskItem = (props: TaskItemProps) => {
   return (
     <div
-      class="w-full"
+      class="w-full flex items-center"
       style={{
         "margin-left": `${props.nestLevel * 18}px`,
       }}

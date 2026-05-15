@@ -46,6 +46,40 @@ const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) 
 };
 
 //? update Note text content
+const toggleTitle = (nodeId: string, title: string) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      const oldTitle = store.nodes[parentId][index].title;
+      let newValue = ""
+      if (oldTitle === "") {
+        newValue = "Title"
+      } else {
+        newValue = ""
+      }
+      console.log(oldTitle)
+      console.log(newValue)
+
+      setStore("nodes", parentId, index, "title", newValue);
+
+      saveChanges();
+
+      return {
+        undo() {
+          setStore("nodes", parentId, index, "title", oldTitle);
+          saveChanges();
+        },
+        redo() {
+          setStore("nodes", parentId, index, "title", newValue);
+          saveChanges();
+        },
+      };
+    }
+  }
+};
+
+
+//? update Note text content
 const updateNote = (nodeId: string, newValue: string) => {
   for (const [parentId, nodeList] of Object.entries(store.nodes)) {
     const index = nodeList.findIndex((n) => n.id === nodeId);
@@ -434,7 +468,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
       return {
         ...base,
         title: "",
-        tasks: [{ text: "test", check: false, nestLevel: 0 }],
+        tasks: [{ text: "", check: false, nestLevel: 0 }],
       } satisfies Todo;
 
     case NodeType.Table:
@@ -779,12 +813,12 @@ const newDocumentNode = (
 
 //! very lazy behavior i know
 const wrappedUpdateNote = actionsMiddleware(updateNote);
+const wrappedToggleTitle = actionsMiddleware(toggleTitle);
 const wrappedupdateURL = actionsMiddleware(updateURL);
 const wrappedUpdateZIndex = actionsMiddleware(updateZIndex);
 const wrappedUpdatePosition = actionsMiddleware(updatePosition);
 const wrappedIncrementSelectedNodesPositions = actionsMiddleware(incrementSelectedNodesPositions);
 const wrappedUpdateChildPosition = actionsMiddleware(updateChildPosition);
-const wrappedGetActiveBoardId = actionsMiddleware(getActiveBoardId);
 const wrappedRemoveNodeById = actionsMiddleware(removeNodeById);
 const wrappedAddNode = actionsMiddleware(addNode);
 const wrappedGenerateNewId = actionsMiddleware(generateNewId);
@@ -802,13 +836,14 @@ const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode);
 
 export {
   wrappedUpdateNote as updateNote,
+  wrappedToggleTitle as toggleTitle,
   wrappedupdateURL as updateURL,
   wrappedUpdateZIndex as updateZIndex,
   wrappedUpdatePosition as updatePosition,
   updateMovingPosition,
   wrappedIncrementSelectedNodesPositions as incrementSelectedNodesPositions,
   wrappedUpdateChildPosition as updateChildPosition,
-  wrappedGetActiveBoardId as getActiveBoardId,
+  getActiveBoardId,
   findNodeById,
   findParentIdByNodeId,
   wrappedRemoveNodeById as removeNodeById,

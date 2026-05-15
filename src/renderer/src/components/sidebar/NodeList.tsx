@@ -4,6 +4,7 @@ import { newNode } from "../../shared/update";
 import { NodeType } from "../../types";
 import { Portal } from "solid-js/web";
 import { store } from "../../shared/store";
+import { IconMenu2 } from "@tabler/icons-solidjs";
 
 const icons = [
   // basic blocks
@@ -148,13 +149,9 @@ export default () => {
               New Note
             </Match>
             <Match when={cloneType() === "todo"}>
-
-              <div class="text-2xl font-bold mb-4">
-                <h1>Title</h1>
-              </div>
-
-
+              {Todo()}
             </Match>
+
             <Match when={cloneType() === "comment"}>
             </Match>
             <Match when={cloneType() === "table"}>
@@ -189,3 +186,56 @@ export default () => {
     </>
   );
 };
+
+
+
+
+
+
+const Todo = () => {
+  return (
+    <div class="">
+      <div
+        class="sortable group/taskitem flex justify-between"
+      >
+        <div
+          class="w-full flex items-center"
+        >
+          <div class="flex items-start justify-between w-full">
+            <div class="flex space-x-2 w-full items-start">
+
+              <label class="checkbox-check flex items-center cursor-pointer relative">
+                <input
+                  type="checkbox"
+                  checked={false}
+                  class="peer size-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border checked:bg-primary/80 checked:border-primary"
+                />
+                <span class="absolute opacity-0 peer-checked:opacity-100 flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="size-3/4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    stroke-width="1"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </span>
+              </label>
+              <span
+                class="taskitem-text cursor-text outline-0 overflow-hidden text-ellipsis text-pretty wrap-break-word leading-4 w-full"
+              >
+              </span>
+            </div>
+          </div>
+        </div>
+        <IconMenu2 class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100 " />
+      </div>
+    </div>
+  );
+}
