@@ -135,7 +135,7 @@ export default (node: nodeProps) => {
       {/* node.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
       <Show when={node.node.top_strip_color}>
         <div
-          class="top_strip absolute top-0 left-0 h-1 w-full"
+          class="top_strip absolute top-0 left-0 h-1 w-full z-2"
           style={{ background: node.node.top_strip_color }}
         ></div>
       </Show>

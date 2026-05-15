@@ -59,6 +59,7 @@ const handleTaskChange = (
 };
 
 export default (node: TodoProps) => {
+  let containerRef!: HTMLDivElement;
   // Wrap tasks with local _id
   const wrapTasksWithIds = (tasks: Task[]): TaskWithId[] =>
     tasks.map((task) => ({ ...task, _id: generateId() }));
@@ -133,7 +134,7 @@ export default (node: TodoProps) => {
         reorderTasks(node.id, newArray);
 
         queueMicrotask(() => {
-          const editableElements = document.querySelectorAll(".taskitem-text");
+          const editableElements = containerRef.querySelectorAll(".taskitem-text");
           const newTarget = editableElements[index + 1] as HTMLElement;
           if (newTarget) newTarget.focus();
         });
@@ -157,7 +158,7 @@ export default (node: TodoProps) => {
 
           queueMicrotask(() => {
             const editableElements =
-              document.querySelectorAll(".taskitem-text");
+              containerRef.querySelectorAll(".taskitem-text");
             const newTarget = editableElements[index] as HTMLElement;
             if (newTarget) {
               newTarget.focus();
@@ -184,7 +185,7 @@ export default (node: TodoProps) => {
 
           queueMicrotask(() => {
             const editableElements =
-              document.querySelectorAll(".taskitem-text");
+              containerRef.querySelectorAll(".taskitem-text");
             const newTarget =
               (editableElements[index - 1] as HTMLElement) ||
               editableElements[0];
@@ -226,7 +227,7 @@ export default (node: TodoProps) => {
         reorderTasks(node.id, newArray);
 
         queueMicrotask(() => {
-          const editableElements = document.querySelectorAll(".taskitem-text");
+          const editableElements = containerRef.querySelectorAll(".taskitem-text");
           const newTarget = editableElements[index] as HTMLElement;
           if (newTarget) {
             newTarget.focus();
@@ -245,7 +246,7 @@ export default (node: TodoProps) => {
         e.preventDefault();
 
         const editableElements = Array.from(
-          document.querySelectorAll<HTMLElement>(".taskitem-text")
+          containerRef.querySelectorAll<HTMLElement>(".taskitem-text")
         );
 
         const currentIndex = index;
@@ -311,7 +312,7 @@ export default (node: TodoProps) => {
     queueMicrotask(() => {
       // Focus last pasted task
       const editableElements =
-        document.querySelectorAll<HTMLElement>(".taskitem-text");
+        containerRef.querySelectorAll<HTMLElement>(".taskitem-text");
       const newTarget = editableElements[index + lines.length - 1];
       if (newTarget) {
         newTarget.focus();
@@ -326,7 +327,7 @@ export default (node: TodoProps) => {
   };
 
   return (
-    <div class="p-5">
+    <div class="p-5" ref={containerRef} >
       <div class="text-2xl font-bold mb-4">
         <EditableTitle nodeId={node.id} title={node.title || "Title?"} />
       </div>
@@ -361,7 +362,7 @@ export default (node: TodoProps) => {
           </div>
         </DragOverlay>
       </DragDropProvider>
-    </div>
+    </div >
   );
 };
 
@@ -401,7 +402,7 @@ const TaskItem = (props: TaskItemProps) => {
       }}
     >
       <div class="flex items-start justify-between w-full">
-        <div class="flex items-center space-x-2 w-full items-start">
+        <div class="flex space-x-2 w-full items-start">
           <Checkbox {...props} />
           <span
             class="taskitem-text cursor-text outline-0 overflow-hidden text-ellipsis text-pretty wrap-break-word leading-4 w-full"

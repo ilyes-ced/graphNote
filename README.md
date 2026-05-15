@@ -64,13 +64,11 @@
   - [ ] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
   - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down 
 - [x] when a board or column is deleted, in nodes.json delete their object
-- [ ] when note is selected and focused arrows to change cursor position move the node as well 
 - [ ] when deleting nodes, if they have resources (images, files . . .) delete them
 - [x] when deleting nodes the styles sidebar should be hidden
 - [x] when adding new images, increase thier z index
 - [x] Url node: when url is blank allow user to write it down
 - [ ] cant place nodes on the corner
-- [ ] edges node move detection createEffect keeps firing over and over endlessly without anything being done
 - [ ] when pasting url in a new note node, some issues happen when it transforms
 - [ ] for URL youtube Videos, make it download the video and use a custom video player
   - [ ] give the user the option to use embedded youtube video or locally download the videos 
@@ -84,6 +82,10 @@
 - [ ] cache URL nodes
 - [x] arrows stay in the same position like absolute when you move the canvas
 - [x] update arrows when you zoom and move the canvas
+- [ ] load arrows once both nodes are ready
+- [ ] todo node sometimes doesnt save changed text
+- [ ] when zooming, make it point to or from the mouse cursor
+
 
 
 # extra features

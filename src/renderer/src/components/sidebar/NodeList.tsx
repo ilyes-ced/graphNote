@@ -1,4 +1,4 @@
-import { createSignal, For, onCleanup } from "solid-js";
+import { createSignal, For, Match, onCleanup, Switch } from "solid-js";
 import Svg from "../nodes/Svg";
 import { newNode } from "../../shared/update";
 import { NodeType } from "../../types";
@@ -130,6 +130,8 @@ export default () => {
       </div>
 
       <Portal>
+
+
         <div
           class="absolute bg-card z-50 pointer-events-none w-[300px] p-5"
           style={{
@@ -140,8 +142,48 @@ export default () => {
             "transform-origin": "top left"
           }}
         >
-          {dragPos().x} /// {dragPos().y}
-          New Note
+          <Switch fallback={<div>Not Found</div>}>
+            <Match when={cloneType() === "note"}>
+              {dragPos().x} /// {dragPos().y}
+              New Note
+            </Match>
+            <Match when={cloneType() === "todo"}>
+
+              <div class="text-2xl font-bold mb-4">
+                <h1>Title</h1>
+              </div>
+
+
+            </Match>
+            <Match when={cloneType() === "comment"}>
+            </Match>
+            <Match when={cloneType() === "table"}>
+            </Match>
+            <Match when={cloneType() === "url"}>
+            </Match>
+            <Match when={cloneType() === "arrow"}>
+            </Match>
+            <Match when={cloneType() === "board"}>
+            </Match>
+            <Match when={cloneType() === "column"}>
+            </Match>
+            <Match when={cloneType() === "code"}>
+            </Match>
+            <Match when={cloneType() === "document"}>
+            </Match>
+            <Match when={cloneType() === "upload"}>
+            </Match>
+            <Match when={cloneType() === "drawing"}>
+            </Match>
+            <Match when={cloneType() === "sketch"}>
+            </Match>
+            <Match when={cloneType() === "color"}>
+            </Match>
+            <Match when={cloneType() === "image"}>
+            </Match>
+            <Match when={cloneType() === "activity"}>
+            </Match>
+          </Switch>
         </div>
       </Portal>
     </>

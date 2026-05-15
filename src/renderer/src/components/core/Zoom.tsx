@@ -39,14 +39,20 @@ export default (props: any) => {
         //y: newY,
       });
 
-
-
-
-
-
       updateArrowsPositions()
 
-
+      //? make the canvas take all screen space when zooming
+      //! still not good enough, overcompenstaes
+      const div = document.getElementById("viewport-content")?.getBoundingClientRect()
+      console.info("div height: " + (div?.height ?? 0))
+      console.info((div?.height ?? 0) / newScale)
+      console.info(store.viewport.height)
+      console.info("///////////////////")
+      console.info(Math.max(store.viewport.height, (div?.height ?? 0) / newScale))
+      setStore("viewport", {
+        width: Math.max(store.viewport.width, div?.width ?? 0 / newScale),
+        height: Math.max(store.viewport.height, (div?.height ?? 0) / newScale),
+      });
 
     }
   };

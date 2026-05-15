@@ -19,6 +19,27 @@ const bgColorList: ColorType[] = [
   "#1447e6",
   "#ad46ff",
   "#ff2056",
+
+  "#bbbec3",
+  "#62dbc8",
+  "#7cd651",
+  "#d58558",
+  "#ffd14d",
+  "#ff8d48",
+  "#ff5757",
+  "#ff6ed4",
+  "#ad6fff",
+  "#4ebafd",
+  "#5882f8",
+
+  "#0dd1a7",
+  "#818e99",
+  "#566468",
+  "#a46265",
+  "#72272b",
+  "#d17524",
+  "#d5b05c",
+  "#d2c7c5",
 ];
 
 const textColorList: ColorType[] = [
@@ -31,6 +52,17 @@ const textColorList: ColorType[] = [
   "#1447e6",
   "#ad46ff",
   "#ff2056",
+
+  "#72272b",
+  "#204260",
+  "#566468",
+  "#4d191c",
+  "#132839",
+  "#04483a",
+  "#265073",
+  "#7d4046",
+  "#8000ff",
+  "#26004d",
 ];
 
 type comboType = { bg: ColorType; fg: ColorType };
@@ -50,6 +82,65 @@ const textBgComboColorList: comboType[] = [
   {
     bg: "#f54a00",
     fg: "#ad46ff",
+  },
+  {
+    bg: "#0dd1a7",
+    fg: "#72272b"
+  },
+
+  {
+    bg: "#d5b05c",
+    fg: "#72272b"
+  },
+
+  {
+    bg: "#0dd1a7",
+    fg: "#204260"
+  },
+
+  {
+    bg: "#818e99",
+    fg: "#132839"
+  },
+
+  {
+    bg: "#9ef9e5",
+    fg: "#566468"
+  },
+
+  {
+    bg: "#df9fa2",
+    fg: "#4d191c"
+  },
+
+  {
+    bg: "#d17524",
+    fg: "#132839"
+  },
+
+  {
+    bg: "#d5b05c",
+    fg: "#04483a"
+  },
+
+  {
+    bg: "#d2c7c5",
+    fg: "#265073"
+  },
+
+  {
+    bg: "#f4cc38",
+    fg: "#7d4046"
+  },
+
+  {
+    bg: "#00ff00",
+    fg: "#8000ff"
+  },
+
+  {
+    bg: "#e44e20",
+    fg: "#26004d"
   },
 ];
 
@@ -141,7 +232,7 @@ const BgColors = () => {
         onChange={(color) => changeBg(color as ColorType)}
       />
 
-      <div class="w-full border-t border-border"></div>
+      <div class="my-4 w-full border-t border-border"></div>
       {/* text color selection */}
       <div class="grid grid-cols-5 gap-2">
         <For each={textColorList}>

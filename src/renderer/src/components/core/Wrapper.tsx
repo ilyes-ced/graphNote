@@ -44,10 +44,10 @@ export default () => {
             document.getElementById(edge.distNodeId),
             {
               color: edge.color,
-              outline: true,
-              endPlugOutline: true,
-              endPlugSize: 1.5,
-              middleLabel: edge.label,
+              middleLabel: LeaderLine.captionLabel(edge.label, {
+                color: edge.color,
+                outlineColor: ''
+              }),
               path: edge.type
             }
           );
