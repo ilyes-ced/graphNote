@@ -65,6 +65,7 @@
     "electron-updater": "^6.3.9",
     "leader-line": "^1.0.8",
     "pdfjs-dist": "^5.7.284",
+    "pixi.js": "^8.18.1",
     "solid-color": "^0.0.6",
     "solid-colorful": "^0.0.2",
     "solid-devtools": "^0.34.3",

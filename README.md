@@ -111,6 +111,12 @@ leave the encryption feature to last because once its implemented we cant manipu
 
 
 
+# for better performance and display
+- [ ] pixiJS
+- [ ] tldraw
+
+
+
 
 -----------------------------
 -----------------------------

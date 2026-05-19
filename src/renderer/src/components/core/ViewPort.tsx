@@ -4,6 +4,7 @@ import { newNode } from "../../shared/update";
 
 export default (props: any) => {
 
+
   return (
     <div
       id="viewport"

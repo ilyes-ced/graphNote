@@ -112,9 +112,9 @@ export default (node: NoteProps) => {
 
     setEditable(true);
     editor()?.setEditable(true);
-    console.log(savedSelection)
-    console.log(savedSelection)
-    console.log(savedSelection)
+    // console.log(savedSelection)
+    // console.log(savedSelection)
+    // console.log(savedSelection)
     editor()?.commands.focus(savedSelection ?? "end");
   };
 
@@ -126,10 +126,10 @@ export default (node: NoteProps) => {
     }
   });
   window.addEventListener('focus', () => {
-    console.log("refocused now", node.id)
+    // console.log("refocused now", node.id)
     if (editor && savedSelection) {
-      console.log("refocused now2", node.id)
-      console.log(savedSelection)
+      // console.log("refocused now2", node.id)
+      // console.log(savedSelection)
       editor()?.commands.focus();
       editor()?.commands.setTextSelection(savedSelection);
     }

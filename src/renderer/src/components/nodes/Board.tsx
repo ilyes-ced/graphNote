@@ -101,7 +101,7 @@ export default (node: BoardProps) => {
             "board_content_child text-grey self-start": node.is_child,
           }}
         >
-          <div class="subtitle text-center">{store.nodes[node.id]?.length ?? 0} cards</div>
+          <div class="subtitle text-center text-nowrap">{store.nodes[node.id]?.length ?? 0} cards</div>
         </div>
       </div>
     </div >
