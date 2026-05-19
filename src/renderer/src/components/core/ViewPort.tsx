@@ -45,7 +45,6 @@ export default (props: any) => {
         style={{
           // border: "1px solid yellow",
           transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
-          "transform-origin": "0px 0px",
           transition: "all 0.2s ease-out",
           "min-height": "100%",
           "min-width": "100%",
@@ -57,6 +56,6 @@ export default (props: any) => {
       >
         {props.children}
       </div>
-    </div>
+    </div >
   );
 };

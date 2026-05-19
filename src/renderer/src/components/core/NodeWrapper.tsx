@@ -107,7 +107,7 @@ export default (node: nodeProps) => {
   return (
     <div
       onPointerDown={startDrag}
-      class={`${node.node.type.toLowerCase()}`}
+      class={`${node.node.type.toLowerCase()} `}
       classList={{
         child_node: node.isChildNode,
         "node group/resize": !node.isChildNode,
@@ -125,28 +125,34 @@ export default (node: nodeProps) => {
           : width()
             ? `${width()}px`
             : "fit-content",
-        background: node.node.color, //? if this doesnt exist, .node in App.css will take care of it
+        background: "transparent",
         "z-index": node.node.zIndex,
         transform: `translate3d(${node.node.x}px, ${node.node.y}px, 0)`,
         color: node.node.textColor ?? "var(--color-foreground)",
       }}
     >
-      {/* width() */}
-      {/* node.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
-      <Show when={node.node.top_strip_color}>
-        <div
-          class="top_strip absolute top-0 left-0 h-1 w-full z-2"
-          style={{ background: node.node.top_strip_color }}
-        ></div>
-      </Show>
-      <div class="child_div" ref={el}>
-        {/* padding(): this padding is maybe best given to the child to decide its position based on the node for better appearance and more consistency */}
-        {/* give to child: {padding()} */}
-        {node.children}
+      <div class="m-px" style={{
+        background: node.node.color ?? "var(--color-card)", //? if this doesnt exist, .node in App.css will take care of it
+      }}
+      >
+
+        {/* width() */}
+        {/* node.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
+        <Show when={node.node.top_strip_color}>
+          <div
+            class=" top_strip h-4 w-full z-2"
+            style={{ background: node.node.top_strip_color }}
+          ></div>
+        </Show>
+        <div class="child_div" ref={el}>
+          {/* padding(): this padding is maybe best given to the child to decide its position based on the node for better appearance and more consistency */}
+          {/* give to child: {padding()} */}
+          {node.children}
+        </div>
+        <Show when={!node.isChildNode}>
+          <ResizeHandle startResizeFunction={startResize} />
+        </Show>
       </div>
-      <Show when={!node.isChildNode}>
-        <ResizeHandle startResizeFunction={startResize} />
-      </Show>
     </div>
   );
 };

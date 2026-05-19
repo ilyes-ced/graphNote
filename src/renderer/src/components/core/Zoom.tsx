@@ -5,56 +5,58 @@ export default (props: any) => {
   let zoomable!: HTMLDivElement;
 
   const handleWheel = async (e: WheelEvent) => {
-    if (e.ctrlKey) {
-      e.preventDefault();
+    if (!e.ctrlKey) return;
 
-      let newScale = store.viewport.scale;
+    e.preventDefault();
 
-      if (e.deltaY > 0) {
-        if (newScale <= 0.7) return;
-        newScale -= 0.1;
-      } else {
-        if (newScale >= 1.5) return;
-        newScale += 0.1;
-      }
+    const rect = zoomable.getBoundingClientRect();
+
+    // mouse in screen space
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const prevScale = store.viewport.scale;
 
 
-      //  if (!zoomable) return;
-      //  const rect = zoomable.getBoundingClientRect();
-      //
-      //  // Mouse position relative to the canvas container
-      //  const offsetX = e.clientX - rect.left;
-      //  const offsetY = e.clientY - rect.top;
-      //
-      //  // Convert to world/canvas coordinates
-      //  const canvasX = (offsetX - store.viewport.x) / store.viewport.scale;
-      //  const canvasY = (offsetY - store.viewport.y) / store.viewport.scale;
-      //
-      //  const newX = offsetX - canvasX * newScale;
-      //  const newY = offsetY - canvasY * newScale;
+    //! still might need to make it fit to a one digit zoom instead of like 0.70000000000001
+    const MIN = 7;   // 0.7
+    const MAX = 30;  // 3.0
 
-      setStore("viewport", {
-        scale: newScale,
-        //x: newX,
-        //y: newY,
-      });
+    let zoomIndex = Math.round(store.viewport.scale * 10);
 
-      updateArrowsPositions()
+    zoomIndex += e.deltaY > 0 ? -1 : 1;
 
-      //? make the canvas take all screen space when zooming
-      //! still not good enough, overcompenstaes
-      const div = document.getElementById("viewport-content")?.getBoundingClientRect()
-      console.info("div height: " + (div?.height ?? 0))
-      console.info((div?.height ?? 0) / newScale)
-      console.info(store.viewport.height)
-      console.info("///////////////////")
-      console.info(Math.max(store.viewport.height, (div?.height ?? 0) / newScale))
-      setStore("viewport", {
-        width: Math.max(store.viewport.width, div?.width ?? 0 / newScale),
-        height: Math.max(store.viewport.height, (div?.height ?? 0) / newScale),
-      });
+    zoomIndex = Math.min(MAX, Math.max(MIN, zoomIndex));
 
-    }
+    const newScale = zoomIndex / 10;
+
+    const vp = store.viewport;
+
+    // 🔥 world coordinate under mouse BEFORE zoom
+    const worldX = (mouseX - vp.x) / prevScale;
+    const worldY = (mouseY - vp.y) / prevScale;
+
+    // 🔥 new translation so cursor stays fixed
+    const newX = mouseX - worldX * newScale;
+    const newY = mouseY - worldY * newScale;
+
+    setStore("viewport", {
+      scale: newScale,
+      x: newX <= 0 ? newX : 0,
+      y: newY <= 0 ? newY : 0,
+    });
+
+    updateArrowsPositions();
+
+
+    //? make the canvas take all screen space when zooming
+    //! still not good enough, overcompenstaes
+    const div = document.getElementById("viewport-content")?.getBoundingClientRect()
+    setStore("viewport", {
+      width: Math.max(store.viewport.width, (div?.width ?? 0) / newScale),
+      height: Math.max(store.viewport.height, (div?.height ?? 0) / newScale),
+    });
+
   };
 
   return (

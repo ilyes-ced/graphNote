@@ -164,6 +164,7 @@ body,
 }
 
 #viewport-content {
+  transform-origin: 0 0;
   background-image: radial-gradient(#88888810 1px, transparent 0);
   background-size: 10px 10px;
   background-position: -20px -20px;
@@ -180,7 +181,11 @@ body,
 .child_node,
 .node {
   background-color: var(--color-card);
-  border: 1px solid var(--color-background);
+    /*
+    causes like a second border of thew nodes color to apear under it because of the scaling
+    will be replaced with padding in the node wrapper i think
+    border: 1px solid var(--color-background);
+    */
   cursor: grab;
   will-change: transform;
 }

@@ -105,7 +105,9 @@ export default (props: any) => {
         overflow: "hidden",
       }}
     >
-      {store.viewport.x}/{store.viewport.y}
+      <div class="absolute z-1000">
+        {store.viewport.x}/{store.viewport.y} ---- {store.viewport.scale}
+      </div>
       {props.children}
     </div>
   );
