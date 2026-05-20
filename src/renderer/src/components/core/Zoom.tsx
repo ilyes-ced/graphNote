@@ -4,6 +4,23 @@ import { updateArrowsPositions } from "../../shared/utils";
 export default (props: any) => {
   let zoomable!: HTMLDivElement;
 
+
+  const ZOOM_LEVELS = [
+    0.5,
+    0.67,
+    0.75,
+    0.8,
+    0.9,
+    1,
+    1.1,
+    1.25,
+    1.5,
+    1.75,
+    2,
+    2.5,
+    3,
+  ];
+
   const handleWheel = async (e: WheelEvent) => {
     if (!e.ctrlKey) return;
 
@@ -18,17 +35,23 @@ export default (props: any) => {
     const prevScale = store.viewport.scale;
 
 
-    //! still might need to make it fit to a one digit zoom instead of like 0.70000000000001
-    const MIN = 7;   // 0.7
-    const MAX = 30;  // 3.0
+    const currentIndex = ZOOM_LEVELS.reduce((closest, z, i) => {
+      return Math.abs(z - store.viewport.scale) <
+        Math.abs(ZOOM_LEVELS[closest] - store.viewport.scale)
+        ? i
+        : closest;
+    }, 0);
 
-    let zoomIndex = Math.round(store.viewport.scale * 10);
+    let zoomIndex = currentIndex + (e.deltaY > 0 ? -1 : 1);
 
-    zoomIndex += e.deltaY > 0 ? -1 : 1;
+    zoomIndex = Math.max(
+      0,
+      Math.min(ZOOM_LEVELS.length - 1, zoomIndex)
+    );
 
-    zoomIndex = Math.min(MAX, Math.max(MIN, zoomIndex));
+    const newScale = ZOOM_LEVELS[zoomIndex];
 
-    const newScale = zoomIndex / 10;
+
 
     const vp = store.viewport;
 
@@ -42,11 +65,19 @@ export default (props: any) => {
 
     setStore("viewport", {
       scale: newScale,
-      x: newX <= 0 ? newX : 0,
-      y: newY <= 0 ? newY : 0,
+      x: newX <= 0 ? Math.round(newX) : 0,
+      y: newY <= 0 ? Math.round(newY) : 0,
     });
 
     updateArrowsPositions();
+
+    //? helps with when you zoom back out it makes the text not pixelized
+    const el = document.getElementById("viewport-content");
+    if (el) {
+      el.style.display = "none";
+      el.offsetHeight; // force reflow
+      el.style.display = "";
+    }
 
 
     //? make the canvas take all screen space when zooming

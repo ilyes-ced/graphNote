@@ -88,7 +88,6 @@ export default (node: NoteProps) => {
       const text = editor.getText().trim();
       const urlRegex = /^(https?:\/\/[^\s]+)$/;
       if (urlRegex.test(text)) {
-        console.log("here we change this this note node to a url node");
         changeToUrlNode(node.id, text);
       } else {
         updateText(JSON.stringify(editor.getJSON()));
@@ -107,38 +106,8 @@ export default (node: NoteProps) => {
     // content: JSON.parse(node.text),
   }));
 
-  const activateEditor = () => {
-    if (editable()) return;
-
-    setEditable(true);
-    editor()?.setEditable(true);
-    // console.log(savedSelection)
-    // console.log(savedSelection)
-    // console.log(savedSelection)
-    editor()?.commands.focus(savedSelection ?? "end");
-  };
-
-
-  // Also handle Electron window blur
-  window.addEventListener('blur', () => {
-    if (editor) {
-      savedSelection = editor()?.state.selection;
-    }
-  });
-  window.addEventListener('focus', () => {
-    // console.log("refocused now", node.id)
-    if (editor && savedSelection) {
-      // console.log("refocused now2", node.id)
-      // console.log(savedSelection)
-      editor()?.commands.focus();
-      editor()?.commands.setTextSelection(savedSelection);
-    }
-  });
-
   return (
-    <div class="p-5" ondblclick={activateEditor}>
-      {/*JSON.stringify(store.activeTags)*/}
-
+    <div class="p-5">
       <div id={editable() ? "editor" : ""} ref={editorRef}></div>
     </div>
   );

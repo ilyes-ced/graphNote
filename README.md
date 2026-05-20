@@ -87,6 +87,7 @@
 - [ ] when zooming, make it point to or from the mouse cursor
 - [ ] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
 - [ ] for todo make the title optional
+- [ ] infinite loop resizing: disable the observer after the first fire, for urls, update once the resource is loaded, when width is changed also do the observe once more
 
 
 

@@ -65,7 +65,7 @@ export default (node: BoardProps) => {
           : "#00000000",
         width: node.is_child ? "100%" : "60px",
         "z-index": node.zIndex,
-        "border-radius": node.is_child ? "" : "15px",
+        //"border-radius": node.is_child ? "" : "15px",
         transform: `translate3d(${node.x}px, ${node.y}px, 0)`,
       }}
     >
@@ -80,7 +80,7 @@ export default (node: BoardProps) => {
           width: "60px",
           height: "60px",
           "margin-right": node.is_child ? "10px" : "",
-          "border-radius": node.is_child ? "10px" : "15px",
+          // "border-radius": node.is_child ? "10px" : "15px",
         }}
       >
         <IconCode class="size-full p-2" />

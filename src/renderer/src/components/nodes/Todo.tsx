@@ -439,10 +439,10 @@ const Checkbox = (props: TaskItemProps) => {
         }
         class="peer size-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border checked:bg-primary/80 checked:border-primary"
       />
-      <span class="absolute opacity-0 peer-checked:opacity-100 flex items-center justify-center">
+      <span class="absolute opacity-0 peer-checked:opacity-100 flex items-center justify-center ">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="size-3/4"
+          class="size-full"
           viewBox="0 0 20 20"
           fill="currentColor"
           stroke="currentColor"

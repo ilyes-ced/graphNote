@@ -93,9 +93,11 @@ export default (node: nodeProps) => {
       const height = entries[0].contentRect.height;
       const [_, gy] = store.snapGrid ? store.snapGrid : [1, 1];
       const newH = Math.ceil((height ?? 0) / gy) * gy
-      setPadding(newH - height)
-      //? should remove it but, its needed for delayed nodes like URL and IMAGES, and resize
-      //observer.disconnect();
+      if ((newH - height - 3) < 0) {
+        setPadding(newH - height - 3 + 10);
+      } else {
+        setPadding(newH - height - 3);
+      }
     });
     observer.observe(el);
   });
@@ -107,7 +109,7 @@ export default (node: nodeProps) => {
   return (
     <div
       onPointerDown={startDrag}
-      class={`${node.node.type.toLowerCase()} `}
+      class={`${node.node.type.toLowerCase()} border-2 border-background`}
       classList={{
         child_node: node.isChildNode,
         "node group/resize": !node.isChildNode,
@@ -123,7 +125,7 @@ export default (node: nodeProps) => {
         width: node.isChildNode
           ? "100%"
           : width()
-            ? `${width()}px`
+            ? `${(width() ?? 0) + 1}px`
             : "fit-content",
         background: "transparent",
         "z-index": node.node.zIndex,
@@ -131,24 +133,31 @@ export default (node: nodeProps) => {
         color: node.node.textColor ?? "var(--color-foreground)",
       }}
     >
-      <div class="m-px" style={{
+      <div class="" style={{
         background: node.node.color ?? "var(--color-card)", //? if this doesnt exist, .node in App.css will take care of it
       }}
       >
-
+        <div class="absolute z-1000">
+          {padding()}
+        </div>
         {/* width() */}
         {/* node.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
         <Show when={node.node.top_strip_color}>
           <div
-            class="top_strip h-1 w-full z-2"
+            class="absolute top-0 left-o top_strip h-1 w-full z-2"
             style={{ background: node.node.top_strip_color }}
           ></div>
         </Show>
+
+
+        <div class="" style={{ "padding-bottom": `${padding() / 2}px` }}></div>
         <div class="child_div" ref={el}>
           {/* padding(): this padding is maybe best given to the child to decide its position based on the node for better appearance and more consistency */}
           {/* give to child: {padding()} */}
           {node.children}
         </div>
+        <div class="" style={{ "padding-bottom": `${(padding() / 2)}px` }}></div>
+
         <Show when={!node.isChildNode}>
           <ResizeHandle startResizeFunction={startResize} />
         </Show>

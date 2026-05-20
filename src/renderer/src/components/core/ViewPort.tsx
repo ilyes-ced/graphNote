@@ -42,10 +42,19 @@ export default (props: any) => {
           newNode(NodeType.Note, ((e.clientX - 65) / store.viewport.scale), ((e.clientY - 50) / store.viewport.scale));
         }}
         id="viewport-content"
+        class={`viewport-content-${store.userConfig.gridStyle}`}
         style={{
-          // border: "1px solid yellow",
-          transform: `translate(${store.viewport.x}px, ${store.viewport.y}px) scale(${store.viewport.scale})`,
-          transition: "all 0.2s ease-out",
+          transform: `translate3d(${store.viewport.x}px, ${store.viewport.y}px, 0)
+            scale3d(
+            ${store.viewport.scale},
+            ${store.viewport.scale},
+            1
+          )`,
+
+          transition: "transform 0.05s linear",
+          "will-change": "transform",
+          "transform-origin": "0 0",
+
           "min-height": "100%",
           "min-width": "100%",
           width: store.viewport.width

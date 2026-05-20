@@ -32,7 +32,9 @@ export default (props: { nodeId: string; title: string }) => {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevents new line
-    }
+      editableDiv.blur()
+    } else if (e.key === "Escape")
+      editableDiv.blur()
   };
 
   return (

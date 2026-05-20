@@ -78,15 +78,11 @@
 
 /********************************************************/
 
-div {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
+
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+  box-sizing: border-box  !important;
 }
 
 @font-face {
@@ -163,9 +159,18 @@ body,
   background: #555;
 }
 
-#viewport-content {
+.viewport-content-dots {
   transform-origin: 0 0;
   background-image: radial-gradient(#88888810 1px, transparent 0);
+  background-size: 10px 10px;
+  background-position: -20px -20px;
+}
+
+.viewport-content-grid{
+  transform-origin: 0 0;
+  background-image:
+    linear-gradient(to right, #88888810 1px, transparent 1px),
+    linear-gradient(to bottom, #88888810 1px, transparent 1px);
   background-size: 10px 10px;
   background-position: -20px -20px;
 }
@@ -202,7 +207,7 @@ body,
 }
 
 .selected_node {
-  border: 1px solid white !important;
+  border-color:white !important;
 }
 
 .wiggle-me {
