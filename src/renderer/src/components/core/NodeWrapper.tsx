@@ -28,7 +28,7 @@ const ignoredClasses = (
       case NodeType.Column:
         return { classes: ["collapse_icon", "titleHandle"] };
       case NodeType.Note:
-        return { tags: ["button"], ids: ["editor"] };
+        return { tags: ["button"], ids: ["editor"], classes: ["edit_toggle"] };
       case NodeType.Todo:
         return {
           classes: [
@@ -114,7 +114,8 @@ export default (node: nodeProps) => {
         child_node: node.isChildNode,
         "node group/resize": !node.isChildNode,
         selected_node: store.selectedNodes.has(node.node.id),
-        "group/collapse ": node.node.type === NodeType.Column,
+        "group/collapse": node.node.type === NodeType.Column,
+        "group/edit": node.node.type === NodeType.Note,
         "flex flex-col justify-center items-center":
           node.node.type === NodeType.Board,
         "flex flex-row justify-start p-2 pl-2.5":
@@ -144,7 +145,7 @@ export default (node: nodeProps) => {
         {/* node.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
         <Show when={node.node.top_strip_color}>
           <div
-            class="absolute top-0 left-o top_strip h-1 w-full z-2"
+            class="absolute top-0 left-0 top_strip h-1 w-full z-2"
             style={{ background: node.node.top_strip_color }}
           ></div>
         </Show>

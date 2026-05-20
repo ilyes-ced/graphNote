@@ -29,10 +29,9 @@ interface GlobalStore {
   snapGrid: [number, number] | null;
 
   activeBoards: { title: string; id: string }[];
-  activeSidebar: "nodes" | "noteStyles" | "nodeStyles";
+  activeSidebar: "nodes" | "nodeStyles";
   showColorMenu: boolean;
 
-  noteEditor: Editor | null;
   activeTags: string[]; // has all active nodes like strong, p, h1 .....
 
   dragThreshold: number;
@@ -82,7 +81,6 @@ const [store, setStore] = createStore<GlobalStore>({
   activeBoards: [{ title: "home", id: "home" }],
   activeSidebar: "nodes",
   showColorMenu: false,
-  noteEditor: null,
   activeTags: [],
 
   dragThreshold: 5,
