@@ -58,7 +58,7 @@ export default (node: NoteProps) => {
 
 
   onCleanup(() => {
-    // editor?.destroy();
+    editor()?.destroy();
   });
 
 

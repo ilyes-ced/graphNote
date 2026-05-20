@@ -3,6 +3,7 @@ import { Document } from "../../types";
 import Svg from "./Svg";
 import * as pdfjsLib from 'pdfjs-dist';
 import { setStore, store } from "../../shared/store";
+import Editor from "./Editor";
 
 
 type DocumentProps = Document & {
@@ -116,6 +117,9 @@ export default (node: DocumentProps) => {
             <div>11 MB</div>
           </div>
         </div>
+      </div>
+      <div class="p-5">
+        <Editor id={node.id} desc={node.description} />
       </div>
     </div >
   );

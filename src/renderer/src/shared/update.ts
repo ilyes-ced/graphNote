@@ -700,6 +700,32 @@ const updateNodeTitle = (nodeId: string, newValue: string) => {
   }
 };
 
+const updateNodeDesc = (nodeId: string, newValue: string) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      const oldDesc = nodeList[index].description;
+
+      setStore("nodes", parentId, index, "description", newValue);
+      saveChanges();
+
+      return {
+        undo() {
+          setStore("nodes", parentId, index, "description", oldDesc);
+          saveChanges();
+        },
+        redo() {
+          setStore("nodes", parentId, index, "description", newValue);
+          saveChanges();
+        },
+      };
+
+
+      break;
+    }
+  }
+};
+
 const updateActivityCounter = (
   nodeId: string,
   date: string,
@@ -829,6 +855,8 @@ const wrappedUpdateNodeColor = actionsMiddleware(updateNodeColor);
 const wrappedChangeToUrlNode = actionsMiddleware(changeToUrlNode);
 const wrappedUnsetStripColor = actionsMiddleware(unsetStripColor);
 const wrappedUpdateNodeTitle = actionsMiddleware(updateNodeTitle);
+const wrappedUpdateNodeDesc = actionsMiddleware(updateNodeDesc);
+
 const wrappedNewImageNode = actionsMiddleware(newImageNode);
 const wrappedUpdateActivityCounter = actionsMiddleware(updateActivityCounter);
 const wrappedReorderTasks = actionsMiddleware(reorderTasks);
@@ -856,6 +884,7 @@ export {
   wrappedChangeToUrlNode as changeToUrlNode,
   wrappedUnsetStripColor as unsetStripColor,
   wrappedUpdateNodeTitle as updateNodeTitle,
+  wrappedUpdateNodeDesc as updateNodeDesc,
   wrappedNewImageNode as newImageNode,
   wrappedUpdateActivityCounter as updateActivityCounter,
   wrappedReorderTasks as reorderTasks,

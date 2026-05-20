@@ -46,10 +46,12 @@ const ignoredClasses = (
         return {
           classes: ["activityCell", "ch-subdomain-bg", "activityChangers"],
         };
+      case NodeType.Image:
+        return { ids: ["secondaryEditor"] };
       case NodeType.Url:
-        return { tags: ["video"], classes: ["url_input"] };
+        return { tags: ["video"], classes: ["url_input"], ids: ["secondaryEditor"] };
       case NodeType.Document:
-        return { classes: ["down_pdf", "open_pdf"] };
+        return { classes: ["down_pdf", "open_pdf"], ids: ["secondaryEditor"] };
 
       default:
         return {};
@@ -157,6 +159,7 @@ export default (node: nodeProps) => {
           {/* give to child: {padding()} */}
           {node.children}
         </div>
+        {/*TODO: this is better inside each node so we can set wherre it goes inside each node */}
         <div class="" style={{ "padding-bottom": `${(padding() / 2)}px` }}></div>
 
         <Show when={!node.isChildNode}>

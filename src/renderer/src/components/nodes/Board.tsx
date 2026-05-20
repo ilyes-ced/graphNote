@@ -53,9 +53,9 @@ export default (node: BoardProps) => {
   return (
     <div
       onPointerDown={startDrag}
-      class="board flex flex-col justify-center items-center "
+      class="board flex flex-col justify-center items-center border border-transparent"
       classList={{
-        "node border-none! px-11 py-2": !node.is_child,
+        "node px-[40px] py-[10px] pb-[12px]": !node.is_child,
         "child_node flex flex-row justify-start p-2 pl-2.5 ": node.is_child,
       }}
       id={node.id}

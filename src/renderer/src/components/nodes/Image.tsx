@@ -1,6 +1,6 @@
 import { onMount, createSignal } from "solid-js";
 import { Image } from "../../types";
-import EditableTitle from "./EditableTitle";
+import Editor from "./Editor";
 
 type ImageProps = Image & {
   is_child?: boolean;
@@ -47,7 +47,7 @@ export default (node: ImageProps) => {
       <img style={{ width: "100%" }} src={imgSrc()} alt={node.path} />
 
       <div class="p-5">
-        <EditableTitle nodeId={node.id} title={node.title} />
+        <Editor id={node.id} desc={node.description} />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { Url } from "../../types";
 import { IconLink, IconPlayerPlayFilled } from "@tabler/icons-solidjs";
 import { updateURL } from "../../shared/update";
 import { store } from "../../shared/store";
+import Editor from "./Editor";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -205,7 +206,13 @@ export default (node: UrlProps) => {
             </div>
 
             <div class="url_description text-xs">{metaData().description}</div>
-          </div></div>
+          </div>
+
+
+          <div class="p-5">
+            <Editor id={node.id} desc={node.description} />
+          </div>
+        </div>
       )}
 
     </div>

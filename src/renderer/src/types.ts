@@ -70,6 +70,7 @@ interface Comment extends Node, ChildNode {
 
 interface Url extends Node, ChildNode {
   url: string;
+  description: string;
 }
 interface Todo extends Node, ChildNode {
   title?: string;
@@ -125,7 +126,6 @@ interface Board extends Node, ChildNode {
 }
 interface Image extends Node, ChildNode {
   path: string;
-  title: string;
   description: string;
 }
 interface Activity extends Node, ChildNode {
