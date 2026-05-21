@@ -1,9 +1,10 @@
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import { Url } from "../../types";
 import { IconLink, IconPlayerPlayFilled } from "@tabler/icons-solidjs";
 import { updateURL } from "../../shared/update";
 import { store } from "../../shared/store";
 import Editor from "./Editor";
+import { Metadata } from "pdfjs-dist/types/src/display/metadata";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -12,8 +13,8 @@ type UrlProps = Url & {
 type MetaData = {
   title: string;
   description: string;
-  image: string;
-  favicon: string;
+  image: ArrayBuffer;
+  favicon: ArrayBuffer;
 };
 
 //TODO: add cashing system
@@ -22,10 +23,28 @@ export default (node: UrlProps) => {
   const [metaData, setMetaData] = createSignal<MetaData>({
     title: "placeholder",
     description: "placeholder",
-    image: "placeholder.png",
-    favicon: "placeholder.png",
+    image: new ArrayBuffer(0),
+    favicon: new ArrayBuffer(0),
   });
   const [isPlaying, setIsPlaying] = createSignal(false);
+
+  const [src, setSrc] = createSignal<string>("");
+  const [srcFav, setSrcFav] = createSignal<string>("");
+
+  const setImageFromArrayBuffer = (buffer: ArrayBuffer, type: "image" | "favicon") => {
+    console.log(buffer)
+    const blob = new Blob([buffer], { type: "image/png" }); // or jpeg/webp
+    const url = URL.createObjectURL(blob);
+    if (type === "image") {
+      setSrc(url);
+    } else if (type === "favicon") {
+      setSrcFav(url)
+    }    // cleanup old URL to avoid memory leaks
+    onCleanup(() => URL.revokeObjectURL(url));
+  };
+
+
+
 
   function matchYoutubeUrl(url: string): boolean {
     const pattern =
@@ -35,9 +54,7 @@ export default (node: UrlProps) => {
 
   const getMetaData = async (url: string): Promise<MetaData | null> => {
     try {
-      //const message = await invoke<MetaData>("scrape_url", { url });
-      const message = await window.api.scrapeUrl(url);
-      // console.log("Received message:", message);
+      const message = await window.api.scrapeUrl({ url: url, cache: true });
       return message;
     } catch (error) {
       console.error("Error scraping metadata:", error);
@@ -45,32 +62,6 @@ export default (node: UrlProps) => {
     }
   };
 
-  // const [downloadedPath, setDownloadedPath] = createSignal<string | null>(null);
-  // const [progress, setProgress] = createSignal<number>(0);
-  // const [loading, setLoading] = createSignal(false);
-
-  //onMount(() => {
-  //  queueMicrotask(async () => {
-  //    const url = node.url;
-  //
-  //    // First, check or download
-  //    // if (matchYoutubeUrl(node.url)) {
-  //    //   setLoading(true);
-  //    //   try {
-  //    //     const path = await invoke<string>("download_youtube", { url });
-  //    //     setDownloadedPath(convertFileSrc(path));
-  //    //   } catch (e) {
-  //    //     console.error("Download failed", e);
-  //    //   } finally {
-  //    //     setLoading(false);
-  //    //   }
-  //    // }
-  //
-  //    // Then fetch metadata
-  //    const meta = await getMetaData(url);
-  //    if (meta) setMetaData(meta);
-  //  });
-  //});
 
   const fetchMetaData = () => {
     // Defer to next microtask to avoid blocking render
@@ -79,6 +70,8 @@ export default (node: UrlProps) => {
         if (res) {
           console.log(res)
           setMetaData(res);
+          setImageFromArrayBuffer(res.image, "image");
+          setImageFromArrayBuffer(res.favicon, "favicon");
         }
       });
     });
@@ -86,6 +79,8 @@ export default (node: UrlProps) => {
 
   onMount(async () => {
     fetchMetaData()
+    setImageFromArrayBuffer(metaData().image, "image")
+    setImageFromArrayBuffer(metaData().favicon, "favicon")
     if (store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url)) {
       console.info("sending the to the youtubeVidCache function")
       var ff = await window.api.cacheYoutubeVid(node.url);
@@ -176,7 +171,7 @@ export default (node: UrlProps) => {
                 </div>}
               <img
                 class="wait_load url_thumbnail pointer-events-none"
-                src={metaData().image}
+                src={src()}
                 loading="eager"
                 alt=""
               />
@@ -188,7 +183,7 @@ export default (node: UrlProps) => {
             <div class="url_container flex flex-row items-center space-x-2">
               <img
                 class="url_thumbnail size-4"
-                src={metaData().favicon}
+                src={srcFav()}
                 loading="lazy"
                 alt="favicon"
               />

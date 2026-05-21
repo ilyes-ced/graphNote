@@ -63,6 +63,7 @@
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "crypto": "^1.0.1",
     "dayjs": "^1.11.18",
     "electron-updater": "^6.3.9",
     "leader-line": "^1.0.8",

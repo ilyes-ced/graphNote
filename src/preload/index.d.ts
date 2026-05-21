@@ -14,10 +14,11 @@ declare global {
       getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>;
       copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>;
       readImage: (filePath: string) => Promise<Buffer>;
-      scrapeUrl: (data: string) => Promise<any>;
+      scrapeUrl: (data: { url: string, cache: boolean }) => Promise<any>;
       backUpSave: () => Promise<any>;
       downloadImgUrl: (imgUrl: string) => Promise<any>;
-      cacheYoutubeVid: (title: string) => Promise<string>
+      cacheUrl: (url: string) => Promise<string>
+      cacheYoutubeVid: (url: string) => Promise<string>
     };
   }
 }

@@ -1,7 +1,8 @@
-export { };
+import { ElectronAPI } from '@electron-toolkit/preload'
 
 declare global {
   interface Window {
+    electron: ElectronAPI
     api: {
       getNodes: () => Promise<any>;
       getEdges: () => Promise<any>;
@@ -14,10 +15,11 @@ declare global {
       copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>;
       readImage: (string) => Promise<Buffer>;
       writeNodeFile: (string) => Promise<any>;
-      scrapeUrl: (string) => Promise<any>;
+      scrapeUrl: (data: { url: string, cache: boolean }) => Promise<any>;
       backUpSave: () => Promise<any>;
       downloadImgUrl: (string) => Promise<any>;
-      cacheYoutubeVid: (title: string) => Promise<string>
+      cacheUrl: (url: string) => Promise<string>
+      cacheYoutubeVid: (url: string) => Promise<string>
     };
   }
 }

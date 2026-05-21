@@ -1,8 +1,10 @@
 import { ipcMain } from "electron";
-import { mkdir } from "fs/promises";
+import { access, mkdir } from "fs/promises";
 import path from "path";
 import fs from "fs/promises";
 import * as cheerio from "cheerio";
+import { createHash } from "crypto";
+import { constants } from "fs";
 
 const basePath = "/home/clippy/Documents/GraphNote";
 const baseDir = "/home/clippy/Documents";
@@ -10,15 +12,37 @@ const nodesPath = `${basePath}/nodes.json`;
 const edgesPath = `${basePath}/edges.json`;
 
 
-
-
 // duplicated in Url.tsx in the frontend
 type MetaData = {
     title: string;
     description: string;
-    image: string;
-    favicon: string;
+    image: ArrayBuffer;
+    favicon: ArrayBuffer;
 };
+
+
+
+function getExtensionFromContentType(contentType: string | null): string {
+    if (!contentType) return ".jpg"; // fallback
+
+    const map: Record<string, string> = {
+        "image/jpeg": ".jpg",
+        "image/png": ".png",
+        "image/webp": ".webp",
+        "image/gif": ".gif",
+        "image/bmp": ".bmp",
+        "image/svg+xml": ".svg",
+    };
+
+    return map[contentType.split(";")[0]] || ".jpg";
+}
+
+function getExtensionFromUrl(url: string): string | null {
+    const pathname = new URL(url).pathname;
+    const ext = path.extname(pathname);
+    return ext || null;
+}
+
 
 
 
@@ -30,6 +54,11 @@ function getNextName(fileName: string, counter: number) {
 
 async function ensureDir() {
     await mkdir(basePath, { recursive: true });
+}
+
+
+async function createDir(folderName: string) {
+    await mkdir(`${basePath}/${folderName}`, { recursive: true });
 }
 
 async function readJSON(filePath: string) {
@@ -223,8 +252,39 @@ ipcMain.handle('readImage', async (_event, filePath: string) => {
 
 
 
-ipcMain.handle("scrapeUrl", async (_event, url: string): Promise<MetaData> => {
+ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }): Promise<MetaData> => {
+    const { url, cache } = data;
     try {
+
+        //TODO: before anything check if this url is alredy cached
+        const urlHashed = createHash("sha256").update(url).digest("hex").slice(0, 16);
+        const filePath = `${basePath}/cache/urls/${urlHashed}/${urlHashed}.json`;
+        let exists = true;
+        try {
+            await access(filePath, constants.F_OK);
+        } catch {
+            exists = false;
+        }
+
+        if (exists) {
+            const json = JSON.parse(await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${urlHashed}.json`, "utf-8"));
+
+            const files = await fs.readdir(`${basePath}/cache/urls/${urlHashed}`);
+            const image = files.find(file =>
+                path.parse(file).name === "image"
+            );
+            const favicon = files.find(file =>
+                path.parse(file).name === "favicon"
+            );
+
+
+            const imageBuffer = image ? await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${image}`) : new ArrayBuffer(0)
+            const faviconBuffer = favicon ? await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${favicon}`) : new ArrayBuffer(0)
+
+            return { title: json.title, description: json.description, image: imageBuffer, favicon: faviconBuffer };
+        }
+
+
         const res = await fetch(url, {
             headers: {
                 "User-Agent": "Mozilla/5.0 (compatible; URLPreviewBot/1.0)"
@@ -266,13 +326,33 @@ ipcMain.handle("scrapeUrl", async (_event, url: string): Promise<MetaData> => {
         if (favicon && !favicon.startsWith("http")) {
             favicon = new URL(favicon, baseUrl).toString();
         }
-        return { title, description, image, favicon };
+
+        if (cache) {
+            const urlHash = createHash("sha256").update(url).digest("hex").slice(0, 16);
+            const imagePath = await downloadCacheImage(image, image, urlHash, "image")
+            const faviconPath = await downloadCacheImage(favicon, favicon, urlHash, "favicon")
+            const json = JSON.stringify({
+                title: title,
+                description: description
+            }, null, 2);
+            console.log(json)
+            await fs.writeFile(`${basePath}/cache/urls/${urlHash}/${urlHash}.json`, json, "utf-8");
+
+            const imageBuffer = imagePath != null ? await fs.readFile(imagePath) : new ArrayBuffer(10)
+            const faviconBuffer = faviconPath != null ? await fs.readFile(faviconPath) : new ArrayBuffer(10)
+            return { title, description, image: imageBuffer, favicon: faviconBuffer };
+        }
+
+
+
+        //TODO: change to return the buffer data for image not urls
+        return { title, description, image: new ArrayBuffer(10), favicon: new ArrayBuffer(10) };
     } catch (err) {
         return {
             title: "placeholder",
             description: "placeholder",
-            image: "placeholder.png",
-            favicon: "placeholder.png",
+            image: new ArrayBuffer(10),
+            favicon: new ArrayBuffer(10),
         };
     }
 });
@@ -285,6 +365,8 @@ ipcMain.handle("backUpSave", async () => {
     backup("nodes", JSON.stringify(nodes))
     backup("edges", JSON.stringify(edges))
 });
+
+
 const backup = async (type: "nodes" | "edges", data: any) => {
     const datetime = new Date().toISOString().replace(/[:.]/g, "-");
     console.log(datetime)
@@ -311,9 +393,7 @@ const backup = async (type: "nodes" | "edges", data: any) => {
 
 
 ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
-    console.log("lllllllllllllllllllllllllll")
     console.log(imgUrl)
-    console.log("lllllllllllllllllllllllllll")
     const res = await fetch(imgUrl);
     console.log(res)
     // maybe using wget is the best method
@@ -327,11 +407,11 @@ ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
 
 
 
-ipcMain.handle("cacheYoutubeVid", async (_, title: string) => {
-    console.log("lllllllllllllllllllllllllll")
-    console.log("inside the cacheYoutubeVid function")
-    console.log(title)
-    console.log("lllllllllllllllllllllllllll")
+ipcMain.handle("cacheUrl", async (_, url: string) => {
+    createDir("cache/urls")
+    console.log(url)
+    createDir(`cache/urls/${url}`)
+
 
     return {
         success: true,
@@ -340,3 +420,44 @@ ipcMain.handle("cacheYoutubeVid", async (_, title: string) => {
 });
 
 
+
+
+
+
+ipcMain.handle("cacheYoutubeVid", async (_, url: string) => {
+    createDir("cache/youtube")
+    console.log("inside the cacheYoutubeVid function")
+    console.log(url)
+
+    return {
+        success: true,
+        message: "succ or failure not sure yet",
+    };
+});
+
+
+
+
+const downloadCacheImage = async (image: string, url: string, urlName: string, type: "image" | "favicon"): Promise<string | null> => {
+    try {
+        const res = await fetch(image);
+        if (!res.ok || !res.body) {
+            throw new Error(`Failed to download: ${res.status}`);
+        }
+        const contentType = res.headers.get("content-type");
+        let ext = getExtensionFromContentType(contentType);
+        // 2. Fallback to URL extension if needed
+        if (ext === ".jpg") {
+            const urlExt = getExtensionFromUrl(url);
+            if (urlExt) ext = urlExt;
+        }
+        await createDir(`cache/urls/${urlName}`)
+        const buffer = Buffer.from(await res.arrayBuffer());
+        await fs.writeFile(`${basePath}/cache/urls/${urlName}/${type}${ext}`, buffer);
+        return `${basePath}/cache/urls/${urlName}/${type}${ext}`
+    } catch (e) {
+        console.log("failed to cache the image", e)
+        return null
+    }
+    return null
+}

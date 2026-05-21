@@ -10,18 +10,6 @@ import { setStore, store } from "../../shared/store";
 import { updateArrowsPositions } from "../../shared/utils";
 import MiniMap from "./MiniMap";
 
-
-/*
-wrapper: control width and height
-    EventHandler: keyboard key presses
-        Zoom
-            pan
-                viewport
-                    nodes
-                    edges
-                    .....
-*/
-
 export default () => {
   const [wrapperRef, setWrapperRef] = createSignal(null);
 
@@ -47,11 +35,10 @@ export default () => {
             document.getElementById(edge.srcNodeId),
             document.getElementById(edge.distNodeId),
             {
-              container: document.querySelector("#viewport-content"),
               color: edge.color,
-              middleLabel: LeaderLine.captionLabel(LeaderLine.captionLabel(edge.label, { color: 'red' }), {
+              middleLabel: LeaderLine.captionLabel(edge.label, {
                 color: edge.color,
-                outlineColor: ''
+                outlineColor: 'red'
               }),
               path: edge.type
             }
@@ -89,16 +76,10 @@ export default () => {
             <ViewPort wrapperRef={setWrapperRef} >
               <Nodes />
               <div id="edges"></div>
-              {/*
-              <Edges />
-              */}
             </ViewPort>
             <Show when={store.userConfig.showMiniMap}>
               <MiniMap wrapperRef={() => wrapperRef} />
             </Show>
-            {/*
-              //? put later when its functional
-            */}
             <Controls />
           </Pan>
         </Zoom>

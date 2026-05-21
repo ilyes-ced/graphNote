@@ -44,6 +44,9 @@ const api = {
     downloadImgUrl: (data: any) =>
         ipcRenderer.invoke("downloadImgUrl", data),
 
+    cacheUrl: (data: any) =>
+        ipcRenderer.invoke("cacheUrl", data),
+
     cacheYoutubeVid: (data: any) =>
         ipcRenderer.invoke("cacheYoutubeVid", data),
 
