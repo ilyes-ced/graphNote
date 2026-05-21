@@ -37,8 +37,10 @@ export default () => {
             {
               color: edge.color,
               middleLabel: LeaderLine.captionLabel(edge.label, {
-                color: edge.color,
-                outlineColor: 'red'
+                color: 'white',
+                outlineColor: edge.color,
+                fontWeight: 'bold',
+                fontSize: '14px'
               }),
               path: edge.type
             }

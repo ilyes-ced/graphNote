@@ -1,10 +1,12 @@
-import { ipcMain } from "electron";
+import { BrowserWindow, ipcMain } from "electron";
 import { access, mkdir } from "fs/promises";
 import path from "path";
 import fs from "fs/promises";
 import * as cheerio from "cheerio";
 import { createHash } from "crypto";
-import { constants } from "fs";
+import { constants, createWriteStream, readdirSync } from "fs";
+import { Innertube, UniversalCache } from 'youtubei.js';
+import youtubedl from 'youtube-dl-exec';
 
 const basePath = "/home/clippy/Documents/GraphNote";
 const baseDir = "/home/clippy/Documents";
@@ -407,36 +409,6 @@ ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
 
 
 
-ipcMain.handle("cacheUrl", async (_, url: string) => {
-    createDir("cache/urls")
-    console.log(url)
-    createDir(`cache/urls/${url}`)
-
-
-    return {
-        success: true,
-        message: "succ or failure not sure yet",
-    };
-});
-
-
-
-
-
-
-ipcMain.handle("cacheYoutubeVid", async (_, url: string) => {
-    createDir("cache/youtube")
-    console.log("inside the cacheYoutubeVid function")
-    console.log(url)
-
-    return {
-        success: true,
-        message: "succ or failure not sure yet",
-    };
-});
-
-
-
 
 const downloadCacheImage = async (image: string, url: string, urlName: string, type: "image" | "favicon"): Promise<string | null> => {
     try {
@@ -460,4 +432,132 @@ const downloadCacheImage = async (image: string, url: string, urlName: string, t
         return null
     }
     return null
+}
+
+
+
+function getYouTubeVideoId(url) {
+    try {
+        const u = new URL(url);
+
+        // youtu.be/<id>
+        if (u.hostname.includes("youtu.be")) {
+            return u.pathname.slice(1);
+        }
+
+        // youtube.com/watch?v=<id>
+        if (u.searchParams.has("v")) {
+            return u.searchParams.get("v");
+        }
+
+        // youtube.com/embed/<id> or /shorts/<id>
+        const parts = u.pathname.split("/");
+        const index = parts.findIndex(p => ["embed", "shorts"].includes(p));
+
+        if (index !== -1 && parts[index + 1]) {
+            return parts[index + 1];
+        }
+
+        return null;
+    } catch {
+        return null;
+    }
+}
+
+
+
+export function registerApi(mainWindow: BrowserWindow) {
+    ipcMain.handle("cacheYoutubeVid", async (event, url: string) => {
+        console.log("download started")
+        createDir("cache/youtube")
+        const vidId = getYouTubeVideoId(url)
+        if (!vidId) {
+            return {
+                success: false,
+                message: "failed to get id from youtube url",
+            }
+        }
+
+        //TODO: check the file doesnt exist first
+        const files = readdirSync(`${basePath}/cache/youtube/`)
+        if (files
+            .find(file => file.startsWith(vidId))
+            ? path.join(`${basePath}/cache/youtube/`, files.find(file => file.startsWith(vidId))!)
+            : null) {
+            console.log("file is already downloaded")
+            return {
+                success: true,
+                message: "file is already downloaded"
+            }
+        }
+
+        const subprocess = youtubedl.exec(url, {
+            noCheckCertificates: true,
+            noWarnings: true,
+            preferFreeFormats: true,
+
+            addHeader: [
+                'referer:youtube.com',
+                'user-agent:googlebot'
+            ],
+
+            output: `${basePath}/cache/youtube/${vidId}_%(title)s.%(ext)s`,
+            newline: true
+        })
+
+        let lastSent = 0
+        let downloading = ""
+        subprocess.stdout?.on("data", (data) => {
+            const line = data.toString()
+            console.log(line)
+            const matchDownload = line.match(/(\d+(?:\.\d+)?)%/)
+            const matchFileName = line.match(/\[download\]\s+Destination:\s(.+)/)
+            if (matchFileName) {
+                downloading = matchFileName ? matchFileName[1].trim() : null
+            }
+            if (matchDownload) {
+                const now = Date.now()
+                if (now - lastSent < 500) return
+                lastSent = now
+
+                const progress = parseFloat(matchDownload[1])
+                console.log("progress:", progress)
+
+                event.sender.send("youtube-download-progress", {
+                    downloading,
+                    progress,
+                    vidId
+                })
+
+                mainWindow.setProgressBar(progress / 100)
+            }
+        })
+
+        subprocess.stderr?.on("data", (data) => {
+            console.error(data.toString())
+        })
+
+        return new Promise((resolve, reject) => {
+            subprocess.on("close", () => {
+                console.log("Download complete")
+                mainWindow.setProgressBar(-1)
+                event.sender.send("youtube-download-complete", {
+                    vidId
+                })
+                resolve({
+                    success: true,
+                    message: "download complete"
+                })
+            })
+
+            subprocess.on("error", (err) => {
+                console.error(err)
+                mainWindow.setProgressBar(-1)
+                reject({
+                    success: false,
+                    message: err.message
+                })
+            })
+        })
+    })
 }

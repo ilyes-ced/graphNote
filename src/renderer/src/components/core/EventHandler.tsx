@@ -232,7 +232,6 @@ export default (props: any) => {
                       //await downloadImage(imgRef.value);
                       const res = await window.api.downloadImgUrl(imgRef.value)
                       console.log(res)
-
                     }
                   });
                 }

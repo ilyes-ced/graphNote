@@ -99,6 +99,7 @@ html {
   font-family: Arial, Helvetica, sans-serif;
   color: var(--color-foreground);
   background-color: var(--color-background);
+  overflow: hidden;
 }
 
 
@@ -348,3 +349,8 @@ body,
 .is-active{
   background-color: red ;
 }
+
+.leader-line{
+  z-index: 10000;
+}
+

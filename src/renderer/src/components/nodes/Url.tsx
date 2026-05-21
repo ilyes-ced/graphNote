@@ -4,7 +4,6 @@ import { IconLink, IconPlayerPlayFilled } from "@tabler/icons-solidjs";
 import { updateURL } from "../../shared/update";
 import { store } from "../../shared/store";
 import Editor from "./Editor";
-import { Metadata } from "pdfjs-dist/types/src/display/metadata";
 
 type UrlProps = Url & {
   is_child?: boolean;
@@ -20,16 +19,15 @@ type MetaData = {
 //TODO: add cashing system
 //TODO: store them Documents/graphnote/cache and search there first if it doesnt exist do scrape_url
 export default (node: UrlProps) => {
+  const [isPlaying, setIsPlaying] = createSignal(false);
+  const [src, setSrc] = createSignal<string>("");
+  const [srcFav, setSrcFav] = createSignal<string>("");
   const [metaData, setMetaData] = createSignal<MetaData>({
     title: "placeholder",
     description: "placeholder",
     image: new ArrayBuffer(0),
     favicon: new ArrayBuffer(0),
   });
-  const [isPlaying, setIsPlaying] = createSignal(false);
-
-  const [src, setSrc] = createSignal<string>("");
-  const [srcFav, setSrcFav] = createSignal<string>("");
 
   const setImageFromArrayBuffer = (buffer: ArrayBuffer, type: "image" | "favicon") => {
     console.log(buffer)
@@ -39,12 +37,9 @@ export default (node: UrlProps) => {
       setSrc(url);
     } else if (type === "favicon") {
       setSrcFav(url)
-    }    // cleanup old URL to avoid memory leaks
+    }
     onCleanup(() => URL.revokeObjectURL(url));
   };
-
-
-
 
   function matchYoutubeUrl(url: string): boolean {
     const pattern =
@@ -54,7 +49,18 @@ export default (node: UrlProps) => {
 
   const getMetaData = async (url: string): Promise<MetaData | null> => {
     try {
-      const message = await window.api.scrapeUrl({ url: url, cache: true });
+      const message = await window.api.scrapeUrl({ url: url, cache: store.userConfig.cacheUrlData });
+      window.api.onYoutubeDownloadProgress((data: any) => {
+        console.log("data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL")
+        console.log(data)
+        console.log(data.progress)
+        console.log("data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL")
+      })
+
+      window.api.onYoutubeDownloadComplete((data: any) => {
+        console.log("download finishes here")
+        console.log(data)
+      })
       return message;
     } catch (error) {
       console.error("Error scraping metadata:", error);

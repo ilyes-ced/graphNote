@@ -20,6 +20,8 @@ declare global {
       downloadImgUrl: (string) => Promise<any>;
       cacheUrl: (url: string) => Promise<string>
       cacheYoutubeVid: (url: string) => Promise<string>
+      onYoutubeDownloadProgress: (callback: any) => Promise<any>
+      onYoutubeDownloadComplete: (callback: any) => Promise<any>
     };
   }
 }

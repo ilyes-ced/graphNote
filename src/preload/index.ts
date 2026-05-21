@@ -51,6 +51,18 @@ const api = {
         ipcRenderer.invoke("cacheYoutubeVid", data),
 
 
+    onYoutubeDownloadProgress: (callback) =>
+        ipcRenderer.on(
+            "youtube-download-progress",
+            (_, data) => callback(data)
+        ),
+
+    onYoutubeDownloadComplete: (callback) =>
+        ipcRenderer.on(
+            "youtube-download-complete",
+            (_, data) => callback(data)
+        )
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

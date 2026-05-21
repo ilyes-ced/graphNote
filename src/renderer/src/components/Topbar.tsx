@@ -71,6 +71,20 @@ export default () => {
         </div>
       </div>
 
+      <div class="flex justify-center items-center space-x-4 h-full p-2">
+        <div>board colors:</div>
+        <div
+          class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video"
+          style={{ background: "#592035" }}
+        >
+        </div>
+        <div
+          class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video"
+          style={{ background: "#592035" }}
+        >
+        </div>
+      </div>
+
       <div class="flex justify-center items-center space-x-4">
         <Button variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
           <IconSettings />
