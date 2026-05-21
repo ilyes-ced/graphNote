@@ -1,6 +1,5 @@
 import { createStore } from "solid-js/store";
 import { NodeUnion, Edge } from "../types";
-import { Editor } from "@tiptap/core";
 
 
 interface Command {
@@ -16,7 +15,8 @@ interface UserConfig {
   pdfReaderType: "side" | "modal",
   youtubeVidCache: boolean, //? if set to true, youtube videos will be downloaded
   pdfScale: number, //? for pdf reader clarity, 1 is blurry 1.5 is decent any more takes very long to laod
-  gridStyle: "dots" | "grid"
+  gridStyle: "dots" | "grid",
+  showMiniMap: boolean
 }
 
 interface GlobalStore {
@@ -110,7 +110,9 @@ const [store, setStore] = createStore<GlobalStore>({
     pdfReaderType: "modal",
     youtubeVidCache: true,
     pdfScale: 1.5,
-    gridStyle: "grid"
+    gridStyle: "grid",
+    showMiniMap: false,
+
   },
 });
 

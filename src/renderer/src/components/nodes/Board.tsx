@@ -61,8 +61,9 @@ export default (node: BoardProps) => {
       id={node.id}
       style={{
         background: node.is_child
-          ? `#${node.color ? node.color : "var(--color-primary)"}20`
+          ? `${node.color ? node.color : "var(--color-primary)"}20`
           : "#00000000",
+        border: node.is_child ? `2px solid ${node.color ? node.color : "var(--color-primary)"}` : "",
         width: node.is_child ? "100%" : "60px",
         "z-index": node.zIndex,
         //"border-radius": node.is_child ? "" : "15px",

@@ -4,6 +4,9 @@
 - [x] stop the selection on Notes when dragging items (no longer an issue in electron)
 - [x] fix: when scalled down and moving an item outside canvas, when it extends it also moves idk why
 - [x] paste nodes: pasted the current state of the nodes not the state at the time of the copy
+- [ ] add animations to all actions
+- [ ] make adding nodes to column control the position of the insert
+- [ ] reimplement leaderLine to suit our uses, like making it one of the items on the canvas so we dont need to update it when we move or zoom the canvas
 
 # optimization
 

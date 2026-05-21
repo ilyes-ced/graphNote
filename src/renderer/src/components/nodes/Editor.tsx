@@ -42,7 +42,9 @@ export default (props: { id: string, desc: string }) => {
     }));
 
 
-
+    onCleanup(() => {
+        editor()?.destroy();
+    });
 
 
     return (

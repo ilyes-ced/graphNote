@@ -7,6 +7,7 @@ export default (props: any) => {
 
   return (
     <div
+      ref={props.wrapperRef}
       id="viewport"
       style={{
         position: "absolute",

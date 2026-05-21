@@ -1,5 +1,4 @@
 import { store, setStore } from "../../shared/store";
-import { updateArrowsPositions } from "../../shared/utils";
 
 export default (props: any) => {
   let zoomable!: HTMLDivElement;
@@ -69,7 +68,6 @@ export default (props: any) => {
       y: newY <= 0 ? Math.round(newY) : 0,
     });
 
-    updateArrowsPositions();
 
     //? helps with when you zoom back out it makes the text not pixelized
     const el = document.getElementById("viewport-content");

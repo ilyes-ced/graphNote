@@ -46,12 +46,14 @@ export default (node: Column) => {
         <Show
           when={store.nodes[node.id] && store.nodes[node.id].length > 0}
           fallback={
-            <div class="empty_children_containe h-[65px] w-full bg-gray-950"></div>
+            <div class="empty_children_containe h-[65px] w-full bg-background"></div>
           }
         >
           <For each={store.nodes[node.id]}>
             {(child_node, index) => (
-              <>
+              <div class="bg-background">
+
+
                 {child_node.type === NodeType.Board ? (
                   <Board {...child_node} is_child={true} />
                 ) : (
@@ -86,9 +88,10 @@ export default (node: Column) => {
                 )}
 
                 <Show when={index() < store.nodes[node.id].length - 1}>
-                  <div class="column_spacer pt-2 bg-transparent"></div>
+                  <div class="column_spacer pt-2" style={{ background: node.color }}></div>
                 </Show>
-              </>
+              </div>
+
             )}
           </For>
         </Show>

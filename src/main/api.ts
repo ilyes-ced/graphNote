@@ -280,7 +280,7 @@ ipcMain.handle("scrapeUrl", async (_event, url: string): Promise<MetaData> => {
 
 ipcMain.handle("backUpSave", async () => {
     const nodes = await readJSON(nodesPath);
-    const edges = await readJSON(nodesPath);
+    const edges = await readJSON(edgesPath);
 
     backup("nodes", JSON.stringify(nodes))
     backup("edges", JSON.stringify(edges))
