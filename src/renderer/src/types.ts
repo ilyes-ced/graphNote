@@ -123,6 +123,8 @@ interface Color extends Node, ChildNode {
 interface Board extends Node, ChildNode {
   title: string;
   icon_path: string;
+  bgColor: ColorType;
+  gridColor: ColorType;
 }
 interface Image extends Node, ChildNode {
   path: string;

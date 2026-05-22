@@ -6,6 +6,7 @@ import {
   IconMoonFilled,
   IconSettings,
 } from "@tabler/icons-solidjs";
+import { DefaultColorPicker } from "@thednp/solid-color-picker";
 
 export default () => {
   const breadcrumbsClick = (index: number) => {
@@ -72,16 +73,33 @@ export default () => {
       </div>
 
       <div class="flex justify-center items-center space-x-4 h-full p-2">
-        <div>board colors:</div>
+        <div>Board Grid Color:</div>
         <div
-          class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video"
-          style={{ background: "#592035" }}
+          class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video picker-wrapper "
         >
+          <DefaultColorPicker
+            value="#88888810"
+            onChange={(color) => {
+              console.log("llllllllllllll")
+              console.log("llllllllllllll")
+              console.log("llllllllllllll")
+              console.log("llllllllllllll")
+              document.documentElement.style.setProperty('--dot-color', color);
+              document.documentElement.style.setProperty('--grid-color', color);
+            }}
+          />
         </div>
+
+        <div>Board Bg Color:</div>
         <div
-          class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video"
-          style={{ background: "#592035" }}
+          class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video picker-wrapper "
         >
+          <DefaultColorPicker
+            value="rgba(136, 136, 136, 0.063)"
+            onChange={(color) => {
+
+            }}
+          />
         </div>
       </div>
 

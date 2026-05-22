@@ -1,6 +1,6 @@
 import { setStore, store } from "../../shared/store";
 import { NodeType } from "../../types";
-import { newNode } from "../../shared/update";
+import { getActiveBoardId, newNode } from "../../shared/update";
 
 export default (props: any) => {
 
@@ -10,6 +10,7 @@ export default (props: any) => {
       ref={props.wrapperRef}
       id="viewport"
       style={{
+        // background: store.nodes[getActiveBoardId()]?.bgColor ?? '#052385',
         position: "absolute",
         top: 0,
         left: 0,

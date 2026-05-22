@@ -157,6 +157,46 @@ const updateArrowsPositions = () => {
 };
 
 
-export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions };
+function oklchToRgb(oklchStr: string): string {
+  const match = oklchStr.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)/i);
+
+  if (!match) throw new Error("Invalid OKLCH format");
+
+  let l = parseFloat(match[1]);
+  let c = parseFloat(match[2]);
+  let h = parseFloat(match[3]);
+
+  const hr = (h * Math.PI) / 180;
+
+  // OKLCH → OKLab
+  const a = c * Math.cos(hr);
+  const b = c * Math.sin(hr);
+
+  // OKLab → LMS
+  const l_ = l + 0.3963377774 * a + 0.2158037573 * b;
+  const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
+  const s_ = l - 0.0894841775 * a - 1.2914855480 * b;
+
+  const lmsL = l_ * l_ * l_;
+  const lmsM = m_ * m_ * m_;
+  const lmsS = s_ * s_ * s_;
+
+  // LMS → linear RGB
+  let r = 4.0767416621 * lmsL - 3.3077115913 * lmsM + 0.2309699292 * lmsS;
+  let g = -1.2684380046 * lmsL + 2.6097574011 * lmsM - 0.3413193965 * lmsS;
+  let b2 = -0.0041960863 * lmsL - 0.7034186147 * lmsM + 1.7076147010 * lmsS;
+
+  // linear → sRGB
+  const toSRGB = (x) =>
+    x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055;
+
+  r = Math.round(Math.min(1, Math.max(0, toSRGB(r))) * 255);
+  g = Math.round(Math.min(1, Math.max(0, toSRGB(g))) * 255);
+  b2 = Math.round(Math.min(1, Math.max(0, toSRGB(b2))) * 255);
+
+  return `rgb(${r},${g},${b2})`;
+}
+
+export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions, oklchToRgb };
 
 

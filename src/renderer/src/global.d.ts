@@ -19,9 +19,10 @@ declare global {
       backUpSave: () => Promise<any>;
       downloadImgUrl: (string) => Promise<any>;
       cacheUrl: (url: string) => Promise<string>
-      cacheYoutubeVid: (url: string) => Promise<string>
+      cacheYoutubeVid: (url: string) => Promise<any>
       onYoutubeDownloadProgress: (callback: any) => Promise<any>
       onYoutubeDownloadComplete: (callback: any) => Promise<any>
+      getLocalVideo: (vidName: any) => Promise<any>
     };
   }
 }

@@ -4,14 +4,30 @@ import path from "path";
 import fs from "fs/promises";
 import * as cheerio from "cheerio";
 import { createHash } from "crypto";
-import { constants, createWriteStream, readdirSync } from "fs";
-import { Innertube, UniversalCache } from 'youtubei.js';
+import { constants, readdirSync } from "fs";
 import youtubedl from 'youtube-dl-exec';
+import express from "express";
 
 const basePath = "/home/clippy/Documents/GraphNote";
 const baseDir = "/home/clippy/Documents";
 const nodesPath = `${basePath}/nodes.json`;
 const edgesPath = `${basePath}/edges.json`;
+
+
+
+
+//? video server
+const mediaServer = express();
+mediaServer.use(
+    "/videos",
+    express.static(
+        path.join(basePath, "cache", "youtube")
+    )
+);
+mediaServer.listen(3232, () => {
+    console.log("media server running");
+});
+
 
 
 // duplicated in Url.tsx in the frontend
@@ -480,13 +496,18 @@ export function registerApi(mainWindow: BrowserWindow) {
 
         //TODO: check the file doesnt exist first
         const files = readdirSync(`${basePath}/cache/youtube/`)
-        if (files
+        const file = files
             .find(file => file.startsWith(vidId))
-            ? path.join(`${basePath}/cache/youtube/`, files.find(file => file.startsWith(vidId))!)
-            : null) {
+            ? files.find(file => file.startsWith(vidId))
+            : null
+        if (file) {
             console.log("file is already downloaded")
+            event.sender.send("youtube-download-complete", {
+                vidId
+            })
             return {
                 success: true,
+                fileName: file,
                 message: "file is already downloaded"
             }
         }
@@ -501,7 +522,7 @@ export function registerApi(mainWindow: BrowserWindow) {
                 'user-agent:googlebot'
             ],
 
-            output: `${basePath}/cache/youtube/${vidId}_%(title)s.%(ext)s`,
+            output: `${basePath}/cache/youtube/${vidId}.%(ext)s`,
             newline: true
         })
 
@@ -561,3 +582,17 @@ export function registerApi(mainWindow: BrowserWindow) {
         })
     })
 }
+
+
+
+
+
+
+ipcMain.handle("getLocalVideo", async (_, vidName: string) => {
+    return `http://127.0.0.1:3232/videos/${encodeURIComponent(vidName)}`;
+});
+
+
+
+
+

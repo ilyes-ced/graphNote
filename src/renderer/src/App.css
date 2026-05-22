@@ -74,6 +74,9 @@
   --color-sidebar-accent-foreground: oklch(0.985 0 0);
   --color-sidebar-border: oklch(1 0 0 / 10%);
   --color-sidebar-ring: oklch(0.646 0.222 41.116);
+
+  --dot-color:#88888810;
+  --grid-color:#88888810;
 }
 
 /********************************************************/
@@ -162,20 +165,19 @@ body,
 
 .viewport-content-dots {
   transform-origin: 0 0;
-  background-image: radial-gradient(#88888810 1px, transparent 0);
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 0);
   background-size: 10px 10px;
   background-position: -20px -20px;
 }
 
-.viewport-content-grid{
+.viewport-content-grid {
   transform-origin: 0 0;
   background-image:
-    linear-gradient(to right, #88888810 1px, transparent 1px),
-    linear-gradient(to bottom, #88888810 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
   background-size: 10px 10px;
   background-position: -20px -20px;
 }
-
 .node {
   position: absolute;
   /*
@@ -354,3 +356,16 @@ body,
   z-index: 10000;
 }
 
+.color-preview{
+  color: transparent !important;
+}
+.picker-wrapper .color-picker {
+    width: 100% !important;
+    height: 100% !important;
+}
+.picker-wrapper canvas,
+.picker-wrapper svg,
+.picker-wrapper input {
+    width: 100% !important;
+    height: 100% !important;
+}

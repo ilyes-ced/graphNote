@@ -1,14 +1,14 @@
 import { store } from "../../shared/store";
 import { unsetStripColor, updateNodeColor } from "../../shared/update";
-import { ColorType } from "@/types";
 import { createSignal, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
 import { DefaultColorPicker } from "@thednp/solid-color-picker";
 import "@thednp/solid-color-picker/style.css";
+import { oklchToRgb } from "../../shared/utils";
+import { ColorType } from "../../types";
 
 // first color is default
-
 const bgColorList: ColorType[] = [
   getComputedStyle(document.documentElement)
     .getPropertyValue("--color-card")
@@ -228,7 +228,7 @@ const BgColors = () => {
         </For>
       </div>
       <DefaultColorPicker
-        value="rgb(25,25,25)"
+        value={oklchToRgb(bgColorList[0])}
         onChange={(color) => changeBg(color as ColorType)}
       />
 
@@ -248,7 +248,7 @@ const BgColors = () => {
         </For>
       </div>
       <DefaultColorPicker
-        value="rgb(25,25,25)"
+        value={oklchToRgb(textColorList[0])}
         onChange={(color) => changeFg(color as ColorType)}
       />
 

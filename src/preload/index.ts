@@ -50,7 +50,6 @@ const api = {
     cacheYoutubeVid: (data: any) =>
         ipcRenderer.invoke("cacheYoutubeVid", data),
 
-
     onYoutubeDownloadProgress: (callback) =>
         ipcRenderer.on(
             "youtube-download-progress",
@@ -61,7 +60,9 @@ const api = {
         ipcRenderer.on(
             "youtube-download-complete",
             (_, data) => callback(data)
-        )
+        ),
+
+    getLocalVideo: (data: any) => ipcRenderer.invoke('getLocalVideo', data)
 
 }
 
