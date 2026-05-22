@@ -94,6 +94,7 @@
 - [ ] recomended width for new Note nodes is 580
 - [ ] Note editor buttons not settings is-active class correctly but are working just fine
 - [ ] image text edit is not focusable
+- [ ] put images in thier own folder
 
 
 

@@ -1,5 +1,5 @@
 import { setStore, store } from "../../shared/store";
-import { findNodeById, getActiveBoardId, toggleTitle } from "../../shared/update";
+import { findNodeById, getActiveBoardId, toggleDesc, toggleTitle } from "../../shared/update";
 import { Show, createEffect, createSignal, onMount } from "solid-js";
 import { NodeType } from "../../types";
 
@@ -17,7 +17,8 @@ export default () => {
   const [color2, setColor2] = createSignal("#8B5CF6");
   const [color3, setColor3] = createSignal("#8B5CF6");
 
-  const [allTodo, setAllTodo] = createSignal(false);
+  const [showTodoToggle, setShowTodoToggle] = createSignal(false);
+  const [showDescToggle, setShowDescToggle] = createSignal(false);
 
 
   const setColors = () => {
@@ -51,17 +52,31 @@ export default () => {
     createEffect(() => {
       const selected = store.selectedNodes
       const selectedNodes = store.nodes[getActiveBoardId()].filter(user => selected.has(user.id));
+      setShowTodoToggle(false)
+      setShowDescToggle(false)
+
+
       if (selectedNodes.every((node) => node.type === NodeType.Todo)) {
-        setAllTodo(true)
-      } else {
-        setAllTodo(false)
+        setShowTodoToggle(true)
+      } else if (selectedNodes.every((node) =>
+        [NodeType.Url, NodeType.Image, NodeType.Color, NodeType.Document].includes(node.type)
+      )) {
+        setShowDescToggle(true)
       }
     });
   })
 
+
   const toggleTitles = () => {
     store.selectedNodes.forEach(node => {
       toggleTitle(node, "title")
+    });
+  }
+
+
+  const toggleDescs = () => {
+    store.selectedNodes.forEach(node => {
+      toggleDesc(node)
     });
   }
 
@@ -104,7 +119,7 @@ export default () => {
 
 
 
-      <Show when={allTodo()}>
+      <Show when={showTodoToggle()}>
         <div
           class="flex group/hov flex-col space-y-4 overflow-x-visible relative transition duration-200 ease-out hover:translate-x-2 cursor-pointer "
           onClick={toggleTitles}
@@ -117,6 +132,24 @@ export default () => {
               </div>
             </div>
             <p class="text-sm text-center">toggle title</p>
+          </div>
+        </div>
+      </Show>
+
+
+      <Show when={showDescToggle()}>
+        <div
+          class="flex group/hov flex-col space-y-4 overflow-x-visible relative transition duration-200 ease-out hover:translate-x-2 cursor-pointer "
+          onClick={toggleDescs}
+
+        >
+          <div>
+            <div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500">
+              <div class="flex justify-center items-center size-full p-2">
+
+              </div>
+            </div>
+            <p class="text-sm text-center">toggle description</p>
           </div>
         </div>
       </Show>

@@ -103,7 +103,14 @@ export default () => {
         </div>
       </div>
 
+
+
       <div class="flex justify-center items-center space-x-4">
+        <div>
+          dsplay total size occupied by the graphnote folder
+          {/* maybe make it a button thats shows a list of all items taking space, like images, urls cache, and youtube videos */}
+        </div>
+
         <Button variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
           <IconSettings />
         </Button>

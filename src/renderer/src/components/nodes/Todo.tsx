@@ -329,7 +329,7 @@ export default (node: TodoProps) => {
   return (
     <div class="p-5" ref={containerRef} >
 
-      <Show when={node.title != ""}>
+      <Show when={node.showTitle}>
         <div class="text-2xl font-bold mb-4">
           <EditableTitle nodeId={node.id} title={node.title || ""} />
         </div>

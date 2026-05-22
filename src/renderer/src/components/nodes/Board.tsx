@@ -61,8 +61,10 @@ export default (node: BoardProps) => {
       id={node.id}
       style={{
         background: node.is_child
-          ? `${node.color ? node.color : "var(--color-primary)"}20`
-          : "#00000000",
+          ? node.color
+            ? `${node.color}20`
+            : "color-mix(in oklab, var(--color-primary) 20%, transparent)"
+          : "transparent",
         border: node.is_child ? `2px solid ${node.color ? node.color : "var(--color-primary)"}` : "",
         width: node.is_child ? "100%" : "60px",
         "z-index": node.zIndex,

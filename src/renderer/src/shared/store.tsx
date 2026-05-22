@@ -12,7 +12,7 @@ export const defaultViewportZoom = 1
 
 
 interface UserConfig {
-  pdfReaderType: "side" | "modal",
+  pdfReaderType: "side" | "modal" | "external",
   youtubeVidCache: boolean, //? if set to true, youtube videos will be downloaded
   cacheUrlData: boolean,
   pdfScale: number, //? for pdf reader clarity, 1 is blurry 1.5 is decent any more takes very long to laod

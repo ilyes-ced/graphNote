@@ -5,7 +5,7 @@ import { updateURL } from "../../shared/update";
 import { store } from "../../shared/store";
 import Editor from "./Editor";
 import '@videojs/html/video/player';
-import '@videojs/html/video/minimal-skin';
+import '@videojs/html/video/skin';
 
 
 type UrlProps = Url & {
@@ -23,7 +23,6 @@ type MetaData = {
 //TODO: store them Documents/graphnote/cache and search there first if it doesnt exist do scrape_url
 export default (node: UrlProps) => {
   let videoRef!: any
-  let player: { ready: (arg0: () => void) => void; dispose: () => void; };
 
   const [localVid, setLocalVid] = createSignal<string | null>(null);
   const [downloading, Downloading] = createSignal(false);
@@ -159,23 +158,19 @@ export default (node: UrlProps) => {
 
 
 
-  onCleanup(() => {
-    if (player) {
-      player.dispose();
-    }
-  });
   //? "wait_load" class name is needed for elements that take time to load the assets like url images
   return (
     <div class="space-y-2">
 
 
 
-      {localVid()}
       <Switch fallback={
         <div class="relative flex items-center justify-center">
-          <div class="bg-blue-900">fallbak</div>
           {
-            matchYoutubeUrl(node.url) && <div class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center" onClick={() => setIsPlaying(true)}>
+            matchYoutubeUrl(node.url) && <div class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center" onClick={() => {
+              setIsPlaying(true);
+              videoRef.play();
+            }}>
               <IconPlayerPlayFilled />
             </div>}
           <img
@@ -187,7 +182,6 @@ export default (node: UrlProps) => {
         </div>
       }>
         <Match when={node.url === ""}>
-          <div class="bg-blue-900">empty url</div>
           <div class="flex items-center space-x-2 px-5" >
             <IconLink />
             <input type="text" placeholder="input your URL here" class="url_input p-5 size-full outline-0 border"
@@ -197,13 +191,19 @@ export default (node: UrlProps) => {
               }} />
           </div>
         </Match>
-        <Match when={store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url) && localVid() != null}>
-          <div class="bg-blue-900">play local video</div>
-          <p class="bg-red-400">here we add our custom streaming vid player: {localVid()}</p>
-          <video src={localVid() ?? ""} ref={videoRef} id="videoPlayer" controls></video>
+        <Match when={store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url) && localVid() != null && isPlaying()}>
+          <video-player
+            style={{
+              "--media-border-radius": "0rem",
+              "--media-color-primary": node.textColor ?? "var(--color-primary)",
+            }}>
+            <video-skin>
+              <video src={localVid() ?? ""} ref={videoRef} id="videoPlayer" ></video>
+            </video-skin>
+          </video-player>
+
         </Match>
         <Match when={!store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url) && isPlaying()}>
-          <div class="bg-blue-900">play youtube video</div>
           <div style={{
             position: 'relative',
             width: '100%',
@@ -252,9 +252,12 @@ export default (node: UrlProps) => {
           <div class="url_description text-xs">{metaData().description}</div>
         </div>
 
-        <div class="p-5">
-          <Editor id={node.id} desc={node.description} />
-        </div>
+
+        <Show when={node.showDescription}>
+          <div class="p-5">
+            <Editor id={node.id} desc={node.description} />
+          </div>
+        </Show>
       </Show >
 
     </div>

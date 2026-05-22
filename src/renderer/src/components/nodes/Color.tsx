@@ -1,4 +1,6 @@
+import { Show } from "solid-js";
 import { Color } from "../../types";
+import Editor from "./Editor";
 
 type ColorProps = Color & {
   is_child?: boolean;
@@ -14,9 +16,13 @@ export default (node: ColorProps) => {
       >
         {node.colorValue}
       </div>
-      <div class="p-5 text-xs">
-        by default is color name here, editable \{node.text}
-      </div>
+
+
+      <Show when={node.showDescription}>
+        <div class="p-5">
+          <Editor id={node.id} desc={node.description ?? ""} />
+        </div>
+      </Show>
     </div>
   );
 };

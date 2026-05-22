@@ -1,4 +1,4 @@
-import { createSignal, onMount } from "solid-js";
+import { Show, onMount } from "solid-js";
 import { Document } from "../../types";
 import Svg from "./Svg";
 import * as pdfjsLib from 'pdfjs-dist';
@@ -118,9 +118,11 @@ export default (node: DocumentProps) => {
           </div>
         </div>
       </div>
-      <div class="p-5">
-        <Editor id={node.id} desc={node.description} />
-      </div>
+      <Show when={node.showDescription}>
+        <div class="p-5">
+          <Editor id={node.id} desc={node.description ?? ""} />
+        </div>
+      </Show>
     </div >
   );
 };

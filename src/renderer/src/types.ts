@@ -70,10 +70,12 @@ interface Comment extends Node, ChildNode {
 
 interface Url extends Node, ChildNode {
   url: string;
+  showDescription: boolean;
   description: string;
 }
 interface Todo extends Node, ChildNode {
   title?: string;
+  showTitle: boolean
   // [ ] text
   // [x] text
   tasks: Task[];
@@ -106,7 +108,9 @@ interface ColumnSchema {
 interface Table extends Node, ChildNode {
   columns: ColumnSchema[];
   rows: Record<string, string | number | Badge>[];
+  showDescription: boolean;
   description?: string;
+  showTitle: boolean;
   title?: string;
 }
 ////////////////////////////////////////////////
@@ -117,18 +121,20 @@ interface Column extends Node, ChildNode {
 
 interface Color extends Node, ChildNode {
   colorValue: ColorType;
-  text: string;
+  showDescription: boolean;
+  description?: string;
 }
 
 interface Board extends Node, ChildNode {
   title: string;
   icon_path: string;
-  bgColor: ColorType;
-  gridColor: ColorType;
+  bgColor?: ColorType;
+  gridColor?: ColorType;
 }
 interface Image extends Node, ChildNode {
   path: string;
-  description: string;
+  showDescription: boolean;
+  description?: string;
 }
 interface Activity extends Node, ChildNode {
   //TODO: figure me out
@@ -146,7 +152,8 @@ interface Drawing extends Node, ChildNode { }
 interface Sketch extends Node, ChildNode { }
 interface Document extends Node, ChildNode {
   path: string;
-  description: string;
+  showDescription: boolean;
+  description?: string;
 }
 
 ////////////////////////////////////////////////

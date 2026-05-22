@@ -1,4 +1,4 @@
-import { onMount, createSignal } from "solid-js";
+import { onMount, createSignal, Show } from "solid-js";
 import { Image } from "../../types";
 import Editor from "./Editor";
 
@@ -46,9 +46,11 @@ export default (node: ImageProps) => {
     <div>
       <img style={{ width: "100%" }} src={imgSrc()} alt={node.path} />
 
-      <div class="p-5">
-        <Editor id={node.id} desc={node.description} />
-      </div>
+      <Show when={node.showDescription}>
+        <div class="p-5">
+          <Editor id={node.id} desc={node.description ?? ""} />
+        </div>
+      </Show>
     </div>
   );
 };

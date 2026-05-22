@@ -12,6 +12,7 @@ import {
   Todo,
   Url,
   ColorType,
+  Document
 } from "../types";
 import { setStore, store } from "./store";
 import { saveChanges } from "./utils";
@@ -45,32 +46,45 @@ const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) 
   }
 };
 
-//? update Note text content
-const toggleTitle = (nodeId: string, title: string) => {
+const toggleTitle = (nodeId: string) => {
   for (const [parentId, nodeList] of Object.entries(store.nodes)) {
     const index = nodeList.findIndex((n) => n.id === nodeId);
     if (index !== -1) {
-      const oldTitle = store.nodes[parentId][index].title;
-      let newValue = ""
-      if (oldTitle === "") {
-        newValue = "Title"
-      } else {
-        newValue = ""
+      const show = store.nodes[parentId][index].showTitle;
+
+      if (store.nodes[parentId][index].title == "") {
+        setStore("nodes", parentId, index, "title", "Title");
       }
-      console.log(oldTitle)
-      console.log(newValue)
 
-      setStore("nodes", parentId, index, "title", newValue);
-
+      setStore("nodes", parentId, index, "showTitle", !show);
       saveChanges();
-
       return {
         undo() {
-          setStore("nodes", parentId, index, "title", oldTitle);
+          setStore("nodes", parentId, index, "showTitle", show);
           saveChanges();
         },
         redo() {
-          setStore("nodes", parentId, index, "title", newValue);
+          setStore("nodes", parentId, index, "showTitle", !show);
+          saveChanges();
+        },
+      };
+    }
+  }
+};
+const toggleDesc = (nodeId: string) => {
+  for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+    const index = nodeList.findIndex((n) => n.id === nodeId);
+    if (index !== -1) {
+      const show = store.nodes[parentId][index].showDescription;
+      setStore("nodes", parentId, index, "showDescription", !show);
+      saveChanges();
+      return {
+        undo() {
+          setStore("nodes", parentId, index, "showDescription", show);
+          saveChanges();
+        },
+        redo() {
+          setStore("nodes", parentId, index, "showDescription", !show);
           saveChanges();
         },
       };
@@ -467,7 +481,8 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
     case NodeType.Todo:
       return {
         ...base,
-        title: "",
+        showTitle: true,
+        title: "Title",
         tasks: [{ text: "", check: false, nestLevel: 0 }],
       } satisfies Todo;
 
@@ -484,6 +499,8 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
       return {
         ...base,
         url: "",
+        showDescription: false,
+        description: "",
       } satisfies Url;
 
     case NodeType.Board:
@@ -502,21 +519,24 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
     case NodeType.Document:
       return {
         ...base,
-        text: "",
-      } satisfies Note;
+        path: "", // TODO: in the Document node; when the user creates a new one make it a file upload
+        showDescription: false,
+        description: "",
+      } satisfies Document;
 
     case NodeType.Color:
       return {
         ...base,
         colorValue: "#ffffff", //TODO: randomize it
-        text: "Color Node",
+        showDescription: true,
+        description: "color name maybe goes here",
       } satisfies Color;
 
     case NodeType.Image:
       return {
         ...base,
         path: "",
-        title: "Untitled Image",
+        showDescription: false,
         description: "",
       } satisfies Image;
 
@@ -840,6 +860,7 @@ const newDocumentNode = (
 //! very lazy behavior i know
 const wrappedUpdateNote = actionsMiddleware(updateNote);
 const wrappedToggleTitle = actionsMiddleware(toggleTitle);
+const wrappedToggleDesc = actionsMiddleware(toggleDesc);
 const wrappedupdateURL = actionsMiddleware(updateURL);
 const wrappedUpdateZIndex = actionsMiddleware(updateZIndex);
 const wrappedUpdatePosition = actionsMiddleware(updatePosition);
@@ -865,6 +886,7 @@ const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode);
 export {
   wrappedUpdateNote as updateNote,
   wrappedToggleTitle as toggleTitle,
+  wrappedToggleDesc as toggleDesc,
   wrappedupdateURL as updateURL,
   wrappedUpdateZIndex as updateZIndex,
   wrappedUpdatePosition as updatePosition,
