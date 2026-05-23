@@ -10,10 +10,11 @@ declare global {
       saveEdges: (edges: any) => Promise<any>;
       readGraph: () => Promise<any>;
       readFile: (data: { folderPath: string; filePath: string }) => Promise<string | null>;
-      writeFile: (data: { text: string, data: Uint8Array }) => Promise<any>;
+      writeFile: (data: { name: string, data: Uint8Array, type: string }) => Promise<any>;
       getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>;
       copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>;
       readImage: (filePath: string) => Promise<Buffer>;
+      writeNodeFile: (data: { name: string, data: Uint8Array, type: string }) => Promise<any>;
       scrapeUrl: (data: { url: string, cache: boolean }) => Promise<any>;
       backUpSave: () => Promise<any>;
       downloadImgUrl: (imgUrl: string) => Promise<any>;
@@ -22,6 +23,7 @@ declare global {
       onYoutubeDownloadProgress: (callback: any) => Promise<any>
       onYoutubeDownloadComplete: (callback: any) => Promise<any>
       getLocalVideo: (vidName: any) => Promise<any>
+      getSizes: () => Promise<any>
     };
   }
 }

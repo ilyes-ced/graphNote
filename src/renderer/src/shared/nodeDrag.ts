@@ -143,7 +143,16 @@ export function useDraggable(
     const deltaY = Math.abs((e?.clientY ?? 0) - initialMouseY);
     const didMove = deltaX > threshold || deltaY > threshold;
     if (!didMove && e) {
-      if ((e.target as HTMLElement).closest(ignoredSelectors)) return;
+      if ((e.target as HTMLElement).closest(ignoredSelectors)) {
+        //? add clicked child element to the selected lsit
+        if (e.shiftKey) {
+          addSelected(e, node.id);
+        } else {
+          const newSet = new Set([node.id]);
+          setStore("selectedNodes", newSet);
+        }
+        return
+      };
       if (store.selectedNodes.size === 0) {
         const newSet = new Set([node.id]);
         setStore("selectedNodes", newSet);

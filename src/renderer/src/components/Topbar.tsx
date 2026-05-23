@@ -1,14 +1,23 @@
-import { For } from "solid-js";
+import { For, createSignal, onMount } from "solid-js";
 import { Button } from "./ui/button";
 import { setStore, store } from "../shared/store";
 import {
   IconChevronsRight,
+  IconDatabaseFilled,
   IconMoonFilled,
   IconSettings,
 } from "@tabler/icons-solidjs";
 import { DefaultColorPicker } from "@thednp/solid-color-picker";
 
 export default () => {
+  const [dataSize, setDataSize] = createSignal({
+    totalSize: 0,
+    imageSize: 0,
+    youtubeCacheSize: 0,
+    urlMetadataSize: 0,
+  });
+
+
   const breadcrumbsClick = (index: number) => {
     console.log("+++++++++++++++++++++++++++++++++");
     console.log("+++++++++++++++++++++++++++++++++");
@@ -21,6 +30,16 @@ export default () => {
     setStore("activeBoards", (items) => items.slice(0, index + 1));
     console.log(store.activeBoards);
   };
+
+
+  onMount(async () => {
+    const sizes = await window.api.getSizes()
+    console.log("GGGGGGGGGGFFFFFFFFFFFFFFFFFFFFFFF")
+    console.log(sizes)
+    setDataSize(sizes)
+  })
+
+
 
   return (
     <div
@@ -106,10 +125,9 @@ export default () => {
 
 
       <div class="flex justify-center items-center space-x-4">
-        <div>
-          dsplay total size occupied by the graphnote folder
-          {/* maybe make it a button thats shows a list of all items taking space, like images, urls cache, and youtube videos */}
-        </div>
+        <Button variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
+          <IconDatabaseFilled />
+        </Button>
 
         <Button variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
           <IconSettings />
@@ -119,6 +137,36 @@ export default () => {
           <IconMoonFilled />
         </Button>
       </div>
+
+
+
+
+      <div
+        class={` z-50 transition-all duration-200 ease-in-out absolute top-[60px] right-[22px] [box-shadow:5px_5px_var(--color-primary)]
+          ${store.showStorageMenu
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-95 pointer-events-none"
+          }`}
+      >
+        <div
+          class="border border-border p-4 w-fit bg-card space-y-4"
+        >
+
+          <div>Total storage occupied:{" "}
+            <span class="font-extrabold text-primary">{Math.round(dataSize().totalSize / 1000 / 1000)}MB</span>{" "}/{" "}<span class="font-extrabold text-primary">{Math.round(dataSize().totalSize / 1024 / 1024)}MiB</span>
+          </div>
+          <div>Images storage occupied:{" "}
+            <span class="font-extrabold text-primary">{Math.round(dataSize().imageSize / 1000 / 1000)}MB</span>{" "}/{" "}<span class="font-extrabold text-primary">{Math.round(dataSize().imageSize / 1024 / 1024)}MiB</span>
+          </div>
+          <div>Youtube videos storage occupied:{" "}
+            <span class="font-extrabold text-primary">{Math.round(dataSize().youtubeCacheSize / 1000 / 1000)}MB</span>{" "}/{" "}<span class="font-extrabold text-primary">{Math.round(dataSize().youtubeCacheSize / 1024 / 1024)}MiB</span>
+          </div>
+          <div>Urls metadata storage occupied:{" "}
+            <span class="font-extrabold text-primary">{Math.round(dataSize().urlMetadataSize / 1000 / 1000)}MB</span>{" "}/{" "}<span class="font-extrabold text-primary">{Math.round(dataSize().urlMetadataSize / 1024 / 1024)}MiB</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

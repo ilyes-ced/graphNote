@@ -246,7 +246,7 @@ body,
     @apply list-decimal pl-4;
   }
   blockquote {
-    @apply p-4 border-l-4 border-primary bg-background/50;
+    @apply p-4 border-l-4 bg-background/10;
   }
   h1 {
     @apply text-5xl font-extrabold;
@@ -267,7 +267,7 @@ body,
     @apply text-lg font-bold;
   }
   pre {
-    @apply border border-accent rounded px-2;
+    @apply border border-accent px-2 bg-background/10;
   }
 }
 

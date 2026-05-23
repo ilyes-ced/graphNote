@@ -133,7 +133,7 @@ ipcMain.handle("readGraph", async () => {
     return { nodes, edges };
 });
 
-/* ------------------- FILE ------------------- */
+
 
 ipcMain.handle("readFile", async (_, { folderPath, filePath }) => {
 
@@ -154,8 +154,8 @@ ipcMain.handle("readFile", async (_, { folderPath, filePath }) => {
 });
 
 
-ipcMain.handle("writeFile", async (_, { text, data }) => {
-    const fullFile = path.join(basePath, text);
+ipcMain.handle("writeFile", async (_, { name, data, type }) => {
+    const fullFile = path.join(basePath, type, name);
 
     if (!fullFile.startsWith(basePath)) {
         throw new Error("Invalid path");
@@ -174,8 +174,8 @@ ipcMain.handle("writeFile", async (_, { text, data }) => {
     // Determine unique file name
     while (true) {
         finalName =
-            counter === 0 ? text : getNextName(text, counter);
-        finalPath = path.join(basePath, finalName);
+            counter === 0 ? name : getNextName(name, counter);
+        finalPath = path.join(basePath, type, finalName);
 
         try {
             await fs.access(finalPath);
@@ -189,7 +189,7 @@ ipcMain.handle("writeFile", async (_, { text, data }) => {
 
     return {
         success: true,
-        path: finalName
+        path: path.join(type, finalName)
     };
 });
 
@@ -231,7 +231,8 @@ ipcMain.handle("getAvailableFilePath", async (_, { path: inputPath }) => {
 
 ipcMain.handle(
     "writeNodeFile",
-    async (_event, { name: inputName, data }: { name: string; data: Uint8Array }) => {
+    async (_, { name, data, type }) => {
+        console.log(name, data, type)
         ensureDir()
 
         let counter = 0;
@@ -241,8 +242,9 @@ ipcMain.handle(
         // Determine unique file name
         while (true) {
             finalName =
-                counter === 0 ? inputName : getNextName(inputName, counter);
-            finalPath = path.join(basePath, finalName);
+                counter === 0 ? name : getNextName(name, counter);
+            finalPath = path.join(basePath, type, finalName);
+            await mkdir(path.dirname(finalPath), { recursive: true });
 
             try {
                 await fs.access(finalPath);
@@ -254,10 +256,11 @@ ipcMain.handle(
 
         await fs.writeFile(finalPath, data);
 
+
         return {
             res: true,
             text: finalName,
-            path: finalPath
+            path: path.join(type, finalName)
         };
     }
 );
@@ -592,6 +595,58 @@ ipcMain.handle("getLocalVideo", async (_, vidName: string) => {
     return `http://127.0.0.1:3232/videos/${encodeURIComponent(vidName)}`;
 });
 
+
+
+
+
+
+
+
+async function getFolderSize(folderPath) {
+    let totalSize = 0;
+
+    async function walk(dir) {
+        const files = await fs.readdir(dir);
+
+        for (const file of files) {
+            const fullPath = path.join(dir, file);
+            const stats = await fs.stat(fullPath);
+
+            if (stats.isDirectory()) {
+                await walk(fullPath);
+            } else {
+                totalSize += stats.size;
+            }
+        }
+    }
+
+    await walk(folderPath);
+
+    return totalSize;
+}
+
+
+ipcMain.handle("getSizes", async (_,) => {
+    console.log(":PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
+    console.log(await getFolderSize(basePath))
+    console.log(await getFolderSize(path.join(basePath, "image")))
+    console.log(await getFolderSize(path.join(basePath, "document")))
+    console.log(await getFolderSize(path.join(basePath, "cache")))
+    console.log(await getFolderSize(path.join(basePath, "cache", "urls")))
+    console.log(await getFolderSize(path.join(basePath, "cache", "youtube")))
+
+    const totalSize = await getFolderSize(basePath)
+    const imageSize = await getFolderSize(path.join(basePath, "image"))
+    const youtubeCacheSize = await getFolderSize(path.join(basePath, "cache", "youtube"))
+    const urlMetadataSize = await getFolderSize(path.join(basePath, "cache", "urls"))
+
+    return {
+        totalSize,
+        imageSize,
+        youtubeCacheSize,
+        urlMetadataSize,
+    };
+});
 
 
 

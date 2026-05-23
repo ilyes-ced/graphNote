@@ -78,21 +78,23 @@ const recieveDragNDropFile = (payload: Payload) => {
   if (!payload.files || payload.files.length === 0) return;
 
   payload.files.forEach(async (fileData, index) => {
-    const result = await saveFile(fileData);
-    if (result.res) {
-      // add file to nodes store
-      console.log("+===============================");
-      console.log(fileData.name.split(".").splice(-1)[0].toLowerCase());
-
-      const fileExt = fileData.name.split(".").splice(-1)[0].toLowerCase();
-
-      let fileType = "unknown";
-      for (const [category, extensions] of Object.entries(fileCategories)) {
-        if (extensions.includes(fileExt)) {
-          fileType = category;
-          break;
-        }
+    const fileExt = fileData.name.split(".").splice(-1)[0].toLowerCase();
+    let fileType = "unknown";
+    for (const [category, extensions] of Object.entries(fileCategories)) {
+      if (extensions.includes(fileExt)) {
+        fileType = category;
+        break;
       }
+    }
+
+
+    const result = await saveFile({
+      name: fileData.name,
+      data: fileData.data,
+      type: fileType
+    });
+    if (result.res) {
+
       console.log("file type:", fileType);
 
       switch (fileType) {
@@ -100,7 +102,7 @@ const recieveDragNDropFile = (payload: Payload) => {
         case "image":
           const imgPos = payload.position;
           newImageNode(
-            result.text,
+            result.path,
             imgPos.x + index * 30,
             imgPos.y + index * 30
           );
@@ -112,7 +114,7 @@ const recieveDragNDropFile = (payload: Payload) => {
         case "document":
           const docPos = payload.position;
           newDocumentNode(
-            result.text,
+            result.path,
             docPos.x + index * 30,
             docPos.y + index * 30,
             "widget"
@@ -129,7 +131,7 @@ const recieveDragNDropFile = (payload: Payload) => {
           break;
       }
     } else {
-      console.error("failed to save file:", result.text);
+      console.error("failed to save file:", result.path);
       //send error message notification
     }
   });

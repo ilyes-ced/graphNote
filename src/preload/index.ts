@@ -62,7 +62,9 @@ const api = {
             (_, data) => callback(data)
         ),
 
-    getLocalVideo: (data: any) => ipcRenderer.invoke('getLocalVideo', data)
+    getLocalVideo: (data: any) => ipcRenderer.invoke('getLocalVideo', data),
+
+    getSizes: () => ipcRenderer.invoke('getSizes')
 
 }
 

@@ -32,6 +32,7 @@ interface GlobalStore {
   activeBoards: { title: string; id: string }[];
   activeSidebar: "nodes" | "nodeStyles";
   showColorMenu: boolean;
+  showStorageMenu: boolean;
 
   activeTags: string[]; // has all active nodes like strong, p, h1 .....
 
@@ -82,6 +83,7 @@ const [store, setStore] = createStore<GlobalStore>({
   activeBoards: [{ title: "home", id: "home" }],
   activeSidebar: "nodes",
   showColorMenu: false,
+  showStorageMenu: false,
   activeTags: [],
 
   dragThreshold: 5,

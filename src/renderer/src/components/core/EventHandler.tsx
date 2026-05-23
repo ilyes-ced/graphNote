@@ -220,7 +220,7 @@ export default (props: any) => {
                       console.log(new TextEncoder().encode(imgRef.value).length)
                       //copy using tauri copyfile
                       console.log(Image.split("/").pop() ?? "image.png")
-                      const res = await window.api.writeFile({ text: Image.split("/").pop() ?? "image.png", data: new TextEncoder().encode(imgRef.value) })
+                      const res = await window.api.writeFile({ name: Image.split("/").pop() ?? "image.png", data: new TextEncoder().encode(imgRef.value), type: "image" })
                       if (res.path) {
                         //TODO: fix x,y to be as the mouse
                         newImageNode(res.path, 0, 0);
@@ -255,7 +255,7 @@ export default (props: any) => {
                     // give name to image
                     // here send request to save image
                     try {
-                      const res = await window.api.writeFile({ text: imgNameGen(type), data: uint8Array })
+                      const res = await window.api.writeFile({ name: imgNameGen(type), data: uint8Array, type: "image" })
                       //TODO: fix x,y to be as the mouse
                       if (res.path) {
                         //TODO: fix x,y to be as the mouse

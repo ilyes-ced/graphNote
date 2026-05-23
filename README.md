@@ -95,6 +95,10 @@
 - [ ] Note editor buttons not settings is-active class correctly but are working just fine
 - [ ] image text edit is not focusable
 - [ ] put images in thier own folder
+- [ ] selection only works on the left top corner of nodes (calculating the w and h of each node would be expensive)
+- [ ] set the urls description as the youtube video decription
+- [ ] selected child nodes: settings styles doesnt work
+- [ ] child nodes: when touched slightly it moves from position and the parent Column becomes opaque
 
 
 
@@ -108,7 +112,7 @@
 - [ ] css bg color is brighter and paler than it should be 
 - [ ] opening URLs: dont open the url in the electron app send it to the default browser
 - [ ] right click menu
-- [ ] daily tasks node
+- [ ] daily tasks node (or set the recurring period)
 
 
 

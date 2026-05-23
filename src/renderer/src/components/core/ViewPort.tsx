@@ -1,8 +1,12 @@
 import { setStore, store } from "../../shared/store";
 import { NodeType } from "../../types";
 import { getActiveBoardId, newNode } from "../../shared/update";
+import { createSignal } from "solid-js";
 
 export default (props: any) => {
+  const [selecting, setSelecting] = createSignal(false);
+  const [start, setStart] = createSignal({ x: 0, y: 0 });
+  const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
 
   return (
@@ -30,7 +34,7 @@ export default (props: any) => {
           if (e.target !== e.currentTarget) return;
           console.log("canvas click");
           e.stopPropagation();
-          setStore("selectedNodes", new Set());
+          //setStore("selectedNodes", new Set());
           setStore("showColorMenu", false);
         }}
         onDblClick={(e) => {
@@ -43,6 +47,65 @@ export default (props: any) => {
           // todo: gets mouse Pos in the window not in the canvas, if we pan to the right and double click the node is created on the left side of the viewport 
           newNode(NodeType.Note, ((e.clientX - 65) / store.viewport.scale), ((e.clientY - 50) / store.viewport.scale));
         }}
+
+
+
+        onMouseDown={(e) => {
+          if (e.target !== e.currentTarget) return;
+
+          setSelecting(true);
+
+          setStart({
+            x: (e.clientX - store.viewport.x - 65) / store.viewport.scale,
+            y: (e.clientY - store.viewport.y - 50) / store.viewport.scale,
+          });
+
+          setCurrent({
+            x: (e.clientX - store.viewport.x - 65) / store.viewport.scale,
+            y: (e.clientY - store.viewport.y - 50) / store.viewport.scale,
+          });
+        }}
+        onMouseMove={(e) => {
+          if (!selecting()) return;
+
+          setCurrent({
+            x: (e.clientX - store.viewport.x - 65) / store.viewport.scale,
+            y: (e.clientY - store.viewport.y - 50) / store.viewport.scale,
+          });
+        }}
+        onMouseUp={() => {
+          if (!selecting()) return;
+
+          setSelecting(false);
+
+          const x1 = Math.min(start().x, current().x);
+          const y1 = Math.min(start().y, current().y);
+          const x2 = Math.max(start().x, current().x);
+          const y2 = Math.max(start().y, current().y);
+
+          const selected = new Set<string>();
+
+          for (const node of store.nodes[getActiveBoardId()]) {
+            const n = node;
+            const h = document.getElementById(n.id)?.getBoundingClientRect().height;
+
+            const nx1 = n.x;
+            const ny1 = n.y;
+            const nx2 = n.x + (n.width ?? 300);
+            const ny2 = n.y + (h ?? 300);
+
+            if (
+              nx1 < x2 &&
+              nx2 > x1 &&
+              ny1 < y2 &&
+              ny2 > y1
+            ) {
+              selected.add(n.id);
+            }
+          }
+          setStore("selectedNodes", selected);
+        }}
+
         id="viewport-content"
         class={`viewport-content-${store.userConfig.gridStyle}`}
         style={{
@@ -66,6 +129,21 @@ export default (props: any) => {
         }}
       >
         {props.children}
+        {selecting() && (
+          <div
+            style={{
+              position: "absolute",
+              left: `${Math.min(start().x, current().x)}px`,
+              top: `${Math.min(start().y, current().y)}px`,
+              width: `${Math.abs(current().x - start().x)}px`,
+              height: `${Math.abs(current().y - start().y)}px`,
+              border: "1px solid var(--color-primary)",
+              background: "color-mix(in oklab, var(--color-primary) 20%, transparent)",
+              "pointer-events": "none",
+              "z-index": 10000
+            }}
+          />
+        )}
       </div>
     </div >
   );
