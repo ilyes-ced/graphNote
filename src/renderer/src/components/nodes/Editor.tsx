@@ -34,11 +34,7 @@ export default (props: { id: string, desc: string }) => {
             TextStyle,
             TextAlign,
         ],
-        //? take the value from the store but make it none reactive because we than edit it manually and the same changes are saved to file, the reason for unbinding the reactivity is because when we are focused and make changes those same changes that are written are saved to file/store and are refreshed as if they are new values (bad behaviour)
         content: JSON.parse(untrack(() => props.desc)),
-        //? but we need tracked for the undo/redo functionality (the undo/redo func was changed so i dont think is needed anymore)
-        // content: JSON.parse(node.text),
-
     }));
 
 
@@ -48,6 +44,6 @@ export default (props: { id: string, desc: string }) => {
 
 
     return (
-        <div id="secondaryEditor" class="p-2 border" ref={editorRef}></div>
+        <div id="secondaryEditor" class="" ref={editorRef}></div>
     );
 };

@@ -119,7 +119,7 @@ export default (node: DocumentProps) => {
         </div>
       </div>
       <Show when={node.showDescription}>
-        <div class="p-5">
+        <div class="p-2 ">
           <Editor id={node.id} desc={node.description ?? ""} />
         </div>
       </Show>

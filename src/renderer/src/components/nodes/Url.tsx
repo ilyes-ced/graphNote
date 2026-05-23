@@ -1,7 +1,7 @@
 import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { Url } from "../../types";
 import { IconLink, IconPlayerPlayFilled } from "@tabler/icons-solidjs";
-import { updateURL } from "../../shared/update";
+import { updateNodeDesc, updateURL } from "../../shared/update";
 import { store } from "../../shared/store";
 import Editor from "./Editor";
 import '@videojs/html/video/player';
@@ -85,7 +85,7 @@ export default (node: UrlProps) => {
   }
 
 
-  const fetchMetaData = () => {
+  const fetchMetaData = (firstTime?: boolean) => {
     // Defer to next microtask to avoid blocking render
     queueMicrotask(() => {
       getMetaData(node.url).then((res) => {
@@ -94,6 +94,13 @@ export default (node: UrlProps) => {
           setMetaData(res);
           setImageFromArrayBuffer(res.image, "image");
           setImageFromArrayBuffer(res.favicon, "favicon");
+          if (firstTime || !node.description) {
+            console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+            console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+            console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+            console.log(node.id, res.description)
+            updateNodeDesc(node.id, `{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"${node.description}\"}]}]}`)
+          }
         }
       });
     });
@@ -101,29 +108,15 @@ export default (node: UrlProps) => {
 
   onMount(async () => {
     fetchMetaData()
-    setImageFromArrayBuffer(metaData().image, "image")
-    setImageFromArrayBuffer(metaData().favicon, "favicon")
+    // setImageFromArrayBuffer(metaData().image, "image")
+    // setImageFromArrayBuffer(metaData().favicon, "favicon")
     if (store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url)) {
-      console.info("sending the to the youtubeVidCache function")
-      console.time("ipc-cache");
       var cacheRes = await window.api.cacheYoutubeVid(node.url);
-      console.timeEnd("ipc-cache"); 2
-      console.info("ffffffffffffffffffffffffffffffffffffffffff")
-      console.info(cacheRes)
       if (cacheRes.message == "file is already downloaded") {
-        console.log(cacheRes.fileName)
         const videoFile = await window.api.getLocalVideo(cacheRes.fileName);
-        console.log(videoFile)
-        console.log("getVideoFiles")
-        console.log("getVideoFiles")
-        console.log("getVideoFiles")
-        console.log("getVideoFiles")
-
         setLocalVid(videoFile)
       }
     }
-
-
   });
 
 
@@ -143,7 +136,7 @@ export default (node: UrlProps) => {
       //? disable inout on seccfull URL to avoid it double firing once we press enter than unfocus the input 
       input.disabled = true;
       updateURL(node.id, value)
-      fetchMetaData()
+      fetchMetaData(true)
     } catch {
       console.log("invalid url format")
       input.value = ""
@@ -228,7 +221,7 @@ export default (node: UrlProps) => {
 
 
       <Show when={node.url != ""}>
-        <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis">
+        <div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis m-0">
           <div class="url_container flex flex-row items-center space-x-2">
             <img
               class="url_thumbnail size-4"
@@ -236,8 +229,8 @@ export default (node: UrlProps) => {
               loading="lazy"
               alt="favicon"
             />
-            <div>
-              <a class="url text-xs font-bold text-foreground" href={node.url}>
+            <div class="truncate">
+              <a class="url text-xs font-bold text-foreground truncate" href={node.url}>
                 {node.url}
               </a>
             </div>
@@ -249,15 +242,13 @@ export default (node: UrlProps) => {
             </a>
           </div>
 
-          <div class="url_description text-xs">{metaData().description}</div>
+          <Show when={node.showDescription}>
+            <Editor id={node.id} desc={node.description} />
+          </Show>
         </div>
 
 
-        <Show when={node.showDescription}>
-          <div class="p-5">
-            <Editor id={node.id} desc={node.description} />
-          </div>
-        </Show>
+
       </Show >
 
     </div>

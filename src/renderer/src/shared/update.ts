@@ -499,7 +499,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
       return {
         ...base,
         url: "",
-        showDescription: false,
+        showDescription: true,
         description: "",
       } satisfies Url;
 
@@ -686,7 +686,6 @@ const changeToUrlNode = (nodeId: string, url: string) => {
         ...oldNote,
         type: NodeType.Url,
         url: url,
-        text: undefined,
       }));
       break;
     }
