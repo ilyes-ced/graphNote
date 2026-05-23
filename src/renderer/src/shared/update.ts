@@ -829,6 +829,64 @@ const newDocumentNode = (
   saveChanges();
 };
 
+
+const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | "image") => {
+  const activeBoardId = store.activeBoards.at(-1)?.id;
+  if (!activeBoardId) return;
+
+  const boardNodes = store.nodes[activeBoardId] ?? [];
+  const index = boardNodes.findIndex(n => n.id === nodeId);
+  if (index === -1) return;
+
+  let oldValue: string
+
+
+  console.log(nodeId, value, type)
+
+
+  if (type == "bg") {
+    oldValue = boardNodes[index].bgColor;
+    setStore("nodes", activeBoardId, index, "bgColor", value)
+    //? unsetting bgImage cuz it has priority
+    setStore("nodes", activeBoardId, index, "bgImagePath", "")
+  } else if (type == "grid") {
+    oldValue = boardNodes[index].gridColor;
+    setStore("nodes", activeBoardId, index, "gridColor", value)
+  } else if (type == "image") {
+    oldValue = boardNodes[index].bgImagePath;
+    setStore("nodes", activeBoardId, index, "bgImagePath", value)
+  }
+
+
+  saveChanges();
+
+  return {
+    undo() {
+      if (type == "bg") {
+        setStore("nodes", activeBoardId, index, "bgColor", oldValue)
+      } else if (type == "grid") {
+        setStore("nodes", activeBoardId, index, "gridColor", oldValue)
+      } else if (type == "image") {
+        setStore("nodes", activeBoardId, index, "bgImagePath", oldValue)
+      }
+      saveChanges();
+    },
+    redo() {
+      if (type == "bg") {
+        setStore("nodes", activeBoardId, index, "bgColor", value)
+      } else if (type == "grid") {
+        setStore("nodes", activeBoardId, index, "gridColor", value)
+      } else if (type == "image") {
+        setStore("nodes", activeBoardId, index, "bgImagePath", value)
+      }
+      saveChanges();
+    },
+  };
+};
+
+
+
+
 // export {
 //   updateNote,
 //   updateZIndex,
@@ -876,11 +934,13 @@ const wrappedChangeToUrlNode = actionsMiddleware(changeToUrlNode);
 const wrappedUnsetStripColor = actionsMiddleware(unsetStripColor);
 const wrappedUpdateNodeTitle = actionsMiddleware(updateNodeTitle);
 const wrappedUpdateNodeDesc = actionsMiddleware(updateNodeDesc);
-
 const wrappedNewImageNode = actionsMiddleware(newImageNode);
 const wrappedUpdateActivityCounter = actionsMiddleware(updateActivityCounter);
 const wrappedReorderTasks = actionsMiddleware(reorderTasks);
 const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode);
+const wrappedUpdateBoardStyles = actionsMiddleware(updateBoardStyles);
+
+
 
 export {
   wrappedUpdateNote as updateNote,
@@ -910,4 +970,5 @@ export {
   wrappedUpdateActivityCounter as updateActivityCounter,
   wrappedReorderTasks as reorderTasks,
   wrappedNewDocumentNode as newDocumentNode,
+  wrappedUpdateBoardStyles as updateBoardStyles,
 };

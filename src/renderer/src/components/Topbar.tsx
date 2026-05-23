@@ -6,8 +6,11 @@ import {
   IconDatabaseFilled,
   IconMoonFilled,
   IconSettings,
+  IconUpload,
 } from "@tabler/icons-solidjs";
 import { DefaultColorPicker } from "@thednp/solid-color-picker";
+import { dialog } from "electron";
+import { findNodeById, getActiveBoardId, updateBoardStyles } from "../shared/update";
 
 export default () => {
   const [dataSize, setDataSize] = createSignal({
@@ -16,6 +19,25 @@ export default () => {
     youtubeCacheSize: 0,
     urlMetadataSize: 0,
   });
+
+  const pickFile = async () => {
+    const path = await window.api.selectFile();
+
+
+
+    if (getActiveBoardId() == "home") {
+      setStore("userConfig", "homeBoardStyle", "bgImagePath", path)
+    } else {
+      updateBoardStyles(findNodeById(getActiveBoardId()), path, "image")
+    }
+
+    console.log(path);
+    console.log(path);
+    console.log(path);
+    console.log(path);
+    console.log(path);
+    console.log(path);
+  };
 
 
   const breadcrumbsClick = (index: number) => {
@@ -105,6 +127,11 @@ export default () => {
               console.log("llllllllllllll")
               document.documentElement.style.setProperty('--dot-color', color);
               document.documentElement.style.setProperty('--grid-color', color);
+              if (getActiveBoardId() == "home") {
+                setStore("userConfig", "homeBoardStyle", "bgImagePath", color)
+              } else {
+                updateBoardStyles(findNodeById(getActiveBoardId()), color, "grid")
+              }
             }}
           />
         </div>
@@ -116,9 +143,23 @@ export default () => {
           <DefaultColorPicker
             value="rgba(136, 136, 136, 0.063)"
             onChange={(color) => {
-
+              if (getActiveBoardId() == "home") {
+                setStore("userConfig", "homeBoardStyle", "bgColor", color)
+              } else {
+                updateBoardStyles(findNodeById(getActiveBoardId()), color, "bg")
+              }
             }}
           />
+        </div>
+
+        <div>Board Bg Image:</div>
+        <div
+          onClick={pickFile}
+          class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video picker-wrapper"
+        >
+          <div>
+            <IconUpload class="size-1/2" size={24} />
+          </div>
         </div>
       </div>
 
@@ -167,7 +208,7 @@ export default () => {
         </div>
       </div>
 
-    </div>
+    </div >
   );
 };
 <div class="absolute h-full w-30 p-3">

@@ -5,14 +5,19 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
     getNodes: () => ipcRenderer.invoke("getNodes"),
 
-
     getEdges: () => ipcRenderer.invoke("getEdges"),
+
+    getSettings: () => ipcRenderer.invoke("getSettings"),
 
     saveNodes: (nodes: any) =>
         ipcRenderer.invoke("saveNodes", nodes),
 
     saveEdges: (edges: any) =>
         ipcRenderer.invoke("saveEdges", edges),
+
+    saveSettings: (settings: any) =>
+        ipcRenderer.invoke("saveSettings", settings),
+
 
     readGraph: () =>
         ipcRenderer.invoke("readGraph"),
@@ -64,7 +69,9 @@ const api = {
 
     getLocalVideo: (data: any) => ipcRenderer.invoke('getLocalVideo', data),
 
-    getSizes: () => ipcRenderer.invoke('getSizes')
+    getSizes: () => ipcRenderer.invoke('getSizes'),
+
+    selectFile: () => ipcRenderer.invoke('selectFile'),
 
 }
 

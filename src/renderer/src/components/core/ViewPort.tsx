@@ -1,12 +1,57 @@
 import { setStore, store } from "../../shared/store";
 import { NodeType } from "../../types";
-import { getActiveBoardId, newNode } from "../../shared/update";
-import { createSignal } from "solid-js";
+import { findNodeById, getActiveBoardId, newNode } from "../../shared/update";
+import { Show, createSignal, onMount } from "solid-js";
+import { readImage } from "../../shared/utils";
 
 export default (props: any) => {
   const [selecting, setSelecting] = createSignal(false);
   const [start, setStart] = createSignal({ x: 0, y: 0 });
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
+  const [bgType, setBgType] = createSignal<"color" | "image">("color");
+  const [bg, setBg] = createSignal("");
+  const [imgSrc, setImgSrc] = createSignal("");
+
+
+  onMount(async () => {
+    let imagePath
+    if (getActiveBoardId() == "home") {
+      console.log("------------------------------- home")
+      if (store.userConfig.homeBoardStyle?.bgImagePath && store.userConfig.homeBoardStyle.bgImagePath != "") {
+        setBgType("image")
+        imagePath = store.userConfig.homeBoardStyle.bgImagePath
+      } else {
+        setBgType("color")
+        setBg(store.userConfig.homeBoardStyle?.bgColor != "" ? store.userConfig.homeBoardStyle.bgColor : "var(--color-background)")
+      }
+    } else {
+      const node = findNodeById(getActiveBoardId())
+      console.log("------------------------------- ", node)
+      if (node?.bgImagePath && node?.bgImagePath != "") {
+        setBgType("image")
+        imagePath = node?.bgImagePath ?? "image/placeholder"
+      } else {
+        setBgType("color")
+        setBg(node?.color ?? "#062935")
+      }
+    }
+
+
+    if (bgType() == "image") {
+      try {
+        console.log("reading image from the server")
+        console.log("reading image from the server")
+        console.log("reading image from the server")
+        console.log("reading image from the server")
+        console.log("reading image from the server")
+        console.log("reading image from the server")
+        console.log(imagePath)
+        setImgSrc(await readImage(imagePath));
+      } catch (err) {
+        setImgSrc(await readImage("image/placeholder.png"));
+      }
+    }
+  })
 
 
   return (
@@ -14,8 +59,7 @@ export default (props: any) => {
       ref={props.wrapperRef}
       id="viewport"
       style={{
-        // background: store.nodes[getActiveBoardId()]?.bgColor ?? '#052385',
-        position: "absolute",
+        background: bgType() == "color" ? bg() : "#521930",
         top: 0,
         left: 0,
         width: "100%",
@@ -25,6 +69,14 @@ export default (props: any) => {
         overflow: "hidden",
       }}
     >
+
+      <div class="bg-green-900 absolute top-20 border">
+        fff        {imgSrc()}
+      </div>
+      <Show when={bgType() == "image"}>
+        <img class="absolute inset-0 z-0 h-full w-full object-cover" src={imgSrc()} />
+      </Show>
+
       <div
         onClick={(e) => {
           // todo: thisa  no longer works because the svgs for the arrows take all the screen and they are on to to be visible so they are clicked instead of  the intended canvas
@@ -107,8 +159,14 @@ export default (props: any) => {
         }}
 
         id="viewport-content"
-        class={`viewport-content-${store.userConfig.gridStyle}`}
         style={{
+          "transform-origin": "0 0",
+          "background-size": "10px 10px",
+          "background-position": "-20px -20px",
+          "background-image": store.userConfig.gridStyle === "grid"
+            ? "linear-gradient(to right, var(--grid-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px)"
+            : "radial-gradient(var(--dot-color) 1px, transparent 0)",
+
           transform: `translate3d(${store.viewport.x}px, ${store.viewport.y}px, 0)
             scale3d(
             ${store.viewport.scale},
@@ -118,8 +176,6 @@ export default (props: any) => {
 
           transition: "transform 0.05s linear",
           "will-change": "transform",
-          "transform-origin": "0 0",
-
           "min-height": "100%",
           "min-width": "100%",
           width: store.viewport.width

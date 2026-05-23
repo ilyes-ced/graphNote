@@ -59,11 +59,11 @@ export default (node: TableProps) => {
     return (
       <Switch>
         <Match when={colType.typeDef === ColumnType.String}>
-          <div contentEditable>{value}</div>
+          <div class="px-2 py-1 bg-red-400 size-full" contentEditable>{value}</div>
         </Match>
 
         <Match when={colType.typeDef === ColumnType.Number}>
-          <div contentEditable>{value}</div>
+          <div class="px-2 py-1 bg-red-400 size-full" contentEditable>{value}</div>
         </Match>
 
         <Match when={colType.typeDef === ColumnType.Badge}>
@@ -77,17 +77,18 @@ export default (node: TableProps) => {
   const BadgeSelectionMenu = (props: { type: keyof typeof badgeRegistry }) => {
     return (
       <div
-        class="badge-selection-menu absolute z-50 border border-border rounded-md p-2 flex items-center justify-center cursor-pointer bg-background"
+        class="badge-selection-menu z-50 transition-all duration-200 ease-in-out absolute top-4 left-4 [box-shadow:5px_5px_var(--color-primary)] bg-background"
         style={{
           top: badgeSelectionMenuPos().x + "px",
           left: badgeSelectionMenuPos().y + "px",
-        }}
+        }
+        }
       >
-        <div class="flex flex-col divide-accent divide-2">
+        <div class="flex flex-col divide-accent divide-2 space-y-4 p-4">
           <For each={badgeRegistry[props.type]}>
             {(badge) => (
               <div
-                class="px-4 py-2 hover:bg-accent rounded-md"
+                class="hover:bg-accent"
                 onClick={(e) => {
                   e.preventDefault();
                   console.log("000000000000000000000000000000000");
@@ -107,7 +108,7 @@ export default (node: TableProps) => {
             )}
           </For>
         </div>
-      </div>
+      </div >
     );
   };
   const BadgeComponent = (props: {
@@ -125,7 +126,7 @@ export default (node: TableProps) => {
           });
           setShowBadgeSelectionMenu(props.type);
         }}
-        class="badge border-2 rounded-md px-2 py-1  font-semibold flex items-center justify-center cursor-pointer"
+        class="badge border-2 px-2 py-1  font-semibold flex items-center justify-center cursor-pointer"
         style={{ background: props.color + "70", "border-color": props.color }}
       >
         {props.text}
@@ -192,7 +193,7 @@ export default (node: TableProps) => {
         )}
       </For>
       <div class="relative overflow-x-auto p-2">
-        <div class="pb-4 flex space-x-4 justify-between">
+        <div class="pb-2 flex space-x-4 justify-between">
           <Filter />
           <div class="flex space-x-2 columnSelection">
             <Select
@@ -232,7 +233,7 @@ export default (node: TableProps) => {
           <TableBody>
             <For each={node.rows}>
               {(row) => (
-                <TableRow>
+                < TableRow >
                   <TableCellCheckbox>
                     <CheckboxComponent />
                   </TableCellCheckbox>
@@ -249,7 +250,7 @@ export default (node: TableProps) => {
         </Table>
         <Pagination />
       </div>
-    </div>
+    </div >
   );
 };
 
@@ -275,7 +276,7 @@ const TableHead = (props: { children: JSX.Element }) => {
 };
 const TableHeaderRow = (props: { children: JSX.Element }) => {
   return (
-    <tr class="px-6 py-4 font-medium whitespace-nowrap text-foreground divide-x-1 divide-border">
+    <tr class="px-2 py-1 font-medium whitespace-nowrap text-foreground divide-x-1 divide-border">
       {props.children}
     </tr>
   );
@@ -283,7 +284,7 @@ const TableHeaderRow = (props: { children: JSX.Element }) => {
 const TableHeaderCell = (props: { children: JSX.Element }) => {
   return (
     <th class="">
-      <div class="px-6 py-4 flex items-center w-full cursor-pointer hover:bg-red-400">
+      <div class="px-2 py-1 flex items-center w-full cursor-pointer hover:bg-red-400">
         {props.children}
         <IconSortDescending class="ml-2" size={16} />
       </div>
@@ -295,22 +296,22 @@ const TableHeaderCell = (props: { children: JSX.Element }) => {
 ////////////////////////////////////////////////////////////////////////////////////
 const TableRow = (props: { children: JSX.Element }) => {
   return (
-    <tr class="px-6 py-4 font-medium whitespace-nowrap text-foreground border-t border-border divide-x-1 divide-border hover:bg-accent ">
+    <tr class="px-2 py-1 font-medium whitespace-nowrap text-foreground border-t border-border divide-x-1 divide-border hover:bg-accent ">
       {props.children}
     </tr>
   );
 };
 const TableCell = (props: { children: JSX.Element }) => {
-  return <td class="px-6 py-4">{props.children}</td>;
+  return <td class="">{props.children}</td>;
 };
 // on click gere
 const TableCellButton = (props: { children: JSX.Element }) => {
   return (
-    <td class="px-6 py-4 cursor-pointer hover:bg-red-400">{props.children}</td>
+    <td class="px-2 py-1 cursor-pointer hover:bg-red-400">{props.children}</td>
   );
 };
 const TableCellCheckbox = (props: { children: JSX.Element }) => {
-  return <td class="px-6 py-4">{props.children}</td>;
+  return <td class="px-2 py-1">{props.children}</td>;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -320,10 +321,10 @@ const paginationButtonsClasses =
   "cursor-pointer hover:bg-muted px-4 py-1 border-y border-border";
 const Pagination = () => {
   return (
-    <div class="flex flex-row items-center justify-between pt-4 ">
+    <div class="flex flex-row items-center justify-between pt-2">
       <span class="text-md font-normal  text-foreground mb-4 md:mb-0 block w-full md:inline md:w-auto">
-        Showing <span class="font-semibold text-foreground">1-10</span> of{" "}
-        <span class="font-semibold text-foreground">1000</span>
+        Showing <span class="font-semibold text-primary">1-10</span> of{" "}
+        <span class="font-semibold text-primary">1000</span>
       </span>
 
       <div class="flex divide-x-1 divide-border">

@@ -1,4 +1,4 @@
-import { onMount } from "solid-js";
+import { createEffect, onMount } from "solid-js";
 import { setStore, store } from "../shared/store";
 import Wrapper from "./core/Wrapper";
 import Settings from "./core/Settings";

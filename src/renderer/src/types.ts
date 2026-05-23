@@ -107,7 +107,7 @@ interface ColumnSchema {
 }
 interface Table extends Node, ChildNode {
   columns: ColumnSchema[];
-  rows: Record<string, string | number | Badge>[];
+  rows: Record<string, ColumnType>[];
   showDescription: boolean;
   description?: string;
   showTitle: boolean;
@@ -128,6 +128,7 @@ interface Color extends Node, ChildNode {
 interface Board extends Node, ChildNode {
   title: string;
   icon_path: string;
+  bgImagePath?: string;
   bgColor?: ColorType;
   gridColor?: ColorType;
 }

@@ -199,6 +199,33 @@ function oklchToRgb(oklchStr: string): string {
   return `rgb(${r},${g},${b2})`;
 }
 
-export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions, oklchToRgb };
+
+const uint8ArrayToDataUrl = async (bytes: Uint8Array, mime = "image/png") => {
+  const blob = new Blob([bytes], { type: mime });
+  return await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
+
+const readImage = async (imgPath: string): Promise<string> => {
+  try {
+    const bytes = await window.api.readImage(imgPath);
+    const ext = imgPath.split('.').pop()?.toLowerCase() || 'png';
+    const mime = `image/${ext}`;
+    const dataUrl = await uint8ArrayToDataUrl(bytes, mime);
+    return dataUrl
+  } catch (err) {
+    console.error("Failed to read image:", err);
+    return "";
+  }
+};
+
+
+
+export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions, oklchToRgb, readImage };
 
 

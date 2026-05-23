@@ -168,7 +168,6 @@ function SettingsItemRadio(props: {
                 <div class="flex gap-4">
                     <RadioGroup
                         value={selected()}
-                        onChange={() => console.log("here we changer the store balue")}
                         class="flex flex-row gap-4"
                     >
                         <For each={props.values}>

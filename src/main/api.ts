@@ -1,10 +1,10 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { BrowserWindow, dialog, ipcMain } from "electron";
 import { access, mkdir } from "fs/promises";
 import path from "path";
 import fs from "fs/promises";
 import * as cheerio from "cheerio";
 import { createHash } from "crypto";
-import { constants, readdirSync } from "fs";
+import { constants, copyFileSync, existsSync, mkdirSync, readdirSync } from "fs";
 import youtubedl from 'youtube-dl-exec';
 import express from "express";
 
@@ -12,6 +12,7 @@ const basePath = "/home/clippy/Documents/GraphNote";
 const baseDir = "/home/clippy/Documents";
 const nodesPath = `${basePath}/nodes.json`;
 const edgesPath = `${basePath}/edges.json`;
+const settingsPath = `${basePath}/settings.json`;
 
 
 
@@ -118,12 +119,22 @@ ipcMain.handle("getEdges", async () => {
     return await readJSON(edgesPath);
 });
 
+ipcMain.handle("getSettings", async () => {
+    return await readJSON(settingsPath);
+});
+
+
 ipcMain.handle("saveNodes", async (_, nodes) => {
     return { success: await writeJSON(nodesPath, nodes) };
 });
 
 ipcMain.handle("saveEdges", async (_, edges) => {
     return { success: await writeJSON(edgesPath, edges) };
+});
+
+ipcMain.handle("saveSettings", async (_, settings) => {
+    console.log(settings)
+    return { success: await writeJSON(settingsPath, settings) };
 });
 
 ipcMain.handle("readGraph", async () => {
@@ -627,14 +638,6 @@ async function getFolderSize(folderPath) {
 
 
 ipcMain.handle("getSizes", async (_,) => {
-    console.log(":PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
-    console.log(await getFolderSize(basePath))
-    console.log(await getFolderSize(path.join(basePath, "image")))
-    console.log(await getFolderSize(path.join(basePath, "document")))
-    console.log(await getFolderSize(path.join(basePath, "cache")))
-    console.log(await getFolderSize(path.join(basePath, "cache", "urls")))
-    console.log(await getFolderSize(path.join(basePath, "cache", "youtube")))
-
     const totalSize = await getFolderSize(basePath)
     const imageSize = await getFolderSize(path.join(basePath, "image"))
     const youtubeCacheSize = await getFolderSize(path.join(basePath, "cache", "youtube"))
@@ -651,3 +654,51 @@ ipcMain.handle("getSizes", async (_,) => {
 
 
 
+
+
+
+
+
+ipcMain.handle("selectFile", async () => {
+    const result = await dialog.showOpenDialog({
+        properties: ["openFile"],
+        filters: [
+            { name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] },
+        ]
+    });
+
+    if (result.canceled) return null;
+
+    const sourcePath = result.filePaths[0];
+    const ext = path.extname(sourcePath);
+    const name = path.basename(sourcePath, ext);
+
+    const destDir = path.join(basePath, "image");
+
+    if (!existsSync(destDir)) {
+        mkdirSync(destDir, { recursive: true });
+    }
+
+    let counter = 0;
+    let finalName = "";
+    let finalPath = "";
+
+    while (true) {
+        finalName = counter === 0
+            ? `${name}${ext}`
+            : `${name}_${counter}${ext}`;
+
+        finalPath = path.join(destDir, finalName);
+
+        try {
+            await fs.access(finalPath);
+            counter++;
+        } catch {
+            break;
+        }
+    }
+
+    await fs.copyFile(sourcePath, finalPath);
+
+    return path.join("image", finalName);
+});

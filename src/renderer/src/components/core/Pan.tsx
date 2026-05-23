@@ -105,7 +105,7 @@ export default (props: any) => {
     >
       <div class="absolute z-1000">
         {store.viewport.x}/{store.viewport.y} ---- {store.viewport.scale}
-
+        \\\\\\\ {JSON.stringify(store.activeBoards)}
         {JSON.stringify(store.userConfig)}
       </div>
       {props.children}

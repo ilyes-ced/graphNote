@@ -1,5 +1,6 @@
 import { createStore } from "solid-js/store";
 import { NodeUnion, Edge } from "../types";
+import { createEffect, onMount } from "solid-js";
 
 
 interface Command {
@@ -11,13 +12,33 @@ export const defaultViewportZoom = 1
 
 
 
+onMount(async () => {
+  try {
+    const data = await window.api.getSettings();
+    setStore("userConfig", data ?? {});
+    setStore("userConfig", data)
+  } catch (err) {
+    console.error("Failed to get edges:", err);
+  }
+  createEffect(async () => {
+    console.log(store.userConfig.pdfReaderType, store.userConfig.youtubeVidCache, store.userConfig.cacheUrlData, store.userConfig.pdfScale, store.userConfig.gridStyle, store.userConfig.showMiniMap, store.userConfig.homeBoardStyle, store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor,)
+    await window.api.saveSettings(JSON.parse(JSON.stringify(store.userConfig)));
+  })
+})
+
+
 interface UserConfig {
   pdfReaderType: "side" | "modal" | "external",
   youtubeVidCache: boolean, //? if set to true, youtube videos will be downloaded
   cacheUrlData: boolean,
   pdfScale: number, //? for pdf reader clarity, 1 is blurry 1.5 is decent any more takes very long to laod
   gridStyle: "dots" | "grid",
-  showMiniMap: boolean
+  showMiniMap: boolean,
+  homeBoardStyle: {
+    bgImagePath?: string,
+    bgColor?: string
+    gridColor?: string
+  }
 }
 
 interface GlobalStore {
@@ -109,6 +130,8 @@ const [store, setStore] = createStore<GlobalStore>({
 
   pdfFile: null,
 
+  //TODO: later read these from config file, and save changes 
+  //TODO: create effect: when this part changes save changes to settings.json
   userConfig: {
     pdfReaderType: "modal",
     youtubeVidCache: true,
@@ -116,7 +139,11 @@ const [store, setStore] = createStore<GlobalStore>({
     pdfScale: 1.5,
     gridStyle: "grid",
     showMiniMap: false,
-
+    homeBoardStyle: {
+      bgImagePath: "image/wallhaven-e8ek18.png",
+      bgColor: "",
+      gridColor: ""
+    }
   },
 });
 

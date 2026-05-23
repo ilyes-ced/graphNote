@@ -163,21 +163,7 @@ body,
   background: #555;
 }
 
-.viewport-content-dots {
-  transform-origin: 0 0;
-  background-image: radial-gradient(var(--dot-color) 1px, transparent 0);
-  background-size: 10px 10px;
-  background-position: -20px -20px;
-}
 
-.viewport-content-grid {
-  transform-origin: 0 0;
-  background-image:
-    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-  background-size: 10px 10px;
-  background-position: -20px -20px;
-}
 .node {
   position: absolute;
   /*

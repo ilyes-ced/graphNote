@@ -6,8 +6,10 @@ declare global {
     api: {
       getNodes: () => Promise<any>;
       getEdges: () => Promise<any>;
+      getSettings: () => Promise<any>;
       saveNodes: (nodes: any) => Promise<any>;
       saveEdges: (edges: any) => Promise<any>;
+      saveSettings: (settings: any) => Promise<any>;
       readGraph: () => Promise<any>;
       readFile: (data: { folderPath: string; filePath: string }) => Promise<{ text: string }>;
       writeFile: (data: { name: string, data: Uint8Array, type: string }) => Promise<{ success: boolean; path: string }>;
@@ -24,7 +26,7 @@ declare global {
       onYoutubeDownloadComplete: (callback: any) => Promise<any>
       getLocalVideo: (vidName: any) => Promise<any>
       getSizes: () => Promise<any>
-
+      selectFile: () => Promise<any>
     };
   }
 }

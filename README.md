@@ -99,6 +99,8 @@
 - [ ] set the urls description as the youtube video decription
 - [ ] selected child nodes: settings styles doesnt work
 - [ ] child nodes: when touched slightly it moves from position and the parent Column becomes opaque
+- [ ] set board bgColor and grid coloor
+  - [ ] make it possible to use an image as a background for a board
 
 
 
