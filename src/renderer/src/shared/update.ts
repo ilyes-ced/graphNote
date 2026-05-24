@@ -864,6 +864,7 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
     undo() {
       if (type == "bg") {
         setStore("nodes", activeBoardId, index, "bgColor", oldValue)
+        setStore("nodes", activeBoardId, index, "bgImagePath", "")
       } else if (type == "grid") {
         setStore("nodes", activeBoardId, index, "gridColor", oldValue)
       } else if (type == "image") {
@@ -874,6 +875,7 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
     redo() {
       if (type == "bg") {
         setStore("nodes", activeBoardId, index, "bgColor", value)
+        setStore("nodes", activeBoardId, index, "bgImagePath", "")
       } else if (type == "grid") {
         setStore("nodes", activeBoardId, index, "gridColor", value)
       } else if (type == "image") {

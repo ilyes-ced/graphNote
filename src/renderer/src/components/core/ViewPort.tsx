@@ -1,7 +1,7 @@
 import { setStore, store } from "../../shared/store";
 import { NodeType } from "../../types";
 import { findNodeById, getActiveBoardId, newNode } from "../../shared/update";
-import { Show, createSignal, onMount } from "solid-js";
+import { Show, createEffect, createSignal, onMount } from "solid-js";
 import { readImage } from "../../shared/utils";
 
 export default (props: any) => {
@@ -13,7 +13,11 @@ export default (props: any) => {
   const [imgSrc, setImgSrc] = createSignal("");
 
 
-  onMount(async () => {
+
+  createEffect(async () => {
+    console.log(store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor,)
+
+
     let imagePath
     if (getActiveBoardId() == "home") {
       console.log("------------------------------- home")
@@ -35,8 +39,6 @@ export default (props: any) => {
         setBg(node?.color ?? "#062935")
       }
     }
-
-
     if (bgType() == "image") {
       try {
         console.log("reading image from the server")
@@ -54,12 +56,13 @@ export default (props: any) => {
   })
 
 
+
   return (
     <div
       ref={props.wrapperRef}
       id="viewport"
       style={{
-        background: bgType() == "color" ? bg() : "#521930",
+        background: bgType() == "color" ? bg() : "var(--color-background)",
         top: 0,
         left: 0,
         width: "100%",
@@ -71,7 +74,7 @@ export default (props: any) => {
     >
 
       <div class="bg-green-900 absolute top-20 border">
-        fff        {imgSrc()}
+        fff qwdqwd  ;;{bgType()} ;;
       </div>
       <Show when={bgType() == "image"}>
         <img class="absolute inset-0 z-0 h-full w-full object-cover" src={imgSrc()} />

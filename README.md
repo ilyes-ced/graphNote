@@ -101,6 +101,10 @@
 - [ ] child nodes: when touched slightly it moves from position and the parent Column becomes opaque
 - [ ] set board bgColor and grid coloor
   - [ ] make it possible to use an image as a background for a board
+- [ ] node creation coordinates are wrong probably dont account for scale
+- [ ] newly placed nodes use a low Zindex
+- [ ] make board styles changing in context menu
+- [ ] ColorPicker in top bar doesnt react to the change in the styles values in the store
 
 
 

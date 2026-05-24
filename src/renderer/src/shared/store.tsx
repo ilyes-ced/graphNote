@@ -140,7 +140,7 @@ const [store, setStore] = createStore<GlobalStore>({
     gridStyle: "grid",
     showMiniMap: false,
     homeBoardStyle: {
-      bgImagePath: "image/wallhaven-e8ek18.png",
+      bgImagePath: "",
       bgColor: "",
       gridColor: ""
     }

@@ -9,7 +9,6 @@ import {
   IconUpload,
 } from "@tabler/icons-solidjs";
 import { DefaultColorPicker } from "@thednp/solid-color-picker";
-import { dialog } from "electron";
 import { findNodeById, getActiveBoardId, updateBoardStyles } from "../shared/update";
 
 export default () => {
@@ -119,16 +118,12 @@ export default () => {
           class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video picker-wrapper "
         >
           <DefaultColorPicker
-            value="#88888810"
+            value={store.userConfig.homeBoardStyle.gridColor != "" ? store.userConfig.homeBoardStyle.gridColor : "#059124"}
             onChange={(color) => {
-              console.log("llllllllllllll")
-              console.log("llllllllllllll")
-              console.log("llllllllllllll")
-              console.log("llllllllllllll")
               document.documentElement.style.setProperty('--dot-color', color);
               document.documentElement.style.setProperty('--grid-color', color);
               if (getActiveBoardId() == "home") {
-                setStore("userConfig", "homeBoardStyle", "bgImagePath", color)
+                setStore("userConfig", "homeBoardStyle", "gridColor", color)
               } else {
                 updateBoardStyles(findNodeById(getActiveBoardId()), color, "grid")
               }
@@ -141,11 +136,13 @@ export default () => {
           class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video picker-wrapper "
         >
           <DefaultColorPicker
-            value="rgba(136, 136, 136, 0.063)"
+            value={store.userConfig.homeBoardStyle.bgColor != "" ? store.userConfig.homeBoardStyle.bgColor : "#952034"}
             onChange={(color) => {
               if (getActiveBoardId() == "home") {
+                setStore("userConfig", "homeBoardStyle", "bgImagePath", "")
                 setStore("userConfig", "homeBoardStyle", "bgColor", color)
               } else {
+                updateBoardStyles(findNodeById(getActiveBoardId()), "", "image")
                 updateBoardStyles(findNodeById(getActiveBoardId()), color, "bg")
               }
             }}
