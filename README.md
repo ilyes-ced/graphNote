@@ -105,6 +105,8 @@
 - [ ] newly placed nodes use a low Zindex
 - [ ] make board styles changing in context menu
 - [ ] ColorPicker in top bar doesnt react to the change in the styles values in the store
+- [ ] the createEffcet in store.tsx doesnt need to do the initial run 
+- [ ] server side: on image creation make sure if the images have the same name tha they are not the same image so we dont save duplicates
 
 
 
@@ -129,9 +131,6 @@ leave the encryption feature to last because once its implemented we cant manipu
 
 
 
-# for better performance and display
-- [ ] pixiJS
-- [ ] tldraw
 
 
 

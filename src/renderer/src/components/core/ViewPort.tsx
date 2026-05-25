@@ -4,6 +4,7 @@ import { findNodeById, getActiveBoardId, newNode } from "../../shared/update";
 import { Show, createEffect, createSignal, onMount } from "solid-js";
 import { readImage } from "../../shared/utils";
 
+
 export default (props: any) => {
   const [selecting, setSelecting] = createSignal(false);
   const [start, setStart] = createSignal({ x: 0, y: 0 });
@@ -12,11 +13,8 @@ export default (props: any) => {
   const [bg, setBg] = createSignal("");
   const [imgSrc, setImgSrc] = createSignal("");
 
-
-
   createEffect(async () => {
-    console.log(store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor,)
-
+    console.log(store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor)
 
     let imagePath
     if (getActiveBoardId() == "home") {
@@ -41,13 +39,6 @@ export default (props: any) => {
     }
     if (bgType() == "image") {
       try {
-        console.log("reading image from the server")
-        console.log("reading image from the server")
-        console.log("reading image from the server")
-        console.log("reading image from the server")
-        console.log("reading image from the server")
-        console.log("reading image from the server")
-        console.log(imagePath)
         setImgSrc(await readImage(imagePath));
       } catch (err) {
         setImgSrc(await readImage("image/placeholder.png"));
@@ -73,9 +64,6 @@ export default (props: any) => {
       }}
     >
 
-      <div class="bg-green-900 absolute top-20 border">
-        fff qwdqwd  ;;{bgType()} ;;
-      </div>
       <Show when={bgType() == "image"}>
         <img class="absolute inset-0 z-0 h-full w-full object-cover" src={imgSrc()} />
       </Show>
@@ -106,6 +94,7 @@ export default (props: any) => {
 
 
         onMouseDown={(e) => {
+          if (e.button == 2) return
           if (e.target !== e.currentTarget) return;
 
           setSelecting(true);
@@ -167,8 +156,8 @@ export default (props: any) => {
           "background-size": "10px 10px",
           "background-position": "-20px -20px",
           "background-image": store.userConfig.gridStyle === "grid"
-            ? "linear-gradient(to right, var(--grid-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px)"
-            : "radial-gradient(var(--dot-color) 1px, transparent 0)",
+            ? `linear-gradient(to right, ${store.userConfig.homeBoardStyle.gridColor} 1px, transparent 1px), linear-gradient(to bottom, ${store.userConfig.homeBoardStyle.gridColor} 1px, transparent 1px)`
+            : `radial-gradient(${store.userConfig.homeBoardStyle.gridColor} 1px, transparent 0)`,
 
           transform: `translate3d(${store.viewport.x}px, ${store.viewport.y}px, 0)
             scale3d(
@@ -207,3 +196,4 @@ export default (props: any) => {
     </div >
   );
 };
+

@@ -31,7 +31,9 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
+    "@jaames/iro": "^5.5.2",
     "@kobalte/core": "^0.13.11",
+    "@melloware/coloris": "^0.25.0",
     "@myriaddreamin/typst-ts-renderer": "^0.7.0-rc2",
     "@myriaddreamin/typst-ts-web-compiler": "^0.7.0-rc2",
     "@myriaddreamin/typst.solid": "^0.7.0-rc2",

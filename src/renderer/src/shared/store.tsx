@@ -13,13 +13,8 @@ export const defaultViewportZoom = 1
 
 
 onMount(async () => {
-  try {
-    const data = await window.api.getSettings();
-    setStore("userConfig", data ?? {});
-    setStore("userConfig", data)
-  } catch (err) {
-    console.error("Failed to get edges:", err);
-  }
+  const data = await window.api.getSettings();
+  setStore("userConfig", data ?? {});
   createEffect(async () => {
     console.log(store.userConfig.pdfReaderType, store.userConfig.youtubeVidCache, store.userConfig.cacheUrlData, store.userConfig.pdfScale, store.userConfig.gridStyle, store.userConfig.showMiniMap, store.userConfig.homeBoardStyle, store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor,)
     await window.api.saveSettings(JSON.parse(JSON.stringify(store.userConfig)));
@@ -85,6 +80,7 @@ interface GlobalStore {
 
 
   settingsModal: boolean;
+  contextMenuModal: boolean;
 
 
   pdfFile: String | null;
@@ -127,6 +123,7 @@ const [store, setStore] = createStore<GlobalStore>({
   historyPointer: -1,
 
   settingsModal: false,
+  contextMenuModal: false,
 
   pdfFile: null,
 

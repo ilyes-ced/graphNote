@@ -23,7 +23,7 @@ const ToggleSettings: {
 }[] = [
         {
             name: "Enable caching Youtube videos",
-            description: "Save youtube videos locally to avoid waiting for loading, or to use offline.",
+            description: "Save youtube videos locally to avoid waiting for loading, or to use offline.(can take up alot of space)",
             storeFieldName: "youtubeVidCache"
         },
         {

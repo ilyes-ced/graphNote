@@ -1,7 +1,16 @@
-import { onMount, onCleanup } from "solid-js";
+import { onMount, onCleanup, Show, createSignal } from "solid-js";
 import { setStore, store } from "../../shared/store";
 import { NodeUnion } from "../../types";
 import { recieveDragNDropFile } from "../../shared/utils";
+
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger
+} from "../ui/ContextMenu"
+
 
 type NodesCopyPaste = {
   id: string;
@@ -340,8 +349,28 @@ export default (props: any) => {
       onContextMenu={(e) => {
         e.preventDefault(); // prevent browser context menu
         console.log("this is opening the context menu");
+        setStore("contextMenuModal", true)
       }}
     >
+
+      <Show when={store.contextMenuModal}>
+        <div class="absolute top-0 left-0">
+          <ContextMenu>
+            <ContextMenuTrigger>Open</ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem>My Account</ContextMenuItem>
+              <ContextMenuSeparator />
+              <ContextMenuItem>Profile</ContextMenuItem>
+              <ContextMenuItem>Billing</ContextMenuItem>
+              <ContextMenuItem>Team</ContextMenuItem>
+              <ContextMenuItem>Subscription</ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+        </div>
+      </Show>
+
+
+
       {props.children}
     </div>
   );
