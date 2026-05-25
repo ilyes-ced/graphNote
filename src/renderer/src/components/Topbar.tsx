@@ -10,6 +10,7 @@ import {
 } from "@tabler/icons-solidjs";
 import { findNodeById, getActiveBoardId, updateBoardStyles } from "../shared/update";
 import iro from "@jaames/iro";
+import { getBoardBgColor, getBoardGridColor } from "../shared/utils";
 
 export default () => {
   const [bgPicker, setBgPicker] = createSignal(false);
@@ -31,7 +32,7 @@ export default () => {
     if (getActiveBoardId() == "home") {
       setStore("userConfig", "homeBoardStyle", "bgImagePath", path)
     } else {
-      updateBoardStyles(findNodeById(getActiveBoardId()), path, "image")
+      updateBoardStyles(findNodeById(getActiveBoardId())?.id, path, "image")
     }
 
     console.log(path);
@@ -118,15 +119,21 @@ export default () => {
         setStore("userConfig", "homeBoardStyle", "bgImagePath", "")
         setStore("userConfig", "homeBoardStyle", "bgColor", color.rgbaString)
       } else {
-        updateBoardStyles(findNodeById(getActiveBoardId()), "", "image")
-        updateBoardStyles(findNodeById(getActiveBoardId()), color.rgbaString, "bg")
+        console.log("changing the color value")
+        console.log(findNodeById(getActiveBoardId()), color.rgbaString, "bg")
+
+        updateBoardStyles(findNodeById(getActiveBoardId())?.id, "", "image")
+        updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "bg")
       }
     });
     colorPickerGrid.on('color:change', function (color: any) {
       if (getActiveBoardId() == "home") {
         setStore("userConfig", "homeBoardStyle", "gridColor", color.rgbaString)
       } else {
-        updateBoardStyles(findNodeById(getActiveBoardId()), color.rgbaString, "grid")
+        console.log("changing the color value")
+        console.log(findNodeById(getActiveBoardId()), color.rgbaString, "grid")
+
+        updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "grid")
       }
     });
   })
@@ -243,7 +250,7 @@ export default () => {
         <div>Board Grid Color:</div>
         <div
           class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video picker-wrapper"
-          style={{ background: store.userConfig.homeBoardStyle.gridColor != "" ? store.userConfig.homeBoardStyle.gridColor : "var(--color-background)" }}
+          style={{ background: getBoardGridColor() }}
           onclick={(e) => {
             setModalPos({ x: e.target.getBoundingClientRect().left, y: e.target.getBoundingClientRect().top })
             setGridPicker(true)
@@ -254,7 +261,7 @@ export default () => {
         <div>Board Bg Color:</div>
         <div
           class="border border-border hover:border-foreground/70 cursor-pointer bg-accent flex items-center justify-center h-full aspect-video picker-wrapper"
-          style={{ background: store.userConfig.homeBoardStyle.bgColor != "" ? store.userConfig.homeBoardStyle.bgColor : "var(--color-background)" }}
+          style={{ background: getBoardBgColor() }}
           onclick={(e) => {
             setModalPos({ x: e.target.getBoundingClientRect().left, y: e.target.getBoundingClientRect().top })
             setBgPicker(true)

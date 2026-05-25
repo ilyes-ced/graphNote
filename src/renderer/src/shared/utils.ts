@@ -2,7 +2,7 @@ import { setStore, store } from "./store";
 import { saveEdgesJSON, saveNodesJSON } from "./save";
 import { Payload } from "../types";
 import saveFile from "./saveFile";
-import { newDocumentNode, newImageNode } from "./update";
+import { findNodeById, getActiveBoardId, newDocumentNode, newImageNode } from "./update";
 
 const addSelected = (e: MouseEvent, nodeId: string) => {
   // if click is on child dont do it
@@ -226,6 +226,39 @@ const readImage = async (imgPath: string): Promise<string> => {
 
 
 
-export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions, oklchToRgb, readImage };
+const getBoardimage = () => {
+  if (getActiveBoardId() == "home") {
+    return store.userConfig.homeBoardStyle.bgImagePath ?? ""
+  } else {
+    console.log(getActiveBoardId())
+    //@ts-ignore
+    return findNodeById(getActiveBoardId()).bgImagePath
+  }
+}
+
+const getBoardBgColor = () => {
+  if (getActiveBoardId() == "home") {
+    return store.userConfig.homeBoardStyle.bgColor != "" ? store.userConfig.homeBoardStyle.bgColor : "var(--color-background)"
+  } else {
+    console.log(getActiveBoardId())
+    //@ts-ignore
+    return findNodeById(getActiveBoardId()).bgColor
+  }
+}
+
+const getBoardGridColor = () => {
+  if (getActiveBoardId() == "home") {
+    return store.userConfig.homeBoardStyle.gridColor != "" ? store.userConfig.homeBoardStyle.gridColor : "var(--grid-color)"
+  } else {
+    console.log(getActiveBoardId())
+    //@ts-ignore
+    return findNodeById(getActiveBoardId()).gridColor
+  }
+}
+
+
+
+
+export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions, oklchToRgb, readImage, getBoardimage, getBoardBgColor, getBoardGridColor };
 
 

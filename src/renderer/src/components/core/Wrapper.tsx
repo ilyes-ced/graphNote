@@ -14,11 +14,11 @@ export default () => {
   const [wrapperRef, setWrapperRef] = createSignal(null);
 
   createEffect(() => {
-    console.log(store.viewport.scale)
-    console.log(store.viewport.x)
-    console.log(store.viewport.y)
-    console.log(store.viewport.width)
-    console.log(store.viewport.height)
+    const g0 = store.viewport.scale
+    const g1 = store.viewport.x
+    const g2 = store.viewport.y
+    const g3 = store.viewport.width
+    const g4 = store.viewport.height
     updateArrowsPositions()
   });
 

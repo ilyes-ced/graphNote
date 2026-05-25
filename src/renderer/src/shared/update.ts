@@ -831,11 +831,26 @@ const newDocumentNode = (
 
 
 const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | "image") => {
-  const activeBoardId = store.activeBoards.at(-1)?.id;
+  //! wrong: should find the node in ites parent not like this 
+  // store.activeBoards[store.activeBoards.length - 1].id //! -2 to find the id of the board before it
+  // TODO: doent work with boards nested in Columns
+  console.log(nodeId);
+  console.log(nodeId);
+  console.log(nodeId);
+  console.log(nodeId);
+  console.log(nodeId);
+  console.log(nodeId);
+
+  const activeBoardId = store.activeBoards.at(-2)?.id;
+  console.log(activeBoardId)
   if (!activeBoardId) return;
 
   const boardNodes = store.nodes[activeBoardId] ?? [];
+  console.log(boardNodes)
+
   const index = boardNodes.findIndex(n => n.id === nodeId);
+  console.log(index)
+
   if (index === -1) return;
 
   let oldValue: string
@@ -845,15 +860,15 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
 
 
   if (type == "bg") {
-    oldValue = boardNodes[index].bgColor;
+    oldValue = boardNodes[index]?.bgColor ?? "";
     setStore("nodes", activeBoardId, index, "bgColor", value)
     //? unsetting bgImage cuz it has priority
     setStore("nodes", activeBoardId, index, "bgImagePath", "")
   } else if (type == "grid") {
-    oldValue = boardNodes[index].gridColor;
+    oldValue = boardNodes[index]?.gridColor ?? "";
     setStore("nodes", activeBoardId, index, "gridColor", value)
   } else if (type == "image") {
-    oldValue = boardNodes[index].bgImagePath;
+    oldValue = boardNodes[index]?.bgImagePath ?? "";
     setStore("nodes", activeBoardId, index, "bgImagePath", value)
   }
 

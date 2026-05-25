@@ -107,6 +107,8 @@
 - [ ] ColorPicker in top bar doesnt react to the change in the styles values in the store
 - [ ] the createEffcet in store.tsx doesnt need to do the initial run 
 - [ ] server side: on image creation make sure if the images have the same name tha they are not the same image so we dont save duplicates
+- [ ] board change: when going to another board the image change is slow, maybe we should set it before the change
+- [ ] changing board should reset the viewport size and the x and y and scale
 
 
 

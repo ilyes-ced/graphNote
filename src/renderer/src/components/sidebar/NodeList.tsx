@@ -51,7 +51,7 @@ const handleMouseMove = (e: MouseEvent) => {
 };
 
 const handleMouseUp = () => {
-  newNode(findType(cloneType() ?? ""), ((dragPos().x - 65) / store.viewport.scale), ((dragPos().y - 50) / store.viewport.scale));
+  newNode(findType(cloneType() ?? ""), ((dragPos().x - store.viewport.x - 65) / store.viewport.scale), ((dragPos().y - store.viewport.y - 50) / store.viewport.scale));
   setDragging(false);
   setCloneType(null);
 

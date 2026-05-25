@@ -2,7 +2,7 @@ import { setStore, store } from "../../shared/store";
 import { NodeType } from "../../types";
 import { findNodeById, getActiveBoardId, newNode } from "../../shared/update";
 import { Show, createEffect, createSignal, onMount } from "solid-js";
-import { readImage } from "../../shared/utils";
+import { getBoardGridColor, readImage } from "../../shared/utils";
 
 
 export default (props: any) => {
@@ -14,7 +14,14 @@ export default (props: any) => {
   const [imgSrc, setImgSrc] = createSignal("");
 
   createEffect(async () => {
-    console.log(store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor)
+    console.log(store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor, store.activeBoards)
+    console.log(getActiveBoardId())
+    console.log(getActiveBoardId())
+    console.log(getActiveBoardId())
+    console.log(getActiveBoardId())
+    console.log(getActiveBoardId())
+    console.log(getActiveBoardId())
+    console.log(getActiveBoardId())
 
     let imagePath
     if (getActiveBoardId() == "home") {
@@ -34,7 +41,7 @@ export default (props: any) => {
         imagePath = node?.bgImagePath ?? "image/placeholder"
       } else {
         setBgType("color")
-        setBg(node?.color ?? "#062935")
+        setBg(node?.bgColor ?? "#062935")
       }
     }
     if (bgType() == "image") {
@@ -45,6 +52,8 @@ export default (props: any) => {
       }
     }
   })
+
+
 
 
 
@@ -88,7 +97,8 @@ export default (props: any) => {
           console.log(e.clientX)
           console.log(e.clientY)
           // todo: gets mouse Pos in the window not in the canvas, if we pan to the right and double click the node is created on the left side of the viewport 
-          newNode(NodeType.Note, ((e.clientX - 65) / store.viewport.scale), ((e.clientY - 50) / store.viewport.scale));
+          newNode(NodeType.Note, (e.clientX - store.viewport.x - 65) / store.viewport.scale,
+            (e.clientY - store.viewport.y - 50) / store.viewport.scale);
         }}
 
 
@@ -156,8 +166,8 @@ export default (props: any) => {
           "background-size": "10px 10px",
           "background-position": "-20px -20px",
           "background-image": store.userConfig.gridStyle === "grid"
-            ? `linear-gradient(to right, ${store.userConfig.homeBoardStyle.gridColor} 1px, transparent 1px), linear-gradient(to bottom, ${store.userConfig.homeBoardStyle.gridColor} 1px, transparent 1px)`
-            : `radial-gradient(${store.userConfig.homeBoardStyle.gridColor} 1px, transparent 0)`,
+            ? `linear-gradient(to right, ${getBoardGridColor()} 1px, transparent 1px), linear-gradient(to bottom, ${getBoardGridColor()} 1px, transparent 1px)`
+            : `radial-gradient(${getBoardGridColor()} 1px, transparent 0)`,
 
           transform: `translate3d(${store.viewport.x}px, ${store.viewport.y}px, 0)
             scale3d(

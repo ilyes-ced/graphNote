@@ -66,8 +66,6 @@ export default (node: UrlProps) => {
       })
 
       window.api.onYoutubeDownloadComplete(async (data: any) => {
-        console.log("download finishes here")
-        console.log(data)
         getVidPath(data.vidId)
       })
       return message;
