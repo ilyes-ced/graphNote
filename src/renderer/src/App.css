@@ -345,17 +345,6 @@ body,
 .color-preview{
   color: transparent !important;
 }
-.picker-wrapper .color-picker {
-    width: 100% !important;
-    height: 100% !important;
-}
-.picker-wrapper canvas,
-.picker-wrapper svg,
-.picker-wrapper input {
-    width: 100% !important;
-    height: 100% !important;
-}
-
 
 
 

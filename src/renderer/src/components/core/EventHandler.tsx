@@ -1,7 +1,7 @@
 import { onMount, onCleanup, Show, createSignal } from "solid-js";
 import { setStore, store } from "../../shared/store";
 import { NodeUnion } from "../../types";
-import { recieveDragNDropFile } from "../../shared/utils";
+import { getBoardBgColor, getBoardGridColor, recieveDragNDropFile } from "../../shared/utils";
 
 import {
   ContextMenu,
@@ -103,11 +103,15 @@ import {
   addNode,
   findNodeById,
   generateNewId,
+  getActiveBoardId,
   incrementSelectedNodesPositions,
   newImageNode,
   removeNodeById,
+  updateBoardStyles,
 } from "../../shared/update";
 import { redo, undo } from "../../shared/actions";
+import { IconCaretRightFilled, IconUpload } from "@tabler/icons-solidjs";
+import iro from "@jaames/iro";
 
 export default (props: any) => {
   //TODO replace this tauri logic with normal web stuff
@@ -157,6 +161,9 @@ export default (props: any) => {
   // todo: fix for electron
   //listen("tauri://drag-enter", (event) => {});
   //listen("tauri://drag-leave", (event) => {});
+
+
+
 
   onMount(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
@@ -319,16 +326,16 @@ export default (props: any) => {
 
           // move selected nodes
           case "ArrowUp":
-            incrementSelectedNodesPositions(0, -10);
+            incrementSelectedNodesPositions(0, e.shiftKey ? -50 : -10);
             break;
           case "ArrowDown":
-            incrementSelectedNodesPositions(0, 10);
+            incrementSelectedNodesPositions(0, e.shiftKey ? 50 : 10);
             break;
           case "ArrowLeft":
-            incrementSelectedNodesPositions(-10, 0);
+            incrementSelectedNodesPositions(e.shiftKey ? -50 : -10, 0);
             break;
           case "ArrowRight":
-            incrementSelectedNodesPositions(10, 0);
+            incrementSelectedNodesPositions(e.shiftKey ? 50 : 10, 0);
             break;
           default:
             break;
@@ -341,7 +348,109 @@ export default (props: any) => {
     onCleanup(() => {
       window.removeEventListener("keydown", handleKeyDown);
     });
+
+
+
+
+
+
+    // @ts-ignore
+    colorPickerBg = new iro.ColorPicker(pickerBgRef, {
+      color: store.userConfig.homeBoardStyle.bgColor ?? "#ff5593",
+      layout: [
+        {
+          component: iro.ui.Box,
+        },
+        {
+          component: iro.ui.Slider,
+          options: {
+            sliderType: 'hue',
+          }
+        },
+        {
+          component: iro.ui.Slider,
+          options: {
+            sliderType: 'alpha'
+          }
+        },
+      ]
+    });
+    // @ts-ignore
+    colorPickerGrid = new iro.ColorPicker(pickerGridRef, {
+      color: store.userConfig.homeBoardStyle.gridColor ?? "#ff5593",
+      layout: [
+        {
+          component: iro.ui.Box,
+        },
+        {
+          component: iro.ui.Slider,
+          options: {
+            sliderType: 'hue',
+          }
+        },
+        {
+          component: iro.ui.Slider,
+          options: {
+            sliderType: 'alpha'
+          }
+        },
+      ]
+    });
+
+    colorPickerBg.on('color:change', function (color: any) {
+      if (getActiveBoardId() == "home") {
+        setStore("userConfig", "homeBoardStyle", "bgImagePath", "")
+        setStore("userConfig", "homeBoardStyle", "bgColor", color.rgbaString)
+      } else {
+        console.log("changing the color value")
+        console.log(findNodeById(getActiveBoardId()), color.rgbaString, "bg")
+
+        updateBoardStyles(findNodeById(getActiveBoardId())?.id, "", "image")
+        updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "bg")
+      }
+    });
+    colorPickerGrid.on('color:change', function (color: any) {
+      if (getActiveBoardId() == "home") {
+        setStore("userConfig", "homeBoardStyle", "gridColor", color.rgbaString)
+      } else {
+        console.log("changing the color value")
+        console.log(findNodeById(getActiveBoardId()), color.rgbaString, "grid")
+
+        updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "grid")
+      }
+    });
   });
+
+
+  const pickFile = async () => {
+    const path = await window.api.selectFile();
+
+
+
+    if (getActiveBoardId() == "home") {
+      setStore("userConfig", "homeBoardStyle", "bgImagePath", path)
+    } else {
+      updateBoardStyles(findNodeById(getActiveBoardId())?.id, path, "image")
+    }
+
+    console.log(path);
+    console.log(path);
+    console.log(path);
+    console.log(path);
+    console.log(path);
+    console.log(path);
+  };
+
+
+  let x, y;
+  const [bgPicker, setBgPicker] = createSignal(false);
+  const [gridPicker, setGridPicker] = createSignal(false);
+  const [modalPos, setModalPos] = createSignal({ x: 0, y: 0 });
+  let pickerBgRef!: HTMLDivElement
+  let pickerGridRef!: HTMLDivElement
+  let colorPickerBg: any
+  let colorPickerGrid: any
+
 
   return (
     <div
@@ -349,30 +458,149 @@ export default (props: any) => {
       onContextMenu={(e) => {
         e.preventDefault(); // prevent browser context menu
         console.log("this is opening the context menu");
-        setStore("contextMenuModal", true)
+        x = e.clientX
+        y = e.clientY
+        console.log(x, y)
+        setStore("contextMenuModal", !store.contextMenuModal)
       }}
     >
 
-      <Show when={store.contextMenuModal}>
-        <div class="absolute top-0 left-0">
-          <ContextMenu>
-            <ContextMenuTrigger>Open</ContextMenuTrigger>
-            <ContextMenuContent>
-              <ContextMenuItem>My Account</ContextMenuItem>
-              <ContextMenuSeparator />
-              <ContextMenuItem>Profile</ContextMenuItem>
-              <ContextMenuItem>Billing</ContextMenuItem>
-              <ContextMenuItem>Team</ContextMenuItem>
-              <ContextMenuItem>Subscription</ContextMenuItem>
-            </ContextMenuContent>
-          </ContextMenu>
+
+      <div
+        class="z-10000 absolute top-0 left-0 size-full" onClick={() => { console.log("*888888888888"); setBgPicker(false) }}
+        style={{
+          opacity: bgPicker() ? "1" : "0",
+          "pointer-events": bgPicker() ? "auto" : "none",
+        }}
+      >
+        <div onClick={(e) => e.stopPropagation()} class="bg-background absolute size-fit border-2 border-primary animate-[modalIn_0.25s_ease]"
+          style={{
+            top: `${modalPos().y}px`,
+            left: `${modalPos().x}px`
+          }}
+        >
+          <div class="p-2" ref={pickerBgRef}></div>
         </div>
-      </Show>
+      </div>
+
+      <div
+        class="z-10000 absolute top-0 left-0 size-full" onClick={() => setGridPicker(false)}
+        style={{
+          opacity: gridPicker() ? "1" : "0",
+          "pointer-events": gridPicker() ? "auto" : "none",
+        }}
+      >
+        <div onClick={(e) => e.stopPropagation()} class="bg-background absolute size-fit border-2 border-primary animate-[modalIn_0.25s_ease]"
+          style={{
+            top: `${modalPos().y}px`,
+            left: `${modalPos().x}px`
+          }}
+        >
+          <div class="p-2" ref={pickerGridRef}></div>
+        </div>
+      </div >
 
 
 
+      <Show when={store.contextMenuModal}>
+        <div
+          id="contextMenu"
+          class="absolute z-50 w-60 select-none"
+          style={{
+            top: `${(y ?? 0) - 50}px`,
+            left: `${(x ?? 0) - 65}px`,
+          }}
+        >
+          <div class="border border-border bg-card p-2 shadow-xl">
+
+            {/* Normal item */}
+            <button
+              class="w-full px-3 py-2 text-left hover:bg-background transition-colors"
+            >
+              Test
+            </button>
+
+            {/* Divider */}
+            <div class="my-2 h-px bg-border" />
+
+            {/* Submenu wrapper */}
+            <div class="relative group">
+              <button
+                class="flex w-full items-center justify-between px-3 py-2 hover:bg-background transition-colors"
+              >
+                <span>Board styles</span>
+                <IconCaretRightFilled class="text-sm opacity-70" />
+              </button>
+
+              {/* Submenu */}
+              <div
+                class="
+            invisible absolute left-full top-0 ml-2
+            w-100 border border-border bg-card p-2 shadow-xl
+            opacity-0 transition-all duration-150
+            group-hover:visible group-hover:opacity-100
+          "
+              >
+                <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
+                  onclick={(e) => {
+                    setStore("contextMenuModal", false)
+                    console.log({ x: e.target.getBoundingClientRect().top, y: e.target.getBoundingClientRect().right })
+                    setModalPos({ x: e.target.getBoundingClientRect().top, y: e.target.getBoundingClientRect().right })
+                    setBgPicker(true)
+                  }}
+                >
+                  <div
+                    class="aspect-video w-10"
+                    style={{ background: getBoardBgColor() }}
+                  />
+
+                  <div class="flex items-center">
+                    Set Board Background Color
+                  </div>
+                </button>
+
+
+                <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
+                  onclick={(e) => {
+                    setStore("contextMenuModal", false)
+                    setModalPos({ x: e.target.getBoundingClientRect().top, y: e.target.getBoundingClientRect().right })
+                    setGridPicker(true)
+                  }}
+                >
+                  <div
+                    class="aspect-video w-10"
+                    style={{ background: getBoardGridColor() }}
+                  />
+
+                  <div class="flex items-center">
+                    Set Board Grid Color
+                  </div>
+                </button>
+
+
+                <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
+                  onclick={() => {
+                    setStore("contextMenuModal", false)
+                    pickFile()
+                  }}
+                >
+                  <div class="aspect-video w-10 flex justify-center">
+                    <IconUpload />
+                  </div>
+
+                  <div class="flex items-center">
+                    Set Board Background Image
+                  </div>
+                </button>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </Show >
       {props.children}
-    </div>
+    </div >
   );
 };
 

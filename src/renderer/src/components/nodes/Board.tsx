@@ -1,5 +1,5 @@
 import { Board } from "../../types";
-import { setStore, store } from "../../shared/store";
+import { defaultViewportZoom, setStore, store } from "../../shared/store";
 import { useDraggable } from "../../shared/nodeDrag";
 import { findNodeById } from "../../shared/update";
 import { IconCode } from "@tabler/icons-solidjs";
@@ -33,6 +33,14 @@ export default (node: BoardProps) => {
   //};
 
   const handleDoubleClick = () => {
+    setStore("selectedNodes", new Set())
+    setStore("viewport", {
+      x: 0,
+      y: 0,
+      width: 4000,
+      height: 4000,
+      scale: defaultViewportZoom,
+    })
     console.error("double clicked the board", node.id);
     const board = findNodeById(node.id);
     setStore("activeBoards", (items) => [

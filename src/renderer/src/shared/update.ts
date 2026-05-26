@@ -830,6 +830,28 @@ const newDocumentNode = (
 };
 
 
+function findNodeDeep(
+  parentId: string,
+  targetId: string
+): { parentId: string; index: number } | null {
+  const children = store.nodes[parentId] ?? [];
+
+  const index = children.findIndex(n => n.id === targetId);
+
+  if (index !== -1) {
+    return { parentId, index };
+  }
+
+  for (const child of children) {
+    const result = findNodeDeep(child.id, targetId);
+    if (result) {
+      return result;
+    }
+  }
+
+  return null;
+}
+
 const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | "image") => {
   //! wrong: should find the node in ites parent not like this 
   // store.activeBoards[store.activeBoards.length - 1].id //! -2 to find the id of the board before it
@@ -845,13 +867,17 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
   console.log(activeBoardId)
   if (!activeBoardId) return;
 
-  const boardNodes = store.nodes[activeBoardId] ?? [];
-  console.log(boardNodes)
+  const found = findNodeDeep(activeBoardId, nodeId);
+  console.log(found);
+  console.log(found);
+  console.log(found);
+  console.log(found);
+  console.log(found);
+  console.log(found);
+  if (!found) return;
 
-  const index = boardNodes.findIndex(n => n.id === nodeId);
-  console.log(index)
+  const { parentId, index } = found
 
-  if (index === -1) return;
 
   let oldValue: string
 
@@ -859,17 +885,21 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
   console.log(nodeId, value, type)
 
 
+
+  const boardNodes = store.nodes[parentId] ?? [];
+
+
   if (type == "bg") {
     oldValue = boardNodes[index]?.bgColor ?? "";
-    setStore("nodes", activeBoardId, index, "bgColor", value)
+    setStore("nodes", parentId, index, "bgColor", value)
     //? unsetting bgImage cuz it has priority
-    setStore("nodes", activeBoardId, index, "bgImagePath", "")
+    setStore("nodes", parentId, index, "bgImagePath", "")
   } else if (type == "grid") {
     oldValue = boardNodes[index]?.gridColor ?? "";
-    setStore("nodes", activeBoardId, index, "gridColor", value)
+    setStore("nodes", parentId, index, "gridColor", value)
   } else if (type == "image") {
     oldValue = boardNodes[index]?.bgImagePath ?? "";
-    setStore("nodes", activeBoardId, index, "bgImagePath", value)
+    setStore("nodes", parentId, index, "bgImagePath", value)
   }
 
 
@@ -878,23 +908,23 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
   return {
     undo() {
       if (type == "bg") {
-        setStore("nodes", activeBoardId, index, "bgColor", oldValue)
-        setStore("nodes", activeBoardId, index, "bgImagePath", "")
+        setStore("nodes", parentId, index, "bgColor", oldValue)
+        setStore("nodes", parentId, index, "bgImagePath", "")
       } else if (type == "grid") {
-        setStore("nodes", activeBoardId, index, "gridColor", oldValue)
+        setStore("nodes", parentId, index, "gridColor", oldValue)
       } else if (type == "image") {
-        setStore("nodes", activeBoardId, index, "bgImagePath", oldValue)
+        setStore("nodes", parentId, index, "bgImagePath", oldValue)
       }
       saveChanges();
     },
     redo() {
       if (type == "bg") {
-        setStore("nodes", activeBoardId, index, "bgColor", value)
-        setStore("nodes", activeBoardId, index, "bgImagePath", "")
+        setStore("nodes", parentId, index, "bgColor", value)
+        setStore("nodes", parentId, index, "bgImagePath", "")
       } else if (type == "grid") {
-        setStore("nodes", activeBoardId, index, "gridColor", value)
+        setStore("nodes", parentId, index, "gridColor", value)
       } else if (type == "image") {
-        setStore("nodes", activeBoardId, index, "bgImagePath", value)
+        setStore("nodes", parentId, index, "bgImagePath", value)
       }
       saveChanges();
     },

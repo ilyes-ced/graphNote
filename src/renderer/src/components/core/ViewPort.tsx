@@ -2,7 +2,7 @@ import { setStore, store } from "../../shared/store";
 import { NodeType } from "../../types";
 import { findNodeById, getActiveBoardId, newNode } from "../../shared/update";
 import { Show, createEffect, createSignal, onMount } from "solid-js";
-import { getBoardGridColor, readImage } from "../../shared/utils";
+import { getBoardBgColor, getBoardGridColor, readImage } from "../../shared/utils";
 
 
 export default (props: any) => {
@@ -13,47 +13,52 @@ export default (props: any) => {
   const [bg, setBg] = createSignal("");
   const [imgSrc, setImgSrc] = createSignal("");
 
-  createEffect(async () => {
-    console.log(store.userConfig.homeBoardStyle.bgImagePath, store.userConfig.homeBoardStyle.bgColor, store.userConfig.homeBoardStyle.gridColor, store.activeBoards)
-    console.log(getActiveBoardId())
-    console.log(getActiveBoardId())
-    console.log(getActiveBoardId())
-    console.log(getActiveBoardId())
-    console.log(getActiveBoardId())
-    console.log(getActiveBoardId())
-    console.log(getActiveBoardId())
+  createEffect(async () => { void loadBackground(); })
 
-    let imagePath
-    if (getActiveBoardId() == "home") {
-      console.log("------------------------------- home")
-      if (store.userConfig.homeBoardStyle?.bgImagePath && store.userConfig.homeBoardStyle.bgImagePath != "") {
-        setBgType("image")
-        imagePath = store.userConfig.homeBoardStyle.bgImagePath
+
+  async function loadBackground() {
+    let imagePath = "";
+    let isImage = false;
+
+    if (getActiveBoardId() === "home") {
+      const style = store.userConfig.homeBoardStyle;
+
+      if (style?.bgImagePath) {
+        isImage = true;
+        imagePath = style.bgImagePath;
+        setBgType("image");
       } else {
-        setBgType("color")
-        setBg(store.userConfig.homeBoardStyle?.bgColor != "" ? store.userConfig.homeBoardStyle.bgColor : "var(--color-background)")
+        setBgType("color");
+        setBg(
+          style?.bgColor || "var(--color-background)"
+        );
       }
     } else {
-      const node = findNodeById(getActiveBoardId())
-      console.log("------------------------------- ", node)
-      if (node?.bgImagePath && node?.bgImagePath != "") {
-        setBgType("image")
-        imagePath = node?.bgImagePath ?? "image/placeholder"
+      const node = findNodeById(getActiveBoardId());
+
+      if (node?.bgImagePath) {
+        isImage = true;
+        imagePath = node.bgImagePath;
+        setBgType("image");
       } else {
-        setBgType("color")
-        setBg(node?.bgColor ?? "#062935")
+        setBgType("color");
+
+        console.log("SETTING BG:", node?.bgColor);
+
+        setBg(
+          node?.bgColor || "var(--color-background)"
+        );
       }
     }
-    if (bgType() == "image") {
+
+    if (isImage) {
       try {
         setImgSrc(await readImage(imagePath));
-      } catch (err) {
+      } catch {
         setImgSrc(await readImage("image/placeholder.png"));
       }
     }
-  })
-
-
+  }
 
 
 
@@ -62,7 +67,7 @@ export default (props: any) => {
       ref={props.wrapperRef}
       id="viewport"
       style={{
-        background: bgType() == "color" ? bg() : "var(--color-background)",
+        background: getBoardBgColor(),
         top: 0,
         left: 0,
         width: "100%",
@@ -73,6 +78,7 @@ export default (props: any) => {
       }}
     >
 
+
       <Show when={bgType() == "image"}>
         <img class="absolute inset-0 z-0 h-full w-full object-cover" src={imgSrc()} />
       </Show>
@@ -81,6 +87,8 @@ export default (props: any) => {
         onClick={(e) => {
           // todo: thisa  no longer works because the svgs for the arrows take all the screen and they are on to to be visible so they are clicked instead of  the intended canvas
           // could cause issues in the future not sure
+
+          setStore("contextMenuModal", false)
           console.log("canvas click");
           console.log(e.target, e.currentTarget);
           if (e.target !== e.currentTarget) return;

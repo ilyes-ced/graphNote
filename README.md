@@ -94,21 +94,22 @@
 - [ ] recomended width for new Note nodes is 580
 - [ ] Note editor buttons not settings is-active class correctly but are working just fine
 - [ ] image text edit is not focusable
-- [ ] put images in thier own folder
-- [ ] selection only works on the left top corner of nodes (calculating the w and h of each node would be expensive)
-- [ ] set the urls description as the youtube video decription
+- [x] put images in thier own folder
+- [x] selection only works on the left top corner of nodes (calculating the w and h of each node would be expensive)
+- [x] set the urls description as the youtube video decription
 - [ ] selected child nodes: settings styles doesnt work
 - [ ] child nodes: when touched slightly it moves from position and the parent Column becomes opaque
-- [ ] set board bgColor and grid coloor
-  - [ ] make it possible to use an image as a background for a board
-- [ ] node creation coordinates are wrong probably dont account for scale
+- [x] set board bgColor and grid coloor
+  - [x] make it possible to use an image as a background for a board
+- [x] node creation coordinates are wrong probably dont account for scale
 - [ ] newly placed nodes use a low Zindex
-- [ ] make board styles changing in context menu
-- [ ] ColorPicker in top bar doesnt react to the change in the styles values in the store
+- [x] make board styles changing in context menu
+- [x] ColorPicker in top bar doesnt react to the change in the styles values in the store
 - [ ] the createEffcet in store.tsx doesnt need to do the initial run 
 - [ ] server side: on image creation make sure if the images have the same name tha they are not the same image so we dont save duplicates
 - [ ] board change: when going to another board the image change is slow, maybe we should set it before the change
-- [ ] changing board should reset the viewport size and the x and y and scale
+- [x] changing board should reset the viewport size and the x and y and scale
+- [ ] add select all shortcut (Ctrl+a)
 
 
 
