@@ -91,20 +91,24 @@ export default (node: nodeProps) => {
   //? this obsever is only here to detect when the height change on the nodes start of life to make it multiples of 10 in height, after its updated the first time its immediatly remvoed as its not needed
   let observer: ResizeObserver;
   onMount(async () => {
-    observer = new ResizeObserver(entries => {
-      const height = entries[0].contentRect.height;
-      const [_, gy] = store.snapGrid ? store.snapGrid : [1, 1];
-      const newH = Math.ceil((height ?? 0) / gy) * gy
-      if ((newH - height - 3) < 0) {
-        setPadding(newH - height - 3 + 10);
-      } else {
-        setPadding(newH - height - 3);
-      }
-    });
-    observer.observe(el);
+    if (!node.isChildNode) {
+      observer = new ResizeObserver(entries => {
+        const height = entries[0].contentRect.height;
+        const [_, gy] = store.snapGrid ? store.snapGrid : [1, 1];
+        const newH = Math.ceil((height ?? 0) / gy) * gy
+        if ((newH - height - 3) < 0) {
+          setPadding(newH - height - 3 + 10);
+        } else {
+          setPadding(newH - height - 3);
+        }
+      });
+      observer.observe(el);
+    }
   });
   onCleanup(() => {
-    observer.disconnect();
+    if (!node.isChildNode) {
+      observer.disconnect();
+    }
   })
 
 

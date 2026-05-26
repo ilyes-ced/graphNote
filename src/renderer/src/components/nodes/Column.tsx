@@ -88,7 +88,7 @@ export default (node: Column) => {
                 )}
 
                 <Show when={index() < store.nodes[node.id].length - 1}>
-                  <div class="column_spacer pt-2" style={{ background: node.color }}></div>
+                  <div class="column_spacer pt-2" style={{ background: node.color ?? "var(--color-card)" }}></div>
                 </Show>
               </div>
 

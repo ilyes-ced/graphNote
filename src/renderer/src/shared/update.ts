@@ -349,7 +349,7 @@ const findParentIdByNodeId = (nodeId: string): string | null => {
   return null;
 };
 
-const removeNodeById = (nodeId: string, parentId?: string) => {
+const removeNodeById = (nodeId: string, parentId?: string, deleteChildren: boolean = true) => {
   const activeBoardId = store.activeBoards.at(-1)?.id;
   const targetId = parentId ?? activeBoardId;
   if (!targetId) return;
@@ -378,18 +378,24 @@ const removeNodeById = (nodeId: string, parentId?: string) => {
   }
 
   setStore("nodes", targetId, updated);
-  setStore("nodes", removedNode.id, undefined!);
+  if (deleteChildren) {
+    setStore("nodes", removedNode.id, undefined!);
+  }
   saveChanges();
 
   return {
     undo() {
       setStore("nodes", targetId, currentNodes);
-      setStore("nodes", removedNode.id, removedNodeChildren);
+      if (deleteChildren) {
+        setStore("nodes", removedNode.id, removedNodeChildren);
+      }
       saveChanges();
     },
     redo() {
       setStore("nodes", targetId, updated);
-      setStore("nodes", removedNode.id, undefined!);
+      if (deleteChildren) {
+        setStore("nodes", removedNode.id, undefined!);
+      }
       saveChanges();
     },
   };
@@ -456,6 +462,7 @@ const generateNewId = (): string => {
 };
 
 const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
+
   const base = {
     id: generateNewId(),
     type,
@@ -569,6 +576,7 @@ const newNode = (type: NodeType, x: number, y: number) => {
 
   setStore("nodes", activeBoardId, (nodes = []) => [...nodes, node]);
   saveChanges();
+  updateZIndex(node.id)
 
 
   return {
@@ -853,27 +861,11 @@ function findNodeDeep(
 }
 
 const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | "image") => {
-  //! wrong: should find the node in ites parent not like this 
-  // store.activeBoards[store.activeBoards.length - 1].id //! -2 to find the id of the board before it
-  // TODO: doent work with boards nested in Columns
-  console.log(nodeId);
-  console.log(nodeId);
-  console.log(nodeId);
-  console.log(nodeId);
-  console.log(nodeId);
-  console.log(nodeId);
-
   const activeBoardId = store.activeBoards.at(-2)?.id;
   console.log(activeBoardId)
   if (!activeBoardId) return;
 
   const found = findNodeDeep(activeBoardId, nodeId);
-  console.log(found);
-  console.log(found);
-  console.log(found);
-  console.log(found);
-  console.log(found);
-  console.log(found);
   if (!found) return;
 
   const { parentId, index } = found

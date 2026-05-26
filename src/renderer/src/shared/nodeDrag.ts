@@ -49,6 +49,17 @@ export function useDraggable(
   const startDrag = (e: PointerEvent) => {
     element = e.currentTarget as HTMLElement;
     console.info("moving:", element);
+    if (e.button == 2) {
+      console.info("rightclick onm -----", element.id);
+      setStore("selectedNodes", prev => {
+        if (element) {
+          const next = new Set(prev);
+          next.add(element.id);
+          return next;
+        }
+      })
+      return
+    }
 
     if (store.showColorMenu) setStore("showColorMenu", false);
     //? at leastit helps with removing the ghost when dragging an image

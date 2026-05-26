@@ -1,15 +1,7 @@
 import { onMount, onCleanup, Show, createSignal } from "solid-js";
 import { setStore, store } from "../../shared/store";
-import { NodeUnion } from "../../types";
+import { NodeType, NodeUnion } from "../../types";
 import { getBoardBgColor, getBoardGridColor, recieveDragNDropFile } from "../../shared/utils";
-
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuTrigger
-} from "../ui/ContextMenu"
 
 
 type NodesCopyPaste = {
@@ -110,7 +102,7 @@ import {
   updateBoardStyles,
 } from "../../shared/update";
 import { redo, undo } from "../../shared/actions";
-import { IconCaretRightFilled, IconUpload } from "@tabler/icons-solidjs";
+import { IconCaretRightFilled, IconGrid4x4, IconGridDots, IconUpload } from "@tabler/icons-solidjs";
 import iro from "@jaames/iro";
 
 export default (props: any) => {
@@ -304,6 +296,9 @@ export default (props: any) => {
             break;
           case "f": // search
             break;
+          case "a": // saelect all
+            setStore("selectedNodes", new Set(store.nodes[getActiveBoardId()].map(node => node.id)))
+            break;
 
           default:
             break;
@@ -402,9 +397,6 @@ export default (props: any) => {
         setStore("userConfig", "homeBoardStyle", "bgImagePath", "")
         setStore("userConfig", "homeBoardStyle", "bgColor", color.rgbaString)
       } else {
-        console.log("changing the color value")
-        console.log(findNodeById(getActiveBoardId()), color.rgbaString, "bg")
-
         updateBoardStyles(findNodeById(getActiveBoardId())?.id, "", "image")
         updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "bg")
       }
@@ -413,9 +405,6 @@ export default (props: any) => {
       if (getActiveBoardId() == "home") {
         setStore("userConfig", "homeBoardStyle", "gridColor", color.rgbaString)
       } else {
-        console.log("changing the color value")
-        console.log(findNodeById(getActiveBoardId()), color.rgbaString, "grid")
-
         updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "grid")
       }
     });
@@ -442,7 +431,8 @@ export default (props: any) => {
   };
 
 
-  let x, y;
+  let x: number = 0
+  let y: number = 0
   const [bgPicker, setBgPicker] = createSignal(false);
   const [gridPicker, setGridPicker] = createSignal(false);
   const [modalPos, setModalPos] = createSignal({ x: 0, y: 0 });
@@ -458,6 +448,7 @@ export default (props: any) => {
       onContextMenu={(e) => {
         e.preventDefault(); // prevent browser context menu
         console.log("this is opening the context menu");
+        console.log(e.target);
         x = e.clientX
         y = e.clientY
         console.log(x, y)
@@ -479,7 +470,8 @@ export default (props: any) => {
             left: `${modalPos().x}px`
           }}
         >
-          <div class="p-2" ref={pickerBgRef}></div>
+          <div class="p-2" ref={pickerBgRef}>
+          </div>
         </div>
       </div>
 
@@ -544,8 +536,9 @@ export default (props: any) => {
                 <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
                   onclick={(e) => {
                     setStore("contextMenuModal", false)
-                    console.log({ x: e.target.getBoundingClientRect().top, y: e.target.getBoundingClientRect().right })
-                    setModalPos({ x: e.target.getBoundingClientRect().top, y: e.target.getBoundingClientRect().right })
+                    console.log({ x, y })
+                    console.log({ x, y })
+                    setModalPos({ x, y })
                     setBgPicker(true)
                   }}
                 >
@@ -593,9 +586,50 @@ export default (props: any) => {
                   </div>
                 </button>
 
+                <div class="border-b-2 border-border my-2"></div>
+
+                <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
+                  style={{
+                    background: store.userConfig.gridStyle == "grid" ? "var(--color-primary)" : ""
+                  }}
+                  onclick={() => {
+                    setStore("userConfig", "gridStyle", "grid")
+                  }}
+                >
+                  <div class="aspect-video w-10 flex justify-center">
+                    <IconGrid4x4 />
+                  </div>
+
+                  <div class="flex items-center">
+                    Set Board Grid to Grid
+                  </div>
+                </button>
+
+                <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
+                  style={{
+                    background: store.userConfig.gridStyle == "dots" ? "var(--color-primary)" : ""
+                  }}
+                  onclick={() => {
+                    setStore("userConfig", "gridStyle", "dots")
+                  }}
+                >
+                  <div class="aspect-video w-10 flex justify-center">
+                    <IconGridDots />
+                  </div>
+
+                  <div class="flex items-center">
+                    Set Board Grid to dots
+                  </div>
+                </button>
+
+
+
+
 
               </div>
             </div>
+            <div class="border-b-2 border-border my-2"></div>
+            {extraOptions()}
           </div>
         </div>
       </Show >
@@ -604,19 +638,74 @@ export default (props: any) => {
   );
 };
 
-/*
+const extraOptions = () => {
 
-events to handle
-  Del: delete
-  Ctrl copy
-  Ctrl paste
+  // better yet, in case all nodes are of the same type
 
-  arrow keys to move selected nodes
-
-  Ctrl z undo
-  Ctrl y redo
-
-  
+  const selected = store.selectedNodes
+  const selectedNodes = store.nodes[getActiveBoardId()].filter(user => selected.has(user.id));
 
 
-*/
+  if (selectedNodes.every((node) => node.type === selectedNodes[0].type)) {
+    //? this node type options
+    console.log(selectedNodes[0])
+    console.log(selectedNodes[0].type)
+    switch (selectedNodes[0].type) {
+      case "Note":
+        break;
+      case "Comment":
+        break;
+      case "Todo":
+        break;
+      case "Table":
+        break;
+      case "Url":
+        break;
+      case "Activity":
+        break;
+      case "Arrow":
+        break;
+      case "Board":
+        break;
+      case "Column":
+        break;
+      case "Color":
+        break;
+      case "Image":
+        break;
+
+      default:
+        return <div>options for that type of node</div>
+    }
+  } else {
+    //? all node types options
+    return Option("options for all noddes")
+  }
+
+
+  if (store.selectedNodes.size == 1) {
+  } else {
+  }
+
+
+}
+
+const Option = (text: string) => {
+
+  return (
+    <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
+      style={{
+        background: store.userConfig.gridStyle == "dots" ? "var(--color-primary)" : ""
+      }}
+      onclick={() => { }}
+    >
+      <div class="aspect-video w-10 flex justify-center">
+        <IconGridDots />
+      </div>
+
+      <div class="flex items-center">
+        {text}
+      </div>
+    </button>
+  )
+}

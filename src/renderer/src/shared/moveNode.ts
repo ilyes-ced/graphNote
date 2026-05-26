@@ -30,7 +30,7 @@ export default function moveNode(
     }
 
     // remove node from parent
-    removeNodeById(movedNodeId, oldParentNodeId);
+    removeNodeById(movedNodeId, oldParentNodeId, false);
 
     // moving node to canvas or new parent
     if (movedToCanvas) {
@@ -87,7 +87,7 @@ export default function moveNode(
     }
 
     console.log("moved to inside a column from the canvas");
-    removeNodeById(movedNodeId);
+    removeNodeById(movedNodeId, undefined, false);
 
     console.log("starting to add the node");
     addNode(

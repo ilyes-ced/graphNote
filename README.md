@@ -10,8 +10,7 @@
 
 # optimization
 
-- [ ] cache url scrapping (backend)
-- [ ] cache scrapping images (frontend) (investigation needed on the performance first)
+- [x] cache url scrapping (backend)
 - [x] stop writing to file when moving nodes
 - [x] test animejs and neodrag again their animations were smoother (the issue was tauri not which DnD library was used, in electron all DnD libraries are the same smoothness, even my custom implementation)
 
@@ -62,7 +61,7 @@
 - [x] reset viewport data on board change (reset x,y , not zoom)
 - [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))
 - [x] copy pasting nodes when focused on text pastes both on text and on nodes
-- [ ] improve image loading performance
+- [x] improve image loading performance
 - [x] make the height multiples of 10
   - [ ] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
   - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down 
@@ -73,13 +72,10 @@
 - [x] Url node: when url is blank allow user to write it down
 - [ ] cant place nodes on the corner
 - [ ] when pasting url in a new note node, some issues happen when it transforms
-- [ ] for URL youtube Videos, make it download the video and use a custom video player
-  - [ ] give the user the option to use embedded youtube video or locally download the videos 
+- [x] for URL youtube Videos, make it download the video and use a custom video player
+  - [x] give the user the option to use embedded youtube video or locally download the videos 
 - [x] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
-- [ ] edges
-  - [ ] edges are not adjusted to scale
 - [ ] the new snap to grid is not working properly (not consistent)
-- [ ] bezier edge needs to adjust for scale
 - [ ] when note node is focused disable the arrows to move the node 
 - [ ] in nodes.tsx settimeout to wait for url nodes to load needs to go
 - [ ] cache URL nodes
@@ -109,7 +105,11 @@
 - [ ] server side: on image creation make sure if the images have the same name tha they are not the same image so we dont save duplicates
 - [ ] board change: when going to another board the image change is slow, maybe we should set it before the change
 - [x] changing board should reset the viewport size and the x and y and scale
-- [ ] add select all shortcut (Ctrl+a)
+- [x] add select all shortcut (Ctrl+a)
+  - [ ] bulk actions undo and redo dont account for the bulk (redoing redoes each action individually)
+- [x] drgging a full coloumn inside another board deletes it contents
+- [ ] each node right click options
+- [ ] give user option to disable node borders
 
 
 
@@ -117,12 +117,12 @@
 - [ ] add another type of Note node, using typst as an external library
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
-- [ ] add the user settings to allow the user to choose wether to cache/download:
-  - [ ] Urls thunmbnails
-  - [ ] Videos
-- [ ] css bg color is brighter and paler than it should be 
+- [x] add the user settings to allow the user to choose wether to cache/download:
+  - [x] Urls thunmbnails
+  - [x] Videos
+- [x] css bg color is brighter and paler than it should be 
 - [ ] opening URLs: dont open the url in the electron app send it to the default browser
-- [ ] right click menu
+- [x] right click menu
 - [ ] daily tasks node (or set the recurring period)
 
 
