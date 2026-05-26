@@ -452,6 +452,9 @@ export default (props: any) => {
         x = e.clientX
         y = e.clientY
         console.log(x, y)
+        if (store.contextMenuModal) {
+          setStore("selectedNodes", new Set())
+        }
         setStore("contextMenuModal", !store.contextMenuModal)
       }}
     >
@@ -513,7 +516,7 @@ export default (props: any) => {
             </button>
 
             {/* Divider */}
-            <div class="my-2 h-px bg-border" />
+            <div class="border-b-2 border-border my-2" />
 
             {/* Submenu wrapper */}
             <div class="relative group">
@@ -621,14 +624,9 @@ export default (props: any) => {
                     Set Board Grid to dots
                   </div>
                 </button>
-
-
-
-
-
               </div>
             </div>
-            <div class="border-b-2 border-border my-2"></div>
+            {globalOptions()}
             {extraOptions()}
           </div>
         </div>
@@ -638,71 +636,71 @@ export default (props: any) => {
   );
 };
 
+const globalOptions = () => {
+  return <div class="w-full">
+    <div class="border-b-2 border-border my-2"></div>
+    {Option("options for all noddes")}
+    {Option("options for all noddes")}
+    {Option("options for all noddes")}
+  </div>
+}
+
+
 const extraOptions = () => {
-
-  // better yet, in case all nodes are of the same type
-
   const selected = store.selectedNodes
   const selectedNodes = store.nodes[getActiveBoardId()].filter(user => selected.has(user.id));
+  if (selectedNodes.length > 0) {
+    if (selectedNodes.every((node) => node.type === selectedNodes[0].type)) {
+      return <div>
+        <div class="border-b-2 border-border my-2"></div>
+        {Option(`options for ${selectedNodes[0].type} nodes`)}
+      </div>
 
+      //? this node type options
+      console.log(selectedNodes[0])
+      console.log(selectedNodes[0].type)
+      switch (selectedNodes[0].type) {
+        case "Note":
+          break;
+        case "Comment":
+          break;
+        case "Todo":
+          break;
+        case "Table":
+          break;
+        case "Url":
+          break;
+        case "Activity":
+          break;
+        case "Arrow":
+          break;
+        case "Board":
+          break;
+        case "Column":
+          break;
+        case "Color":
+          break;
+        case "Image":
+          break;
 
-  if (selectedNodes.every((node) => node.type === selectedNodes[0].type)) {
-    //? this node type options
-    console.log(selectedNodes[0])
-    console.log(selectedNodes[0].type)
-    switch (selectedNodes[0].type) {
-      case "Note":
-        break;
-      case "Comment":
-        break;
-      case "Todo":
-        break;
-      case "Table":
-        break;
-      case "Url":
-        break;
-      case "Activity":
-        break;
-      case "Arrow":
-        break;
-      case "Board":
-        break;
-      case "Column":
-        break;
-      case "Color":
-        break;
-      case "Image":
-        break;
-
-      default:
-        return <div>options for that type of node</div>
+        default:
+          return <div>options for that type of node</div>
+      }
+    } else {
+      //? all node types options
+      return <div>
+        <div class="border-b-2 border-border my-2"></div>
+        {Option(`options for all noddes`)}
+      </div>
     }
-  } else {
-    //? all node types options
-    return Option("options for all noddes")
   }
-
-
-  if (store.selectedNodes.size == 1) {
-  } else {
-  }
-
-
 }
 
 const Option = (text: string) => {
-
   return (
     <button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
-      style={{
-        background: store.userConfig.gridStyle == "dots" ? "var(--color-primary)" : ""
-      }}
       onclick={() => { }}
     >
-      <div class="aspect-video w-10 flex justify-center">
-        <IconGridDots />
-      </div>
-
       <div class="flex items-center">
         {text}
       </div>

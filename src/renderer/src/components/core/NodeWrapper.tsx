@@ -52,7 +52,8 @@ const ignoredClasses = (
         return { tags: ["video-player"], classes: ["url_input"], ids: ["secondaryEditor"] };
       case NodeType.Document:
         return { classes: ["down_pdf", "open_pdf"], ids: ["secondaryEditor"] };
-
+      case NodeType.Table:
+        return { tags: ["table", "td"], classes: ["mainTable"] };
       default:
         return {};
     }

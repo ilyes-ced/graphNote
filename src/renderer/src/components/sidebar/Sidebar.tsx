@@ -1,7 +1,6 @@
 import { createEffect } from "solid-js";
 import { store } from "../../shared/store";
 import NodeList from "./NodeList";
-import NoteStyles from "./NoteStyles";
 import NodeStyles from "./NodeStyles";
 
 // have all the template componenets in this file,

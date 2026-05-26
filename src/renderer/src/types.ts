@@ -106,7 +106,7 @@ interface ColumnSchema {
   typeDef: ColumnType;
 }
 interface Table extends Node, ChildNode {
-  columns: ColumnSchema[];
+  cols: ColumnSchema[];
   rows: Record<string, ColumnType>[];
   showDescription: boolean;
   description?: string;
