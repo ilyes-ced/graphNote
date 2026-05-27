@@ -98,7 +98,7 @@
 - [x] set board bgColor and grid coloor
   - [x] make it possible to use an image as a background for a board
 - [x] node creation coordinates are wrong probably dont account for scale
-- [ ] newly placed nodes use a low Zindex
+- [x] newly placed nodes use a low Zindex
 - [x] make board styles changing in context menu
 - [x] ColorPicker in top bar doesnt react to the change in the styles values in the store
 - [ ] the createEffcet in store.tsx doesnt need to do the initial run 
@@ -107,11 +107,13 @@
 - [x] changing board should reset the viewport size and the x and y and scale
 - [x] add select all shortcut (Ctrl+a)
   - [ ] bulk actions undo and redo dont account for the bulk (redoing redoes each action individually)
-  - [ ] make sure it doesnt trigger if a text is focused
+  - [x] make sure it doesnt trigger if a text is focused
 - [x] drgging a full coloumn inside another board deletes it contents
 - [ ] each node right click options
 - [ ] give user option to disable node borders
 - [ ] Good Idea: for deleted items add them to trash instead of deleting and keep their resources (images, cache etc), if the user empties the trash all the resources are then deleted
+- [ ] miniMap doesnt account for child nodes in columns
+- [ ] minimap when changing board items are displayed wrong
 
 
 
@@ -126,6 +128,7 @@
 - [ ] opening URLs: dont open the url in the electron app send it to the default browser
 - [x] right click menu
 - [ ] daily tasks node (or set the recurring period)
+- [ ] extend Url node to take full screen, display the video and the its description to the side
 
 
 

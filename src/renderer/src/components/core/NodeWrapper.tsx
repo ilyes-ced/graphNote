@@ -49,7 +49,7 @@ const ignoredClasses = (
       case NodeType.Image:
         return { ids: ["secondaryEditor"] };
       case NodeType.Url:
-        return { tags: ["video-player"], classes: ["url_input"], ids: ["secondaryEditor"] };
+        return { tags: ["video-player"], classes: ["url_input", "extend_toggle"], ids: ["secondaryEditor"] };
       case NodeType.Document:
         return { classes: ["down_pdf", "open_pdf"], ids: ["secondaryEditor"] };
       case NodeType.Table:
@@ -123,6 +123,7 @@ export default (node: nodeProps) => {
         selected_node: store.selectedNodes.has(node.node.id),
         "group/collapse": node.node.type === NodeType.Column,
         "group/edit": node.node.type === NodeType.Note,
+        "group/extend": node.node.type === NodeType.Url,
         "flex flex-col justify-center items-center":
           node.node.type === NodeType.Board,
         "flex flex-row justify-start p-2 pl-2.5":

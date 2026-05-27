@@ -1,6 +1,6 @@
 import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { Url } from "../../types";
-import { IconLink, IconPlayerPlayFilled } from "@tabler/icons-solidjs";
+import { IconLink, IconPlayerPlayFilled, IconResize } from "@tabler/icons-solidjs";
 import { updateNodeDesc, updateURL } from "../../shared/update";
 import { store } from "../../shared/store";
 import Editor from "./Editor";
@@ -29,6 +29,8 @@ export default (node: UrlProps) => {
   const [isPlaying, setIsPlaying] = createSignal(false);
   const [srcImage, setSrcImage] = createSignal<string>("");
   const [srcFav, setSrcFav] = createSignal<string>("");
+  const [expand, setExpand] = createSignal(false);
+
 
   const [metaData, setMetaData] = createSignal<MetaData>({
     title: "placeholder",
@@ -152,7 +154,12 @@ export default (node: UrlProps) => {
   //? "wait_load" class name is needed for elements that take time to load the assets like url images
   return (
     <div class="space-y-2">
-
+      <div
+        onClick={() => setExpand(!expand())}
+        class="z-50 extend_toggle cursor-pointer absolute top-0 right-0 aspect-square hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200 ease-in-out"
+      >
+        < IconResize size={16} />
+      </div>
 
 
       <Switch fallback={

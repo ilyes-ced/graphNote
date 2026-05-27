@@ -257,8 +257,19 @@ const getBoardGridColor = () => {
 }
 
 
+const isTextInputFocused = (): boolean => {
+  const el = document.activeElement as HTMLElement | null;
 
+  if (!el) return false;
 
-export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions, oklchToRgb, readImage, getBoardimage, getBoardBgColor, getBoardGridColor };
+  return (
+    el instanceof HTMLInputElement ||
+    el instanceof HTMLTextAreaElement ||
+    el instanceof HTMLSelectElement ||
+    el.isContentEditable
+  );
+};
+
+export { addSelected, debounce, saveChanges, recieveDragNDropFile, updateArrowsPositions, oklchToRgb, readImage, getBoardimage, getBoardBgColor, getBoardGridColor, isTextInputFocused };
 
 

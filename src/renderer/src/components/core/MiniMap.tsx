@@ -1,21 +1,22 @@
-import { createSignal, onMount } from "solid-js";
+import { For, createSignal, onMount } from "solid-js";
 import { store } from "../../shared/store";
+import { getBoardBgColor } from "../../shared/utils";
 
 export default (props: { wrapperRef: any }) => {
   const aspectRatio = () =>
     `${store.viewport.width} / ${store.viewport.height}`;
 
   const posX = () =>
-    Math.round(((-store.viewport.x / store.viewport.width) / store.viewport.scale) * 100);
+    ((-store.viewport.x / store.viewport.width) / store.viewport.scale) * 100;
 
   const posY = () =>
-    Math.round(((-store.viewport.y / store.viewport.height) / store.viewport.scale) * 100);
+    ((-store.viewport.y / store.viewport.height) / store.viewport.scale) * 100;
 
   const width = () =>
-    Math.round(Math.round(((wrapperSize().width / store.viewport.width) / store.viewport.scale) * 100) / 5) * 5;
+    ((wrapperSize().width / store.viewport.width) / store.viewport.scale) * 100;
 
   const height = () =>
-    Math.round(Math.round(((wrapperSize().height / store.viewport.height) / store.viewport.scale) * 100) / 5) * 5;
+    ((wrapperSize().height / store.viewport.height) / store.viewport.scale) * 100;
 
   const [wrapperSize, setWrapperSize] = createSignal({
     width: 0,
@@ -38,14 +39,58 @@ export default (props: { wrapperRef: any }) => {
     observer.observe(el);
   });
 
+  const nodesData = () => {
+    const nodes = store.nodes[store.activeBoards.at(-1)?.id ?? "home"]
+    let nodesData: {
+      id: string,
+      x: number,
+      y: number,
+      color: string,
+      w: number,
+      h: number,
+    }[] = []
+    if (!nodes) return
+    nodes.forEach(n => {
+      const el = document.getElementById(n.id)?.getBoundingClientRect()
+      nodesData.push({
+        id: n.id,
+        x: ((n.x / store.viewport.width) / store.viewport.scale) * 100,
+        y: ((n.y / store.viewport.width) / store.viewport.scale) * 100,
+        color: n.color ?? "",
+        w: (((el?.width ?? 0) / store.viewport.width) / store.viewport.scale) * 100,
+        h: (((el?.height ?? 0) / store.viewport.width) / store.viewport.scale) * 100,
+      })
+    });
+    return nodesData
+  }
+
   return (
     <div
       id="minimap"
-      class="absolute bottom-3.25 right-3.5 w-67.5 border border-primary p-2.5 z-1000"
+      class="absolute bottom-3.25 right-3.5 w-67.5 border border-primary p-2.5 z-1000 bg-background"
       style={{ "aspect-ratio": aspectRatio() }}
     >
+      <div class="relative size-full border-2 border-background z-1000"
+        style={{ background: getBoardBgColor() }}
+      >
+        <For each={nodesData()}>
+          {(node) => (
+            <div
+              style={{
+                position: "absolute",
+                left: `${node.x}%`,
+                top: `${node.y}%`,
+                width: `${node.w}%`,
+                height: `${node.h}%`,
+                background: node.color && node.color != "" ? node.color : "var(--color-card)",
+                border: `1px solid ${store.selectedNodes.has(node.id) ? "white" : "var(--color-background)"}`
+              }}
+            >
 
-      <div class="relative size-full border border-border bg-card z-1000" >
+            </div>
+          )
+          }
+        </For >
         <div
           class="bg-primary/20 border border-primary"
           style={{
@@ -57,32 +102,12 @@ export default (props: { wrapperRef: any }) => {
           }}
         >
           {posX()}//
-
           {posY()}//
-
           {width()}//
-
           {height()}//
-
         </div>
       </div>
     </div>
   );
 };
 
-/*
-
-#minimap {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 240px;
-  height: 135px;
-}
-#minimap > * {
-  border-radius: 10px;
-  border: 1px solid #88888820;
-  background-color: #88888810;
-  z-index: 1000;
-}
-*/
