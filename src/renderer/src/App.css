@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* 
 @tailwind base;
@@ -43,86 +43,84 @@
 
 */
 @theme {
-  --color-background: oklch(0.141 0.005 285.823);
-  --color-foreground: oklch(0.985 0 0);
-  --color-card: oklch(0.21 0.006 285.885);
-  --color-card-foreground: oklch(0.985 0 0);
-  --color-popover: oklch(0.21 0.006 285.885);
-  --color-popover-foreground: oklch(0.985 0 0);
-  --color-primary: oklch(0.65 0.2173 36.85);
-  --color-primary-foreground: oklch(0.98 0.016 73.684);
-  --color-secondary: oklch(0.274 0.006 286.033);
-  --color-secondary-foreground: oklch(0.985 0 0);
-  --color-muted: oklch(0.274 0.006 286.033);
-  --color-muted-foreground: oklch(0.705 0.015 286.067);
-  --color-accent: oklch(0.274 0.006 286.033);
-  --color-accent-foreground: oklch(0.985 0 0);
-  --color-destructive: oklch(0.704 0.191 22.216);
-  --color-border: oklch(1 0 0 / 10%);
-  --color-input: oklch(1 0 0 / 15%);
-  --color-ring: oklch(0.646 0.222 41.116);
-  --color-chart-1: oklch(0.488 0.243 264.376);
-  --color-chart-2: oklch(0.696 0.17 162.48);
-  --color-chart-3: oklch(0.769 0.188 70.08);
-  --color-chart-4: oklch(0.627 0.265 303.9);
-  --color-chart-5: oklch(0.645 0.246 16.439);
-  --color-sidebar: oklch(0.21 0.006 285.885);
-  --color-sidebar-foreground: oklch(0.985 0 0);
-  --color-sidebar-primary: oklch(0.646 0.222 41.116);
-  --color-sidebar-primary-foreground: oklch(0.98 0.016 73.684);
-  --color-sidebar-accent: oklch(0.274 0.006 286.033);
-  --color-sidebar-accent-foreground: oklch(0.985 0 0);
-  --color-sidebar-border: oklch(1 0 0 / 10%);
-  --color-sidebar-ring: oklch(0.646 0.222 41.116);
+	--color-background: oklch(0.141 0.005 285.823);
+	--color-foreground: oklch(0.985 0 0);
+	--color-card: oklch(0.21 0.006 285.885);
+	--color-card-foreground: oklch(0.985 0 0);
+	--color-popover: oklch(0.21 0.006 285.885);
+	--color-popover-foreground: oklch(0.985 0 0);
+	--color-primary: oklch(0.65 0.2173 36.85);
+	--color-primary-foreground: oklch(0.98 0.016 73.684);
+	--color-secondary: oklch(0.274 0.006 286.033);
+	--color-secondary-foreground: oklch(0.985 0 0);
+	--color-muted: oklch(0.274 0.006 286.033);
+	--color-muted-foreground: oklch(0.705 0.015 286.067);
+	--color-accent: oklch(0.274 0.006 286.033);
+	--color-accent-foreground: oklch(0.985 0 0);
+	--color-destructive: oklch(0.704 0.191 22.216);
+	--color-border: oklch(1 0 0 / 10%);
+	--color-input: oklch(1 0 0 / 15%);
+	--color-ring: oklch(0.646 0.222 41.116);
+	--color-chart-1: oklch(0.488 0.243 264.376);
+	--color-chart-2: oklch(0.696 0.17 162.48);
+	--color-chart-3: oklch(0.769 0.188 70.08);
+	--color-chart-4: oklch(0.627 0.265 303.9);
+	--color-chart-5: oklch(0.645 0.246 16.439);
+	--color-sidebar: oklch(0.21 0.006 285.885);
+	--color-sidebar-foreground: oklch(0.985 0 0);
+	--color-sidebar-primary: oklch(0.646 0.222 41.116);
+	--color-sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+	--color-sidebar-accent: oklch(0.274 0.006 286.033);
+	--color-sidebar-accent-foreground: oklch(0.985 0 0);
+	--color-sidebar-border: oklch(1 0 0 / 10%);
+	--color-sidebar-ring: oklch(0.646 0.222 41.116);
 
-  --dot-color:#88888810;
-  --grid-color:#88888810;
+	--dot-color: #88888810;
+	--grid-color: #88888810;
 }
 
 /********************************************************/
 
-
 *,
 *::before,
 *::after {
-  box-sizing: border-box  !important;
+	box-sizing: border-box !important;
 }
 
 @font-face {
-    font-family: 'nothingFont';
-    src: url('../../../fonts/NType82-Headline.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'nothingFont';
+	src: url('../../../fonts/NType82-Headline.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
 }
 html {
-  height: 100%;
-  font-size: 14px;
-  /* FONT STYLE HERE */
-  /* font-family: 'nothingFont', Arial, sans-serif; */
-  font-family: Arial, Helvetica, sans-serif;
-  color: var(--color-foreground);
-  background-color: var(--color-background);
-  overflow: hidden;
+	height: 100%;
+	font-size: 14px;
+	/* FONT STYLE HERE */
+	/* font-family: 'nothingFont', Arial, sans-serif; */
+	font-family: Arial, Helvetica, sans-serif;
+	color: var(--color-foreground);
+	background-color: var(--color-background);
+	overflow: hidden;
 }
-
 
 body,
 #root {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 
-  /* disable text selection */
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+	/* disable text selection */
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .child_container_hover {
-  opacity: 0.5;
-  transition: opacity 0.3s ease-out;
+	opacity: 0.5;
+	transition: opacity 0.3s ease-out;
 }
 
 /*? works the same without it but if anything happens this might be the issue*/
@@ -142,31 +140,30 @@ body,
 */
 
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+	width: 5px;
+	height: 5px;
 }
 ::-webkit-scrollbar-corner {
-  background: var(--color-background);
+	background: var(--color-background);
 }
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--color-background);
+	background: var(--color-background);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
+	background: var(--color-primary);
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+	background: #555;
 }
 
-
 .node {
-  position: absolute;
-  /*
+	position: absolute;
+	/*
   border: 1px solid var(--color-chart-1) !important;
   background-color: transparent !important;
   */
@@ -174,95 +171,95 @@ body,
 
 .child_node,
 .node {
-  background-color: var(--color-card);
-    /*
+	background-color: var(--color-card);
+	/*
     causes like a second border of thew nodes color to apear under it because of the scaling
     will be replaced with padding in the node wrapper i think
     border: 1px solid var(--color-background);
     */
-  cursor: grab;
-  will-change: transform;
+	cursor: grab;
+	will-change: transform;
 }
 
 /* not used for the animation of drag for nodes */
 .node-animation {
-  /* transition: transform 0.2s ease-out; */
-  transition: transform 0.15s cubic-bezier(0.33, 1, 0.68, 1);
+	/* transition: transform 0.2s ease-out; */
+	transition: transform 0.15s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .column {
-  /*for hen you exit animation*/
-  transition: opacity 0.3s ease-out;
+	/*for hen you exit animation*/
+	transition: opacity 0.3s ease-out;
 }
 
 .selected_node {
-  border-color:white !important;
+	border-color: white !important;
 }
 
 .wiggle-me {
-  background-color: var(--color-card);
-  animation: wiggle 0.75s ease-in-out infinite;
+	background-color: var(--color-card);
+	animation: wiggle 0.75s ease-in-out infinite;
 }
 
 @keyframes wiggle {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(-0.25deg);
-  }
-  50% {
-    transform: rotate(0.25deg);
-  }
-  75% {
-    transform: rotate(-0.25deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
+	0% {
+		transform: rotate(0deg);
+	}
+	25% {
+		transform: rotate(-0.25deg);
+	}
+	50% {
+		transform: rotate(0.25deg);
+	}
+	75% {
+		transform: rotate(-0.25deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
 }
 
 .tiptap {
-  @apply focus:outline-0 cursor-text select-none;
+	@apply focus:outline-0 cursor-text select-none;
 
-  ul {
-    @apply list-disc pl-4;
-  }
-  ol {
-    @apply list-decimal pl-4;
-  }
-  blockquote {
-    @apply p-4 border-l-4 bg-background/10;
-  }
-  h1 {
-    @apply text-5xl font-extrabold;
-  }
-  h2 {
-    @apply text-4xl font-bold;
-  }
-  h3 {
-    @apply text-3xl font-bold;
-  }
-  h4 {
-    @apply text-2xl font-bold;
-  }
-  h5 {
-    @apply text-xl font-bold;
-  }
-  h6 {
-    @apply text-lg font-bold;
-  }
-  pre {
-    @apply border border-accent px-2 bg-background/10;
-  }
+	ul {
+		@apply list-disc pl-4;
+	}
+	ol {
+		@apply list-decimal pl-4;
+	}
+	blockquote {
+		@apply p-4 border-l-4 bg-background/10;
+	}
+	h1 {
+		@apply text-5xl font-extrabold;
+	}
+	h2 {
+		@apply text-4xl font-bold;
+	}
+	h3 {
+		@apply text-3xl font-bold;
+	}
+	h4 {
+		@apply text-2xl font-bold;
+	}
+	h5 {
+		@apply text-xl font-bold;
+	}
+	h6 {
+		@apply text-lg font-bold;
+	}
+	pre {
+		@apply border border-accent px-2 bg-background/10;
+	}
 }
 
 /* cal-heatmap styles  */
 #ch-tooltip {
-  z-index: 1000;
+	z-index: 1000;
 }
 .ch-subdomain-bg {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 /* cal-heatmap color change transition  */
@@ -274,81 +271,78 @@ body,
 .ch-domain-text,
 .ch-subdomain-bg,
 .ch-subdomain-text {
-  transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+	transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 /* color picker styling */
 .color-dropdown {
-  background-color: var(--color-card) !important;
-  border-width: 2px !important;
-  border-color: var(--color-border) !important;
-  padding: 20px !important;
-  border-radius: 0px !important;
-  box-shadow: 5px 5px var(--color-primary) !important;
+	background-color: var(--color-card) !important;
+	border-width: 2px !important;
+	border-color: var(--color-border) !important;
+	padding: 20px !important;
+	border-radius: 0px !important;
+	box-shadow: 5px 5px var(--color-primary) !important;
 }
 
-#settings_modal_content{
-  box-shadow: 5px 5px var(--color-primary) !important;
+#settings_modal_content {
+	box-shadow: 5px 5px var(--color-primary) !important;
 }
 
 .btn-appearance {
-  border-radius: 0px !important;
+	border-radius: 0px !important;
 
-  display: flex;
-  justify-items: center;
-  align-items: center;
+	display: flex;
+	justify-items: center;
+	align-items: center;
 
-  padding: 0px 20px 0px 20px !important;
+	padding: 0px 20px 0px 20px !important;
 }
 
 .picker-toggle,
 .color-picker {
-  display: flex;
-  justify-items: center;
-  align-items: center;
+	display: flex;
+	justify-items: center;
+	align-items: center;
 }
-
 
 @keyframes modalIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+	0% {
+		opacity: 0;
+		transform: scale(0.95) translateY(10px);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
 }
 
-
 .button-group > button {
-  padding: 4px;
-  border: 1px solid var(--color-card);
-  transition: color ease-out 100ms;
-  
-  cursor: pointer;
+	padding: 4px;
+	border: 1px solid var(--color-card);
+	transition: color ease-out 100ms;
+
+	cursor: pointer;
 }
 
 .button-group > button:hover {
-  background-color: var(--hover-bg);
-  color: var(--hover-fg);
+	background-color: var(--hover-bg);
+	color: var(--hover-fg);
 }
 
-.is-active{
-  background-color: red ;
+.is-active {
+	background-color: red;
 }
 
-.leader-line{
-  z-index: 10000;
+.leader-line {
+	z-index: 10000;
 }
 
-.color-preview{
-  color: transparent !important;
+.color-preview {
+	color: transparent !important;
 }
 
-
-
-
-.IroBox, .IroSlider, .IroSliderGradient {
-  border-radius: 0px !important;
+.IroBox,
+.IroSlider,
+.IroSliderGradient {
+	border-radius: 0px !important;
 }

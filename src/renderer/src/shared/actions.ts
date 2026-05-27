@@ -2,7 +2,7 @@
 // import { setStore, store } from "./store"
 // import { findNodeById } from "./update"
 // import { produce } from "solid-js/store"
-// 
+//
 // interface updateNote {
 //     id: string,
 //     oldValue: string,
@@ -90,8 +90,8 @@
 //     x: number,
 //     y: number,
 // }
-// 
-// 
+//
+//
 // export type Actions = updateNote
 //     | updateZIndex
 //     | updatePosition
@@ -109,17 +109,17 @@
 //     | updateActivityCounter
 //     | reorderTasks
 //     | newDocumentNode
-// 
-// 
+//
+//
 // // actionsMiddleware.ts
-// 
+//
 // export function actionsMiddleware<T extends (...args: any[]) => any>(fn: T): T {
 //     return ((...args: Parameters<T>): ReturnType<T> => {
 //         console.log(`[Actions Middleware] Running ${fn.name} with args:`, args);
-// 
+//
 //         // here run the action
-// 
-// 
+//
+//
 //         switch (fn.name) {
 //             case "updateNote":
 //                 const [id, newValue] = args;
@@ -128,7 +128,7 @@
 //                     oldValue: findNodeById(id)?.text,// "idk how to even get the old text",
 //                     newValue: newValue,
 //                 })
-// 
+//
 //                 setStore("actionsHistory", store.actionsHistory.length, {
 //                     id: id,
 //                     oldValue: findNodeById(id)?.text,// "idk how to even get the old text",
@@ -187,18 +187,18 @@
 //             default:
 //                 break;
 //         }
-// 
+//
 //         // ✅ Call the original function
 //         const result = fn(...args);
-// 
+//
 //         // ✅ Do something after
 //         console.log(`[Middleware] ${fn.name} returned:`, result);
-// 
+//
 //         return result;
 //     }) as T;
 // }
-// 
-// 
+//
+//
 // export function undo() {
 //     // get last item
 //     if (store.actionHistory.length > 0) {
@@ -207,66 +207,63 @@
 //         console.log(action)
 //     }
 // }
-// 
-// 
+//
+//
 // export function redo() {
 //     console.info("here we do the redo action")
 // }
 
-import { setStore, store } from "./store";
-
-
+import { setStore, store } from './store'
 
 // export function actionsMiddleware2<T extends (...args: any[]) => any>(fn: T): T {
 //     return ((...args: Parameters<T>) => {
-// 
+//
 //         const command = fn(...args);
-// 
+//
 //         if (command?.undo && command?.redo) {
 //             setStore("actionsHistory", store.actionsHistory.length, command);
 //         }
-// 
+//
 //         return command;
 //     }) as T;
 // }
 
-
 export interface Command {
-    undo(): void;
-    redo(): void;
+	undo(): void
+	redo(): void
 }
 
 export function actionsMiddleware<T extends (...args: any[]) => Command>(fn: T): T {
-    return ((...args: Parameters<T>) => {
-        const command = fn(...args);
-        if (!command?.undo || !command?.redo) return command;
+	return ((...args: Parameters<T>) => {
+		const command = fn(...args)
+		if (!command?.undo || !command?.redo) return command
 
-        const pointer = store.historyPointer + 1;
-        const newHistory = store.actionsHistory.slice(0, pointer);
-        newHistory.push(command);
+		const pointer = store.historyPointer + 1
+		const newHistory = store.actionsHistory.slice(0, pointer)
+		newHistory.push(command)
 
-        setStore("actionsHistory", newHistory);
-        setStore("historyPointer", pointer);
+		setStore('actionsHistory', newHistory)
+		setStore('historyPointer', pointer)
 
-        return command;
-    }) as T;
+		return command
+	}) as T
 }
 
 export function undo() {
-    if (store.historyPointer < 0) return; // nothing to undo
+	if (store.historyPointer < 0) return // nothing to undo
 
-    const command = store.actionsHistory[store.historyPointer];
-    command.undo();
+	const command = store.actionsHistory[store.historyPointer]
+	command.undo()
 
-    setStore("historyPointer", store.historyPointer - 1);
+	setStore('historyPointer', store.historyPointer - 1)
 }
 
 export function redo() {
-    const pointer = store.historyPointer + 1;
-    if (pointer >= store.actionsHistory.length) return; // nothing to redo
+	const pointer = store.historyPointer + 1
+	if (pointer >= store.actionsHistory.length) return // nothing to redo
 
-    const command = store.actionsHistory[pointer];
-    command.redo();
+	const command = store.actionsHistory[pointer]
+	command.redo()
 
-    setStore("historyPointer", pointer);
+	setStore('historyPointer', pointer)
 }

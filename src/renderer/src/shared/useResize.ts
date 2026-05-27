@@ -1,46 +1,46 @@
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup } from 'solid-js'
 
 export function useResize(
-  // undefined for activity type node
-  initialWidth: number | undefined,
-  onResizeEnd?: (width: number) => void
+	// undefined for activity type node
+	initialWidth: number | undefined,
+	onResizeEnd?: (width: number) => void
 ) {
-  const [width, setWidth] = createSignal(initialWidth);
+	const [width, setWidth] = createSignal(initialWidth)
 
-  const startResize = (e: PointerEvent) => {
-    e.preventDefault();
+	const startResize = (e: PointerEvent) => {
+		e.preventDefault()
 
-    const startX = e.clientX;
-    const startWidth = width();
+		const startX = e.clientX
+		const startWidth = width()
 
-    const onMove = (e: PointerEvent) => {
-      const newWidth = startWidth + (e.clientX - startX);
-      setWidth(Math.max(300, newWidth));
-    };
+		const onMove = (e: PointerEvent) => {
+			const newWidth = startWidth + (e.clientX - startX)
+			setWidth(Math.max(300, newWidth))
+		}
 
-    const onUp = () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
+		const onUp = () => {
+			window.removeEventListener('pointermove', onMove)
+			window.removeEventListener('pointerup', onUp)
 
-      if (onResizeEnd) {
-        // round up to 10
-        setWidth(Math.round(width() / 10) * 10);
-        onResizeEnd(width());
-      }
-    };
+			if (onResizeEnd) {
+				// round up to 10
+				setWidth(Math.round(width() / 10) * 10)
+				onResizeEnd(width())
+			}
+		}
 
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-  };
+		window.addEventListener('pointermove', onMove)
+		window.addEventListener('pointerup', onUp)
+	}
 
-  onCleanup(() => {
-    window.removeEventListener("pointermove", startResize);
-    window.removeEventListener("pointerup", startResize);
-  });
+	onCleanup(() => {
+		window.removeEventListener('pointermove', startResize)
+		window.removeEventListener('pointerup', startResize)
+	})
 
-  return {
-    width,
-    setWidth,
-    startResize,
-  };
+	return {
+		width,
+		setWidth,
+		startResize
+	}
 }

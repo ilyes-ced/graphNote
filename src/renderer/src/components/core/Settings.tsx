@@ -1,12 +1,7 @@
 import { For, Show, createSignal, onMount } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { setStore, store } from '../../shared/store'
-import {
-	RadioGroup,
-	RadioGroupItem,
-	RadioGroupItemControl,
-	RadioGroupItemLabel
-} from '../ui/radio-group'
+import { RadioGroup, RadioGroupItem, RadioGroupItemControl, RadioGroupItemLabel } from '../ui/radio-group'
 
 onMount(() => {
 	console.log('settings panel')
@@ -27,14 +22,12 @@ const ToggleSettings: {
 }[] = [
 	{
 		name: 'Enable caching Youtube videos',
-		description:
-			'Save youtube videos locally to avoid waiting for loading, or to use offline.(can take up alot of space)',
+		description: 'Save youtube videos locally to avoid waiting for loading, or to use offline.(can take up alot of space)',
 		storeFieldName: 'youtubeVidCache'
 	},
 	{
 		name: 'Cache URL metadata',
-		description:
-			'Store thumbnail and URL information locally to be seen offline and avoid long loading times.',
+		description: 'Store thumbnail and URL information locally to be seen offline and avoid long loading times.',
 		storeFieldName: 'cacheUrlData'
 	},
 	{
@@ -75,10 +68,7 @@ export default () => {
 	return (
 		<Show when={store.settingsModal === true}>
 			<Portal>
-				<div
-					class="z-10000 absolute top-0 left-0 size-full backdrop-blur-md"
-					onClick={() => setStore('settingsModal', false)}
-				>
+				<div class="z-10000 absolute top-0 left-0 size-full backdrop-blur-md" onClick={() => setStore('settingsModal', false)}>
 					<div
 						onClick={(e) => e.stopPropagation()}
 						id="settings_modal_content"
@@ -123,9 +113,7 @@ function Toggle(props: { checked: boolean; onChange: (v: boolean) => void }) {
 			onClick={() => props.onChange(!props.checked)}
 			class="cursor-pointer relative w-10 h-6 bg-card border border-primary/80 flex items-center p-1 outline-2 outline-primary"
 		>
-			<div
-				class={`w-4 h-4 transition-transform duration-200 ${props.checked ? 'translate-x-4 bg-primary' : 'bg-foreground'}`}
-			/>
+			<div class={`w-4 h-4 transition-transform duration-200 ${props.checked ? 'translate-x-4 bg-primary' : 'bg-foreground'}`} />
 		</button>
 	)
 }
@@ -161,12 +149,7 @@ function SettingsItemToggle(props: {
 	)
 }
 
-function SettingsItemRadio(props: {
-	name: string
-	description: string
-	values: string[]
-	storeFieldName: 'pdfReaderType' | 'gridStyle'
-}) {
+function SettingsItemRadio(props: { name: string; description: string; values: string[]; storeFieldName: 'pdfReaderType' | 'gridStyle' }) {
 	const [selected, setSelected] = createSignal(store.userConfig[props.storeFieldName])
 
 	return (

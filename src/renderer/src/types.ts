@@ -1,183 +1,183 @@
-type RGB = `rgb(${number}, ${number}, ${number})`;
-type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
-type HEX = `#${string}`;
-type ColorType = RGB | RGBA | HEX;
+type RGB = `rgb(${number}, ${number}, ${number})`
+type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`
+type HEX = `#${string}`
+type ColorType = RGB | RGBA | HEX
 
 interface Payload {
-  files: {
-    name: string,
-    data: Uint8Array
-  }[],
-  position: { x: number; y: number };
+	files: {
+		name: string
+		data: Uint8Array
+	}[]
+	position: { x: number; y: number }
 }
 
-type Task = { text: string; check: boolean; nestLevel: number };
+type Task = { text: string; check: boolean; nestLevel: number }
 
 enum NodeType {
-  Note = "Note",
-  Comment = "Comment",
-  Todo = "Todo",
-  Table = "Table",
-  Url = "Url",
-  Activity = "Activity",
+	Note = 'Note',
+	Comment = 'Comment',
+	Todo = 'Todo',
+	Table = 'Table',
+	Url = 'Url',
+	Activity = 'Activity',
 
-  Arrow = "Arrow",
-  Board = "Board",
-  Column = "Column",
+	Arrow = 'Arrow',
+	Board = 'Board',
+	Column = 'Column',
 
-  Code = "Code",
-  Document = "Document",
-  Upload = "Upload",
+	Code = 'Code',
+	Document = 'Document',
+	Upload = 'Upload',
 
-  Drawing = "Drawing",
-  Sketch = "Sketch",
-  Color = "Color",
-  Image = "Image",
+	Drawing = 'Drawing',
+	Sketch = 'Sketch',
+	Color = 'Color',
+	Image = 'Image'
 }
 
 interface BaseNode {
-  id: string;
-  type: NodeType;
+	id: string
+	type: NodeType
 }
 
 interface Node extends BaseNode {
-  x: number;
-  y: number;
-  //? can be decided by the user
-  width?: number;
-  //? height depends on content shouldnt be user controlled
-  //height?: number;
-  color?: ColorType;
-  textColor?: ColorType;
-  top_strip_color?: ColorType;
-  zIndex?: number;
+	x: number
+	y: number
+	//? can be decided by the user
+	width?: number
+	//? height depends on content shouldnt be user controlled
+	//height?: number;
+	color?: ColorType
+	textColor?: ColorType
+	top_strip_color?: ColorType
+	zIndex?: number
 }
 
 interface ChildNode extends BaseNode {
-  id: string;
-  type: NodeType;
-  index: number;
-  color?: ColorType;
+	id: string
+	type: NodeType
+	index: number
+	color?: ColorType
 }
 
 interface Note extends Node, ChildNode {
-  text: string; // rich text maybe json
+	text: string // rich text maybe json
 }
 
 interface Comment extends Node, ChildNode {
-  comment: string;
+	comment: string
 }
 
 interface Url extends Node, ChildNode {
-  url: string;
-  showDescription: boolean;
-  description: string;
+	url: string
+	showDescription: boolean
+	description: string
 }
 interface Todo extends Node, ChildNode {
-  title?: string;
-  showTitle: boolean
-  // [ ] text
-  // [x] text
-  tasks: Task[];
+	title?: string
+	showTitle: boolean
+	// [ ] text
+	// [x] text
+	tasks: Task[]
 }
 
 ////////////////////////////////////////////////
 
 type Badge = {
-  id: string;
-  label: string;
-  color: ColorType;
-};
+	id: string
+	label: string
+	color: ColorType
+}
 
-type BadgeRegistry = Record<string, Badge[]>;
+type BadgeRegistry = Record<string, Badge[]>
 
 enum ColumnType {
-  String = "String",
-  Number = "Number",
-  Boolean = "Boolean",
-  Date = "Date",
-  Badge = "Badge",
+	String = 'String',
+	Number = 'Number',
+	Boolean = 'Boolean',
+	Date = 'Date',
+	Badge = 'Badge'
 }
 // can add more in the future
 
 interface ColumnSchema {
-  key: string;
-  title: string;
-  typeDef: ColumnType;
+	key: string
+	title: string
+	typeDef: ColumnType
 }
 interface Table extends Node, ChildNode {
-  cols: ColumnSchema[];
-  rows: Record<string, ColumnType>[];
-  showDescription: boolean;
-  description?: string;
-  showTitle: boolean;
-  title?: string;
+	cols: ColumnSchema[]
+	rows: Record<string, ColumnType>[]
+	showDescription: boolean
+	description?: string
+	showTitle: boolean
+	title?: string
 }
 ////////////////////////////////////////////////
 
 interface Column extends Node, ChildNode {
-  title: string;
+	title: string
 }
 
 interface Color extends Node, ChildNode {
-  colorValue: ColorType;
-  showDescription: boolean;
-  description?: string;
+	colorValue: ColorType
+	showDescription: boolean
+	description?: string
 }
 
 interface Board extends Node, ChildNode {
-  title: string;
-  icon_path: string;
-  bgImagePath?: string;
-  bgColor?: ColorType;
-  gridColor?: ColorType;
+	title: string
+	icon_path: string
+	bgImagePath?: string
+	bgColor?: ColorType
+	gridColor?: ColorType
 }
 interface Image extends Node, ChildNode {
-  path: string;
-  showDescription: boolean;
-  description?: string;
+	path: string
+	showDescription: boolean
+	description?: string
 }
 interface Activity extends Node, ChildNode {
-  //TODO: figure me out
-  title: string;
-  desciption: string;
-  //? key string is for the date yyyy-mm-dd
-  // ! pain in the ass to implment it to handle other date formats
-  progress: Record<string, number>;
+	//TODO: figure me out
+	title: string
+	desciption: string
+	//? key string is for the date yyyy-mm-dd
+	// ! pain in the ass to implment it to handle other date formats
+	progress: Record<string, number>
 }
 
-interface Arrow extends Node, ChildNode { }
-interface Code extends Node, ChildNode { }
-interface Upload extends Node, ChildNode { }
-interface Drawing extends Node, ChildNode { }
-interface Sketch extends Node, ChildNode { }
+interface Arrow extends Node, ChildNode {}
+interface Code extends Node, ChildNode {}
+interface Upload extends Node, ChildNode {}
+interface Drawing extends Node, ChildNode {}
+interface Sketch extends Node, ChildNode {}
 interface Document extends Node, ChildNode {
-  path: string;
-  showDescription: boolean;
-  description?: string;
+	path: string
+	showDescription: boolean
+	description?: string
 }
 
 ////////////////////////////////////////////////
 
 enum EdgeType {
-  straight = "straight",
-  arc = "arc",
-  fluid = "fluid",
-  magnet = "magnet",
-  grid = "grid",
+	straight = 'straight',
+	arc = 'arc',
+	fluid = 'fluid',
+	magnet = 'magnet',
+	grid = 'grid'
 }
 
 interface Edge {
-  id: string;
-  srcNodeId: string;
-  distNodeId: string;
-  color?: string; // default foreground
-  stroke?: number; // default 2
-  label?: string; // default none
-  style?: string; // solid, dashed ...., default solid
-  type?: EdgeType; // straight, bezier, step curved >>>> default bezier
-  srcArrowHead?: string; // default none
-  DistArrowHead?: string; // default normal arrow head
+	id: string
+	srcNodeId: string
+	distNodeId: string
+	color?: string // default foreground
+	stroke?: number // default 2
+	label?: string // default none
+	style?: string // solid, dashed ...., default solid
+	type?: EdgeType // straight, bezier, step curved >>>> default bezier
+	srcArrowHead?: string // default none
+	DistArrowHead?: string // default normal arrow head
 }
 // interface BezierEdge extends BaseEdge {
 //   // type: EdgeType.Bezier;
@@ -195,48 +195,32 @@ interface Edge {
 
 ////////////////////////////////////////////////
 
-type NodeUnion =
-  | Note
-  | Comment
-  | Todo
-  | Table
-  | Url
-  | Activity
-  | Arrow
-  | Board
-  | Column
-  | Code
-  | Document
-  | Upload
-  | Drawing
-  | Sketch
-  | Color
-  | Image;
+type NodeUnion = Note | Comment | Todo | Table | Url | Activity | Arrow | Board | Column | Code | Document | Upload | Drawing | Sketch | Color | Image
 
-export { NodeType, ColumnType, EdgeType };
+export { NodeType, ColumnType, EdgeType }
 export type {
-  Node,
-  ChildNode,
-  Note,
-  Comment,
-  Url,
-  Todo,
-  Table,
-  Column,
-  NodeUnion,
-  Task,
-  Board,
-  Image,
-  Badge,
-  ColumnSchema,
-  BadgeRegistry,
-  Color,
-  Activity,
-  ColorType,
-  Edge,
-  Payload,
-  Document,
-};
+	Node,
+	ChildNode,
+	Note,
+	Comment,
+	Url,
+	Todo,
+	Table,
+	Column,
+	NodeUnion,
+	Task,
+	Board,
+	Image,
+	Badge,
+	ColumnSchema,
+	BadgeRegistry,
+	Color,
+	Activity,
+	ColorType,
+	Edge,
+	Payload,
+	Document
+}
 
 /*
 type ColumnType =

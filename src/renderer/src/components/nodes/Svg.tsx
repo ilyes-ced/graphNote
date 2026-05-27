@@ -1,77 +1,76 @@
 export default (props: any) => {
-    type IconName =
-        | "note"
-        | "todo"
-        | "arrow"
-        | "board"
-        | "column"
-        | "comment"
-        | "table"
-        | "code"
-        | "color"
-        | "document"
-        | "drawing"
-        | "sketch"
-        | "upload"
-        | "image"
-        | "url"
-        | "collapse";
+	type IconName =
+		| 'note'
+		| 'todo'
+		| 'arrow'
+		| 'board'
+		| 'column'
+		| 'comment'
+		| 'table'
+		| 'code'
+		| 'color'
+		| 'document'
+		| 'drawing'
+		| 'sketch'
+		| 'upload'
+		| 'image'
+		| 'url'
+		| 'collapse'
 
-    let width = props.width || 32;
-    let height = props.height || 32;
-    let icon_name: IconName = props.icon_name;
-    let classes = props.classes;
+	let width = props.width || 32
+	let height = props.height || 32
+	let icon_name: IconName = props.icon_name
+	let classes = props.classes
 
-    const getCSSVar = (name: string) =>
-        getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+	const getCSSVar = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 
-    let icon_bg = getCSSVar("--color-background");
-    let icon_txt = getCSSVar("--color-foreground");
-    let icon_hint1 = getCSSVar("--color-primary");
-    let icon_hint2 = getCSSVar("--color-border");
-    let icon_hint3 = getCSSVar("--color-secondary");
-    let icon_hint4 = getCSSVar("--color-destructive");
+	let icon_bg = getCSSVar('--color-background')
+	let icon_txt = getCSSVar('--color-foreground')
+	let icon_hint1 = getCSSVar('--color-primary')
+	let icon_hint2 = getCSSVar('--color-border')
+	let icon_hint3 = getCSSVar('--color-secondary')
+	let icon_hint4 = getCSSVar('--color-destructive')
 
-    let icons = {
-        note: {
-            width: width,
-            height: height,
-            svg: `
+	let icons = {
+		note: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                     <path fill="${icon_txt}"
                     d="M5.75 5h20.5a.75.75 0 1 1 0 1.5H5.75a.75.75 0 0 1 0-1.5zm0 5h20.5a.75.75 0 1 1 0 1.5H5.75a.75.75 0 1 1 0-1.5zm0 5h18.143a.75.75 0 1 1 0 1.5H5.75a.75.75 0 1 1 0-1.5z">
                     </path>
                 </g>
-            `,
-        },
+            `
+		},
 
-        todo: {
-            width: width,
-            height: height,
-            svg: `
+		todo: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                     <path fill="${icon_txt}"
                     d="M6.28 7.77a.75.75 0 0 0-1.06 1.06l1.5 1.5a.75.75 0 0 0 1.06 0l3-3a.75.75 0 0 0-1.06-1.06L7.25 8.74l-.97-.97zm0 6.5a.75.75 0 0 0-1.06 1.06l1.5 1.5a.75.75 0 0 0 1.06 0l3-3a.75.75 0 0 0-1.06-1.06l-2.47 2.47-.97-.97zM14.75 8h11.3a.75.75 0 1 1 0 1.5h-11.3a.75.75 0 1 1 0-1.5zm0 6.4h11.3a.75.75 0 1 1 0 1.5h-11.3a.75.75 0 1 1 0-1.5z">
                     </path>
                 </g>
-            `,
-        },
-        arrow: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		arrow: {
+			width: width,
+			height: height,
+			svg: `
                 <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                 <path fill="${icon_txt}" fill-rule="evenodd"
                     d="m30.385 0-3 8-1.793-1.793-21.5 21.5a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414L24.177 4.792 22.385 3l8-3z">
                 </path>
-            `,
-        },
-        board: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		board: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="32" height="32" fill="${icon_hint1}" rx="8"></rect>
                     <rect width="7" height="7" x="8" y="8" fill="#FFF" rx="2"></rect>
@@ -79,12 +78,12 @@ export default (props: any) => {
                     <rect width="7" height="7" x="17" y="8" fill="#FFF" fill-opacity="0.25" rx="3.5"></rect>
                     <rect width="7" height="7" x="17" y="17" fill="#FFF" fill-opacity="0.5" rx="2"></rect>
                 </g>
-            `,
-        },
-        column: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		column: {
+			width: width,
+			height: height,
+			svg: `
                 <defs>
                     <filter id="ElementColumnIcon__a" width="131.2%" height="131.2%" x="-15.6%" y="-12.5%"
                         filterUnits="objectBoundingBox">
@@ -100,12 +99,12 @@ export default (props: any) => {
                     <path fill="#333" d="M3 9h26v9H3zm0 11h26v9H3z"></path>
                     <rect width="18" height="1.5" x="7" y="4" fill="${icon_hint4}" rx="0.75"></rect>
                 </g>
-            `,
-        },
-        comment: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		comment: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <path fill="${icon_hint3}"
                         d="M2.002 22A1.995 1.995 0 0 1 0 20.009V1.99C0 .891.89 0 2.002 0h27.996C31.104 0 32 .89 32 1.991V20.01c0 1.1-.89 1.991-2.002 1.991H20l-4 4-4-4H2.002z">
@@ -114,12 +113,12 @@ export default (props: any) => {
                         d="M24.24 14c.385 0 .703.28.753.648l.007.102c0 .414-.33.75-.76.75H5.76a.753.753 0 0 1-.76-.75c0-.414.33-.75.76-.75h18.48zm2.003-4c.383 0 .7.28.75.648l.007.102c0 .414-.346.75-.757.75H5.757A.752.752 0 0 1 5 10.75c0-.414.346-.75.757-.75h20.486zm0-4c.383 0 .7.28.75.648L27 6.75c0 .414-.346.75-.757.75H5.757A.752.752 0 0 1 5 6.75c0-.414.346-.75.757-.75h20.486z">
                     </path>
                 </g>
-            `,
-        },
-        table: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		table: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <path fill="#3D3D3D" d="M2 0h28a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"></path>
                     <path fill="#4D4D4D" d="M2 0h28a2 2 0 0 1 2 2v3H0V2a2 2 0 0 1 2-2z"></path>
@@ -127,23 +126,23 @@ export default (props: any) => {
                         d="M11 0v10h10V0h1v10h10v1H22v6h10v1H22v6h-1v-6H11v6h-1v-6H0v-1h10v-6H0v-1h10V0h1zm10 17v-6H11v6h10z">
                     </path>
                 </g>
-            `,
-        },
-        code: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		code: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                     <path d="M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16" stroke="${icon_txt}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
                     </path>
                 </g>
-            `,
-        },
-        color: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		color: {
+			width: width,
+			height: height,
+			svg: `
                 <defs>
                     <filter id="ElementColorSwatchIcon__b" width="155.6%" height="143.5%" x="-27.8%" y="-17.4%"
                         filterUnits="objectBoundingBox">
@@ -182,12 +181,12 @@ export default (props: any) => {
                         <path fill="#E15678" d="M-2-2h22v18H-2z" mask="url(#ElementColorSwatchIcon__f)"></path>
                     </g>
                 </g>
-            `,
-        },
-        document: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		document: {
+			width: width,
+			height: height,
+			svg: `
                 <defs>
                     <filter id="ElementDocumentIcon__b" width="138.5%" height="131.2%" x="-19.2%" y="-12.5%"
                         filterUnits="objectBoundingBox">
@@ -232,12 +231,12 @@ export default (props: any) => {
                         d="M20.25 24c.38 0 .693.28.743.648l.007.102c0 .414-.334.75-.75.75H5.75a.749.749 0 1 1 0-1.5h14.5zm-9.962-8 .118 1.81h-.549c-.376-.917-.525-1.316-1.16-1.316h-.242v3.972c0 .43.172.517.69.54v.494H6.37v-.494c.525-.023.705-.11.705-.54v-3.972h-.25c-.635 0-.784.4-1.16 1.316h-.541L5.243 16h5.045zm9.96 4c.38 0 .695.28.745.648l.007.102c0 .414-.344.75-.753.75h-6.494a.75.75 0 1 1 0-1.5h6.494zm0-4c.38 0 .695.28.745.648l.007.102c0 .414-.344.75-.753.75h-6.494a.75.75 0 1 1 0-1.5h6.494z">
                     </path>
                 </g>
-            `,
-        },
-        drawing: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		drawing: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="4"></rect>
                     <g fill="#F2F2F2" fill-rule="nonzero">
@@ -249,65 +248,65 @@ export default (props: any) => {
                         </path>
                     </g>
                 </g>
-            `,
-        },
-        sketch: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		sketch: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="2"></rect>
                     <path fill="#E6E6E6"
                         d="M20.79 4.344a.88.88 0 0 1-.095 1.18l-.078.066-2.54 1.878-1.34 1.005-.84.637-.613.47-.83.644-.744.586-.68.55-.641.53-.416.354-.414.362-.187.168-.34.312-.155.148-.286.282-.26.273c-.084.09-.164.18-.243.272a4.384 4.384 0 0 0-.353.466 1.75 1.75 0 0 0-.095.16l-.023.047.04-.003c.247-.028.525-.087.885-.182l.187-.05.236-.069.496-.153.54-.179.614-.215 1.042-.383 2.483-.94.877-.318.14-.049c.17-.058.322-.109.47-.155l.318-.095c.233-.066.394-.105.585-.13l.18-.019a1.1 1.1 0 0 1 .373.038c.066.02.136.051.229.106.103.07.2.169.242.256.05.086.085.18.095.246a.98.98 0 0 1-.039.502l-.055.14a2.15 2.15 0 0 1-.123.222 3.896 3.896 0 0 1-.132.197l-.152.199c-.056.07-.12.146-.193.233l-.202.227-.204.223-.333.35-.256.261-2.02 2.007-.123.125 1.598-.444.588-.155.338-.08.158-.033.306-.058.15-.024.307-.042a6.977 6.977 0 0 1 1.51-.03c.578.065 1.086.205 1.526.443.497.258.923.658 1.214 1.136.107.174.197.36.27.554l.069.197c.065.21.108.408.132.611l.016.205a.567.567 0 0 1-1.123.149l-.013-.093a2.248 2.248 0 0 0-.334-1.013 1.954 1.954 0 0 0-.778-.706c-.3-.157-.666-.252-1.093-.294a5.794 5.794 0 0 0-1.242.044c-.41.056-.831.149-1.36.295l-1.843.54-.269.073-.24.061-.24.055-.214.042-.182.026a1.803 1.803 0 0 1-.507.005.917.917 0 0 1-.404-.151l-.106-.08-.062-.063-.042-.05-.036-.056a.761.761 0 0 1-.086-.218l-.012-.092a.688.688 0 0 1 .003-.153l.03-.145.032-.09c.047-.109.09-.188.155-.283l.108-.15.152-.193.16-.189.184-.204.465-.495 1.818-1.855.346-.363.147-.158-.61.23-3.009 1.186-.671.256-.627.229c-.493.176-.924.32-1.35.446l-.399.111a6.207 6.207 0 0 1-1.103.206c-.19.013-.332.013-.501-.007a1.526 1.526 0 0 1-.347-.087 1.089 1.089 0 0 1-.436-.298 1.496 1.496 0 0 1-.32-1.315c.069-.31.19-.575.375-.868.135-.216.287-.423.465-.637.249-.297.497-.567.785-.857l.304-.297.34-.32.385-.352.212-.19.423-.37.428-.367.668-.56.722-.592.802-.644 1.237-.976 1.574-1.222 1.458-1.115L19.55 4.18a.89.89 0 0 1 1.24.164z">
                     </path>
                 </g>
-            `,
-        },
-        upload: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		upload: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="4"></rect>
                     <path fill="#E6E6E6" d="M18.586 6a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V24a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h8.586zM17 7.5h-7a.5.5 0 0 0-.5.5v16a.5.5 0 0 0 .5.5h12a.5.5 0 0 0 .5-.5V13h-4.75a.75.75 0 0 1-.743-.648L17 12.25V7.5zm5.379 4L18.5 7.622V11.5h3.879z"></path>
                 </g>
-            `,
-        },
-        image: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		image: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="32" height="32" fill="#3D3D3D" rx="4"></rect>
                     <path fill="#E6E6E6"
                         d="M22 7a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3h12zm-8 11.06-4.97 4.97a.758.758 0 0 1-.063.057A1.49 1.49 0 0 0 10 23.5h12c.401 0 .765-.157 1.034-.414l-.064-.056L19 19.06l-1.47 1.47a.75.75 0 0 1-1.06 0L14 18.06zm8-9.56H10A1.5 1.5 0 0 0 8.5 10v11.438l4.97-4.968a.75.75 0 0 1 .976-.073l.084.073L17 18.94l1.47-1.47a.75.75 0 0 1 1.06 0l3.97 3.969V10A1.5 1.5 0 0 0 22 8.5zM19 10a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 1.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z">
                     </path>
                 </g>
-            `,
-        },
-        url: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		url: {
+			width: width,
+			height: height,
+			svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="2"></rect>
                     <path fill="#E6E6E6" fill-rule="nonzero"
                         d="M17.986 10.014a4.285 4.285 0 0 1 0 6.06l-1.67 1.67a4.285 4.285 0 0 1-6.06-6.06.741.741 0 0 1 1.048 1.05 2.802 2.802 0 0 0 3.963 3.962l1.67-1.67a2.802 2.802 0 0 0 0-3.964.741.741 0 1 1 1.049-1.048zm3.759-3.759a4.285 4.285 0 0 1 0 6.06.741.741 0 0 1-1.049-1.048 2.802 2.802 0 0 0-3.963-3.963l-1.67 1.67a2.802 2.802 0 0 0 0 3.964.741.741 0 1 1-1.049 1.048 4.285 4.285 0 0 1 0-6.06l1.67-1.67a4.285 4.285 0 0 1 6.06 0z">
                     </path>
                 </g>
-            `,
-        },
-        collapse: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		collapse: {
+			width: width,
+			height: height,
+			svg: `
                 <path fill="#fff" fill-opacity="1" fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1 0-1h7a.5.5 0 0 1 .5.5z"></path>
-            `,
-        },
-        pdf: {
-            width: width,
-            height: height,
-            svg: `
+            `
+		},
+		pdf: {
+			width: width,
+			height: height,
+			svg: `
                 <svg height="${height}px" width="${width}px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                     viewBox="0 0 309.267 309.267" xml:space="preserve">
                 <g>
@@ -326,21 +325,21 @@ export default (props: any) => {
                 </g>
                 </svg>
             `
-        }
-    };
+		}
+	}
 
-    let display_icon = icons[icon_name];
-    if (!display_icon) {
-        return <div>Invalid icon name</div>;
-    }
+	let display_icon = icons[icon_name]
+	if (!display_icon) {
+		return <div>Invalid icon name</div>
+	}
 
-    return (
-        <svg
-            width={display_icon.width}
-            height={display_icon.height}
-            class={classes}
-            viewBox={`0 0 ${display_icon.width} ${display_icon.height}`}
-            innerHTML={display_icon.svg}
-        ></svg>
-    );
-};
+	return (
+		<svg
+			width={display_icon.width}
+			height={display_icon.height}
+			class={classes}
+			viewBox={`0 0 ${display_icon.width} ${display_icon.height}`}
+			innerHTML={display_icon.svg}
+		></svg>
+	)
+}

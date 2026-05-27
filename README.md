@@ -1,4 +1,3 @@
-
 # Polishing
 
 - [x] stop the selection on Notes when dragging items (no longer an issue in electron)
@@ -14,44 +13,42 @@
 - [x] stop writing to file when moving nodes
 - [x] test animejs and neodrag again their animations were smoother (the issue was tauri not which DnD library was used, in electron all DnD libraries are the same smoothness, even my custom implementation)
 
-- [ ] remove all unneeded imports and functions and comments 
+- [ ] remove all unneeded imports and functions and comments
 - [ ] refactor the backend code to be more readable and coherent
-
-
 
 # fixes
 
 - [x] make Todo widget more usable
-  - [x] reorder items
-  - [x] enter to create new item
-  - [x] backspace to delete item
-  - [x] tab to add indent to item
-  - [x] multi line paste create an item for each line
+    - [x] reorder items
+    - [x] enter to create new item
+    - [x] backspace to delete item
+    - [x] tab to add indent to item
+    - [x] multi line paste create an item for each line
 - [x] polish the drag and drop from the sidebar (fix exact position)
 - [x] fix the viewport:
-  - [x] scroll right and bottom
-  - [x] placing item outside to the right or left extends the canvas
+    - [x] scroll right and bottom
+    - [x] placing item outside to the right or left extends the canvas
 - [x] fix the selection on NoteType
 - [x] scroll becomes finniky when zoom is used, change zoom target to an outside element
 - [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
-  - [ ] finish the image copy pasting
-    - [x] binary data iamges
-    - [x] local image paths
-    - [ ] images URLs
-    - [ ] add and test other file types too
+    - [ ] finish the image copy pasting
+        - [x] binary data iamges
+        - [x] local image paths
+        - [ ] images URLs
+        - [ ] add and test other file types too
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
-  - [ ] fix:
-    - [x] updatePosition (when letting go 2 different positions are recorded) 
-    - [x] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposite doesnt work)
-    - [x] updateTask (does nothing)
-    - [ ] reorderTasks (does nothing)
-    - [ ] editable Title (on column and TODO), works on COlumn but not on TODO
-  - [ ] not done yet:
-    - [x] newNode
-    - [x] newImageNode  
-    - [ ] newDocumentNode 
-    - [ ] child nodes moves 
-    - [ ] changing Note to Url
+    - [ ] fix:
+        - [x] updatePosition (when letting go 2 different positions are recorded)
+        - [x] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposite doesnt work)
+        - [x] updateTask (does nothing)
+        - [ ] reorderTasks (does nothing)
+        - [ ] editable Title (on column and TODO), works on COlumn but not on TODO
+    - [ ] not done yet:
+        - [x] newNode
+        - [x] newImageNode
+        - [ ] newDocumentNode
+        - [ ] child nodes moves
+        - [ ] changing Note to Url
 - [ ] make child nodes selectable
 - [x] Board node becomes invisible when dragged (started when moving to electron)
 - [x] Column node doesnt become invisible when dragging board node
@@ -63,8 +60,8 @@
 - [x] copy pasting nodes when focused on text pastes both on text and on nodes
 - [x] improve image loading performance
 - [x] make the height multiples of 10
-  - [ ] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
-  - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down 
+    - [ ] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
+    - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down
 - [x] when a board or column is deleted, in nodes.json delete their object
 - [ ] when deleting nodes, if they have resources (images, files . . .) delete them
 - [x] when deleting nodes the styles sidebar should be hidden
@@ -73,10 +70,10 @@
 - [ ] cant place nodes on the corner
 - [ ] when pasting url in a new note node, some issues happen when it transforms
 - [x] for URL youtube Videos, make it download the video and use a custom video player
-  - [x] give the user the option to use embedded youtube video or locally download the videos 
+    - [x] give the user the option to use embedded youtube video or locally download the videos
 - [x] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
 - [ ] the new snap to grid is not working properly (not consistent)
-- [ ] when note node is focused disable the arrows to move the node 
+- [ ] when note node is focused disable the arrows to move the node
 - [ ] in nodes.tsx settimeout to wait for url nodes to load needs to go
 - [ ] cache URL nodes
 - [x] arrows stay in the same position like absolute when you move the canvas
@@ -96,18 +93,18 @@
 - [ ] selected child nodes: settings styles doesnt work
 - [ ] child nodes: when touched slightly it moves from position and the parent Column becomes opaque
 - [x] set board bgColor and grid coloor
-  - [x] make it possible to use an image as a background for a board
+    - [x] make it possible to use an image as a background for a board
 - [x] node creation coordinates are wrong probably dont account for scale
 - [x] newly placed nodes use a low Zindex
 - [x] make board styles changing in context menu
 - [x] ColorPicker in top bar doesnt react to the change in the styles values in the store
-- [ ] the createEffcet in store.tsx doesnt need to do the initial run 
+- [ ] the createEffcet in store.tsx doesnt need to do the initial run
 - [ ] server side: on image creation make sure if the images have the same name tha they are not the same image so we dont save duplicates
 - [ ] board change: when going to another board the image change is slow, maybe we should set it before the change
 - [x] changing board should reset the viewport size and the x and y and scale
 - [x] add select all shortcut (Ctrl+a)
-  - [ ] bulk actions undo and redo dont account for the bulk (redoing redoes each action individually)
-  - [x] make sure it doesnt trigger if a text is focused
+    - [ ] bulk actions undo and redo dont account for the bulk (redoing redoes each action individually)
+    - [x] make sure it doesnt trigger if a text is focused
 - [x] drgging a full coloumn inside another board deletes it contents
 - [ ] each node right click options
 - [ ] give user option to disable node borders
@@ -115,49 +112,55 @@
 - [ ] miniMap doesnt account for child nodes in columns
 - [ ] minimap when changing board items are displayed wrong
 
-
-
 # extra features
+
 - [ ] add another type of Note node, using typst as an external library
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
 - [x] add the user settings to allow the user to choose wether to cache/download:
-  - [x] Urls thunmbnails
-  - [x] Videos
-- [x] css bg color is brighter and paler than it should be 
+    - [x] Urls thunmbnails
+    - [x] Videos
+- [x] css bg color is brighter and paler than it should be
 - [ ] opening URLs: dont open the url in the electron app send it to the default browser
 - [x] right click menu
 - [ ] daily tasks node (or set the recurring period)
 - [ ] extend Url node to take full screen, display the video and the its description to the side
 
-
-
 # encryption
+
 leave the encryption feature to last because once its implemented we cant manipulate the data as we want
+
 - [ ] for enxryption maybe encrypt each file indivudually and load them when needed
 
+---
 
+---
 
+---
 
+---
 
+---
 
+---
 
+---
 
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
------------------------------
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
 
 # Old tauri specific
 
@@ -167,17 +170,18 @@ sudo pacman -S xdg-user-dirs
 
 xdg-user-dirs-update
 
-
-
-
 # dev
+
 ```
 GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 pnpm tauri dev
 ```
 
 # building
+
 ```
 GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 NO_STRIP=true pnpm tauri build
 ```
+
 # running
+
 GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bundle/appimage/graphnote_0.1.0_amd64.AppImage
