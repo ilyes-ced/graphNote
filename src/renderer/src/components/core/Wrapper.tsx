@@ -1,14 +1,14 @@
-import { Show, createEffect, createSignal, onMount } from 'solid-js'
-import ColorSelectMenu from '../ui/ColorSelectMenu'
-import Controls from './Controls'
-import EventHandler from './EventHandler'
-import Nodes from './Nodes'
-import Pan from './Pan'
-import ViewPort from './ViewPort'
-import Zoom from './Zoom'
-import { setStore, store } from '../../shared/store'
-import { updateArrowsPositions } from '../../shared/utils'
-import MiniMap from './MiniMap'
+import { Show, createEffect, createSignal, onMount } from "solid-js"
+import ColorSelectMenu from "../ui/ColorSelectMenu"
+import Controls from "./Controls"
+import EventHandler from "./EventHandler"
+import Nodes from "./Nodes"
+import Pan from "./Pan"
+import ViewPort from "./ViewPort"
+import Zoom from "./Zoom"
+import { setStore, store } from "../../shared/store"
+import { updateArrowsPositions } from "../../shared/utils"
+import MiniMap from "./MiniMap"
 
 export default () => {
 	const [wrapperRef, setWrapperRef] = createSignal(null)
@@ -31,20 +31,20 @@ export default () => {
 					const ourLine = new LeaderLine(document.getElementById(edge.srcNodeId), document.getElementById(edge.distNodeId), {
 						color: edge.color,
 						middleLabel: LeaderLine.captionLabel(edge.label, {
-							color: 'white',
+							color: "white",
 							outlineColor: edge.color,
-							fontWeight: 'bold',
-							fontSize: '14px'
+							fontWeight: "bold",
+							fontSize: "14px"
 						}),
 						path: edge.type
 					})
 
-					setStore('arrowLines', (prev) => {
+					setStore("arrowLines", (prev) => {
 						const next = new Map(prev)
 						next.set(edge.srcNodeId, [...(next.get(edge.srcNodeId) || []), ourLine])
 						return next
 					})
-					setStore('arrowLines', (prev) => {
+					setStore("arrowLines", (prev) => {
 						const next = new Map(prev)
 						next.set(edge.distNodeId, [...(next.get(edge.distNodeId) || []), ourLine])
 						return next

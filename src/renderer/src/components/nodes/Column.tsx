@@ -1,26 +1,26 @@
-import { Show, For, Match, Switch } from 'solid-js'
-import { NodeType, Column } from '../../types'
-import Svg from './Svg'
-import Note from './Note'
-import Todo from './Todo'
-import Url from './Url'
-import Board from './Board'
-import Table from './Table'
-import { store } from '../../shared/store'
-import Image from '../nodes/Image'
-import NodeWrapper from '../core/NodeWrapper'
-import Color from '../nodes/Color'
-import Activity from '../nodes/Activity'
-import { updateNodeTitle } from '../../shared/update'
-import { debounce } from '../../shared/utils'
-import Document from '../nodes/Document'
-import EditableTitle from './EditableTitle'
+import { Show, For, Match, Switch } from "solid-js"
+import { NodeType, Column } from "../../types"
+import Svg from "./Svg"
+import Note from "./Note"
+import Todo from "./Todo"
+import Url from "./Url"
+import Board from "./Board"
+import Table from "./Table"
+import { store } from "../../shared/store"
+import Image from "../nodes/Image"
+import NodeWrapper from "../core/NodeWrapper"
+import Color from "../nodes/Color"
+import Activity from "../nodes/Activity"
+import { updateNodeTitle } from "../../shared/update"
+import { debounce } from "../../shared/utils"
+import Document from "../nodes/Document"
+import EditableTitle from "./EditableTitle"
 
 export default (node: Column) => {
 	let editableDiv!: HTMLDivElement
 
 	const updateTitle = debounce((newValue: string) => {
-		console.log('Debounced update:', newValue)
+		console.log("Debounced update:", newValue)
 		updateNodeTitle(node.id, newValue)
 	}, 300)
 
@@ -31,7 +31,7 @@ export default (node: Column) => {
            pointer-events-none group-hover/collapse:pointer-events-auto 
            transition-all duration-200 ease-in-out"
 			>
-				<Svg width={16} height={16} classes="" icon_name={'collapse'} />
+				<Svg width={16} height={16} classes="" icon_name={"collapse"} />
 			</div>
 
 			<div class="title text-xl font-extrabold mb-2 text-center focus:outline-0 titleHandle">
@@ -39,7 +39,7 @@ export default (node: Column) => {
 			</div>
 
 			<div class="subtitle mb-4 text-center">{store.nodes[node.id]?.length ?? 0} cards</div>
-			<div class="children_container flex flex-col" style={{ position: 'relative' }}>
+			<div class="children_container flex flex-col" style={{ position: "relative" }}>
 				<Show
 					when={store.nodes[node.id] && store.nodes[node.id].length > 0}
 					fallback={<div class="empty_children_containe h-[65px] w-full bg-background"></div>}
@@ -81,7 +81,7 @@ export default (node: Column) => {
 								)}
 
 								<Show when={index() < store.nodes[node.id].length - 1}>
-									<div class="column_spacer pt-2" style={{ background: node.color ?? 'var(--color-card)' }}></div>
+									<div class="column_spacer pt-2" style={{ background: node.color ?? "var(--color-card)" }}></div>
 								</Show>
 							</div>
 						)}

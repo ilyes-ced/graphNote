@@ -1,5 +1,5 @@
-import { store } from './store'
-import { addNode, findNodeById, findParentIdByNodeId, removeNodeById } from './update'
+import { store } from "./store"
+import { addNode, findNodeById, findParentIdByNodeId, removeNodeById } from "./update"
 
 export default function moveNode(
 	movedNodeId: string,
@@ -12,13 +12,13 @@ export default function moveNode(
 	if (nested) {
 		let oldParentNodeId = findParentIdByNodeId(movedNodeId)
 		if (!oldParentNodeId) {
-			console.warn('Parent of the Node to move not found:', movedNodeId)
+			console.warn("Parent of the Node to move not found:", movedNodeId)
 			return
 		}
 
 		let movedNode = store.nodes[oldParentNodeId].find((n) => n.id === movedNodeId)
 		if (!movedNode) {
-			console.warn('the Node to move not found:', movedNodeId)
+			console.warn("the Node to move not found:", movedNodeId)
 			return
 		}
 
@@ -28,7 +28,7 @@ export default function moveNode(
 		// moving node to canvas or new parent
 		if (movedToCanvas) {
 			console.log(movedNodeId)
-			console.log('nested moved to canvas: ', movedNodeId, distNodeId, nested, movedToCanvas, canvasCoords)
+			console.log("nested moved to canvas: ", movedNodeId, distNodeId, nested, movedToCanvas, canvasCoords)
 			// put it in activeboard
 			addNode({
 				...movedNode,
@@ -55,22 +55,22 @@ export default function moveNode(
 		let distNode = findNodeById(distNodeId) //store.nodes.find((node) => node.id === distNodeId);
 		let movedNode = findNodeById(movedNodeId) //store.nodes.find((node) => node.id === movedNodeId);
 		if (!movedNode) {
-			console.warn('Node to move not found:', movedNodeId)
+			console.warn("Node to move not found:", movedNodeId)
 			return
 		}
 		if (!distNode) {
-			console.warn('parent dist node to move to not found:', distNodeId)
+			console.warn("parent dist node to move to not found:", distNodeId)
 			return
 		}
 		if (movedNode.type === distNode.type) {
-			console.warn('Cannot nest nodes of the same type, nodemoved:', movedNode.type, 'parent:', distNode.type)
+			console.warn("Cannot nest nodes of the same type, nodemoved:", movedNode.type, "parent:", distNode.type)
 			return
 		}
 
-		console.log('moved to inside a column from the canvas')
+		console.log("moved to inside a column from the canvas")
 		removeNodeById(movedNodeId, undefined, false)
 
-		console.log('starting to add the node')
+		console.log("starting to add the node")
 		addNode(
 			{
 				...movedNode,

@@ -1,8 +1,8 @@
-import { saveChanges } from '../../shared/utils'
-import { setStore, store } from '../../shared/store'
+import { saveChanges } from "../../shared/utils"
+import { setStore, store } from "../../shared/store"
 
 export default () => {
-	const classes = 'cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2'
+	const classes = "cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2"
 
 	function Zoom(zoom: number) {
 		let scale = store.viewport.scale
@@ -14,7 +14,7 @@ export default () => {
 			if (scale <= 0.75) return
 			scale -= 0.1
 		}
-		setStore('viewport', {
+		setStore("viewport", {
 			scale: scale
 		})
 

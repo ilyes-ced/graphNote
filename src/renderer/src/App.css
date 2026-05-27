@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* 
 @tailwind base;
@@ -88,8 +88,8 @@
 }
 
 @font-face {
-	font-family: 'nothingFont';
-	src: url('../../../fonts/NType82-Headline.otf') format('opentype');
+	font-family: "nothingFont";
+	src: url("../../../fonts/NType82-Headline.otf") format("opentype");
 	font-weight: normal;
 	font-style: normal;
 }

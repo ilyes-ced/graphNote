@@ -1,21 +1,21 @@
 export default (props: any) => {
 	type IconName =
-		| 'note'
-		| 'todo'
-		| 'arrow'
-		| 'board'
-		| 'column'
-		| 'comment'
-		| 'table'
-		| 'code'
-		| 'color'
-		| 'document'
-		| 'drawing'
-		| 'sketch'
-		| 'upload'
-		| 'image'
-		| 'url'
-		| 'collapse'
+		| "note"
+		| "todo"
+		| "arrow"
+		| "board"
+		| "column"
+		| "comment"
+		| "table"
+		| "code"
+		| "color"
+		| "document"
+		| "drawing"
+		| "sketch"
+		| "upload"
+		| "image"
+		| "url"
+		| "collapse"
 
 	let width = props.width || 32
 	let height = props.height || 32
@@ -24,12 +24,12 @@ export default (props: any) => {
 
 	const getCSSVar = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 
-	let icon_bg = getCSSVar('--color-background')
-	let icon_txt = getCSSVar('--color-foreground')
-	let icon_hint1 = getCSSVar('--color-primary')
-	let icon_hint2 = getCSSVar('--color-border')
-	let icon_hint3 = getCSSVar('--color-secondary')
-	let icon_hint4 = getCSSVar('--color-destructive')
+	let icon_bg = getCSSVar("--color-background")
+	let icon_txt = getCSSVar("--color-foreground")
+	let icon_hint1 = getCSSVar("--color-primary")
+	let icon_hint2 = getCSSVar("--color-border")
+	let icon_hint3 = getCSSVar("--color-secondary")
+	let icon_hint4 = getCSSVar("--color-destructive")
 
 	let icons = {
 		note: {

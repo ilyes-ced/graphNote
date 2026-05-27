@@ -1,12 +1,12 @@
-import { onMount, Show, createSignal, createEffect } from 'solid-js'
-import { Activity } from '../../types'
+import { onMount, Show, createSignal, createEffect } from "solid-js"
+import { Activity } from "../../types"
 
-import CalHeatmap from 'cal-heatmap'
-import 'cal-heatmap/cal-heatmap.css'
-import Tooltip from 'cal-heatmap/plugins/Tooltip'
-import CalendarLabel from 'cal-heatmap/plugins/CalendarLabel'
-import { updateActivityCounter } from '../../shared/update'
-import { colorWithPreservedAlpha } from '../../shared/colorUtils'
+import CalHeatmap from "cal-heatmap"
+import "cal-heatmap/cal-heatmap.css"
+import Tooltip from "cal-heatmap/plugins/Tooltip"
+import CalendarLabel from "cal-heatmap/plugins/CalendarLabel"
+import { updateActivityCounter } from "../../shared/update"
+import { colorWithPreservedAlpha } from "../../shared/colorUtils"
 
 type ActivityProps = Activity & {
 	is_child?: boolean
@@ -25,13 +25,13 @@ export default (node: ActivityProps) => {
 	let calendarContainer!: HTMLDivElement
 	let contentRef: HTMLDivElement | undefined
 	const [isOpen, setIsOpen] = createSignal(false)
-	const [activeDate, setActiveDate] = createSignal('string')
+	const [activeDate, setActiveDate] = createSignal("string")
 
 	const handleEdit = (value: number) => {
 		updateActivityCounter(node.id, activeDate(), value)
 	}
 
-	const classes = 'cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2'
+	const classes = "cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2"
 	let cal: CalHeatmap
 
 	createEffect(() => {
@@ -43,7 +43,7 @@ export default (node: ActivityProps) => {
 	})
 
 	createEffect(() => {
-		const _color = node.textColor ?? 'var(--color-primary)'
+		const _color = node.textColor ?? "var(--color-primary)"
 		updateCellStyles()
 	})
 
@@ -54,31 +54,31 @@ export default (node: ActivityProps) => {
 			{
 				itemSelector: calendarContainer,
 				domain: {
-					type: 'year',
-					sort: 'asc'
+					type: "year",
+					sort: "asc"
 				},
 				subDomain: {
-					color: /* node.textColor ?? */ 'var(--color-foreground)',
-					type: 'day',
+					color: /* node.textColor ?? */ "var(--color-foreground)",
+					type: "day",
 					radius: 0,
 					width: 15,
 					height: 15,
 					label: function (_timestamp: any, value: any) {
-						return `${value ?? ''}`
+						return `${value ?? ""}`
 					},
 					style: {
-						stroke: '#ccc',
+						stroke: "#ccc",
 						strokeWidth: 1
 					}
 				},
 				range: 1,
 				start: new Date(2025, 1),
-				theme: 'dark',
+				theme: "dark",
 				scale: {
 					color: {
-						type: 'linear',
+						type: "linear",
 						domain: [0, 30],
-						range: ['transparent', node.textColor ?? '#f64a03']
+						range: ["transparent", node.textColor ?? "#f64a03"]
 					}
 				},
 				data: {
@@ -86,9 +86,9 @@ export default (node: ActivityProps) => {
 						date,
 						value
 					})),
-					type: 'json',
-					x: 'date', // Optional, depending on data format
-					y: 'value' // Optional, depending on data format
+					type: "json",
+					x: "date", // Optional, depending on data format
+					y: "value" // Optional, depending on data format
 				}
 			},
 			[
@@ -96,7 +96,7 @@ export default (node: ActivityProps) => {
 					Tooltip,
 					{
 						text: function (date: any, value: any, dayjsDate: any) {
-							return (value ? value + ' times' : 'No data') + ' on ' + dayjsDate.format('LL')
+							return (value ? value + " times" : "No data") + " on " + dayjsDate.format("LL")
 						}
 					}
 				],
@@ -104,31 +104,31 @@ export default (node: ActivityProps) => {
 					CalendarLabel,
 					{
 						width: 30,
-						textAlign: 'start',
-						text: () => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (i % 2 == 0 ? '' : d))
+						textAlign: "start",
+						text: () => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d, i) => (i % 2 == 0 ? "" : d))
 					}
 				]
 			]
 		)
 
-		cal.on('click', (_event: any, timestamp: any, value: any) => {
+		cal.on("click", (_event: any, timestamp: any, value: any) => {
 			setIsOpen(true)
-			setActiveDate(new Date(timestamp).toISOString().split('T')[0])
-			console.log(new Date(timestamp).toISOString().split('T')[0] + '/' + value)
+			setActiveDate(new Date(timestamp).toISOString().split("T")[0])
+			console.log(new Date(timestamp).toISOString().split("T")[0] + "/" + value)
 		})
 		updateCellStyles()
 	})
 
 	const updateCellStyles = () => {
 		setTimeout(() => {
-			const cells = Array.from(calendarContainer.getElementsByClassName('ch-subdomain-bg'))
+			const cells = Array.from(calendarContainer.getElementsByClassName("ch-subdomain-bg"))
 
-			const color = node.textColor ?? '#f64a03'
+			const color = node.textColor ?? "#f64a03"
 			cells.forEach((cell: any) => {
 				if (cell.style.fill) {
 					const bg = colorWithPreservedAlpha(cell.style.fill, color)
 
-					cell.style.strokeWidth = '1px'
+					cell.style.strokeWidth = "1px"
 					cell.style.stroke = color
 					cell.style.fill = bg
 				}
@@ -170,22 +170,22 @@ export default (node: ActivityProps) => {
 				<div class="border-2 border-border size-fit p-4 pb-0" ref={calendarContainer}></div>
 
 				{/* Edit form */}
-				<div classList={{ 'border-2 border-border mt-4': isOpen() }}>
+				<div classList={{ "border-2 border-border mt-4": isOpen() }}>
 					<div
 						ref={contentRef}
 						class="overflow-hidden transition-[height] duration-300 ease-out w-full"
 						style={{
-							height: isOpen() ? `${contentRef?.scrollHeight ?? 0}px` : '0px'
+							height: isOpen() ? `${contentRef?.scrollHeight ?? 0}px` : "0px"
 						}}
 					>
 						<div class="p-4 flex items-center justify-between">
 							<div>{activeDate()}</div>
 							<div id="controls" class="flex flex-row items-center justify-center">
-								<div onClick={() => handleEdit(-1)} class={classes + ' rounded-l-md activityChangers'}>
+								<div onClick={() => handleEdit(-1)} class={classes + " rounded-l-md activityChangers"}>
 									-
 								</div>
 								<div class={classes}>{node.progress[activeDate()] ?? 0}</div>
-								<div onClick={() => handleEdit(+1)} class={classes + '  rounded-r-md activityChangers'}>
+								<div onClick={() => handleEdit(+1)} class={classes + "  rounded-r-md activityChangers"}>
 									+
 								</div>
 							</div>

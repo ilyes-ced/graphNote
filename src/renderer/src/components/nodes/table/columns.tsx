@@ -1,11 +1,11 @@
-import type { Column, ColumnDef } from '@tanstack/solid-table'
-import { Button } from '../../ui/button'
+import type { Column, ColumnDef } from "@tanstack/solid-table"
+import { Button } from "../../ui/button"
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Checkbox, CheckboxControl } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
-import { Match, Switch } from 'solid-js'
-import { IconDotsVertical, IconSortAscending, IconSortDescending } from '@tabler/icons-solidjs'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Checkbox, CheckboxControl } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
+import { Match, Switch } from "solid-js"
+import { IconDotsVertical, IconSortAscending, IconSortDescending } from "@tabler/icons-solidjs"
 
 // This type is used to define the shape of our data.
 // You can use a Zod or Validbot schema here if you want.
@@ -13,19 +13,19 @@ export type Task = {
 	id: string
 	code: string
 	title: string
-	status: 'todo' | 'in-progress' | 'done' | 'cancelled'
-	label: 'bug' | 'feature' | 'enhancement' | 'documentation'
+	status: "todo" | "in-progress" | "done" | "cancelled"
+	label: "bug" | "feature" | "enhancement" | "documentation"
 }
 
 const sorterComponent = function (name: string, column: Column<Task, unknown>) {
 	return (
-		<Button variant="table" size={'table'} onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+		<Button variant="table" size={"table"} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 			{name}
 			<Switch fallback={<IconSortDescending class="ml-2" size={16} />}>
-				<Match when={column.getIsSorted() === 'asc'}>
+				<Match when={column.getIsSorted() === "asc"}>
 					<IconSortDescending class="ml-2" size={16} />
 				</Match>
-				<Match when={column.getIsSorted() === 'desc'}>
+				<Match when={column.getIsSorted() === "desc"}>
 					<IconSortAscending class="ml-2" size={16} />
 				</Match>
 			</Switch>
@@ -35,7 +35,7 @@ const sorterComponent = function (name: string, column: Column<Task, unknown>) {
 
 export const columns: ColumnDef<Task>[] = [
 	{
-		id: 'select',
+		id: "select",
 		header: ({ table }) => (
 			<Checkbox
 				indeterminate={table.getIsSomePageRowsSelected()}
@@ -55,49 +55,49 @@ export const columns: ColumnDef<Task>[] = [
 		enableHiding: false
 	},
 	{
-		accessorKey: 'code',
+		accessorKey: "code",
 		header: ({ column }) => {
-			return sorterComponent('Title', column)
+			return sorterComponent("Title", column)
 		}
 	},
 	{
-		accessorKey: 'title',
+		accessorKey: "title",
 		header: ({ column }) => {
-			return sorterComponent('Title', column)
+			return sorterComponent("Title", column)
 		}
 	},
 	{
-		accessorKey: 'status',
+		accessorKey: "status",
 		header: ({ column }) => {
-			return sorterComponent('Title', column)
+			return sorterComponent("Title", column)
 		},
 		cell: ({ row }) => {
-			const status: string = row.getValue('status')
+			const status: string = row.getValue("status")
 
-			let variant: 'outlineYellow' | 'outlineBlue' | 'outlineGreen' | 'outlineRed' | 'outlinePurple'
+			let variant: "outlineYellow" | "outlineBlue" | "outlineGreen" | "outlineRed" | "outlinePurple"
 
 			switch (status) {
-				case 'todo':
-					variant = 'outlineYellow'
+				case "todo":
+					variant = "outlineYellow"
 					break
-				case 'in-progress':
-					variant = 'outlineBlue'
+				case "in-progress":
+					variant = "outlineBlue"
 					break
-				case 'done':
-					variant = 'outlineGreen'
+				case "done":
+					variant = "outlineGreen"
 					break
-				case 'cancelled':
-					variant = 'outlineRed'
+				case "cancelled":
+					variant = "outlineRed"
 					break
 				default:
-					variant = 'outlinePurple'
+					variant = "outlinePurple"
 			}
 
 			return <Badge variant={variant}>{status}</Badge>
 		}
 	},
 	{
-		id: 'actions',
+		id: "actions",
 		cell: () => (
 			<DropdownMenu placement="bottom-end">
 				<DropdownMenuTrigger class="flex items-center justify-center">

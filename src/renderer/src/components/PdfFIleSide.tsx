@@ -1,10 +1,10 @@
-import { IconX } from '@tabler/icons-solidjs'
-import { setStore, store } from '../shared/store'
-import * as pdfjsLib from 'pdfjs-dist'
-import { Show, createEffect, createSignal } from 'solid-js'
-import { Portal } from 'solid-js/web'
+import { IconX } from "@tabler/icons-solidjs"
+import { setStore, store } from "../shared/store"
+import * as pdfjsLib from "pdfjs-dist"
+import { Show, createEffect, createSignal } from "solid-js"
+import { Portal } from "solid-js/web"
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).toString()
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.mjs", import.meta.url).toString()
 
 function toArrayBuffer(buffer: Buffer): ArrayBuffer {
 	const arrayBuffer = new ArrayBuffer(buffer.length)
@@ -21,7 +21,7 @@ export default () => {
 	//TODO: maybe we should only load what the user is trying to read but it might make the experience slow
 	//TODO: like this if the file is too large it will take alot of time to load and alot of ram
 	createEffect(async () => {
-		console.log('pdfFile changed:', store.pdfFile)
+		console.log("pdfFile changed:", store.pdfFile)
 		if (store.pdfFile != null) {
 			const DocBuffer: ArrayBuffer = toArrayBuffer(await window.api.readImage(store.pdfFile))
 			if (!DocBuffer) return
@@ -33,11 +33,11 @@ export default () => {
 				const page = await pdf.getPage(i)
 				const viewport = page.getViewport({ scale: store.userConfig.pdfScale })
 
-				const canvas = document.createElement('canvas')
+				const canvas = document.createElement("canvas")
 				canvas.width = viewport.width
 				canvas.height = viewport.height
 
-				const context = canvas.getContext('2d')
+				const context = canvas.getContext("2d")
 				await page.render({ canvasContext: context, viewport }).promise
 
 				// convert canvas to data URL for <img>
@@ -49,20 +49,20 @@ export default () => {
 		}
 	})
 
-	return store.userConfig.pdfReaderType === 'side' ? (
+	return store.userConfig.pdfReaderType === "side" ? (
 		//? slide pdf reader
 		<div
 			class="h-full overflow-hidden transition-all duration-300 ease-in-out transform border-l-2 border-border"
 			classList={{
-				'w-[700px] translate-x-0': store.pdfFile != null,
-				'w-0 translate-x-full': store.pdfFile == null
+				"w-[700px] translate-x-0": store.pdfFile != null,
+				"w-0 translate-x-full": store.pdfFile == null
 			}}
 		>
 			<div id="PdfTitle" class="p-2 flex items-center justify-between border-b-2 border-border">
 				<div class="flex items-center justify-center ">{store.pdfFile}</div>
 				<div
 					class="border border-transparent hover:border-primary hover:bg-primary/20 transition-color duration-200 ease-in-out cursor-pointer"
-					onClick={() => setStore('pdfFile', null)}
+					onClick={() => setStore("pdfFile", null)}
 				>
 					<IconX />
 				</div>
@@ -74,7 +74,7 @@ export default () => {
 		//? modal pdf reader
 		<Show when={store.pdfFile != null}>
 			<Portal>
-				<div class="z-10000 absolute top-0 left-0 size-full  backdrop-blur-md" onClick={() => setStore('pdfFile', null)}>
+				<div class="z-10000 absolute top-0 left-0 size-full  backdrop-blur-md" onClick={() => setStore("pdfFile", null)}>
 					<div
 						onClick={(e) => e.stopPropagation()}
 						id="pdf_reader_modal_content"

@@ -1,6 +1,6 @@
-import { createStore } from 'solid-js/store'
-import { NodeUnion, Edge } from '../types'
-import { createEffect, onMount } from 'solid-js'
+import { createStore } from "solid-js/store"
+import { NodeUnion, Edge } from "../types"
+import { createEffect, onMount } from "solid-js"
 
 interface Command {
 	undo(): void
@@ -11,7 +11,7 @@ export const defaultViewportZoom = 1
 
 onMount(async () => {
 	const data = await window.api.getSettings()
-	setStore('userConfig', data ?? {})
+	setStore("userConfig", data ?? {})
 	createEffect(async () => {
 		console.log(
 			store.userConfig.pdfReaderType,
@@ -30,11 +30,11 @@ onMount(async () => {
 })
 
 interface UserConfig {
-	pdfReaderType: 'side' | 'modal' | 'external'
+	pdfReaderType: "side" | "modal" | "external"
 	youtubeVidCache: boolean //? if set to true, youtube videos will be downloaded
 	cacheUrlData: boolean
 	pdfScale: number //? for pdf reader clarity, 1 is blurry 1.5 is decent any more takes very long to laod
-	gridStyle: 'dots' | 'grid'
+	gridStyle: "dots" | "grid"
 	showMiniMap: boolean
 	homeBoardStyle: {
 		bgImagePath?: string
@@ -53,14 +53,14 @@ interface GlobalStore {
 	snapGrid: [number, number] | null
 
 	activeBoards: { title: string; id: string }[]
-	activeSidebar: 'nodes' | 'nodeStyles'
+	activeSidebar: "nodes" | "nodeStyles"
 	showColorMenu: boolean
 	showStorageMenu: boolean
 
 	activeTags: string[] // has all active nodes like strong, p, h1 .....
 
 	dragThreshold: number
-	dragging: NodeUnion['id'] | null
+	dragging: NodeUnion["id"] | null
 	// todo: reset when changing workspace
 	selectedNodes: Set<string> // node id
 
@@ -99,8 +99,8 @@ const [store, setStore] = createStore<GlobalStore>({
 	panZoom: null,
 	snapGrid: [10, 10],
 
-	activeBoards: [{ title: 'home', id: 'home' }],
-	activeSidebar: 'nodes',
+	activeBoards: [{ title: "home", id: "home" }],
+	activeSidebar: "nodes",
 	showColorMenu: false,
 	showStorageMenu: false,
 	activeTags: [],
@@ -132,16 +132,16 @@ const [store, setStore] = createStore<GlobalStore>({
 	//TODO: later read these from config file, and save changes
 	//TODO: create effect: when this part changes save changes to settings.json
 	userConfig: {
-		pdfReaderType: 'modal',
+		pdfReaderType: "modal",
 		youtubeVidCache: true,
 		cacheUrlData: true,
 		pdfScale: 1.5,
-		gridStyle: 'grid',
+		gridStyle: "grid",
 		showMiniMap: false,
 		homeBoardStyle: {
-			bgImagePath: '',
-			bgColor: '',
-			gridColor: ''
+			bgImagePath: "",
+			bgColor: "",
+			gridColor: ""
 		}
 	}
 })

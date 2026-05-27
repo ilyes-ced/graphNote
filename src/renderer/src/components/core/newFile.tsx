@@ -1,6 +1,6 @@
-import { onMount, onCleanup, Show, createSignal } from 'solid-js'
-import { setStore, store } from '../../shared/store'
-import { getBoardBgColor, getBoardGridColor, recieveDragNDropFile } from '../../shared/utils'
+import { onMount, onCleanup, Show, createSignal } from "solid-js"
+import { setStore, store } from "../../shared/store"
+import { getBoardBgColor, getBoardGridColor, recieveDragNDropFile } from "../../shared/utils"
 import {
 	addNode,
 	findNodeById,
@@ -10,11 +10,11 @@ import {
 	newImageNode,
 	removeNodeById,
 	updateBoardStyles
-} from '../../shared/update'
-import { redo, undo } from '../../shared/actions'
-import { IconCaretRightFilled, IconGrid4x4, IconGridDots, IconUpload } from '@tabler/icons-solidjs'
-import iro from '@jaames/iro'
-import { isTextLikeElementFocused, NodesCopyPaste, isTypeNodesCopyPaste, extractImageReference, imgNameGen } from './EventHandler'
+} from "../../shared/update"
+import { redo, undo } from "../../shared/actions"
+import { IconCaretRightFilled, IconGrid4x4, IconGridDots, IconUpload } from "@tabler/icons-solidjs"
+import iro from "@jaames/iro"
+import { isTextLikeElementFocused, NodesCopyPaste, isTypeNodesCopyPaste, extractImageReference, imgNameGen } from "./EventHandler"
 
 export default (props: any) => {
 	//TODO replace this tauri logic with normal web stuff
@@ -23,10 +23,10 @@ export default (props: any) => {
 	//   console.log(event);
 	//   recieveDragNDropFile(event);
 	// });
-	document.addEventListener('dragover', (event) => {
+	document.addEventListener("dragover", (event) => {
 		event.preventDefault()
 	})
-	document.addEventListener('drop', async (event: DragEvent) => {
+	document.addEventListener("drop", async (event: DragEvent) => {
 		event.preventDefault()
 		if (!event.dataTransfer) return
 
@@ -39,9 +39,9 @@ export default (props: any) => {
 		for (const file of files) {
 			const buffer = await file.arrayBuffer()
 
-			console.log('name:', file.name)
-			console.log('size:', file.size)
-			console.log('bytes:', buffer.byteLength)
+			console.log("name:", file.name)
+			console.log("size:", file.size)
+			console.log("bytes:", buffer.byteLength)
 
 			filesData.push({
 				name: file.name,
@@ -65,13 +65,13 @@ export default (props: any) => {
 			// You can add logic here like:
 			if (e.ctrlKey) {
 				switch (e.key) {
-					case 'c': // copy
+					case "c": // copy
 						if (!isTextLikeElementFocused()) {
 							if (store.selectedNodes.size > 0) {
-								console.info('copying nodes here')
+								console.info("copying nodes here")
 								var copiedNodes: NodesCopyPaste = {
 									//? this special string is to to make sure we are pasting our nodes, itrs like a secret key very unlikly for the user to use
-									id: 'special_graphNote_JSON_format_058192',
+									id: "special_graphNote_JSON_format_058192",
 									nodes: []
 								}
 								store.selectedNodes.forEach((selectedNode) => {
@@ -85,11 +85,11 @@ export default (props: any) => {
 						}
 
 						break
-					case 'v': // paste
+					case "v": // paste
 						//? read from clipboard
 						// const content = await readText();
 						const content = await navigator.clipboard.readText()
-						console.log('copied content')
+						console.log("copied content")
 						console.log(content)
 						try {
 							try {
@@ -110,36 +110,36 @@ export default (props: any) => {
 								if (!isTextLikeElementFocused()) {
 									//? here is for those when you copy an image a link is copied instead of the actual binary data
 									//? here means the pasted was not nodes, and scince we know its pasted into text inputs because of !isTextLikeElementFocused(), its either an iamge or nothing we should care about
-									console.log('+=============================================== here means the pasted was not nodes')
+									console.log("+=============================================== here means the pasted was not nodes")
 									console.log(content)
 									console.log()
-									content.split('\n').forEach(async (Image) => {
+									content.split("\n").forEach(async (Image) => {
 										console.log(Image)
 										const imgRef = extractImageReference(Image)
-										console.log('imgRef')
+										console.log("imgRef")
 										console.log(imgRef)
-										if (!imgRef) throw new Error('not a valid img url')
-										console.log('imgRef')
+										if (!imgRef) throw new Error("not a valid img url")
+										console.log("imgRef")
 
-										if (imgRef.type === 'local') {
+										if (imgRef.type === "local") {
 											// image file path name not binary data
 											console.log(imgRef.value)
 											console.log(new TextEncoder().encode(imgRef.value))
 											console.log(new TextEncoder().encode(imgRef.value).length)
 											//copy using tauri copyfile
-											console.log(Image.split('/').pop() ?? 'image.png')
+											console.log(Image.split("/").pop() ?? "image.png")
 											const res = await window.api.writeFile({
-												name: Image.split('/').pop() ?? 'image.png',
+												name: Image.split("/").pop() ?? "image.png",
 												data: new TextEncoder().encode(imgRef.value),
-												type: 'image'
+												type: "image"
 											})
 											if (res.path) {
 												//TODO: fix x,y to be as the mouse
 												newImageNode(res.path, 0, 0)
 											} else {
-												console.error('failed to save file:', res.path)
+												console.error("failed to save file:", res.path)
 											}
-										} else if (imgRef.type === 'url') {
+										} else if (imgRef.type === "url") {
 											//TODO: download image to our save folder and create the image node
 											//await downloadImage(imgRef.value);
 											const res = await window.api.downloadImgUrl(imgRef.value)
@@ -149,35 +149,35 @@ export default (props: any) => {
 								}
 							}
 						} catch (e) {
-							console.warn('the pasted was not a text', e)
+							console.warn("the pasted was not a text", e)
 						}
 
 						try {
-							console.log('fwoiejfpowiejf')
+							console.log("fwoiejfpowiejf")
 							const possibleBinImgsData = await navigator.clipboard.read()
 							for (const item of possibleBinImgsData) {
 								for (const type of item.types) {
-									if (type.startsWith('image/')) {
+									if (type.startsWith("image/")) {
 										const blob = await item.getType(type)
 
 										const arrayBuffer = await blob.arrayBuffer()
 										const uint8Array = new Uint8Array(arrayBuffer)
 
-										console.log('Image binary size:', uint8Array.length)
+										console.log("Image binary size:", uint8Array.length)
 										// give name to image
 										// here send request to save image
 										try {
-											const res = await window.api.writeFile({ name: imgNameGen(type), data: uint8Array, type: 'image' })
+											const res = await window.api.writeFile({ name: imgNameGen(type), data: uint8Array, type: "image" })
 											//TODO: fix x,y to be as the mouse
 											if (res.path) {
 												//TODO: fix x,y to be as the mouse
 												newImageNode(res.path, 0, 0)
 											} else {
-												console.error('failed to save file:', res.path)
+												console.error("failed to save file:", res.path)
 											}
 											// create the node here
 										} catch (error) {
-											console.warn('failed to save the binary copied image', error)
+											console.warn("failed to save the binary copied image", error)
 										}
 									}
 								}
@@ -187,20 +187,20 @@ export default (props: any) => {
 							//todo: create new image node on mouse cursor pos
 							// make use of those in utils.ts
 						} catch (e) {
-							console.warn('the pasted was not an image', e)
+							console.warn("the pasted was not an image", e)
 						}
 
 						break
-					case 'z': // undo
+					case "z": // undo
 						undo()
 						break
-					case 'y': // redo
+					case "y": // redo
 						redo()
 						break
-					case 'f': // search
+					case "f": // search
 						break
-					case 'a': // saelect all
-						setStore('selectedNodes', new Set(store.nodes[getActiveBoardId()]))
+					case "a": // saelect all
+						setStore("selectedNodes", new Set(store.nodes[getActiveBoardId()]))
 						break
 
 					default:
@@ -208,31 +208,31 @@ export default (props: any) => {
 				}
 			} else {
 				switch (e.key) {
-					case 'Escape':
+					case "Escape":
 						//? deselect nodes
-						setStore('selectedNodes', new Set())
+						setStore("selectedNodes", new Set())
 						//? close modals
-						setStore('pdfFile', null)
-						setStore('settingsModal', false)
+						setStore("pdfFile", null)
+						setStore("settingsModal", false)
 						break
-					case 'Delete':
+					case "Delete":
 						store.selectedNodes.forEach((selectedNode) => {
 							removeNodeById(selectedNode)
 						})
-						setStore('selectedNodes', new Set())
+						setStore("selectedNodes", new Set())
 						break
 
 					// move selected nodes
-					case 'ArrowUp':
+					case "ArrowUp":
 						incrementSelectedNodesPositions(0, e.shiftKey ? -50 : -10)
 						break
-					case 'ArrowDown':
+					case "ArrowDown":
 						incrementSelectedNodesPositions(0, e.shiftKey ? 50 : 10)
 						break
-					case 'ArrowLeft':
+					case "ArrowLeft":
 						incrementSelectedNodesPositions(e.shiftKey ? -50 : -10, 0)
 						break
-					case 'ArrowRight':
+					case "ArrowRight":
 						incrementSelectedNodesPositions(e.shiftKey ? 50 : 10, 0)
 						break
 					default:
@@ -241,15 +241,15 @@ export default (props: any) => {
 			}
 		}
 
-		window.addEventListener('keydown', handleKeyDown)
+		window.addEventListener("keydown", handleKeyDown)
 
 		onCleanup(() => {
-			window.removeEventListener('keydown', handleKeyDown)
+			window.removeEventListener("keydown", handleKeyDown)
 		})
 
 		// @ts-ignore
 		colorPickerBg = new iro.ColorPicker(pickerBgRef, {
-			color: store.userConfig.homeBoardStyle.bgColor ?? '#ff5593',
+			color: store.userConfig.homeBoardStyle.bgColor ?? "#ff5593",
 			layout: [
 				{
 					component: iro.ui.Box
@@ -257,20 +257,20 @@ export default (props: any) => {
 				{
 					component: iro.ui.Slider,
 					options: {
-						sliderType: 'hue'
+						sliderType: "hue"
 					}
 				},
 				{
 					component: iro.ui.Slider,
 					options: {
-						sliderType: 'alpha'
+						sliderType: "alpha"
 					}
 				}
 			]
 		})
 		// @ts-ignore
 		colorPickerGrid = new iro.ColorPicker(pickerGridRef, {
-			color: store.userConfig.homeBoardStyle.gridColor ?? '#ff5593',
+			color: store.userConfig.homeBoardStyle.gridColor ?? "#ff5593",
 			layout: [
 				{
 					component: iro.ui.Box
@@ -278,32 +278,32 @@ export default (props: any) => {
 				{
 					component: iro.ui.Slider,
 					options: {
-						sliderType: 'hue'
+						sliderType: "hue"
 					}
 				},
 				{
 					component: iro.ui.Slider,
 					options: {
-						sliderType: 'alpha'
+						sliderType: "alpha"
 					}
 				}
 			]
 		})
 
-		colorPickerBg.on('color:change', function (color: any) {
-			if (getActiveBoardId() == 'home') {
-				setStore('userConfig', 'homeBoardStyle', 'bgImagePath', '')
-				setStore('userConfig', 'homeBoardStyle', 'bgColor', color.rgbaString)
+		colorPickerBg.on("color:change", function (color: any) {
+			if (getActiveBoardId() == "home") {
+				setStore("userConfig", "homeBoardStyle", "bgImagePath", "")
+				setStore("userConfig", "homeBoardStyle", "bgColor", color.rgbaString)
 			} else {
-				updateBoardStyles(findNodeById(getActiveBoardId())?.id, '', 'image')
-				updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, 'bg')
+				updateBoardStyles(findNodeById(getActiveBoardId())?.id, "", "image")
+				updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "bg")
 			}
 		})
-		colorPickerGrid.on('color:change', function (color: any) {
-			if (getActiveBoardId() == 'home') {
-				setStore('userConfig', 'homeBoardStyle', 'gridColor', color.rgbaString)
+		colorPickerGrid.on("color:change", function (color: any) {
+			if (getActiveBoardId() == "home") {
+				setStore("userConfig", "homeBoardStyle", "gridColor", color.rgbaString)
 			} else {
-				updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, 'grid')
+				updateBoardStyles(findNodeById(getActiveBoardId())?.id, color.rgbaString, "grid")
 			}
 		})
 	})
@@ -311,10 +311,10 @@ export default (props: any) => {
 	const pickFile = async () => {
 		const path = await window.api.selectFile()
 
-		if (getActiveBoardId() == 'home') {
-			setStore('userConfig', 'homeBoardStyle', 'bgImagePath', path)
+		if (getActiveBoardId() == "home") {
+			setStore("userConfig", "homeBoardStyle", "bgImagePath", path)
 		} else {
-			updateBoardStyles(findNodeById(getActiveBoardId())?.id, path, 'image')
+			updateBoardStyles(findNodeById(getActiveBoardId())?.id, path, "image")
 		}
 
 		console.log(path)
@@ -340,22 +340,22 @@ export default (props: any) => {
 			id="eventhandler"
 			onContextMenu={(e) => {
 				e.preventDefault() // prevent browser context menu
-				console.log('this is opening the context menu')
+				console.log("this is opening the context menu")
 				x = e.clientX
 				y = e.clientY
 				console.log(x, y)
-				setStore('contextMenuModal', !store.contextMenuModal)
+				setStore("contextMenuModal", !store.contextMenuModal)
 			}}
 		>
 			<div
 				class="z-10000 absolute top-0 left-0 size-full"
 				onClick={() => {
-					console.log('*888888888888')
+					console.log("*888888888888")
 					setBgPicker(false)
 				}}
 				style={{
-					opacity: bgPicker() ? '1' : '0',
-					'pointer-events': bgPicker() ? 'auto' : 'none'
+					opacity: bgPicker() ? "1" : "0",
+					"pointer-events": bgPicker() ? "auto" : "none"
 				}}
 			>
 				<div
@@ -374,8 +374,8 @@ export default (props: any) => {
 				class="z-10000 absolute top-0 left-0 size-full"
 				onClick={() => setGridPicker(false)}
 				style={{
-					opacity: gridPicker() ? '1' : '0',
-					'pointer-events': gridPicker() ? 'auto' : 'none'
+					opacity: gridPicker() ? "1" : "0",
+					"pointer-events": gridPicker() ? "auto" : "none"
 				}}
 			>
 				<div
@@ -425,7 +425,7 @@ export default (props: any) => {
 								<button
 									class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
 									onclick={(e) => {
-										setStore('contextMenuModal', false)
+										setStore("contextMenuModal", false)
 										console.log({ x, y })
 										console.log({ x, y })
 										setModalPos({ x, y })
@@ -440,7 +440,7 @@ export default (props: any) => {
 								<button
 									class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
 									onclick={(e) => {
-										setStore('contextMenuModal', false)
+										setStore("contextMenuModal", false)
 										setModalPos({ x: e.target.getBoundingClientRect().top, y: e.target.getBoundingClientRect().right })
 										setGridPicker(true)
 									}}
@@ -453,7 +453,7 @@ export default (props: any) => {
 								<button
 									class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
 									onclick={() => {
-										setStore('contextMenuModal', false)
+										setStore("contextMenuModal", false)
 										pickFile()
 									}}
 								>
@@ -469,10 +469,10 @@ export default (props: any) => {
 								<button
 									class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
 									style={{
-										background: store.userConfig.gridStyle == 'grid' ? 'var(--color-primary)' : ''
+										background: store.userConfig.gridStyle == "grid" ? "var(--color-primary)" : ""
 									}}
 									onclick={() => {
-										setStore('userConfig', 'gridStyle', 'grid')
+										setStore("userConfig", "gridStyle", "grid")
 									}}
 								>
 									<div class="aspect-video w-10 flex justify-center">
@@ -485,10 +485,10 @@ export default (props: any) => {
 								<button
 									class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer"
 									style={{
-										background: store.userConfig.gridStyle == 'dots' ? 'var(--color-primary)' : ''
+										background: store.userConfig.gridStyle == "dots" ? "var(--color-primary)" : ""
 									}}
 									onclick={() => {
-										setStore('userConfig', 'gridStyle', 'dots')
+										setStore("userConfig", "gridStyle", "dots")
 									}}
 								>
 									<div class="aspect-video w-10 flex justify-center">

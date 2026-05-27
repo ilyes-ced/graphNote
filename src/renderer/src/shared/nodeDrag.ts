@@ -1,9 +1,9 @@
-import { onCleanup } from 'solid-js'
-import { store, setStore } from './store'
-import { NodeType, type NodeUnion } from '../types'
-import { addSelected, saveChanges } from './utils'
-import moveNode from './moveNode'
-import { updateChildPosition, updatePosition, updateZIndex } from './update'
+import { onCleanup } from "solid-js"
+import { store, setStore } from "./store"
+import { NodeType, type NodeUnion } from "../types"
+import { addSelected, saveChanges } from "./utils"
+import moveNode from "./moveNode"
+import { updateChildPosition, updatePosition, updateZIndex } from "./update"
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
 	const rect = targetEl.getBoundingClientRect()
@@ -19,24 +19,24 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 	let initialMouseY = 0
 	let currentX = 0
 	let currentY = 0
-	let targets = document.querySelectorAll('.column, .board')
+	let targets = document.querySelectorAll(".column, .board")
 	const threshold = 1
 	const ignoredSelectors =
 		(ignoredElements?.classes?.length || 0) > 0 || (ignoredElements?.ids?.length || 0) > 0 || (ignoredElements?.tags?.length || 0) > 0
 			? [
-					'.child_node',
+					".child_node",
 					...(ignoredElements?.classes || []).map((cls) => `.${cls}`),
 					...(ignoredElements?.ids || []).map((id) => `#${id}`),
 					...(ignoredElements?.tags || [])
-				].join(', ')
-			: '.child_node'
+				].join(", ")
+			: ".child_node"
 
 	const startDrag = (e: PointerEvent) => {
 		element = e.currentTarget as HTMLElement
-		console.info('moving:', element)
+		console.info("moving:", element)
 		if (e.button == 2) {
-			console.info('rightclick onm -----', element.id)
-			setStore('selectedNodes', (prev) => {
+			console.info("rightclick onm -----", element.id)
+			setStore("selectedNodes", (prev) => {
 				if (element) {
 					const next = new Set(prev)
 					next.add(element.id)
@@ -46,7 +46,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 			return
 		}
 
-		if (store.showColorMenu) setStore('showColorMenu', false)
+		if (store.showColorMenu) setStore("showColorMenu", false)
 		//? at leastit helps with removing the ghost when dragging an image
 		//? other thatn that im not sure
 		if (node.type === NodeType.Image) e.preventDefault()
@@ -64,13 +64,13 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 		if (!is_child) if ((e.target as HTMLElement).closest(ignoredSelectors)) return
 
 		//? update here because new colmns could appear later
-		targets = document.querySelectorAll('.column, .board')
+		targets = document.querySelectorAll(".column, .board")
 
-		console.info('started dragging:', node.id)
+		console.info("started dragging:", node.id)
 		//? increased the z-index, to +1 of the highest
 
 		updateZIndex(node.id)
-		setStore('dragging', node.id)
+		setStore("dragging", node.id)
 
 		const scale = store.viewport?.scale ?? 1
 		startX = (e.clientX - store.viewport.x) / scale - node.x
@@ -79,12 +79,12 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 		initialMouseX = e.clientX
 		initialMouseY = e.clientY
 
-		window.addEventListener('pointermove', onMove)
-		window.addEventListener('pointerup', onUp)
+		window.addEventListener("pointermove", onMove)
+		window.addEventListener("pointerup", onUp)
 	}
 
 	const onMove = (e: PointerEvent) => {
-		console.info('moving:', node.id)
+		console.info("moving:", node.id)
 		const scale = store.viewport?.scale ?? 1
 		let x = (e.clientX - store.viewport.x) / scale - startX
 		let y = (e.clientY - store.viewport.y) / scale - startY
@@ -113,11 +113,11 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 			const isInside = isOverlapping(e.clientX, e.clientY, target)
 			const sameType = target.classList.contains(node.type.toLowerCase())
 			if (isInside && !sameType) {
-				console.log('adding teh child_container_hover to ', target.id)
-				target.classList.add('child_container_hover')
+				console.log("adding teh child_container_hover to ", target.id)
+				target.classList.add("child_container_hover")
 			} else {
-				console.info('removing the child_container_hover from', target.id)
-				target.classList.remove('child_container_hover')
+				console.info("removing the child_container_hover from", target.id)
+				target.classList.remove("child_container_hover")
 			}
 		})
 
@@ -127,9 +127,9 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 	}
 
 	const onUp = (e: PointerEvent) => {
-		setStore('dragging', null)
-		window.removeEventListener('pointermove', onMove)
-		window.removeEventListener('pointerup', onUp)
+		setStore("dragging", null)
+		window.removeEventListener("pointermove", onMove)
+		window.removeEventListener("pointerup", onUp)
 
 		//? check if node was not moved, if not select it
 		const deltaX = Math.abs((e?.clientX ?? 0) - initialMouseX)
@@ -142,19 +142,19 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 					addSelected(e, node.id)
 				} else {
 					const newSet = new Set([node.id])
-					setStore('selectedNodes', newSet)
+					setStore("selectedNodes", newSet)
 				}
 				return
 			}
 			if (store.selectedNodes.size === 0) {
 				const newSet = new Set([node.id])
-				setStore('selectedNodes', newSet)
+				setStore("selectedNodes", newSet)
 			} else {
 				if (e.shiftKey) {
 					addSelected(e, node.id)
 				} else {
 					const newSet = new Set([node.id])
-					setStore('selectedNodes', newSet)
+					setStore("selectedNodes", newSet)
 				}
 			}
 			return
@@ -169,7 +169,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 		targets.forEach((target) => {
 			//! fix this e. error
 			const isInside = isOverlapping(e.clientX, e.clientY, target)
-			target.classList.remove('child_container_hover')
+			target.classList.remove("child_container_hover")
 
 			if (is_child) {
 				if (isInside) {
@@ -189,7 +189,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 			if (is_child) {
 				const targets = document.querySelectorAll(`#${node.id}`)
 				console.info(targets[0].getBoundingClientRect())
-				moveNode(node.id, 'None', true, true, {
+				moveNode(node.id, "None", true, true, {
 					x: Math.round(targets[0].getBoundingClientRect().x / 10) * 10,
 					y: Math.round(targets[0].getBoundingClientRect().y / 10) * 10
 				})
@@ -222,14 +222,14 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 
 			if (rightEdge > store.viewport.width) {
 				const newWidth = Math.round((rightEdge + 200) / 10) * 10
-				setStore('viewport', {
+				setStore("viewport", {
 					width: Math.max(newWidth, store.viewport.width)
 				})
 			}
 
 			if (bottomEdge > store.viewport.height) {
 				const newHeight = Math.round((bottomEdge + 200) / 10) * 10
-				setStore('viewport', {
+				setStore("viewport", {
 					height: Math.max(newHeight, store.viewport.height)
 				})
 			}
@@ -239,9 +239,9 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 	}
 
 	onCleanup(() => {
-		console.warn('this is cleanup', node.id)
-		window.removeEventListener('pointermove', onMove)
-		window.removeEventListener('pointerup', onUp)
+		console.warn("this is cleanup", node.id)
+		window.removeEventListener("pointermove", onMove)
+		window.removeEventListener("pointerup", onUp)
 	})
 
 	return {

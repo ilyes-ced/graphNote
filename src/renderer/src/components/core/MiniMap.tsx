@@ -1,6 +1,6 @@
-import { For, createSignal, onMount } from 'solid-js'
-import { store } from '../../shared/store'
-import { getBoardBgColor } from '../../shared/utils'
+import { For, createSignal, onMount } from "solid-js"
+import { store } from "../../shared/store"
+import { getBoardBgColor } from "../../shared/utils"
 
 export default (props: { wrapperRef: any }) => {
 	const aspectRatio = () => `${store.viewport.width} / ${store.viewport.height}`
@@ -35,7 +35,7 @@ export default (props: { wrapperRef: any }) => {
 	})
 
 	const nodesData = () => {
-		const nodes = store.nodes[store.activeBoards.at(-1)?.id ?? 'home']
+		const nodes = store.nodes[store.activeBoards.at(-1)?.id ?? "home"]
 		let nodesData: {
 			id: string
 			x: number
@@ -51,7 +51,7 @@ export default (props: { wrapperRef: any }) => {
 				id: n.id,
 				x: (n.x / store.viewport.width / store.viewport.scale) * 100,
 				y: (n.y / store.viewport.width / store.viewport.scale) * 100,
-				color: n.color ?? '',
+				color: n.color ?? "",
 				w: ((el?.width ?? 0) / store.viewport.width / store.viewport.scale) * 100,
 				h: ((el?.height ?? 0) / store.viewport.width / store.viewport.scale) * 100
 			})
@@ -63,20 +63,20 @@ export default (props: { wrapperRef: any }) => {
 		<div
 			id="minimap"
 			class="absolute bottom-3.25 right-3.5 w-67.5 border border-primary p-2.5 z-1000 bg-background"
-			style={{ 'aspect-ratio': aspectRatio() }}
+			style={{ "aspect-ratio": aspectRatio() }}
 		>
 			<div class="relative size-full border-2 border-background z-1000" style={{ background: getBoardBgColor() }}>
 				<For each={nodesData()}>
 					{(node) => (
 						<div
 							style={{
-								position: 'absolute',
+								position: "absolute",
 								left: `${node.x}%`,
 								top: `${node.y}%`,
 								width: `${node.w}%`,
 								height: `${node.h}%`,
-								background: node.color && node.color != '' ? node.color : 'var(--color-card)',
-								border: `1px solid ${store.selectedNodes.has(node.id) ? 'white' : 'var(--color-background)'}`
+								background: node.color && node.color != "" ? node.color : "var(--color-card)",
+								border: `1px solid ${store.selectedNodes.has(node.id) ? "white" : "var(--color-background)"}`
 							}}
 						></div>
 					)}
@@ -84,7 +84,7 @@ export default (props: { wrapperRef: any }) => {
 				<div
 					class="bg-primary/20 border border-primary"
 					style={{
-						position: 'absolute',
+						position: "absolute",
 						left: `${posX()}%`,
 						top: `${posY()}%`,
 						width: `${width()}%`,

@@ -1,8 +1,8 @@
-import './App.css'
-import TopBar from './components/Topbar'
-import Main from './components/Main'
-import Sidebar from './components/sidebar/Sidebar'
-import PdfFIleSide from './components/PdfFIleSide'
+import "./App.css"
+import TopBar from "./components/Topbar"
+import Main from "./components/Main"
+import Sidebar from "./components/sidebar/Sidebar"
+import PdfFIleSide from "./components/PdfFIleSide"
 
 function App() {
 	return (

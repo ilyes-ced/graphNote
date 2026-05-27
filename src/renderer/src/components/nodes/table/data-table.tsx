@@ -1,10 +1,10 @@
-import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/solid-table'
-import { flexRender, createSolidTable, getCoreRowModel, getPaginationRowModel, getSortedRowModel, getFilteredRowModel } from '@tanstack/solid-table'
-import { For, Show, splitProps, Accessor, createSignal } from 'solid-js'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { TextField, TextFieldRoot } from '@/components/ui/textfield'
-import { Button } from '@/components/ui/button'
-import { IconArrowLeft, IconArrowRight, IconChevronsLeft, IconChevronsRight } from '@tabler/icons-solidjs'
+import type { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/solid-table"
+import { flexRender, createSolidTable, getCoreRowModel, getPaginationRowModel, getSortedRowModel, getFilteredRowModel } from "@tanstack/solid-table"
+import { For, Show, splitProps, Accessor, createSignal } from "solid-js"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { TextField, TextFieldRoot } from "@/components/ui/textfield"
+import { Button } from "@/components/ui/button"
+import { IconArrowLeft, IconArrowRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-solidjs"
 
 type Props<TData, TValue> = {
 	columns: ColumnDef<TData, TValue>[]
@@ -19,7 +19,7 @@ const [columnFilters, setColumnFilters] = createSignal<ColumnFiltersState>([])
 const [rowSelection, setRowSelection] = createSignal({})
 
 export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
-	const [local] = splitProps(props, ['columns', 'data'])
+	const [local] = splitProps(props, ["columns", "data"])
 
 	const table = createSolidTable({
 		get data() {
@@ -59,8 +59,8 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
 			<TextFieldRoot>
 				<TextField
 					placeholder="Filter title..."
-					value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-					onInput={(event) => table.getColumn('title')?.setFilterValue(event.currentTarget.value)}
+					value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+					onInput={(event) => table.getColumn("title")?.setFilterValue(event.currentTarget.value)}
 					class="max-w-sm"
 				/>
 			</TextFieldRoot>
@@ -96,7 +96,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
 					>
 						<For each={table.getRowModel().rows}>
 							{(row) => (
-								<TableRow data-state={row.getIsSelected() && 'selected'}>
+								<TableRow data-state={row.getIsSelected() && "selected"}>
 									<For each={row.getVisibleCells()}>
 										{(cell) => <TableCell>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>}
 									</For>

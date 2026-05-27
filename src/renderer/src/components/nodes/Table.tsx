@@ -1,5 +1,5 @@
-import { For, createSignal, onCleanup } from 'solid-js'
-import { Table } from '../../types'
+import { For, createSignal, onCleanup } from "solid-js"
+import { Table } from "../../types"
 
 type NewType = Table & {
 	is_child?: boolean
@@ -29,8 +29,8 @@ export default function TableComponent(node: TableProps) {
 		startWidth = widths()[index]
 		activeCol = index
 
-		window.addEventListener('mousemove', onMouseMove)
-		window.addEventListener('mouseup', stopResize)
+		window.addEventListener("mousemove", onMouseMove)
+		window.addEventListener("mouseup", stopResize)
 	}
 
 	const onMouseMove = (e: MouseEvent) => {
@@ -50,9 +50,9 @@ export default function TableComponent(node: TableProps) {
 	const stopResize = () => {
 		activeCol = -1
 
-		window.removeEventListener('mousemove', onMouseMove)
+		window.removeEventListener("mousemove", onMouseMove)
 
-		window.removeEventListener('mouseup', stopResize)
+		window.removeEventListener("mouseup", stopResize)
 	}
 
 	onCleanup(stopResize)

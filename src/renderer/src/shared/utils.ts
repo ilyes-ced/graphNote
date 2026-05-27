@@ -1,21 +1,21 @@
-import { setStore, store } from './store'
-import { saveEdgesJSON, saveNodesJSON } from './save'
-import { Payload } from '../types'
-import saveFile from './saveFile'
-import { findNodeById, getActiveBoardId, newDocumentNode, newImageNode } from './update'
+import { setStore, store } from "./store"
+import { saveEdgesJSON, saveNodesJSON } from "./save"
+import { Payload } from "../types"
+import saveFile from "./saveFile"
+import { findNodeById, getActiveBoardId, newDocumentNode, newImageNode } from "./update"
 
 const addSelected = (e: MouseEvent, nodeId: string) => {
 	// if click is on child dont do it
-	console.log('selecting:', nodeId)
+	console.log("selecting:", nodeId)
 	e.stopPropagation()
 	if (store.selectedNodes.has(nodeId)) {
 		const newSet = new Set(store.selectedNodes)
 		newSet.delete(nodeId)
-		setStore('selectedNodes', newSet)
+		setStore("selectedNodes", newSet)
 	} else {
-		setStore('selectedNodes', (prev) => new Set(prev).add(nodeId))
+		setStore("selectedNodes", (prev) => new Set(prev).add(nodeId))
 	}
-	console.log('adding :', store.selectedNodes)
+	console.log("adding :", store.selectedNodes)
 }
 
 const saveChanges = () => {
@@ -34,51 +34,51 @@ function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
 }
 
 const fileCategories = {
-	image: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'ico'],
-	video: ['mp4', 'mkv', 'mov', 'avi', 'webm', 'flv'],
-	music: ['mp3', 'wav', 'ogg', 'flac', 'm4a'],
-	document: ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'pdf'],
+	image: ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "tiff", "ico"],
+	video: ["mp4", "mkv", "mov", "avi", "webm", "flv"],
+	music: ["mp3", "wav", "ogg", "flac", "m4a"],
+	document: ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv", "pdf"],
 	code: [
-		'js',
-		'ts',
-		'py',
-		'rs',
-		'java',
-		'c',
-		'cpp',
-		'cs',
-		'html',
-		'css',
-		'js',
-		'ts',
-		'jsx',
-		'tsx',
-		'json',
-		'xml',
-		'yaml',
-		'yml',
-		'sh',
-		'php',
-		'go',
-		'rb',
-		'swift',
-		'kt',
-		'dart'
+		"js",
+		"ts",
+		"py",
+		"rs",
+		"java",
+		"c",
+		"cpp",
+		"cs",
+		"html",
+		"css",
+		"js",
+		"ts",
+		"jsx",
+		"tsx",
+		"json",
+		"xml",
+		"yaml",
+		"yml",
+		"sh",
+		"php",
+		"go",
+		"rb",
+		"swift",
+		"kt",
+		"dart"
 	],
-	text: ['txt', 'md', 'log']
+	text: ["txt", "md", "log"]
 }
 
 const recieveDragNDropFile = (payload: Payload) => {
-	console.log('payload :', payload)
+	console.log("payload :", payload)
 
-	console.log('file path:', payload.files.length)
-	console.log('file pos:', payload.position)
+	console.log("file path:", payload.files.length)
+	console.log("file pos:", payload.position)
 
 	if (!payload.files || payload.files.length === 0) return
 
 	payload.files.forEach(async (fileData, index) => {
-		const fileExt = fileData.name.split('.').splice(-1)[0].toLowerCase()
-		let fileType = 'unknown'
+		const fileExt = fileData.name.split(".").splice(-1)[0].toLowerCase()
+		let fileType = "unknown"
 		for (const [category, extensions] of Object.entries(fileCategories)) {
 			if (extensions.includes(fileExt)) {
 				fileType = category
@@ -92,25 +92,25 @@ const recieveDragNDropFile = (payload: Payload) => {
 			type: fileType
 		})
 		if (result.res) {
-			console.log('file type:', fileType)
+			console.log("file type:", fileType)
 
 			switch (fileType) {
 				//todo: add the item to the nodes store depending on the fileType
-				case 'image':
+				case "image":
 					const imgPos = payload.position
 					newImageNode(result.path, imgPos.x + index * 30, imgPos.y + index * 30)
 					break
-				case 'video':
+				case "video":
 					break
-				case 'music':
+				case "music":
 					break
-				case 'document':
+				case "document":
 					const docPos = payload.position
-					newDocumentNode(result.path, docPos.x + index * 30, docPos.y + index * 30, 'widget')
+					newDocumentNode(result.path, docPos.x + index * 30, docPos.y + index * 30, "widget")
 					break
-				case 'code':
+				case "code":
 					break
-				case 'text':
+				case "text":
 					break
 
 				//todo: when the file is unhancled it should be deleted
@@ -119,7 +119,7 @@ const recieveDragNDropFile = (payload: Payload) => {
 					break
 			}
 		} else {
-			console.error('failed to save file:', result.path)
+			console.error("failed to save file:", result.path)
 			//send error message notification
 		}
 	})
@@ -129,7 +129,7 @@ const updateArrowsPositions = () => {
 	//? to keep update thier positions during the animation
 	//! probably bad for perforamce
 	const interval = setInterval(() => {
-		store.arrowLines.forEach((v, k) => {
+		store.arrowLines.forEach((v, _k) => {
 			v.forEach((line) => {
 				line.position()
 			})
@@ -143,7 +143,7 @@ const updateArrowsPositions = () => {
 function oklchToRgb(oklchStr: string): string {
 	const match = oklchStr.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)/i)
 
-	if (!match) throw new Error('Invalid OKLCH format')
+	if (!match) throw new Error("Invalid OKLCH format")
 
 	let l = parseFloat(match[1])
 	let c = parseFloat(match[2])
@@ -170,7 +170,7 @@ function oklchToRgb(oklchStr: string): string {
 	let b2 = -0.0041960863 * lmsL - 0.7034186147 * lmsM + 1.707614701 * lmsS
 
 	// linear → sRGB
-	const toSRGB = (x) => (x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055)
+	const toSRGB = (x: number) => (x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055)
 
 	r = Math.round(Math.min(1, Math.max(0, toSRGB(r))) * 255)
 	g = Math.round(Math.min(1, Math.max(0, toSRGB(g))) * 255)
@@ -179,7 +179,7 @@ function oklchToRgb(oklchStr: string): string {
 	return `rgb(${r},${g},${b2})`
 }
 
-const uint8ArrayToDataUrl = async (bytes: Uint8Array, mime = 'image/png') => {
+const uint8ArrayToDataUrl = async (bytes: Uint8Array, mime = "image/png") => {
 	const blob = new Blob([bytes], { type: mime })
 	return await new Promise<string>((resolve, reject) => {
 		const reader = new FileReader()
@@ -192,19 +192,19 @@ const uint8ArrayToDataUrl = async (bytes: Uint8Array, mime = 'image/png') => {
 const readImage = async (imgPath: string): Promise<string> => {
 	try {
 		const bytes = await window.api.readImage(imgPath)
-		const ext = imgPath.split('.').pop()?.toLowerCase() || 'png'
+		const ext = imgPath.split(".").pop()?.toLowerCase() || "png"
 		const mime = `image/${ext}`
 		const dataUrl = await uint8ArrayToDataUrl(bytes, mime)
 		return dataUrl
 	} catch (err) {
-		console.error('Failed to read image:', err)
-		return ''
+		console.error("Failed to read image:", err)
+		return ""
 	}
 }
 
 const getBoardimage = () => {
-	if (getActiveBoardId() == 'home') {
-		return store.userConfig.homeBoardStyle.bgImagePath ?? ''
+	if (getActiveBoardId() == "home") {
+		return store.userConfig.homeBoardStyle.bgImagePath ?? ""
 	} else {
 		console.log(getActiveBoardId())
 		//@ts-ignore
@@ -213,8 +213,8 @@ const getBoardimage = () => {
 }
 
 const getBoardBgColor = () => {
-	if (getActiveBoardId() == 'home') {
-		return store.userConfig.homeBoardStyle.bgColor != '' ? store.userConfig.homeBoardStyle.bgColor : 'var(--color-background)'
+	if (getActiveBoardId() == "home") {
+		return store.userConfig.homeBoardStyle.bgColor != "" ? store.userConfig.homeBoardStyle.bgColor : "var(--color-background)"
 	} else {
 		console.log(getActiveBoardId())
 		//@ts-ignore
@@ -223,8 +223,8 @@ const getBoardBgColor = () => {
 }
 
 const getBoardGridColor = () => {
-	if (getActiveBoardId() == 'home') {
-		return store.userConfig.homeBoardStyle.gridColor != '' ? store.userConfig.homeBoardStyle.gridColor : 'var(--grid-color)'
+	if (getActiveBoardId() == "home") {
+		return store.userConfig.homeBoardStyle.gridColor != "" ? store.userConfig.homeBoardStyle.gridColor : "var(--grid-color)"
 	} else {
 		console.log(getActiveBoardId())
 		//@ts-ignore

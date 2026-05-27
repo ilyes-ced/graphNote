@@ -14,25 +14,25 @@ interface Payload {
 type Task = { text: string; check: boolean; nestLevel: number }
 
 enum NodeType {
-	Note = 'Note',
-	Comment = 'Comment',
-	Todo = 'Todo',
-	Table = 'Table',
-	Url = 'Url',
-	Activity = 'Activity',
+	Note = "Note",
+	Comment = "Comment",
+	Todo = "Todo",
+	Table = "Table",
+	Url = "Url",
+	Activity = "Activity",
 
-	Arrow = 'Arrow',
-	Board = 'Board',
-	Column = 'Column',
+	Arrow = "Arrow",
+	Board = "Board",
+	Column = "Column",
 
-	Code = 'Code',
-	Document = 'Document',
-	Upload = 'Upload',
+	Code = "Code",
+	Document = "Document",
+	Upload = "Upload",
 
-	Drawing = 'Drawing',
-	Sketch = 'Sketch',
-	Color = 'Color',
-	Image = 'Image'
+	Drawing = "Drawing",
+	Sketch = "Sketch",
+	Color = "Color",
+	Image = "Image"
 }
 
 interface BaseNode {
@@ -92,11 +92,11 @@ type Badge = {
 type BadgeRegistry = Record<string, Badge[]>
 
 enum ColumnType {
-	String = 'String',
-	Number = 'Number',
-	Boolean = 'Boolean',
-	Date = 'Date',
-	Badge = 'Badge'
+	String = "String",
+	Number = "Number",
+	Boolean = "Boolean",
+	Date = "Date",
+	Badge = "Badge"
 }
 // can add more in the future
 
@@ -160,11 +160,11 @@ interface Document extends Node, ChildNode {
 ////////////////////////////////////////////////
 
 enum EdgeType {
-	straight = 'straight',
-	arc = 'arc',
-	fluid = 'fluid',
-	magnet = 'magnet',
-	grid = 'grid'
+	straight = "straight",
+	arc = "arc",
+	fluid = "fluid",
+	magnet = "magnet",
+	grid = "grid"
 }
 
 interface Edge {

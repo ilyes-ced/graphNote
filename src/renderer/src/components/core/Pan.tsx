@@ -1,5 +1,5 @@
-import { createSignal, onCleanup, onMount } from 'solid-js'
-import { setStore, store } from '../../shared/store'
+import { createSignal, onCleanup, onMount } from "solid-js"
+import { setStore, store } from "../../shared/store"
 
 export default (props: any) => {
 	const [isDragging, setIsDragging] = createSignal(false)
@@ -33,8 +33,8 @@ export default (props: any) => {
 	function moveViewport(dx: number, dy: number) {
 		const next = clampViewport(store.viewport.x + dx, store.viewport.y + dy)
 
-		setStore('viewport', 'x', next.x)
-		setStore('viewport', 'y', next.y)
+		setStore("viewport", "x", next.x)
+		setStore("viewport", "y", next.y)
 	}
 
 	const handlePointerDown = (e: PointerEvent) => {
@@ -74,14 +74,14 @@ export default (props: any) => {
 	}
 
 	onMount(() => {
-		window.addEventListener('blur', stopDragging)
-		window.addEventListener('pointerup', stopDragging)
-		window.addEventListener('pointercancel', stopDragging)
+		window.addEventListener("blur", stopDragging)
+		window.addEventListener("pointerup", stopDragging)
+		window.addEventListener("pointercancel", stopDragging)
 
 		onCleanup(() => {
-			window.removeEventListener('blur', stopDragging)
-			window.removeEventListener('pointerup', stopDragging)
-			window.removeEventListener('pointercancel', stopDragging)
+			window.removeEventListener("blur", stopDragging)
+			window.removeEventListener("pointerup", stopDragging)
+			window.removeEventListener("pointercancel", stopDragging)
 		})
 	})
 
@@ -92,12 +92,12 @@ export default (props: any) => {
 			onPointerMove={handlePointerMove}
 			onWheel={handleWheel}
 			style={{
-				width: '100%',
-				height: '100%',
-				position: 'absolute',
+				width: "100%",
+				height: "100%",
+				position: "absolute",
 				top: 0,
 				left: 0,
-				overflow: 'hidden'
+				overflow: "hidden"
 			}}
 		>
 			<div class="absolute z-1000">

@@ -1,10 +1,10 @@
-import { JSX, Show, createSignal, onCleanup, onMount } from 'solid-js'
-import { NodeType, NodeUnion } from '../../types'
-import { useDraggable } from '../../shared/nodeDrag'
-import { useResize } from '../../shared/useResize'
-import { getActiveBoardId, updateNodeWidth } from '../../shared/update'
-import ResizeHandle from '../nodes/resizeHandle'
-import { store } from '../../shared/store'
+import { JSX, Show, createSignal, onCleanup, onMount } from "solid-js"
+import { NodeType, NodeUnion } from "../../types"
+import { useDraggable } from "../../shared/nodeDrag"
+import { useResize } from "../../shared/useResize"
+import { getActiveBoardId, updateNodeWidth } from "../../shared/update"
+import ResizeHandle from "../nodes/resizeHandle"
+import { store } from "../../shared/store"
 
 interface nodeProps {
 	node: NodeUnion
@@ -26,28 +26,28 @@ const ignoredClasses = (
 	} = (() => {
 		switch (nodeType) {
 			case NodeType.Column:
-				return { classes: ['collapse_icon', 'titleHandle'] }
+				return { classes: ["collapse_icon", "titleHandle"] }
 			case NodeType.Note:
-				return { tags: ['button'], ids: ['editor'], classes: ['edit_toggle'] }
+				return { tags: ["button"], ids: ["editor"], classes: ["edit_toggle"] }
 			case NodeType.Todo:
 				return {
-					classes: ['taskitem', 'taskitem-text', 'checkbox-check', 'tasklist_handle', 'sortable']
+					classes: ["taskitem", "taskitem-text", "checkbox-check", "tasklist_handle", "sortable"]
 				}
 			case NodeType.Table:
-				return { tags: ['input'], classes: ['columnSelection'] }
+				return { tags: ["input"], classes: ["columnSelection"] }
 
 			case NodeType.Activity:
 				return {
-					classes: ['activityCell', 'ch-subdomain-bg', 'activityChangers']
+					classes: ["activityCell", "ch-subdomain-bg", "activityChangers"]
 				}
 			case NodeType.Image:
-				return { ids: ['secondaryEditor'] }
+				return { ids: ["secondaryEditor"] }
 			case NodeType.Url:
-				return { tags: ['video-player'], classes: ['url_input', 'extend_toggle'], ids: ['secondaryEditor'] }
+				return { tags: ["video-player"], classes: ["url_input", "extend_toggle"], ids: ["secondaryEditor"] }
 			case NodeType.Document:
-				return { classes: ['down_pdf', 'open_pdf'], ids: ['secondaryEditor'] }
+				return { classes: ["down_pdf", "open_pdf"], ids: ["secondaryEditor"] }
 			case NodeType.Table:
-				return { tags: ['table', 'td'], classes: ['mainTable'] }
+				return { tags: ["table", "td"], classes: ["mainTable"] }
 			default:
 				return {}
 		}
@@ -56,7 +56,7 @@ const ignoredClasses = (
 	// Ensure "resize_handle" is always present
 	return {
 		...baseResult,
-		classes: Array.from(new Set([...(baseResult.classes ?? []), 'resize_handle']))
+		classes: Array.from(new Set([...(baseResult.classes ?? []), "resize_handle"]))
 	}
 }
 
@@ -103,27 +103,27 @@ export default (node: nodeProps) => {
 			class={`${node.node.type.toLowerCase()} border-2 border-background`}
 			classList={{
 				child_node: node.isChildNode,
-				'node group/resize': !node.isChildNode,
+				"node group/resize": !node.isChildNode,
 				selected_node: store.selectedNodes.has(node.node.id),
-				'group/collapse': node.node.type === NodeType.Column,
-				'group/edit': node.node.type === NodeType.Note,
-				'group/extend': node.node.type === NodeType.Url,
-				'flex flex-col justify-center items-center': node.node.type === NodeType.Board,
-				'flex flex-row justify-start p-2 pl-2.5': node.node.type === NodeType.Board && node.isChildNode
+				"group/collapse": node.node.type === NodeType.Column,
+				"group/edit": node.node.type === NodeType.Note,
+				"group/extend": node.node.type === NodeType.Url,
+				"flex flex-col justify-center items-center": node.node.type === NodeType.Board,
+				"flex flex-row justify-start p-2 pl-2.5": node.node.type === NodeType.Board && node.isChildNode
 			}}
 			id={node.node.id}
 			style={{
-				width: node.isChildNode ? '100%' : width() ? `${(width() ?? 0) + 1}px` : 'fit-content',
-				background: 'transparent',
-				'z-index': node.node.zIndex,
+				width: node.isChildNode ? "100%" : width() ? `${(width() ?? 0) + 1}px` : "fit-content",
+				background: "transparent",
+				"z-index": node.node.zIndex,
 				transform: `translate3d(${node.node.x}px, ${node.node.y}px, 0)`,
-				color: node.node.textColor ?? 'var(--color-foreground)'
+				color: node.node.textColor ?? "var(--color-foreground)"
 			}}
 		>
 			<div
 				class=""
 				style={{
-					background: node.node.color ?? 'var(--color-card)' //? if this doesnt exist, .node in App.css will take care of it
+					background: node.node.color ?? "var(--color-card)" //? if this doesnt exist, .node in App.css will take care of it
 				}}
 			>
 				<div class="absolute z-1000">{padding()}</div>
@@ -133,14 +133,14 @@ export default (node: nodeProps) => {
 					<div class="absolute top-0 left-0 top_strip h-1 w-full z-2" style={{ background: node.node.top_strip_color }}></div>
 				</Show>
 
-				<div class="" style={{ 'padding-bottom': `${padding() / 2}px` }}></div>
+				<div class="" style={{ "padding-bottom": `${padding() / 2}px` }}></div>
 				<div class="child_div" ref={el}>
 					{/* padding(): this padding is maybe best given to the child to decide its position based on the node for better appearance and more consistency */}
 					{/* give to child: {padding()} */}
 					{node.children}
 				</div>
 				{/*TODO: this is better inside each node so we can set wherre it goes inside each node */}
-				<div class="" style={{ 'padding-bottom': `${padding() / 2}px` }}></div>
+				<div class="" style={{ "padding-bottom": `${padding() / 2}px` }}></div>
 
 				<Show when={!node.isChildNode}>
 					<ResizeHandle startResizeFunction={startResize} />

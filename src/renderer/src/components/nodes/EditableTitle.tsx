@@ -1,7 +1,7 @@
-import { createSignal, untrack } from 'solid-js'
-import { setStore } from '../../shared/store'
-import { updateNodeTitle } from '../../shared/update'
-import { debounce } from '../../shared/utils'
+import { createSignal, untrack } from "solid-js"
+import { setStore } from "../../shared/store"
+import { updateNodeTitle } from "../../shared/update"
+import { debounce } from "../../shared/utils"
 
 export default (props: { nodeId: string; title: string }) => {
 	const [editable, setEditable] = createSignal<boolean>(false)
@@ -20,20 +20,20 @@ export default (props: { nodeId: string; title: string }) => {
 	}
 
 	const updateTitle = debounce((newValue: string) => {
-		console.log('Debounced update:', newValue)
+		console.log("Debounced update:", newValue)
 		updateNodeTitle(props.nodeId, newValue)
 	}, 300)
 
 	const handleInput = () => {
-		const newText = editableDiv?.innerText || ''
+		const newText = editableDiv?.innerText || ""
 		updateTitle(newText)
 	}
 
 	const handleKeyDown = (e: KeyboardEvent) => {
-		if (e.key === 'Enter') {
+		if (e.key === "Enter") {
 			e.preventDefault() // Prevents new line
 			editableDiv.blur()
-		} else if (e.key === 'Escape') editableDiv.blur()
+		} else if (e.key === "Escape") editableDiv.blur()
 	}
 
 	return (
@@ -44,7 +44,7 @@ export default (props: { nodeId: string; title: string }) => {
 			contentEditable={editable()}
 			onDblClick={() => {
 				setEditable(true)
-				setStore('selectedNodes', new Set())
+				setStore("selectedNodes", new Set())
 
 				setTimeout(() => {
 					editableDiv.focus()
@@ -52,7 +52,7 @@ export default (props: { nodeId: string; title: string }) => {
 				}, 0)
 			}}
 			style={{
-				cursor: editable() ? 'text' : ''
+				cursor: editable() ? "text" : ""
 			}}
 			onBlur={() => setEditable(false)}
 			onInput={handleInput}

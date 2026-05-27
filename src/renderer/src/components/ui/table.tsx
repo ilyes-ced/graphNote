@@ -1,47 +1,47 @@
-import { cn } from '../../libs/cn'
-import { type ComponentProps, splitProps } from 'solid-js'
+import { cn } from "../../libs/cn"
+import { type ComponentProps, splitProps } from "solid-js"
 
-export const Table = (props: ComponentProps<'table'>) => {
-	const [local, rest] = splitProps(props, ['class'])
+export const Table = (props: ComponentProps<"table">) => {
+	const [local, rest] = splitProps(props, ["class"])
 
 	return (
 		<div class="w-full overflow-auto">
-			<table class={cn('w-full caption-bottom text-sm', local.class)} {...rest} />
+			<table class={cn("w-full caption-bottom text-sm", local.class)} {...rest} />
 		</div>
 	)
 }
 
-export const TableHeader = (props: ComponentProps<'thead'>) => {
-	const [local, rest] = splitProps(props, ['class'])
+export const TableHeader = (props: ComponentProps<"thead">) => {
+	const [local, rest] = splitProps(props, ["class"])
 
-	return <thead class={cn('[&_tr]:border-b border-red-400', local.class)} {...rest} />
+	return <thead class={cn("[&_tr]:border-b border-red-400", local.class)} {...rest} />
 }
 
-export const TableBody = (props: ComponentProps<'tbody'>) => {
-	const [_local, rest] = splitProps(props, ['class'])
+export const TableBody = (props: ComponentProps<"tbody">) => {
+	const [_local, rest] = splitProps(props, ["class"])
 
 	return <tbody {...rest} />
 }
 
-export const TableFooter = (props: ComponentProps<'tfoot'>) => {
-	const [local, rest] = splitProps(props, ['class'])
+export const TableFooter = (props: ComponentProps<"tfoot">) => {
+	const [local, rest] = splitProps(props, ["class"])
 
-	return <tbody class={cn('bg-primary font-medium text-primary-foreground', local.class)} {...rest} />
+	return <tbody class={cn("bg-primary font-medium text-primary-foreground", local.class)} {...rest} />
 }
 
-export const TableRow = (props: ComponentProps<'tr'>) => {
-	const [local, rest] = splitProps(props, ['class'])
+export const TableRow = (props: ComponentProps<"tr">) => {
+	const [local, rest] = splitProps(props, ["class"])
 
-	return <tr class={cn('border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted', local.class)} {...rest} />
+	return <tr class={cn("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", local.class)} {...rest} />
 }
 
-export const TableHead = (props: ComponentProps<'th'>) => {
-	const [local, rest] = splitProps(props, ['class'])
+export const TableHead = (props: ComponentProps<"th">) => {
+	const [local, rest] = splitProps(props, ["class"])
 
 	return (
 		<th
 			class={cn(
-				'h-10 [&:not(:last-child)]:border-r text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+				"h-10 [&:not(:last-child)]:border-r text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
 				local.class
 			)}
 			{...rest}
@@ -49,13 +49,13 @@ export const TableHead = (props: ComponentProps<'th'>) => {
 	)
 }
 
-export const TableCell = (props: ComponentProps<'td'>) => {
-	const [local, rest] = splitProps(props, ['class'])
+export const TableCell = (props: ComponentProps<"td">) => {
+	const [local, rest] = splitProps(props, ["class"])
 
 	return (
 		<td
 			class={cn(
-				'p-2 [&:not(:last-child)]:border-r align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+				"p-2 [&:not(:last-child)]:border-r align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
 				local.class
 			)}
 			{...rest}
@@ -63,8 +63,8 @@ export const TableCell = (props: ComponentProps<'td'>) => {
 	)
 }
 
-export const TableCaption = (props: ComponentProps<'caption'>) => {
-	const [local, rest] = splitProps(props, ['class'])
+export const TableCaption = (props: ComponentProps<"caption">) => {
+	const [local, rest] = splitProps(props, ["class"])
 
-	return <caption class={cn('mt-4 text-sm text-muted-foreground', local.class)} {...rest} />
+	return <caption class={cn("mt-4 text-sm text-muted-foreground", local.class)} {...rest} />
 }

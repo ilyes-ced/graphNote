@@ -1,4 +1,4 @@
-import { IconArrowBarBoth } from '@tabler/icons-solidjs'
+import { IconArrowBarBoth } from "@tabler/icons-solidjs"
 
 export default (props: any) => {
 	return (

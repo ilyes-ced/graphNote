@@ -1,9 +1,9 @@
-import { Board } from '../../types'
-import { defaultViewportZoom, setStore, store } from '../../shared/store'
-import { useDraggable } from '../../shared/nodeDrag'
-import { findNodeById } from '../../shared/update'
-import { IconCode } from '@tabler/icons-solidjs'
-import EditableTitle from './EditableTitle'
+import { Board } from "../../types"
+import { defaultViewportZoom, setStore, store } from "../../shared/store"
+import { useDraggable } from "../../shared/nodeDrag"
+import { findNodeById } from "../../shared/update"
+import { IconCode } from "@tabler/icons-solidjs"
+import EditableTitle from "./EditableTitle"
 
 type BoardProps = Board & {
 	is_child?: boolean
@@ -32,22 +32,22 @@ export default (node: BoardProps) => {
 	//};
 
 	const handleDoubleClick = () => {
-		setStore('selectedNodes', new Set())
-		setStore('viewport', {
+		setStore("selectedNodes", new Set())
+		setStore("viewport", {
 			x: 0,
 			y: 0,
 			width: 4000,
 			height: 4000,
 			scale: defaultViewportZoom
 		})
-		console.error('double clicked the board', node.id)
+		console.error("double clicked the board", node.id)
 		const board = findNodeById(node.id)
-		setStore('activeBoards', (items) => [...items, { title: (board as Board).title, id: (board as Board).id }])
+		setStore("activeBoards", (items) => [...items, { title: (board as Board).title, id: (board as Board).id }])
 		//? when changing workspace deselect selected nodes
-		setStore('selectedNodes', new Set([]))
+		setStore("selectedNodes", new Set([]))
 
 		// reset viewport data
-		setStore('viewport', {
+		setStore("viewport", {
 			x: 0,
 			y: 0
 		})
@@ -59,19 +59,19 @@ export default (node: BoardProps) => {
 			onPointerDown={startDrag}
 			class="board flex flex-col justify-center items-center border border-transparent"
 			classList={{
-				'node px-[40px] py-[10px] pb-[12px]': !node.is_child,
-				'child_node flex flex-row justify-start p-2 pl-2.5 ': node.is_child
+				"node px-[40px] py-[10px] pb-[12px]": !node.is_child,
+				"child_node flex flex-row justify-start p-2 pl-2.5 ": node.is_child
 			}}
 			id={node.id}
 			style={{
 				background: node.is_child
 					? node.color
 						? `${node.color}20`
-						: 'color-mix(in oklab, var(--color-primary) 20%, transparent)'
-					: 'transparent',
-				border: node.is_child ? `2px solid ${node.color ? node.color : 'var(--color-primary)'}` : '',
-				width: node.is_child ? '100%' : '60px',
-				'z-index': node.zIndex,
+						: "color-mix(in oklab, var(--color-primary) 20%, transparent)"
+					: "transparent",
+				border: node.is_child ? `2px solid ${node.color ? node.color : "var(--color-primary)"}` : "",
+				width: node.is_child ? "100%" : "60px",
+				"z-index": node.zIndex,
 				//"border-radius": node.is_child ? "" : "15px",
 				transform: `translate3d(${node.x}px, ${node.y}px, 0)`
 			}}
@@ -80,31 +80,31 @@ export default (node: BoardProps) => {
 				onDblClick={handleDoubleClick}
 				class="board_icon flex flex-col justify-center items-center cursor-pointer border-2 border-transparent"
 				classList={{
-					'border-white': store.selectedNodes.has(node.id)
+					"border-white": store.selectedNodes.has(node.id)
 				}}
 				style={{
-					background: node.color ? node.color : 'var(--color-primary)',
-					width: '60px',
-					height: '60px',
-					'margin-right': node.is_child ? '10px' : ''
+					background: node.color ? node.color : "var(--color-primary)",
+					width: "60px",
+					height: "60px",
+					"margin-right": node.is_child ? "10px" : ""
 					// "border-radius": node.is_child ? "10px" : "15px",
 				}}
 			>
 				<IconCode class="size-full p-2" />
 			</div>
-			<div class="text_container flex flex-col justify-center items-center" style={{ color: node.textColor ?? 'var(--color-foreground)' }}>
+			<div class="text_container flex flex-col justify-center items-center" style={{ color: node.textColor ?? "var(--color-foreground)" }}>
 				<div
 					classList={{
-						'board_text mt-2.5 mb-1.5 text-nowrap': !node.is_child,
-						'board_text_child self-start mb-1.5': node.is_child
+						"board_text mt-2.5 mb-1.5 text-nowrap": !node.is_child,
+						"board_text_child self-start mb-1.5": node.is_child
 					}}
 				>
 					<EditableTitle nodeId={node.id} title={node.title} />
 				</div>
 				<div
 					classList={{
-						'board_content text-grey': !node.is_child,
-						'board_content_child text-grey self-start': node.is_child
+						"board_content text-grey": !node.is_child,
+						"board_content_child text-grey self-start": node.is_child
 					}}
 				>
 					<div class="subtitle text-center text-nowrap">{store.nodes[node.id]?.length ?? 0} cards</div>

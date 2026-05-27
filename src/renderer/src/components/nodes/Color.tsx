@@ -1,6 +1,6 @@
-import { Show } from 'solid-js'
-import { Color } from '../../types'
-import Editor from './Editor'
+import { Show } from "solid-js"
+import { Color } from "../../types"
+import Editor from "./Editor"
 
 type ColorProps = Color & {
 	is_child?: boolean
@@ -16,7 +16,7 @@ export default (node: ColorProps) => {
 
 			<Show when={node.showDescription}>
 				<div class="p-5">
-					<Editor id={node.id} desc={node.description ?? ''} />
+					<Editor id={node.id} desc={node.description ?? ""} />
 				</div>
 			</Show>
 		</div>

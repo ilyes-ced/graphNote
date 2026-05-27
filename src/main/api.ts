@@ -1,24 +1,24 @@
-import { BrowserWindow, dialog, ipcMain } from 'electron'
-import { access, mkdir } from 'fs/promises'
-import path from 'path'
-import fs from 'fs/promises'
-import * as cheerio from 'cheerio'
-import { createHash } from 'crypto'
-import { constants, copyFileSync, existsSync, mkdirSync, readdirSync } from 'fs'
-import youtubedl from 'youtube-dl-exec'
-import express from 'express'
+import { BrowserWindow, dialog, ipcMain } from "electron"
+import { access, mkdir } from "fs/promises"
+import path from "path"
+import fs from "fs/promises"
+import * as cheerio from "cheerio"
+import { createHash } from "crypto"
+import { constants, copyFileSync, existsSync, mkdirSync, readdirSync } from "fs"
+import youtubedl from "youtube-dl-exec"
+import express from "express"
 
-const basePath = '/home/clippy/Documents/GraphNote'
-const baseDir = '/home/clippy/Documents'
+const basePath = "/home/clippy/Documents/GraphNote"
+const baseDir = "/home/clippy/Documents"
 const nodesPath = `${basePath}/nodes.json`
 const edgesPath = `${basePath}/edges.json`
 const settingsPath = `${basePath}/settings.json`
 
 //? video server
 const mediaServer = express()
-mediaServer.use('/videos', express.static(path.join(basePath, 'cache', 'youtube')))
+mediaServer.use("/videos", express.static(path.join(basePath, "cache", "youtube")))
 mediaServer.listen(3232, () => {
-	console.log('media server running')
+	console.log("media server running")
 })
 
 // duplicated in Url.tsx in the frontend
@@ -30,18 +30,18 @@ type MetaData = {
 }
 
 function getExtensionFromContentType(contentType: string | null): string {
-	if (!contentType) return '.jpg' // fallback
+	if (!contentType) return ".jpg" // fallback
 
 	const map: Record<string, string> = {
-		'image/jpeg': '.jpg',
-		'image/png': '.png',
-		'image/webp': '.webp',
-		'image/gif': '.gif',
-		'image/bmp': '.bmp',
-		'image/svg+xml': '.svg'
+		"image/jpeg": ".jpg",
+		"image/png": ".png",
+		"image/webp": ".webp",
+		"image/gif": ".gif",
+		"image/bmp": ".bmp",
+		"image/svg+xml": ".svg"
 	}
 
-	return map[contentType.split(';')[0]] || '.jpg'
+	return map[contentType.split(";")[0]] || ".jpg"
 }
 
 function getExtensionFromUrl(url: string): string | null {
@@ -69,14 +69,14 @@ async function readJSON(filePath: string) {
 		await ensureDir()
 
 		try {
-			const text = await fs.readFile(filePath, 'utf-8')
+			const text = await fs.readFile(filePath, "utf-8")
 			return JSON.parse(text)
 		} catch {
 			await fs.writeFile(filePath, JSON.stringify({}, null, 2))
 			return {}
 		}
 	} catch (err) {
-		console.error('Failed to read:', filePath, err)
+		console.error("Failed to read:", filePath, err)
 		return {}
 	}
 }
@@ -87,46 +87,46 @@ async function writeJSON(filePath: string, data: any) {
 		await fs.writeFile(filePath, JSON.stringify(data, null, 2))
 		return true
 	} catch (err) {
-		console.error('Failed to write:', filePath, err)
+		console.error("Failed to write:", filePath, err)
 		return false
 	}
 }
 
 /* ------------------- GRAPH ------------------- */
 
-ipcMain.handle('getNodes', async () => {
+ipcMain.handle("getNodes", async () => {
 	return await readJSON(nodesPath)
 })
 
-ipcMain.handle('getEdges', async () => {
+ipcMain.handle("getEdges", async () => {
 	return await readJSON(edgesPath)
 })
 
-ipcMain.handle('getSettings', async () => {
+ipcMain.handle("getSettings", async () => {
 	return await readJSON(settingsPath)
 })
 
-ipcMain.handle('saveNodes', async (_, nodes) => {
+ipcMain.handle("saveNodes", async (_, nodes) => {
 	return { success: await writeJSON(nodesPath, nodes) }
 })
 
-ipcMain.handle('saveEdges', async (_, edges) => {
+ipcMain.handle("saveEdges", async (_, edges) => {
 	return { success: await writeJSON(edgesPath, edges) }
 })
 
-ipcMain.handle('saveSettings', async (_, settings) => {
+ipcMain.handle("saveSettings", async (_, settings) => {
 	console.log(settings)
 	return { success: await writeJSON(settingsPath, settings) }
 })
 
-ipcMain.handle('readGraph', async () => {
+ipcMain.handle("readGraph", async () => {
 	const nodes = await readJSON(nodesPath)
 	const edges = await readJSON(edgesPath)
 
 	return { nodes, edges }
 })
 
-ipcMain.handle('readFile', async (_, { folderPath, filePath }) => {
+ipcMain.handle("readFile", async (_, { folderPath, filePath }) => {
 	const fullFolder = `${baseDir}/${folderPath}`
 	const fullFile = `${baseDir}/${filePath}`
 
@@ -138,16 +138,16 @@ ipcMain.handle('readFile', async (_, { folderPath, filePath }) => {
 		await fs.writeFile(fullFile, JSON.stringify({}, null, 2))
 	}
 
-	const text = await fs.readFile(fullFile, 'utf-8')
+	const text = await fs.readFile(fullFile, "utf-8")
 
 	return { text }
 })
 
-ipcMain.handle('writeFile', async (_, { name, data, type }) => {
+ipcMain.handle("writeFile", async (_, { name, data, type }) => {
 	const fullFile = path.join(basePath, type, name)
 
 	if (!fullFile.startsWith(basePath)) {
-		throw new Error('Invalid path')
+		throw new Error("Invalid path")
 	}
 
 	const dir = path.dirname(fullFile)
@@ -157,8 +157,8 @@ ipcMain.handle('writeFile', async (_, { name, data, type }) => {
 	ensureDir()
 
 	let counter = 0
-	let finalName = ''
-	let finalPath = ''
+	let finalName = ""
+	let finalPath = ""
 
 	// Determine unique file name
 	while (true) {
@@ -181,11 +181,11 @@ ipcMain.handle('writeFile', async (_, { name, data, type }) => {
 	}
 })
 
-ipcMain.handle('getAvailableFilePath', async (_, { path: inputPath }) => {
-	const folderPath = 'GraphNote'
+ipcMain.handle("getAvailableFilePath", async (_, { path: inputPath }) => {
+	const folderPath = "GraphNote"
 
 	let counter = 0
-	let finalPath = ''
+	let finalPath = ""
 
 	while (true) {
 		const originalFile = path.basename(inputPath)
@@ -210,13 +210,13 @@ ipcMain.handle('getAvailableFilePath', async (_, { path: inputPath }) => {
 	}
 })
 
-ipcMain.handle('writeNodeFile', async (_, { name, data, type }) => {
+ipcMain.handle("writeNodeFile", async (_, { name, data, type }) => {
 	console.log(name, data, type)
 	ensureDir()
 
 	let counter = 0
-	let finalName = ''
-	let finalPath = ''
+	let finalName = ""
+	let finalPath = ""
 
 	// Determine unique file name
 	while (true) {
@@ -241,16 +241,16 @@ ipcMain.handle('writeNodeFile', async (_, { name, data, type }) => {
 	}
 })
 
-ipcMain.handle('readImage', async (_event, filePath: string) => {
+ipcMain.handle("readImage", async (_event, filePath: string) => {
 	const data = await fs.readFile(path.join(basePath, filePath))
 	return data
 })
 
-ipcMain.handle('scrapeUrl', async (_event, data: { url: string; cache: boolean }): Promise<MetaData> => {
+ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }): Promise<MetaData> => {
 	const { url, cache } = data
 	try {
 		//TODO: before anything check if this url is alredy cached
-		const urlHashed = createHash('sha256').update(url).digest('hex').slice(0, 16)
+		const urlHashed = createHash("sha256").update(url).digest("hex").slice(0, 16)
 		const filePath = `${basePath}/cache/urls/${urlHashed}/${urlHashed}.json`
 		let exists = true
 		try {
@@ -260,11 +260,11 @@ ipcMain.handle('scrapeUrl', async (_event, data: { url: string; cache: boolean }
 		}
 
 		if (exists) {
-			const json = JSON.parse(await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${urlHashed}.json`, 'utf-8'))
+			const json = JSON.parse(await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${urlHashed}.json`, "utf-8"))
 
 			const files = await fs.readdir(`${basePath}/cache/urls/${urlHashed}`)
-			const image = files.find((file) => path.parse(file).name === 'image')
-			const favicon = files.find((file) => path.parse(file).name === 'favicon')
+			const image = files.find((file) => path.parse(file).name === "image")
+			const favicon = files.find((file) => path.parse(file).name === "favicon")
 
 			const imageBuffer = image ? await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${image}`) : new ArrayBuffer(0)
 			const faviconBuffer = favicon ? await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${favicon}`) : new ArrayBuffer(0)
@@ -274,7 +274,7 @@ ipcMain.handle('scrapeUrl', async (_event, data: { url: string; cache: boolean }
 
 		const res = await fetch(url, {
 			headers: {
-				'User-Agent': 'Mozilla/5.0 (compatible; URLPreviewBot/1.0)'
+				"User-Agent": "Mozilla/5.0 (compatible; URLPreviewBot/1.0)"
 			}
 		})
 
@@ -284,41 +284,41 @@ ipcMain.handle('scrapeUrl', async (_event, data: { url: string; cache: boolean }
 		const $ = cheerio.load(html)
 
 		let title =
-			$("meta[property='og:title']").attr('content') || $("meta[name='twitter:title']").attr('content') || $('title').text() || 'placeholder'
+			$("meta[property='og:title']").attr("content") || $("meta[name='twitter:title']").attr("content") || $("title").text() || "placeholder"
 
 		let description =
-			$("meta[property='og:description']").attr('content') ||
-			$("meta[name='twitter:description']").attr('content') ||
-			$("meta[name='description']").attr('content') ||
-			'placeholder'
+			$("meta[property='og:description']").attr("content") ||
+			$("meta[name='twitter:description']").attr("content") ||
+			$("meta[name='description']").attr("content") ||
+			"placeholder"
 
 		let image =
-			$("meta[property='og:image']").attr('content') ||
-			$("meta[name='twitter:image']").attr('content') ||
-			$("link[rel='image_src']").attr('href') ||
-			$('img').first().attr('src') ||
-			'placeholder.png'
+			$("meta[property='og:image']").attr("content") ||
+			$("meta[name='twitter:image']").attr("content") ||
+			$("link[rel='image_src']").attr("href") ||
+			$("img").first().attr("src") ||
+			"placeholder.png"
 
 		let favicon =
-			$("link[rel='icon']").attr('href') ||
-			$("link[rel='shortcut icon']").attr('href') ||
-			$("link[rel='apple-touch-icon']").attr('href') ||
-			'placeholder.png'
+			$("link[rel='icon']").attr("href") ||
+			$("link[rel='shortcut icon']").attr("href") ||
+			$("link[rel='apple-touch-icon']").attr("href") ||
+			"placeholder.png"
 
 		// Normalize relative URLs
 		const baseUrl = new URL(url)
 
-		if (image && !image.startsWith('http')) {
+		if (image && !image.startsWith("http")) {
 			image = new URL(image, baseUrl).toString()
 		}
-		if (favicon && !favicon.startsWith('http')) {
+		if (favicon && !favicon.startsWith("http")) {
 			favicon = new URL(favicon, baseUrl).toString()
 		}
 
 		if (cache) {
-			const urlHash = createHash('sha256').update(url).digest('hex').slice(0, 16)
-			const imagePath = await downloadCacheImage(image, image, urlHash, 'image')
-			const faviconPath = await downloadCacheImage(favicon, favicon, urlHash, 'favicon')
+			const urlHash = createHash("sha256").update(url).digest("hex").slice(0, 16)
+			const imagePath = await downloadCacheImage(image, image, urlHash, "image")
+			const faviconPath = await downloadCacheImage(favicon, favicon, urlHash, "favicon")
 			const json = JSON.stringify(
 				{
 					title: title,
@@ -328,7 +328,7 @@ ipcMain.handle('scrapeUrl', async (_event, data: { url: string; cache: boolean }
 				2
 			)
 			console.log(json)
-			await fs.writeFile(`${basePath}/cache/urls/${urlHash}/${urlHash}.json`, json, 'utf-8')
+			await fs.writeFile(`${basePath}/cache/urls/${urlHash}/${urlHash}.json`, json, "utf-8")
 
 			const imageBuffer = imagePath != null ? await fs.readFile(imagePath) : new ArrayBuffer(10)
 			const faviconBuffer = faviconPath != null ? await fs.readFile(faviconPath) : new ArrayBuffer(10)
@@ -339,24 +339,24 @@ ipcMain.handle('scrapeUrl', async (_event, data: { url: string; cache: boolean }
 		return { title, description, image: new ArrayBuffer(10), favicon: new ArrayBuffer(10) }
 	} catch (err) {
 		return {
-			title: 'placeholder',
-			description: 'placeholder',
+			title: "placeholder",
+			description: "placeholder",
 			image: new ArrayBuffer(10),
 			favicon: new ArrayBuffer(10)
 		}
 	}
 })
 
-ipcMain.handle('backUpSave', async () => {
+ipcMain.handle("backUpSave", async () => {
 	const nodes = await readJSON(nodesPath)
 	const edges = await readJSON(edgesPath)
 
-	backup('nodes', JSON.stringify(nodes))
-	backup('edges', JSON.stringify(edges))
+	backup("nodes", JSON.stringify(nodes))
+	backup("edges", JSON.stringify(edges))
 })
 
-const backup = async (type: 'nodes' | 'edges', data: any) => {
-	const datetime = new Date().toISOString().replace(/[:.]/g, '-')
+const backup = async (type: "nodes" | "edges", data: any) => {
+	const datetime = new Date().toISOString().replace(/[:.]/g, "-")
 	console.log(datetime)
 	const folderPath = `GraphNote/${type}Backup`
 	const filePath = `${folderPath}/${type}_${datetime}.json`
@@ -364,7 +364,7 @@ const backup = async (type: 'nodes' | 'edges', data: any) => {
 
 	const fullFile = path.join(baseDir, filePath)
 	if (!fullFile.startsWith(baseDir)) {
-		throw new Error('Invalid path')
+		throw new Error("Invalid path")
 	}
 
 	const dir = path.dirname(fullFile)
@@ -377,7 +377,7 @@ const backup = async (type: 'nodes' | 'edges', data: any) => {
 	}
 }
 
-ipcMain.handle('downloadImgUrl', async (_event, imgUrl: string) => {
+ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
 	console.log(imgUrl)
 	const res = await fetch(imgUrl)
 	console.log(res)
@@ -389,16 +389,16 @@ ipcMain.handle('downloadImgUrl', async (_event, imgUrl: string) => {
 	}
 })
 
-const downloadCacheImage = async (image: string, url: string, urlName: string, type: 'image' | 'favicon'): Promise<string | null> => {
+const downloadCacheImage = async (image: string, url: string, urlName: string, type: "image" | "favicon"): Promise<string | null> => {
 	try {
 		const res = await fetch(image)
 		if (!res.ok || !res.body) {
 			throw new Error(`Failed to download: ${res.status}`)
 		}
-		const contentType = res.headers.get('content-type')
+		const contentType = res.headers.get("content-type")
 		let ext = getExtensionFromContentType(contentType)
 		// 2. Fallback to URL extension if needed
-		if (ext === '.jpg') {
+		if (ext === ".jpg") {
 			const urlExt = getExtensionFromUrl(url)
 			if (urlExt) ext = urlExt
 		}
@@ -407,7 +407,7 @@ const downloadCacheImage = async (image: string, url: string, urlName: string, t
 		await fs.writeFile(`${basePath}/cache/urls/${urlName}/${type}${ext}`, buffer)
 		return `${basePath}/cache/urls/${urlName}/${type}${ext}`
 	} catch (e) {
-		console.log('failed to cache the image', e)
+		console.log("failed to cache the image", e)
 		return null
 	}
 	return null
@@ -418,18 +418,18 @@ function getYouTubeVideoId(url) {
 		const u = new URL(url)
 
 		// youtu.be/<id>
-		if (u.hostname.includes('youtu.be')) {
+		if (u.hostname.includes("youtu.be")) {
 			return u.pathname.slice(1)
 		}
 
 		// youtube.com/watch?v=<id>
-		if (u.searchParams.has('v')) {
-			return u.searchParams.get('v')
+		if (u.searchParams.has("v")) {
+			return u.searchParams.get("v")
 		}
 
 		// youtube.com/embed/<id> or /shorts/<id>
-		const parts = u.pathname.split('/')
-		const index = parts.findIndex((p) => ['embed', 'shorts'].includes(p))
+		const parts = u.pathname.split("/")
+		const index = parts.findIndex((p) => ["embed", "shorts"].includes(p))
 
 		if (index !== -1 && parts[index + 1]) {
 			return parts[index + 1]
@@ -442,14 +442,14 @@ function getYouTubeVideoId(url) {
 }
 
 export function registerApi(mainWindow: BrowserWindow) {
-	ipcMain.handle('cacheYoutubeVid', async (event, url: string) => {
-		console.log('download started')
-		createDir('cache/youtube')
+	ipcMain.handle("cacheYoutubeVid", async (event, url: string) => {
+		console.log("download started")
+		createDir("cache/youtube")
 		const vidId = getYouTubeVideoId(url)
 		if (!vidId) {
 			return {
 				success: false,
-				message: 'failed to get id from youtube url'
+				message: "failed to get id from youtube url"
 			}
 		}
 
@@ -457,14 +457,14 @@ export function registerApi(mainWindow: BrowserWindow) {
 		const files = readdirSync(`${basePath}/cache/youtube/`)
 		const file = files.find((file) => file.startsWith(vidId)) ? files.find((file) => file.startsWith(vidId)) : null
 		if (file) {
-			console.log('file is already downloaded')
-			event.sender.send('youtube-download-complete', {
+			console.log("file is already downloaded")
+			event.sender.send("youtube-download-complete", {
 				vidId
 			})
 			return {
 				success: true,
 				fileName: file,
-				message: 'file is already downloaded'
+				message: "file is already downloaded"
 			}
 		}
 
@@ -473,15 +473,15 @@ export function registerApi(mainWindow: BrowserWindow) {
 			noWarnings: true,
 			preferFreeFormats: true,
 
-			addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
+			addHeader: ["referer:youtube.com", "user-agent:googlebot"],
 
 			output: `${basePath}/cache/youtube/${vidId}.%(ext)s`,
 			newline: true
 		})
 
 		let lastSent = 0
-		let downloading = ''
-		subprocess.stdout?.on('data', (data) => {
+		let downloading = ""
+		subprocess.stdout?.on("data", (data) => {
 			const line = data.toString()
 			console.log(line)
 			const matchDownload = line.match(/(\d+(?:\.\d+)?)%/)
@@ -495,9 +495,9 @@ export function registerApi(mainWindow: BrowserWindow) {
 				lastSent = now
 
 				const progress = parseFloat(matchDownload[1])
-				console.log('progress:', progress)
+				console.log("progress:", progress)
 
-				event.sender.send('youtube-download-progress', {
+				event.sender.send("youtube-download-progress", {
 					downloading,
 					progress,
 					vidId
@@ -507,24 +507,24 @@ export function registerApi(mainWindow: BrowserWindow) {
 			}
 		})
 
-		subprocess.stderr?.on('data', (data) => {
+		subprocess.stderr?.on("data", (data) => {
 			console.error(data.toString())
 		})
 
 		return new Promise((resolve, reject) => {
-			subprocess.on('close', () => {
-				console.log('Download complete')
+			subprocess.on("close", () => {
+				console.log("Download complete")
 				mainWindow.setProgressBar(-1)
-				event.sender.send('youtube-download-complete', {
+				event.sender.send("youtube-download-complete", {
 					vidId
 				})
 				resolve({
 					success: true,
-					message: 'download complete'
+					message: "download complete"
 				})
 			})
 
-			subprocess.on('error', (err) => {
+			subprocess.on("error", (err) => {
 				console.error(err)
 				mainWindow.setProgressBar(-1)
 				reject({
@@ -536,7 +536,7 @@ export function registerApi(mainWindow: BrowserWindow) {
 	})
 }
 
-ipcMain.handle('getLocalVideo', async (_, vidName: string) => {
+ipcMain.handle("getLocalVideo", async (_, vidName: string) => {
 	return `http://127.0.0.1:3232/videos/${encodeURIComponent(vidName)}`
 })
 
@@ -563,11 +563,11 @@ async function getFolderSize(folderPath) {
 	return totalSize
 }
 
-ipcMain.handle('getSizes', async (_) => {
+ipcMain.handle("getSizes", async (_) => {
 	const totalSize = await getFolderSize(basePath)
-	const imageSize = await getFolderSize(path.join(basePath, 'image'))
-	const youtubeCacheSize = await getFolderSize(path.join(basePath, 'cache', 'youtube'))
-	const urlMetadataSize = await getFolderSize(path.join(basePath, 'cache', 'urls'))
+	const imageSize = await getFolderSize(path.join(basePath, "image"))
+	const youtubeCacheSize = await getFolderSize(path.join(basePath, "cache", "youtube"))
+	const urlMetadataSize = await getFolderSize(path.join(basePath, "cache", "urls"))
 
 	return {
 		totalSize,
@@ -577,10 +577,10 @@ ipcMain.handle('getSizes', async (_) => {
 	}
 })
 
-ipcMain.handle('selectFile', async () => {
+ipcMain.handle("selectFile", async () => {
 	const result = await dialog.showOpenDialog({
-		properties: ['openFile'],
-		filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'webp'] }]
+		properties: ["openFile"],
+		filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] }]
 	})
 
 	if (result.canceled) return null
@@ -589,15 +589,15 @@ ipcMain.handle('selectFile', async () => {
 	const ext = path.extname(sourcePath)
 	const name = path.basename(sourcePath, ext)
 
-	const destDir = path.join(basePath, 'image')
+	const destDir = path.join(basePath, "image")
 
 	if (!existsSync(destDir)) {
 		mkdirSync(destDir, { recursive: true })
 	}
 
 	let counter = 0
-	let finalName = ''
-	let finalPath = ''
+	let finalName = ""
+	let finalPath = ""
 
 	while (true) {
 		finalName = counter === 0 ? `${name}${ext}` : `${name}_${counter}${ext}`
@@ -614,5 +614,5 @@ ipcMain.handle('selectFile', async () => {
 
 	await fs.copyFile(sourcePath, finalPath)
 
-	return path.join('image', finalName)
+	return path.join("image", finalName)
 })

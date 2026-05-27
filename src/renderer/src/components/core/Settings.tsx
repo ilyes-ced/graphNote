@@ -1,10 +1,10 @@
-import { For, Show, createSignal, onMount } from 'solid-js'
-import { Portal } from 'solid-js/web'
-import { setStore, store } from '../../shared/store'
-import { RadioGroup, RadioGroupItem, RadioGroupItemControl, RadioGroupItemLabel } from '../ui/radio-group'
+import { For, Show, createSignal, onMount } from "solid-js"
+import { Portal } from "solid-js/web"
+import { setStore, store } from "../../shared/store"
+import { RadioGroup, RadioGroupItem, RadioGroupItemControl, RadioGroupItemLabel } from "../ui/radio-group"
 
 onMount(() => {
-	console.log('settings panel')
+	console.log("settings panel")
 })
 
 /*
@@ -18,48 +18,48 @@ possible settigns:
 const ToggleSettings: {
 	name: string
 	description: string
-	storeFieldName: 'youtubeVidCache' | 'cacheUrlData' | 'showMiniMap'
+	storeFieldName: "youtubeVidCache" | "cacheUrlData" | "showMiniMap"
 }[] = [
 	{
-		name: 'Enable caching Youtube videos',
-		description: 'Save youtube videos locally to avoid waiting for loading, or to use offline.(can take up alot of space)',
-		storeFieldName: 'youtubeVidCache'
+		name: "Enable caching Youtube videos",
+		description: "Save youtube videos locally to avoid waiting for loading, or to use offline.(can take up alot of space)",
+		storeFieldName: "youtubeVidCache"
 	},
 	{
-		name: 'Cache URL metadata',
-		description: 'Store thumbnail and URL information locally to be seen offline and avoid long loading times.',
-		storeFieldName: 'cacheUrlData'
+		name: "Cache URL metadata",
+		description: "Store thumbnail and URL information locally to be seen offline and avoid long loading times.",
+		storeFieldName: "cacheUrlData"
 	},
 	{
-		name: 'Show MiniMap',
-		description: 'Choose to show or not show the minimap of the canvas',
-		storeFieldName: 'showMiniMap'
+		name: "Show MiniMap",
+		description: "Choose to show or not show the minimap of the canvas",
+		storeFieldName: "showMiniMap"
 	}
 ]
 const radioSettings: {
 	name: string
 	description: string
 	values: string[]
-	storeFieldName: 'gridStyle' | 'pdfReaderType'
+	storeFieldName: "gridStyle" | "pdfReaderType"
 }[] = [
 	{
-		name: 'Board Grid Style',
-		description: 'Choose between dots or grid style for the canvas background',
-		values: ['dots', 'grid'],
-		storeFieldName: 'gridStyle'
+		name: "Board Grid Style",
+		description: "Choose between dots or grid style for the canvas background",
+		values: ["dots", "grid"],
+		storeFieldName: "gridStyle"
 	},
 	{
-		name: 'PDF Reader Style',
-		description: 'Displayed to the Side, as a modal, or using the OS default PDF reader',
-		values: ['side', 'modal', 'external'],
-		storeFieldName: 'pdfReaderType'
+		name: "PDF Reader Style",
+		description: "Displayed to the Side, as a modal, or using the OS default PDF reader",
+		values: ["side", "modal", "external"],
+		storeFieldName: "pdfReaderType"
 	}
 ]
 
 const _FileSettings = [
 	{
-		name: 'Set app data folder location',
-		description: 'Choose which folder the app saves all the data, nodes, images, videos',
+		name: "Set app data folder location",
+		description: "Choose which folder the app saves all the data, nodes, images, videos",
 		value: false
 	}
 ]
@@ -68,7 +68,7 @@ export default () => {
 	return (
 		<Show when={store.settingsModal === true}>
 			<Portal>
-				<div class="z-10000 absolute top-0 left-0 size-full backdrop-blur-md" onClick={() => setStore('settingsModal', false)}>
+				<div class="z-10000 absolute top-0 left-0 size-full backdrop-blur-md" onClick={() => setStore("settingsModal", false)}>
 					<div
 						onClick={(e) => e.stopPropagation()}
 						id="settings_modal_content"
@@ -113,7 +113,7 @@ function Toggle(props: { checked: boolean; onChange: (v: boolean) => void }) {
 			onClick={() => props.onChange(!props.checked)}
 			class="cursor-pointer relative w-10 h-6 bg-card border border-primary/80 flex items-center p-1 outline-2 outline-primary"
 		>
-			<div class={`w-4 h-4 transition-transform duration-200 ${props.checked ? 'translate-x-4 bg-primary' : 'bg-foreground'}`} />
+			<div class={`w-4 h-4 transition-transform duration-200 ${props.checked ? "translate-x-4 bg-primary" : "bg-foreground"}`} />
 		</button>
 	)
 }
@@ -122,7 +122,7 @@ function SettingsItemToggle(props: {
 	name: string
 	description: string
 	value: boolean
-	storeFieldName: 'youtubeVidCache' | 'cacheUrlData' | 'showMiniMap'
+	storeFieldName: "youtubeVidCache" | "cacheUrlData" | "showMiniMap"
 }) {
 	const [accepted, setAccepted] = createSignal(props.value)
 
@@ -136,10 +136,10 @@ function SettingsItemToggle(props: {
 				<Toggle
 					checked={accepted()}
 					onChange={() => {
-						console.log('changing: ')
+						console.log("changing: ")
 						console.log(props.storeFieldName)
 						console.log(!accepted())
-						setStore('userConfig', props.storeFieldName, !accepted())
+						setStore("userConfig", props.storeFieldName, !accepted())
 						setAccepted(!accepted())
 						console.log(store.userConfig.showMiniMap)
 					}}
@@ -149,7 +149,7 @@ function SettingsItemToggle(props: {
 	)
 }
 
-function SettingsItemRadio(props: { name: string; description: string; values: string[]; storeFieldName: 'pdfReaderType' | 'gridStyle' }) {
+function SettingsItemRadio(props: { name: string; description: string; values: string[]; storeFieldName: "pdfReaderType" | "gridStyle" }) {
 	const [selected, setSelected] = createSignal(store.userConfig[props.storeFieldName])
 
 	return (
@@ -166,7 +166,7 @@ function SettingsItemRadio(props: { name: string; description: string; values: s
 								<RadioGroupItem
 									onclick={() => {
 										setSelected(value)
-										setStore('userConfig', props.storeFieldName, value)
+										setStore("userConfig", props.storeFieldName, value)
 									}}
 									value={value}
 									class="flex items-center gap-2"

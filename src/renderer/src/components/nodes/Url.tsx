@@ -1,11 +1,11 @@
-import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
-import { Url } from '../../types'
-import { IconLink, IconPlayerPlayFilled, IconResize } from '@tabler/icons-solidjs'
-import { updateNodeDesc, updateURL } from '../../shared/update'
-import { store } from '../../shared/store'
-import Editor from './Editor'
-import '@videojs/html/video/player'
-import '@videojs/html/video/skin'
+import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from "solid-js"
+import { Url } from "../../types"
+import { IconLink, IconPlayerPlayFilled, IconResize } from "@tabler/icons-solidjs"
+import { updateNodeDesc, updateURL } from "../../shared/update"
+import { store } from "../../shared/store"
+import Editor from "./Editor"
+import "@videojs/html/video/player"
+import "@videojs/html/video/skin"
 
 type UrlProps = Url & {
 	is_child?: boolean
@@ -26,24 +26,24 @@ export default (node: UrlProps) => {
 	const [localVid, setLocalVid] = createSignal<string | null>(null)
 	const [downloading, Downloading] = createSignal(false)
 	const [isPlaying, setIsPlaying] = createSignal(false)
-	const [srcImage, setSrcImage] = createSignal<string>('')
-	const [srcFav, setSrcFav] = createSignal<string>('')
+	const [srcImage, setSrcImage] = createSignal<string>("")
+	const [srcFav, setSrcFav] = createSignal<string>("")
 	const [expand, setExpand] = createSignal(false)
 
 	const [metaData, setMetaData] = createSignal<MetaData>({
-		title: 'placeholder',
-		description: 'placeholder',
+		title: "placeholder",
+		description: "placeholder",
 		image: new ArrayBuffer(0),
 		favicon: new ArrayBuffer(0)
 	})
 
-	const setImageFromArrayBuffer = (buffer: ArrayBuffer, type: 'image' | 'favicon') => {
+	const setImageFromArrayBuffer = (buffer: ArrayBuffer, type: "image" | "favicon") => {
 		console.log(buffer)
-		const blob = new Blob([buffer], { type: 'image/png' }) // or jpeg/webp
+		const blob = new Blob([buffer], { type: "image/png" }) // or jpeg/webp
 		const url = URL.createObjectURL(blob)
-		if (type === 'image') {
+		if (type === "image") {
 			setSrcImage(url)
-		} else if (type === 'favicon') {
+		} else if (type === "favicon") {
 			setSrcFav(url)
 		}
 		onCleanup(() => URL.revokeObjectURL(url))
@@ -58,10 +58,10 @@ export default (node: UrlProps) => {
 		try {
 			const message = await window.api.scrapeUrl({ url: url, cache: store.userConfig.cacheUrlData })
 			window.api.onYoutubeDownloadProgress((data: any) => {
-				console.log('data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL')
+				console.log("data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL")
 				console.log(data)
 				console.log(data.progress)
-				console.log('data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL')
+				console.log("data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL")
 			})
 
 			window.api.onYoutubeDownloadComplete(async (data: any) => {
@@ -69,7 +69,7 @@ export default (node: UrlProps) => {
 			})
 			return message
 		} catch (error) {
-			console.error('Error scraping metadata:', error)
+			console.error("Error scraping metadata:", error)
 			return null
 		}
 	}
@@ -88,12 +88,12 @@ export default (node: UrlProps) => {
 				if (res) {
 					console.log(res)
 					setMetaData(res)
-					setImageFromArrayBuffer(res.image, 'image')
-					setImageFromArrayBuffer(res.favicon, 'favicon')
+					setImageFromArrayBuffer(res.image, "image")
+					setImageFromArrayBuffer(res.favicon, "favicon")
 					if (firstTime || !node.description) {
-						console.log('LLLLLLLLLLLLLLLLLLLLLLLLLLLL')
-						console.log('LLLLLLLLLLLLLLLLLLLLLLLLLLLL')
-						console.log('LLLLLLLLLLLLLLLLLLLLLLLLLLLL')
+						console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+						console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+						console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
 						console.log(node.id, res.description)
 						updateNodeDesc(
 							node.id,
@@ -111,7 +111,7 @@ export default (node: UrlProps) => {
 		// setImageFromArrayBuffer(metaData().favicon, "favicon")
 		if (store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url)) {
 			var cacheRes = await window.api.cacheYoutubeVid(node.url)
-			if (cacheRes.message == 'file is already downloaded') {
+			if (cacheRes.message == "file is already downloaded") {
 				const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
 				setLocalVid(videoFile)
 			}
@@ -136,9 +136,9 @@ export default (node: UrlProps) => {
 			updateURL(node.id, value)
 			fetchMetaData(true)
 		} catch {
-			console.log('invalid url format')
-			input.value = ''
-			input.placeholder = 'invalid URL, try again'
+			console.log("invalid url format")
+			input.value = ""
+			input.placeholder = "invalid URL, try again"
 		}
 	}
 	function getYouTubeVideoId(url: string) {
@@ -175,7 +175,7 @@ export default (node: UrlProps) => {
 					</div>
 				}
 			>
-				<Match when={node.url === ''}>
+				<Match when={node.url === ""}>
 					<div class="flex items-center space-x-2 px-5">
 						<IconLink />
 						<input
@@ -184,7 +184,7 @@ export default (node: UrlProps) => {
 							class="url_input p-5 size-full outline-0 border"
 							onBlur={transformUrl}
 							onKeyDown={(e) => {
-								if (e.key === 'Enter') transformUrl(e)
+								if (e.key === "Enter") transformUrl(e)
 							}}
 						/>
 					</div>
@@ -192,31 +192,31 @@ export default (node: UrlProps) => {
 				<Match when={store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url) && localVid() != null && isPlaying()}>
 					<video-player
 						style={{
-							'--media-border-radius': '0rem',
-							'--media-color-primary': node.textColor ?? 'var(--color-primary)'
+							"--media-border-radius": "0rem",
+							"--media-color-primary": node.textColor ?? "var(--color-primary)"
 						}}
 					>
 						<video-skin>
-							<video src={localVid() ?? ''} ref={videoRef} id="videoPlayer"></video>
+							<video src={localVid() ?? ""} ref={videoRef} id="videoPlayer"></video>
 						</video-skin>
 					</video-player>
 				</Match>
 				<Match when={!store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url) && isPlaying()}>
 					<div
 						style={{
-							position: 'relative',
-							width: '100%',
-							'padding-bottom': '56.25%' /* 16:9 aspect ratio = 9 / 16 * 100 */
+							position: "relative",
+							width: "100%",
+							"padding-bottom": "56.25%" /* 16:9 aspect ratio = 9 / 16 * 100 */
 						}}
 					>
 						<iframe
 							src={`https://www.youtube.com/embed/${getYouTubeVideoId(node.url)}?autoplay=1`}
 							style={{
-								position: 'absolute',
+								position: "absolute",
 								top: 0,
 								left: 0,
-								width: '100%',
-								height: '100%'
+								width: "100%",
+								height: "100%"
 							}}
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 							allowfullscreen
@@ -225,7 +225,7 @@ export default (node: UrlProps) => {
 				</Match>
 			</Switch>
 
-			<Show when={node.url != ''}>
+			<Show when={node.url != ""}>
 				<div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis m-0">
 					<div class="url_container flex flex-row items-center space-x-2">
 						<img class="url_thumbnail size-4" src={srcFav()} loading="lazy" alt="favicon" />

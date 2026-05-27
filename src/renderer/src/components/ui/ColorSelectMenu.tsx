@@ -1,138 +1,138 @@
-import { store } from '../../shared/store'
-import { unsetStripColor, updateNodeColor } from '../../shared/update'
-import { createSignal, For } from 'solid-js'
-import { Dynamic } from 'solid-js/web'
+import { store } from "../../shared/store"
+import { unsetStripColor, updateNodeColor } from "../../shared/update"
+import { createSignal, For } from "solid-js"
+import { Dynamic } from "solid-js/web"
 
-import { DefaultColorPicker } from '@thednp/solid-color-picker'
-import '@thednp/solid-color-picker/style.css'
-import { oklchToRgb } from '../../shared/utils'
-import { ColorType } from '../../types'
+import { DefaultColorPicker } from "@thednp/solid-color-picker"
+import "@thednp/solid-color-picker/style.css"
+import { oklchToRgb } from "../../shared/utils"
+import { ColorType } from "../../types"
 
 // first color is default
 const bgColorList: ColorType[] = [
-	getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() as ColorType,
-	'#f54a00',
-	'#fd9a00',
-	'#00bc7d',
-	'#1447e6',
-	'#ad46ff',
-	'#ff2056',
+	getComputedStyle(document.documentElement).getPropertyValue("--color-card").trim() as ColorType,
+	"#f54a00",
+	"#fd9a00",
+	"#00bc7d",
+	"#1447e6",
+	"#ad46ff",
+	"#ff2056",
 
-	'#bbbec3',
-	'#62dbc8',
-	'#7cd651',
-	'#d58558',
-	'#ffd14d',
-	'#ff8d48',
-	'#ff5757',
-	'#ff6ed4',
-	'#ad6fff',
-	'#4ebafd',
-	'#5882f8',
+	"#bbbec3",
+	"#62dbc8",
+	"#7cd651",
+	"#d58558",
+	"#ffd14d",
+	"#ff8d48",
+	"#ff5757",
+	"#ff6ed4",
+	"#ad6fff",
+	"#4ebafd",
+	"#5882f8",
 
-	'#0dd1a7',
-	'#818e99',
-	'#566468',
-	'#a46265',
-	'#72272b',
-	'#d17524',
-	'#d5b05c',
-	'#d2c7c5'
+	"#0dd1a7",
+	"#818e99",
+	"#566468",
+	"#a46265",
+	"#72272b",
+	"#d17524",
+	"#d5b05c",
+	"#d2c7c5"
 ]
 
 const textColorList: ColorType[] = [
-	getComputedStyle(document.documentElement).getPropertyValue('--color-foreground').trim() as ColorType,
-	'#f54a00',
-	'#fd9a00',
-	'#00bc7d',
-	'#1447e6',
-	'#ad46ff',
-	'#ff2056',
+	getComputedStyle(document.documentElement).getPropertyValue("--color-foreground").trim() as ColorType,
+	"#f54a00",
+	"#fd9a00",
+	"#00bc7d",
+	"#1447e6",
+	"#ad46ff",
+	"#ff2056",
 
-	'#72272b',
-	'#204260',
-	'#566468',
-	'#4d191c',
-	'#132839',
-	'#04483a',
-	'#265073',
-	'#7d4046',
-	'#8000ff',
-	'#26004d'
+	"#72272b",
+	"#204260",
+	"#566468",
+	"#4d191c",
+	"#132839",
+	"#04483a",
+	"#265073",
+	"#7d4046",
+	"#8000ff",
+	"#26004d"
 ]
 
 type comboType = { bg: ColorType; fg: ColorType }
 const textBgComboColorList: comboType[] = [
 	{
-		bg: getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() as ColorType,
-		fg: getComputedStyle(document.documentElement).getPropertyValue('--color-foreground').trim() as ColorType
+		bg: getComputedStyle(document.documentElement).getPropertyValue("--color-card").trim() as ColorType,
+		fg: getComputedStyle(document.documentElement).getPropertyValue("--color-foreground").trim() as ColorType
 	},
 	{
-		bg: '#fd9a00',
-		fg: '#ad46ff'
+		bg: "#fd9a00",
+		fg: "#ad46ff"
 	},
 	{
-		bg: '#f54a00',
-		fg: '#ad46ff'
+		bg: "#f54a00",
+		fg: "#ad46ff"
 	},
 	{
-		bg: '#0dd1a7',
-		fg: '#72272b'
-	},
-
-	{
-		bg: '#d5b05c',
-		fg: '#72272b'
+		bg: "#0dd1a7",
+		fg: "#72272b"
 	},
 
 	{
-		bg: '#0dd1a7',
-		fg: '#204260'
+		bg: "#d5b05c",
+		fg: "#72272b"
 	},
 
 	{
-		bg: '#818e99',
-		fg: '#132839'
+		bg: "#0dd1a7",
+		fg: "#204260"
 	},
 
 	{
-		bg: '#9ef9e5',
-		fg: '#566468'
+		bg: "#818e99",
+		fg: "#132839"
 	},
 
 	{
-		bg: '#df9fa2',
-		fg: '#4d191c'
+		bg: "#9ef9e5",
+		fg: "#566468"
 	},
 
 	{
-		bg: '#d17524',
-		fg: '#132839'
+		bg: "#df9fa2",
+		fg: "#4d191c"
 	},
 
 	{
-		bg: '#d5b05c',
-		fg: '#04483a'
+		bg: "#d17524",
+		fg: "#132839"
 	},
 
 	{
-		bg: '#d2c7c5',
-		fg: '#265073'
+		bg: "#d5b05c",
+		fg: "#04483a"
 	},
 
 	{
-		bg: '#f4cc38',
-		fg: '#7d4046'
+		bg: "#d2c7c5",
+		fg: "#265073"
 	},
 
 	{
-		bg: '#00ff00',
-		fg: '#8000ff'
+		bg: "#f4cc38",
+		fg: "#7d4046"
 	},
 
 	{
-		bg: '#e44e20',
-		fg: '#26004d'
+		bg: "#00ff00",
+		fg: "#8000ff"
+	},
+
+	{
+		bg: "#e44e20",
+		fg: "#26004d"
 	}
 ]
 
@@ -141,11 +141,11 @@ export default () => {
 	const colorSelections = [<BgColors />, <StripColors />]
 
 	const groupClasses =
-		'flex items-center justify-center w-1/2 p-2 aspect-2/1 cursor-pointer transition-colors duration-200 ease-in-out hover:bg-primary'
+		"flex items-center justify-center w-1/2 p-2 aspect-2/1 cursor-pointer transition-colors duration-200 ease-in-out hover:bg-primary"
 	return (
 		<div
 			class={`z-50 transition-all duration-200 ease-in-out absolute top-4 left-4 [box-shadow:5px_5px_var(--color-primary)]
-          ${store.showColorMenu ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+          ${store.showColorMenu ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}
 		>
 			<div id="colorSelectMenu" class="border border-border p-4 w-fit bg-card space-y-4">
 				{/* bg or strip selection */}
@@ -153,7 +153,7 @@ export default () => {
 					<div
 						class={groupClasses}
 						classList={{
-							'bg-primary': bgOrStrip() === 0
+							"bg-primary": bgOrStrip() === 0
 						}}
 						onClick={() => setBgOrStrip(0)}
 					>
@@ -162,7 +162,7 @@ export default () => {
 					<div
 						class={groupClasses}
 						classList={{
-							'bg-primary': bgOrStrip() === 1
+							"bg-primary": bgOrStrip() === 1
 						}}
 						onClick={() => setBgOrStrip(1)}
 					>
@@ -176,25 +176,25 @@ export default () => {
 	)
 }
 
-const changeBg = (bg: ColorType | 'none') => {
+const changeBg = (bg: ColorType | "none") => {
 	store.selectedNodes.forEach((nodeId) => {
-		updateNodeColor(nodeId, 'bg', bg)
+		updateNodeColor(nodeId, "bg", bg)
 	})
 }
-const changeFg = (fg: ColorType | 'none') => {
+const changeFg = (fg: ColorType | "none") => {
 	store.selectedNodes.forEach((nodeId) => {
-		updateNodeColor(nodeId, 'fg', fg)
+		updateNodeColor(nodeId, "fg", fg)
 	})
 }
 const changeBgFg = (combo: comboType) => {
 	store.selectedNodes.forEach((nodeId) => {
-		updateNodeColor(nodeId, 'bg', combo.bg)
-		updateNodeColor(nodeId, 'fg', combo.fg)
+		updateNodeColor(nodeId, "bg", combo.bg)
+		updateNodeColor(nodeId, "fg", combo.fg)
 	})
 }
-const changeTopStrip = (color: ColorType | 'none') => {
+const changeTopStrip = (color: ColorType | "none") => {
 	store.selectedNodes.forEach((nodeId) => {
-		updateNodeColor(nodeId, 'strip', color)
+		updateNodeColor(nodeId, "strip", color)
 	})
 }
 

@@ -1,12 +1,12 @@
-import { updateNodeDesc, updateZIndex } from '../../shared/update'
-import { debounce } from '../../shared/utils'
-import StarterKit from '@tiptap/starter-kit'
-import { createTiptapEditor } from 'solid-tiptap'
-import Highlight from '@tiptap/extension-highlight'
-import Typography from '@tiptap/extension-typography'
-import { TextStyle } from '@tiptap/extension-text-style'
-import TextAlign from '@tiptap/extension-text-align'
-import { onCleanup, untrack } from 'solid-js'
+import { updateNodeDesc, updateZIndex } from "../../shared/update"
+import { debounce } from "../../shared/utils"
+import StarterKit from "@tiptap/starter-kit"
+import { createTiptapEditor } from "solid-tiptap"
+import Highlight from "@tiptap/extension-highlight"
+import Typography from "@tiptap/extension-typography"
+import { TextStyle } from "@tiptap/extension-text-style"
+import TextAlign from "@tiptap/extension-text-align"
+import { onCleanup, untrack } from "solid-js"
 
 export default (props: { id: string; desc: string }) => {
 	let editorRef!: HTMLDivElement

@@ -213,7 +213,7 @@
 //     console.info("here we do the redo action")
 // }
 
-import { setStore, store } from './store'
+import { setStore, store } from "./store"
 
 // export function actionsMiddleware2<T extends (...args: any[]) => any>(fn: T): T {
 //     return ((...args: Parameters<T>) => {
@@ -242,8 +242,8 @@ export function actionsMiddleware<T extends (...args: any[]) => Command>(fn: T):
 		const newHistory = store.actionsHistory.slice(0, pointer)
 		newHistory.push(command)
 
-		setStore('actionsHistory', newHistory)
-		setStore('historyPointer', pointer)
+		setStore("actionsHistory", newHistory)
+		setStore("historyPointer", pointer)
 
 		return command
 	}) as T
@@ -255,7 +255,7 @@ export function undo() {
 	const command = store.actionsHistory[store.historyPointer]
 	command.undo()
 
-	setStore('historyPointer', store.historyPointer - 1)
+	setStore("historyPointer", store.historyPointer - 1)
 }
 
 export function redo() {
@@ -265,5 +265,5 @@ export function redo() {
 	const command = store.actionsHistory[pointer]
 	command.redo()
 
-	setStore('historyPointer', pointer)
+	setStore("historyPointer", pointer)
 }

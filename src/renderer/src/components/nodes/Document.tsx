@@ -1,15 +1,15 @@
-import { Show, onMount } from 'solid-js'
-import { Document } from '../../types'
-import Svg from './Svg'
-import * as pdfjsLib from 'pdfjs-dist'
-import { setStore, store } from '../../shared/store'
-import Editor from './Editor'
+import { Show, onMount } from "solid-js"
+import { Document } from "../../types"
+import Svg from "./Svg"
+import * as pdfjsLib from "pdfjs-dist"
+import { setStore, store } from "../../shared/store"
+import Editor from "./Editor"
 
 type DocumentProps = Document & {
 	is_child?: boolean
 }
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).toString()
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.mjs", import.meta.url).toString()
 
 function toArrayBuffer(buffer: Buffer): ArrayBuffer {
 	const arrayBuffer = new ArrayBuffer(buffer.length)
@@ -67,7 +67,7 @@ export default (node: DocumentProps) => {
 		const canvas = document.getElementById(`pdfContainer_${node.id}`)
 		if (!canvas) return
 		if (!(canvas instanceof HTMLCanvasElement)) return
-		const context = canvas.getContext('2d')
+		const context = canvas.getContext("2d")
 		canvas.height = viewport.height
 		canvas.width = viewport.width
 		const renderContext = {
@@ -85,7 +85,7 @@ export default (node: DocumentProps) => {
 			</div>
 			<div class="flex flex-row p-2 space-x-2">
 				<div class="flex items-center justify-center">
-					<Svg width={40} height={40} classes="" icon_name={'pdf'} />
+					<Svg width={40} height={40} classes="" icon_name={"pdf"} />
 				</div>
 				<div class="flex flex-col">
 					<div class="text-lg font-extrabold">doc name</div>
@@ -93,7 +93,7 @@ export default (node: DocumentProps) => {
 					<div class="flex flex-row space-x-2">
 						<div class="down_pdf underline cursor-pointer hover:text-primary transition-colors duration-200">Download</div>
 						<div
-							onClick={() => setStore('pdfFile', node.path)}
+							onClick={() => setStore("pdfFile", node.path)}
 							class="open_pdf underline cursor-pointer hover:text-primary transition-colors duration-200"
 						>
 							Open
@@ -104,7 +104,7 @@ export default (node: DocumentProps) => {
 			</div>
 			<Show when={node.showDescription}>
 				<div class="p-2 ">
-					<Editor id={node.id} desc={node.description ?? ''} />
+					<Editor id={node.id} desc={node.description ?? ""} />
 				</div>
 			</Show>
 		</div>

@@ -1,5 +1,5 @@
-import { onMount, onCleanup } from 'solid-js'
-import * as PIXI from 'pixi.js'
+import { onMount, onCleanup } from "solid-js"
+import * as PIXI from "pixi.js"
 
 export default function Canvas() {
 	let container!: HTMLDivElement
@@ -11,7 +11,7 @@ export default function Canvas() {
 
 		await app.init({
 			resizeTo: container,
-			background: '#1e1e1e',
+			background: "#1e1e1e",
 			antialias: true
 		})
 
@@ -21,7 +21,7 @@ export default function Canvas() {
 		const card = new PIXI.Graphics()
 
 		card.roundRect(0, 0, 200, 120, 16)
-		card.fill('#2d2d2d')
+		card.fill("#2d2d2d")
 
 		card.x = 300
 		card.y = 200
@@ -37,8 +37,8 @@ export default function Canvas() {
 		<div
 			ref={container}
 			style={{
-				width: '100%',
-				height: '100%'
+				width: "100%",
+				height: "100%"
 			}}
 		/>
 	)

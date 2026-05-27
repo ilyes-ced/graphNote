@@ -1,53 +1,53 @@
-import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from "electron"
+import { electronAPI } from "@electron-toolkit/preload"
 
 // Custom APIs for renderer
 const api = {
-	getNodes: () => ipcRenderer.invoke('getNodes'),
+	getNodes: () => ipcRenderer.invoke("getNodes"),
 
-	getEdges: () => ipcRenderer.invoke('getEdges'),
+	getEdges: () => ipcRenderer.invoke("getEdges"),
 
-	getSettings: () => ipcRenderer.invoke('getSettings'),
+	getSettings: () => ipcRenderer.invoke("getSettings"),
 
-	saveNodes: (nodes: any) => ipcRenderer.invoke('saveNodes', nodes),
+	saveNodes: (nodes: any) => ipcRenderer.invoke("saveNodes", nodes),
 
-	saveEdges: (edges: any) => ipcRenderer.invoke('saveEdges', edges),
+	saveEdges: (edges: any) => ipcRenderer.invoke("saveEdges", edges),
 
-	saveSettings: (settings: any) => ipcRenderer.invoke('saveSettings', settings),
+	saveSettings: (settings: any) => ipcRenderer.invoke("saveSettings", settings),
 
-	readGraph: () => ipcRenderer.invoke('readGraph'),
+	readGraph: () => ipcRenderer.invoke("readGraph"),
 
-	readFile: (data: any) => ipcRenderer.invoke('readFile', data),
+	readFile: (data: any) => ipcRenderer.invoke("readFile", data),
 
-	writeFile: (data: any) => ipcRenderer.invoke('writeFile', data),
+	writeFile: (data: any) => ipcRenderer.invoke("writeFile", data),
 
-	getAvailableFilePath: (data: any) => ipcRenderer.invoke('getAvailableFilePath', data),
+	getAvailableFilePath: (data: any) => ipcRenderer.invoke("getAvailableFilePath", data),
 
-	copyFileUnique: (data: any) => ipcRenderer.invoke('copyFileUnique', data),
+	copyFileUnique: (data: any) => ipcRenderer.invoke("copyFileUnique", data),
 
-	readImage: (filePath: string) => ipcRenderer.invoke('readImage', filePath),
+	readImage: (filePath: string) => ipcRenderer.invoke("readImage", filePath),
 
-	writeNodeFile: (data: any) => ipcRenderer.invoke('writeNodeFile', data),
+	writeNodeFile: (data: any) => ipcRenderer.invoke("writeNodeFile", data),
 
-	scrapeUrl: (data: any) => ipcRenderer.invoke('scrapeUrl', data),
+	scrapeUrl: (data: any) => ipcRenderer.invoke("scrapeUrl", data),
 
-	backUpSave: () => ipcRenderer.invoke('backUpSave'),
+	backUpSave: () => ipcRenderer.invoke("backUpSave"),
 
-	downloadImgUrl: (data: any) => ipcRenderer.invoke('downloadImgUrl', data),
+	downloadImgUrl: (data: any) => ipcRenderer.invoke("downloadImgUrl", data),
 
-	cacheUrl: (data: any) => ipcRenderer.invoke('cacheUrl', data),
+	cacheUrl: (data: any) => ipcRenderer.invoke("cacheUrl", data),
 
-	cacheYoutubeVid: (data: any) => ipcRenderer.invoke('cacheYoutubeVid', data),
+	cacheYoutubeVid: (data: any) => ipcRenderer.invoke("cacheYoutubeVid", data),
 
-	onYoutubeDownloadProgress: (callback) => ipcRenderer.on('youtube-download-progress', (_, data) => callback(data)),
+	onYoutubeDownloadProgress: (callback) => ipcRenderer.on("youtube-download-progress", (_, data) => callback(data)),
 
-	onYoutubeDownloadComplete: (callback) => ipcRenderer.on('youtube-download-complete', (_, data) => callback(data)),
+	onYoutubeDownloadComplete: (callback) => ipcRenderer.on("youtube-download-complete", (_, data) => callback(data)),
 
-	getLocalVideo: (data: any) => ipcRenderer.invoke('getLocalVideo', data),
+	getLocalVideo: (data: any) => ipcRenderer.invoke("getLocalVideo", data),
 
-	getSizes: () => ipcRenderer.invoke('getSizes'),
+	getSizes: () => ipcRenderer.invoke("getSizes"),
 
-	selectFile: () => ipcRenderer.invoke('selectFile')
+	selectFile: () => ipcRenderer.invoke("selectFile")
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -55,8 +55,8 @@ const api = {
 // just add to the DOM global.
 if (process.contextIsolated) {
 	try {
-		contextBridge.exposeInMainWorld('electron', electronAPI)
-		contextBridge.exposeInMainWorld('api', api)
+		contextBridge.exposeInMainWorld("electron", electronAPI)
+		contextBridge.exposeInMainWorld("api", api)
 	} catch (error) {
 		console.error(error)
 	}

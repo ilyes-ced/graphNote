@@ -1,4 +1,4 @@
-import { store, setStore } from '../../shared/store'
+import { store, setStore } from "../../shared/store"
 
 export default (props: any) => {
 	let zoomable!: HTMLDivElement
@@ -38,24 +38,24 @@ export default (props: any) => {
 		const newX = mouseX - worldX * newScale
 		const newY = mouseY - worldY * newScale
 
-		setStore('viewport', {
+		setStore("viewport", {
 			scale: newScale,
 			x: newX <= 0 ? Math.round(newX) : 0,
 			y: newY <= 0 ? Math.round(newY) : 0
 		})
 
 		//? helps with when you zoom back out it makes the text not pixelized
-		const el = document.getElementById('viewport-content')
+		const el = document.getElementById("viewport-content")
 		if (el) {
-			el.style.display = 'none'
+			el.style.display = "none"
 			el.offsetHeight // force reflow
-			el.style.display = ''
+			el.style.display = ""
 		}
 
 		//? make the canvas take all screen space when zooming
 		//! still not good enough, overcompenstaes
-		const div = document.getElementById('viewport-content')?.getBoundingClientRect()
-		setStore('viewport', {
+		const div = document.getElementById("viewport-content")?.getBoundingClientRect()
+		setStore("viewport", {
 			width: Math.max(store.viewport.width, (div?.width ?? 0) / newScale),
 			height: Math.max(store.viewport.height, (div?.height ?? 0) / newScale)
 		})

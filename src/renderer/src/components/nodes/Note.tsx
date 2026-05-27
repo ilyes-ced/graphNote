@@ -1,14 +1,14 @@
-import { Note } from '../../types'
-import { changeToUrlNode, updateNote, updateZIndex } from '../../shared/update'
-import { debounce } from '../../shared/utils'
-import StarterKit from '@tiptap/starter-kit'
-import { createTiptapEditor } from 'solid-tiptap'
-import Highlight from '@tiptap/extension-highlight'
-import Typography from '@tiptap/extension-typography'
-import { TextStyle } from '@tiptap/extension-text-style'
-import TextAlign from '@tiptap/extension-text-align'
-import { Show, createSignal, onCleanup, untrack } from 'solid-js'
-import { IconEdit } from '@tabler/icons-solidjs'
+import { Note } from "../../types"
+import { changeToUrlNode, updateNote, updateZIndex } from "../../shared/update"
+import { debounce } from "../../shared/utils"
+import StarterKit from "@tiptap/starter-kit"
+import { createTiptapEditor } from "solid-tiptap"
+import Highlight from "@tiptap/extension-highlight"
+import Typography from "@tiptap/extension-typography"
+import { TextStyle } from "@tiptap/extension-text-style"
+import TextAlign from "@tiptap/extension-text-align"
+import { Show, createSignal, onCleanup, untrack } from "solid-js"
+import { IconEdit } from "@tabler/icons-solidjs"
 
 type NoteProps = Note & {
 	is_child?: boolean
@@ -56,30 +56,30 @@ export default (node: NoteProps) => {
 				<div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
 					<button
 						onClick={() => editor()?.chain().focus().toggleBold().run()}
-						class={editor()?.isActive('bold') ? 'is-active' : ''}
+						class={editor()?.isActive("bold") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Bold
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleItalic().run()}
-						class={editor()?.isActive('italic') ? 'is-active' : ''}
+						class={editor()?.isActive("italic") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Italic
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleStrike().run()}
-						class={editor()?.isActive('strike') ? 'is-active' : ''}
+						class={editor()?.isActive("strike") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Strike
@@ -89,60 +89,60 @@ export default (node: NoteProps) => {
 				<div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
 					<button
 						onClick={() => editor()?.chain().focus().toggleHeading({ level: 1 }).run()}
-						class={editor()?.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+						class={editor()?.isActive("heading", { level: 1 }) ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						H1
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleHeading({ level: 2 }).run()}
-						class={editor()?.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+						class={editor()?.isActive("heading", { level: 2 }) ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						H2
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleHeading({ level: 3 }).run()}
-						class={editor()?.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+						class={editor()?.isActive("heading", { level: 3 }) ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						H3
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleHeading({ level: 4 }).run()}
-						class={editor()?.isActive('heading', { level: 4 }) ? 'is-active' : ''}
+						class={editor()?.isActive("heading", { level: 4 }) ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						H4
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleHeading({ level: 5 }).run()}
-						class={editor()?.isActive('heading', { level: 5 }) ? 'is-active' : ''}
+						class={editor()?.isActive("heading", { level: 5 }) ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						H5
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleHeading({ level: 6 }).run()}
-						class={editor()?.isActive('heading', { level: 6 }) ? 'is-active' : ''}
+						class={editor()?.isActive("heading", { level: 6 }) ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						H6
@@ -152,20 +152,20 @@ export default (node: NoteProps) => {
 				<div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
 					<button
 						onClick={() => editor()?.chain().focus().toggleBulletList().run()}
-						class={editor()?.isActive('bulletList') ? 'is-active' : ''}
+						class={editor()?.isActive("bulletList") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Bullet list
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleOrderedList().run()}
-						class={editor()?.isActive('orderedList') ? 'is-active' : ''}
+						class={editor()?.isActive("orderedList") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Ordered list
@@ -175,10 +175,10 @@ export default (node: NoteProps) => {
 				<div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
 					<button
 						onClick={() => editor()?.chain().focus().toggleCode().run()}
-						class={editor()?.isActive('code') ? 'is-active' : ''}
+						class={editor()?.isActive("code") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Code
@@ -187,30 +187,30 @@ export default (node: NoteProps) => {
 					<button onClick={() => editor()?.chain().focus().clearNodes().run()}>Clear nodes</button>
 					<button
 						onClick={() => editor()?.chain().focus().setParagraph().run()}
-						class={editor()?.isActive('paragraph') ? 'is-active' : ''}
+						class={editor()?.isActive("paragraph") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Paragraph
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleCodeBlock().run()}
-						class={editor()?.isActive('codeBlock') ? 'is-active' : ''}
+						class={editor()?.isActive("codeBlock") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Code block
 					</button>
 					<button
 						onClick={() => editor()?.chain().focus().toggleBlockquote().run()}
-						class={editor()?.isActive('blockquote') ? 'is-active' : ''}
+						class={editor()?.isActive("blockquote") ? "is-active" : ""}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Blockquote
@@ -221,8 +221,8 @@ export default (node: NoteProps) => {
 					<button
 						onClick={() => editor()?.chain().focus().setHorizontalRule().run()}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Horizontal rule
@@ -230,8 +230,8 @@ export default (node: NoteProps) => {
 					<button
 						onClick={() => editor()?.chain().focus().setHardBreak().run()}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Hard break
@@ -242,8 +242,8 @@ export default (node: NoteProps) => {
 					<button
 						onClick={() => editor()?.chain().focus().undo().run()}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Undo
@@ -251,8 +251,8 @@ export default (node: NoteProps) => {
 					<button
 						onClick={() => editor()?.chain().focus().redo().run()}
 						style={{
-							'--hover-bg': node.textColor,
-							'--hover-fg': node.color
+							"--hover-bg": node.textColor,
+							"--hover-fg": node.color
 						}}
 					>
 						Redo
@@ -261,26 +261,26 @@ export default (node: NoteProps) => {
 
 				<div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
 					<button
-						onClick={() => editor()?.chain().focus().setTextAlign('left').run()}
-						class={editor()?.isActive({ textAlign: 'left' }) ? 'is-active' : ''}
+						onClick={() => editor()?.chain().focus().setTextAlign("left").run()}
+						class={editor()?.isActive({ textAlign: "left" }) ? "is-active" : ""}
 					>
 						Left
 					</button>
 					<button
-						onClick={() => editor()?.chain().focus().setTextAlign('center').run()}
-						class={editor()?.isActive({ textAlign: 'center' }) ? 'is-active' : ''}
+						onClick={() => editor()?.chain().focus().setTextAlign("center").run()}
+						class={editor()?.isActive({ textAlign: "center" }) ? "is-active" : ""}
 					>
 						Center
 					</button>
 					<button
-						onClick={() => editor()?.chain().focus().setTextAlign('right').run()}
-						class={editor()?.isActive({ textAlign: 'right' }) ? 'is-active' : ''}
+						onClick={() => editor()?.chain().focus().setTextAlign("right").run()}
+						class={editor()?.isActive({ textAlign: "right" }) ? "is-active" : ""}
 					>
 						Right
 					</button>
 					<button
-						onClick={() => editor()?.chain().focus().setTextAlign('justify').run()}
-						class={editor()?.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}
+						onClick={() => editor()?.chain().focus().setTextAlign("justify").run()}
+						class={editor()?.isActive({ textAlign: "justify" }) ? "is-active" : ""}
 					>
 						Justify
 					</button>

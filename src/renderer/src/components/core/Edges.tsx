@@ -1,13 +1,13 @@
-import { For, Match, Switch, onMount } from 'solid-js'
+import { For, Match, Switch, onMount } from "solid-js"
 
-import { store } from '../../shared/store'
-import EdgeStep from '../edges/EdgeStep'
-import EdgeBezier from '../edges/EdgeBezier'
-import EdgeStraight from '../edges/EdgeStraight'
-import { EdgeType } from '../../types'
+import { store } from "../../shared/store"
+import EdgeStep from "../edges/EdgeStep"
+import EdgeBezier from "../edges/EdgeBezier"
+import EdgeStraight from "../edges/EdgeStraight"
+import { EdgeType } from "../../types"
 
 onMount(() => {
-	console.log(store.edges[store.activeBoards.at(-1)?.id ?? 'home'])
+	console.log(store.edges[store.activeBoards.at(-1)?.id ?? "home"])
 })
 
 export default () => {
@@ -16,7 +16,7 @@ export default () => {
 			{/*
       pointer-events-none add this when we are done fixing the dots dragging
       */}
-			<For each={store.edges[store.activeBoards.at(-1)?.id ?? 'home']}>
+			<For each={store.edges[store.activeBoards.at(-1)?.id ?? "home"]}>
 				{(edge) => (
 					<Switch fallback={<div class="bg-red-500">{JSON.stringify(edge)}</div>}>
 						<Match when={edge.type === EdgeType.Bezier}>

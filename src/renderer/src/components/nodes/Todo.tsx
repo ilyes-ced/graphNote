@@ -1,11 +1,11 @@
-import { createSignal, For, Show } from 'solid-js'
-import { DragDropProvider, DragDropSensors, DragOverlay, SortableProvider, createSortable, closestCenter } from '@thisbeyond/solid-dnd'
-import { useDragDropContext } from '@thisbeyond/solid-dnd'
-import { Task, Todo as TodoType } from '../../types'
-import { reorderTasks, updateTask } from '../../shared/update'
-import { debounce } from '../../shared/utils'
-import { IconMenu2 } from '@tabler/icons-solidjs'
-import EditableTitle from './EditableTitle'
+import { createSignal, For, Show } from "solid-js"
+import { DragDropProvider, DragDropSensors, DragOverlay, SortableProvider, createSortable, closestCenter } from "@thisbeyond/solid-dnd"
+import { useDragDropContext } from "@thisbeyond/solid-dnd"
+import { Task, Todo as TodoType } from "../../types"
+import { reorderTasks, updateTask } from "../../shared/update"
+import { debounce } from "../../shared/utils"
+import { IconMenu2 } from "@tabler/icons-solidjs"
+import EditableTitle from "./EditableTitle"
 
 // === Types ===
 type TodoProps = TodoType & {
@@ -90,21 +90,21 @@ export default (node: TodoProps) => {
 	}
 	const handleKeyDown = (e: KeyboardEvent, index: number) => {
 		const target = e.currentTarget as HTMLElement
-		const text = target.textContent?.trim() ?? ''
+		const text = target.textContent?.trim() ?? ""
 
 		const selection = window.getSelection()
 		const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null
 		const caretOffset = range ? range.startOffset : 0
 
-		if (['Tab', 'Backspace', 'Enter', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-			if (e.key === 'Enter') {
+		if (["Tab", "Backspace", "Enter", "ArrowUp", "ArrowDown"].includes(e.key)) {
+			if (e.key === "Enter") {
 				e.preventDefault()
 				setItems((prev) => {
 					const updated = [...prev]
 					const current = prev[index]
 					const newTask: TaskWithId = {
 						_id: generateId(),
-						text: '',
+						text: "",
 						check: false,
 						nestLevel: current.nestLevel
 					}
@@ -116,24 +116,24 @@ export default (node: TodoProps) => {
 				reorderTasks(node.id, newArray)
 
 				queueMicrotask(() => {
-					const editableElements = containerRef.querySelectorAll('.taskitem-text')
+					const editableElements = containerRef.querySelectorAll(".taskitem-text")
 					const newTarget = editableElements[index + 1] as HTMLElement
 					if (newTarget) newTarget.focus()
 				})
 				return
 			}
 
-			if (e.key === 'Backspace') {
-				const currentText = target.textContent?.trim() ?? ''
+			if (e.key === "Backspace") {
+				const currentText = target.textContent?.trim() ?? ""
 
-				if (currentText === '' && items()[index].nestLevel > 0) {
+				if (currentText === "" && items()[index].nestLevel > 0) {
 					setItems((prev) => prev.map((task, i) => (i === index ? { ...task, text: currentText, nestLevel: task.nestLevel - 1 } : task)))
 
 					const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
 					reorderTasks(node.id, newArray)
 
 					queueMicrotask(() => {
-						const editableElements = containerRef.querySelectorAll('.taskitem-text')
+						const editableElements = containerRef.querySelectorAll(".taskitem-text")
 						const newTarget = editableElements[index] as HTMLElement
 						if (newTarget) {
 							newTarget.focus()
@@ -148,7 +148,7 @@ export default (node: TodoProps) => {
 					return
 				}
 
-				if (currentText === '' && items()[index].nestLevel === 0 && items().length > 1) {
+				if (currentText === "" && items()[index].nestLevel === 0 && items().length > 1) {
 					setItems((prev) => {
 						const updated = [...prev]
 						updated.splice(index, 1)
@@ -159,7 +159,7 @@ export default (node: TodoProps) => {
 					reorderTasks(node.id, newArray)
 
 					queueMicrotask(() => {
-						const editableElements = containerRef.querySelectorAll('.taskitem-text')
+						const editableElements = containerRef.querySelectorAll(".taskitem-text")
 						const newTarget = (editableElements[index - 1] as HTMLElement) || editableElements[0]
 						if (newTarget) {
 							newTarget.focus()
@@ -175,22 +175,22 @@ export default (node: TodoProps) => {
 				}
 
 				const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null
-				if (range?.startOffset === 0 && currentText !== '') {
+				if (range?.startOffset === 0 && currentText !== "") {
 					return
 				}
 			}
 
-			if (e.key === 'Tab') {
+			if (e.key === "Tab") {
 				e.preventDefault()
 
-				const currentText = target.textContent || ''
+				const currentText = target.textContent || ""
 				setItems((prev) => prev.map((task, i) => (i === index ? { ...task, text: currentText, nestLevel: task.nestLevel + 1 } : task)))
 
 				const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
 				reorderTasks(node.id, newArray)
 
 				queueMicrotask(() => {
-					const editableElements = containerRef.querySelectorAll('.taskitem-text')
+					const editableElements = containerRef.querySelectorAll(".taskitem-text")
 					const newTarget = editableElements[index] as HTMLElement
 					if (newTarget) {
 						newTarget.focus()
@@ -205,17 +205,17 @@ export default (node: TodoProps) => {
 				return
 			}
 
-			if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+			if (e.key === "ArrowUp" || e.key === "ArrowDown") {
 				e.preventDefault()
 
-				const editableElements = Array.from(containerRef.querySelectorAll<HTMLElement>('.taskitem-text'))
+				const editableElements = Array.from(containerRef.querySelectorAll<HTMLElement>(".taskitem-text"))
 
 				const currentIndex = index
 				let newIndex = currentIndex
 
-				if (e.key === 'ArrowUp' && currentIndex > 0) {
+				if (e.key === "ArrowUp" && currentIndex > 0) {
 					newIndex = currentIndex - 1
-				} else if (e.key === 'ArrowDown' && currentIndex < editableElements.length - 1) {
+				} else if (e.key === "ArrowDown" && currentIndex < editableElements.length - 1) {
 					newIndex = currentIndex + 1
 				}
 
@@ -237,7 +237,7 @@ export default (node: TodoProps) => {
 	const handlePaste = (e: ClipboardEvent, index: number) => {
 		e.preventDefault()
 
-		const clipboardData = e.clipboardData.getData('text')
+		const clipboardData = e.clipboardData.getData("text")
 		const lines = clipboardData.split(/\r?\n/).filter(Boolean)
 
 		if (lines.length === 0) return
@@ -269,7 +269,7 @@ export default (node: TodoProps) => {
 
 		queueMicrotask(() => {
 			// Focus last pasted task
-			const editableElements = containerRef.querySelectorAll<HTMLElement>('.taskitem-text')
+			const editableElements = containerRef.querySelectorAll<HTMLElement>(".taskitem-text")
 			const newTarget = editableElements[index + lines.length - 1]
 			if (newTarget) {
 				newTarget.focus()
@@ -287,7 +287,7 @@ export default (node: TodoProps) => {
 		<div class="p-5" ref={containerRef}>
 			<Show when={node.showTitle}>
 				<div class="text-2xl font-bold mb-4">
-					<EditableTitle nodeId={node.id} title={node.title || ''} />
+					<EditableTitle nodeId={node.id} title={node.title || ""} />
 				</div>
 			</Show>
 
@@ -329,8 +329,8 @@ const SortableItem = (props: SortableItemProps) => {
 			use:sortable
 			class="sortable group/taskitem flex justify-between"
 			classList={{
-				'opacity-25': sortable.isActiveDraggable,
-				'transition-transform': !!state.active.draggable
+				"opacity-25": sortable.isActiveDraggable,
+				"transition-transform": !!state.active.draggable
 			}}
 		>
 			<TaskItem {...props.task} index={props.index} nodeId={props.nodeId} handleKeyDown={props.handleKeyDown} handlePaste={props.handlePaste} />
@@ -345,7 +345,7 @@ const TaskItem = (props: TaskItemProps) => {
 		<div
 			class="w-full flex items-center"
 			style={{
-				'margin-left': `${props.nestLevel * 18}px`
+				"margin-left": `${props.nestLevel * 18}px`
 			}}
 		>
 			<div class="flex items-start justify-between w-full">
@@ -356,7 +356,7 @@ const TaskItem = (props: TaskItemProps) => {
 						contentEditable={true}
 						onKeyDown={(e) => props.handleKeyDown(e, props.index)}
 						onInput={(e) => {
-							handleTaskChange(props.nodeId, props.index, e.currentTarget.textContent || '')
+							handleTaskChange(props.nodeId, props.index, e.currentTarget.textContent || "")
 						}}
 						onPaste={(e) => props.handlePaste(e, props.index)}
 					>

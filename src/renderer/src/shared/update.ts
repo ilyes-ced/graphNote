@@ -1,7 +1,7 @@
-import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document } from '../types'
-import { setStore, store } from './store'
-import { saveChanges } from './utils'
-import { actionsMiddleware } from './actions'
+import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document } from "../types"
+import { setStore, store } from "./store"
+import { saveChanges } from "./utils"
+import { actionsMiddleware } from "./actions"
 
 const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) => {
 	for (const [parentId, nodes] of Object.entries(store.nodes)) {
@@ -9,21 +9,21 @@ const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) 
 		if (nodeIndex === -1) continue
 
 		const node = nodes[nodeIndex]
-		if (!('tasks' in node) || !Array.isArray(node.tasks) || !node.tasks[taskIndex]) continue
+		if (!("tasks" in node) || !Array.isArray(node.tasks) || !node.tasks[taskIndex]) continue
 
-		const oldValue = node.tasks[taskIndex][typeof value === 'boolean' ? 'check' : 'text']
-		const key = typeof value === 'boolean' ? 'check' : 'text'
+		const oldValue = node.tasks[taskIndex][typeof value === "boolean" ? "check" : "text"]
+		const key = typeof value === "boolean" ? "check" : "text"
 
-		setStore('nodes', parentId, nodeIndex, 'tasks', taskIndex, key, value)
+		setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, value)
 		saveChanges()
 
 		return {
 			undo() {
-				setStore('nodes', parentId, nodeIndex, 'tasks', taskIndex, key, oldValue)
+				setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, oldValue)
 				saveChanges()
 			},
 			redo() {
-				setStore('nodes', parentId, nodeIndex, 'tasks', taskIndex, key, value)
+				setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, value)
 				saveChanges()
 			}
 		}
@@ -36,19 +36,19 @@ const toggleTitle = (nodeId: string) => {
 		if (index !== -1) {
 			const show = store.nodes[parentId][index].showTitle
 
-			if (store.nodes[parentId][index].title == '') {
-				setStore('nodes', parentId, index, 'title', 'Title')
+			if (store.nodes[parentId][index].title == "") {
+				setStore("nodes", parentId, index, "title", "Title")
 			}
 
-			setStore('nodes', parentId, index, 'showTitle', !show)
+			setStore("nodes", parentId, index, "showTitle", !show)
 			saveChanges()
 			return {
 				undo() {
-					setStore('nodes', parentId, index, 'showTitle', show)
+					setStore("nodes", parentId, index, "showTitle", show)
 					saveChanges()
 				},
 				redo() {
-					setStore('nodes', parentId, index, 'showTitle', !show)
+					setStore("nodes", parentId, index, "showTitle", !show)
 					saveChanges()
 				}
 			}
@@ -60,15 +60,15 @@ const toggleDesc = (nodeId: string) => {
 		const index = nodeList.findIndex((n) => n.id === nodeId)
 		if (index !== -1) {
 			const show = store.nodes[parentId][index].showDescription
-			setStore('nodes', parentId, index, 'showDescription', !show)
+			setStore("nodes", parentId, index, "showDescription", !show)
 			saveChanges()
 			return {
 				undo() {
-					setStore('nodes', parentId, index, 'showDescription', show)
+					setStore("nodes", parentId, index, "showDescription", show)
 					saveChanges()
 				},
 				redo() {
-					setStore('nodes', parentId, index, 'showDescription', !show)
+					setStore("nodes", parentId, index, "showDescription", !show)
 					saveChanges()
 				}
 			}
@@ -82,16 +82,16 @@ const updateNote = (nodeId: string, newValue: string) => {
 		const index = nodeList.findIndex((n) => n.id === nodeId)
 		if (index !== -1) {
 			const oldValue = store.nodes[parentId][index].text
-			setStore('nodes', parentId, index, 'text', newValue)
+			setStore("nodes", parentId, index, "text", newValue)
 			saveChanges()
 
 			return {
 				undo() {
-					setStore('nodes', parentId, index, 'text', oldValue)
+					setStore("nodes", parentId, index, "text", oldValue)
 					saveChanges()
 				},
 				redo() {
-					setStore('nodes', parentId, index, 'text', newValue)
+					setStore("nodes", parentId, index, "text", newValue)
 					saveChanges()
 				}
 			}
@@ -107,16 +107,16 @@ const updateURL = (nodeId: string, newValue: string) => {
 			const oldValue = store.nodes[parentId][index].url
 			console.log(oldValue)
 			console.log(newValue)
-			setStore('nodes', parentId, index, 'url', newValue)
+			setStore("nodes", parentId, index, "url", newValue)
 			saveChanges()
 
 			return {
 				undo() {
-					setStore('nodes', parentId, index, 'url', oldValue)
+					setStore("nodes", parentId, index, "url", oldValue)
 					saveChanges()
 				},
 				redo() {
-					setStore('nodes', parentId, index, 'url', newValue)
+					setStore("nodes", parentId, index, "url", newValue)
 					saveChanges()
 				}
 			}
@@ -142,7 +142,7 @@ const updateZIndex = (nodeId: string) => {
 	const oldZ = boardNodes[index].zIndex ?? 0
 	const newZ = Math.max(...boardNodes.map((n) => n.zIndex ?? 0)) + 1
 
-	setStore('nodes', activeBoardId, index, 'zIndex', newZ)
+	setStore("nodes", activeBoardId, index, "zIndex", newZ)
 
 	// return {
 	//   undo() {
@@ -161,13 +161,13 @@ const updateMovingPosition = (nodeId: string, x: number, y: number) => {
 	const boardNodes = store.nodes[activeBoardId] ?? []
 	const index = boardNodes.findIndex((n) => n.id === nodeId)
 	if (index !== -1) {
-		if (x > 0) setStore('nodes', activeBoardId, index, 'x', x)
-		if (y > 0) setStore('nodes', activeBoardId, index, 'y', y)
+		if (x > 0) setStore("nodes", activeBoardId, index, "x", x)
+		if (y > 0) setStore("nodes", activeBoardId, index, "y", y)
 	}
 }
 
 const updatePosition = (nodeId: string, x: number, y: number) => {
-	console.info('updating the position of node: ', nodeId, x, y)
+	console.info("updating the position of node: ", nodeId, x, y)
 	const activeBoardId = getActiveBoardId()
 	const boardNodes = store.nodes[activeBoardId] ?? []
 
@@ -176,19 +176,19 @@ const updatePosition = (nodeId: string, x: number, y: number) => {
 		const oldX = boardNodes[index].x
 		const oldY = boardNodes[index].y
 
-		if (x > 0) setStore('nodes', activeBoardId, index, 'x', x)
-		if (y > 0) setStore('nodes', activeBoardId, index, 'y', y)
+		if (x > 0) setStore("nodes", activeBoardId, index, "x", x)
+		if (y > 0) setStore("nodes", activeBoardId, index, "y", y)
 		saveChanges()
 
 		return {
 			undo() {
-				setStore('nodes', activeBoardId, index, 'x', oldX)
-				setStore('nodes', activeBoardId, index, 'y', oldY)
+				setStore("nodes", activeBoardId, index, "x", oldX)
+				setStore("nodes", activeBoardId, index, "y", oldY)
 				saveChanges()
 			},
 			redo() {
-				setStore('nodes', activeBoardId, index, 'x', x)
-				setStore('nodes', activeBoardId, index, 'y', y)
+				setStore("nodes", activeBoardId, index, "x", x)
+				setStore("nodes", activeBoardId, index, "y", y)
 				saveChanges()
 			}
 		}
@@ -214,23 +214,23 @@ const incrementSelectedNodesPositions = (dx: number, dy: number) => {
 	if (!affected.length) return
 
 	affected.forEach((n) => {
-		setStore('nodes', activeBoardId, n.index, 'x', n.newX)
-		setStore('nodes', activeBoardId, n.index, 'y', n.newY)
+		setStore("nodes", activeBoardId, n.index, "x", n.newX)
+		setStore("nodes", activeBoardId, n.index, "y", n.newY)
 	})
 	saveChanges()
 
 	return {
 		undo() {
 			affected.forEach((n) => {
-				setStore('nodes', activeBoardId, n.index, 'x', n.oldX)
-				setStore('nodes', activeBoardId, n.index, 'y', n.oldY)
+				setStore("nodes", activeBoardId, n.index, "x", n.oldX)
+				setStore("nodes", activeBoardId, n.index, "y", n.oldY)
 			})
 			saveChanges()
 		},
 		redo() {
 			affected.forEach((n) => {
-				setStore('nodes', activeBoardId, n.index, 'x', n.newX)
-				setStore('nodes', activeBoardId, n.index, 'y', n.newY)
+				setStore("nodes", activeBoardId, n.index, "x", n.newX)
+				setStore("nodes", activeBoardId, n.index, "y", n.newY)
 			})
 			saveChanges()
 		}
@@ -244,7 +244,7 @@ const updateNodeWidth = (nodeId: string, width: number) => {
 
 	const index = boardNodes.findIndex((n) => n.id === nodeId)
 	if (index !== -1) {
-		setStore('nodes', activeBoardId, index, 'width', width)
+		setStore("nodes", activeBoardId, index, "width", width)
 	}
 
 	saveChanges()
@@ -265,8 +265,8 @@ const updateChildPosition = (nodeId: string, x: number, y: number) => {
 				const node = childNodes[i]
 				if (node.id === nodeId) {
 					console.log(node)
-					setStore('nodes', parentNode.id, i, 'x', x)
-					setStore('nodes', parentNode.id, i, 'y', y)
+					setStore("nodes", parentNode.id, i, "x", x)
+					setStore("nodes", parentNode.id, i, "y", y)
 					break outerLoop
 				}
 			}
@@ -344,8 +344,8 @@ const removeNodeById = (nodeId: string, parentId?: string, deleteChildren: boole
 	const type = currentNodes[index].type
 	if ([NodeType.Board, NodeType.Column].includes(type)) {
 		//TODO: delete its nested nodes, while keeping them restorable
-		console.log('deleting:', removedNode.id)
-		console.log('deleting:', removedNodeChildren)
+		console.log("deleting:", removedNode.id)
+		console.log("deleting:", removedNodeChildren)
 	} else if ([NodeType.Image, NodeType.Document].includes(type)) {
 		//TODO: delete the file from the GraphNote folder
 		// restoring Media might be impossible or hard
@@ -353,24 +353,24 @@ const removeNodeById = (nodeId: string, parentId?: string, deleteChildren: boole
 		//? for later when we add downloading the youtube video, we delete it if the URL is deleted
 	}
 
-	setStore('nodes', targetId, updated)
+	setStore("nodes", targetId, updated)
 	if (deleteChildren) {
-		setStore('nodes', removedNode.id, undefined!)
+		setStore("nodes", removedNode.id, undefined!)
 	}
 	saveChanges()
 
 	return {
 		undo() {
-			setStore('nodes', targetId, currentNodes)
+			setStore("nodes", targetId, currentNodes)
 			if (deleteChildren) {
-				setStore('nodes', removedNode.id, removedNodeChildren)
+				setStore("nodes", removedNode.id, removedNodeChildren)
 			}
 			saveChanges()
 		},
 		redo() {
-			setStore('nodes', targetId, updated)
+			setStore("nodes", targetId, updated)
 			if (deleteChildren) {
-				setStore('nodes', removedNode.id, undefined!)
+				setStore("nodes", removedNode.id, undefined!)
 			}
 			saveChanges()
 		}
@@ -405,16 +405,16 @@ const addNode = (newNode: NodeUnion, targetNodeId?: string) => {
 
 	const currentNodes = store.nodes[targetId] ?? []
 
-	setStore('nodes', targetId, [...currentNodes, newNode])
+	setStore("nodes", targetId, [...currentNodes, newNode])
 	saveChanges()
 
 	return {
 		undo() {
-			setStore('nodes', targetId, currentNodes)
+			setStore("nodes", targetId, currentNodes)
 			saveChanges()
 		},
 		redo() {
-			setStore('nodes', targetId, [...currentNodes, newNode])
+			setStore("nodes", targetId, [...currentNodes, newNode])
 			saveChanges()
 		}
 	}
@@ -455,15 +455,15 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 		case NodeType.Comment:
 			return {
 				...base,
-				comment: ''
+				comment: ""
 			}
 
 		case NodeType.Todo:
 			return {
 				...base,
 				showTitle: true,
-				title: 'Title',
-				tasks: [{ text: '', check: false, nestLevel: 0 }]
+				title: "Title",
+				tasks: [{ text: "", check: false, nestLevel: 0 }]
 			} satisfies Todo
 
 		case NodeType.Table:
@@ -471,53 +471,53 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				...base,
 				columns: [],
 				rows: [],
-				title: '',
-				description: ''
+				title: "",
+				description: ""
 			} satisfies Table
 
 		case NodeType.Url:
 			return {
 				...base,
-				url: '',
+				url: "",
 				showDescription: true,
-				description: ''
+				description: ""
 			} satisfies Url
 
 		case NodeType.Board:
 			return {
 				...base,
-				title: 'New Board',
-				icon_path: ''
+				title: "New Board",
+				icon_path: ""
 			} satisfies Board
 
 		case NodeType.Column:
 			return {
 				...base,
-				title: 'New Column'
+				title: "New Column"
 			} satisfies Column
 
 		case NodeType.Document:
 			return {
 				...base,
-				path: '', // TODO: in the Document node; when the user creates a new one make it a file upload
+				path: "", // TODO: in the Document node; when the user creates a new one make it a file upload
 				showDescription: false,
-				description: ''
+				description: ""
 			} satisfies Document
 
 		case NodeType.Color:
 			return {
 				...base,
-				colorValue: '#ffffff', //TODO: randomize it
+				colorValue: "#ffffff", //TODO: randomize it
 				showDescription: true,
-				description: 'color name maybe goes here'
+				description: "color name maybe goes here"
 			} satisfies Color
 
 		case NodeType.Image:
 			return {
 				...base,
-				path: '',
+				path: "",
 				showDescription: false,
-				description: ''
+				description: ""
 			} satisfies Image
 
 		case NodeType.Activity:
@@ -537,7 +537,7 @@ const newNode = (type: NodeType, x: number, y: number) => {
 	const activeBoardId = getActiveBoardId()
 
 	//todo: adjust the x and y to scale as well
-	console.log('creating a new node with coords : ', x, y)
+	console.log("creating a new node with coords : ", x, y)
 	let [snappedX, snappedY] = [x, y]
 	if (store.snapGrid) {
 		snappedX = Math.round(x / 10) * 10
@@ -546,24 +546,24 @@ const newNode = (type: NodeType, x: number, y: number) => {
 
 	const node = generateNewNode(type, snappedX ?? x, snappedY ?? y)
 
-	setStore('nodes', activeBoardId, (nodes = []) => [...nodes, node])
+	setStore("nodes", activeBoardId, (nodes = []) => [...nodes, node])
 	saveChanges()
 	updateZIndex(node.id)
 
 	return {
 		undo() {
-			setStore('nodes', activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== node.id))
+			setStore("nodes", activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== node.id))
 			saveChanges()
 		},
 		redo() {
-			setStore('nodes', activeBoardId, (nodes = []) => [...nodes, node])
+			setStore("nodes", activeBoardId, (nodes = []) => [...nodes, node])
 			saveChanges()
 		}
 	}
 }
 
 const newImageNode = (img: string, x: number, y: number) => {
-	console.log('new image node')
+	console.log("new image node")
 	const activeBoardId = getActiveBoardId()
 
 	//todo: adjust the x and y to scale as well
@@ -583,28 +583,28 @@ const newImageNode = (img: string, x: number, y: number) => {
 		y: snappedY,
 		index: 0,
 		path: img,
-		title: 'Untitled Image',
-		description: 'test'
+		title: "Untitled Image",
+		description: "test"
 	}
 
-	setStore('nodes', activeBoardId, (nodes = []) => [...nodes, imageNode])
+	setStore("nodes", activeBoardId, (nodes = []) => [...nodes, imageNode])
 	updateZIndex(imageNode.id)
 	saveChanges()
 
 	return {
 		undo() {
-			setStore('nodes', activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== imageNode.id))
+			setStore("nodes", activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== imageNode.id))
 			saveChanges()
 		},
 		redo() {
-			setStore('nodes', activeBoardId, (nodes = []) => [...nodes, imageNode])
+			setStore("nodes", activeBoardId, (nodes = []) => [...nodes, imageNode])
 			saveChanges()
 		}
 	}
 }
 
 //? update node colors, fg or bg or strip
-const updateNodeColor = (nodeId: string, type: 'bg' | 'fg' | 'strip', color: ColorType) => {
+const updateNodeColor = (nodeId: string, type: "bg" | "fg" | "strip", color: ColorType) => {
 	const activeBoardId = store.activeBoards.at(-1)?.id
 	if (!activeBoardId) return
 
@@ -614,17 +614,17 @@ const updateNodeColor = (nodeId: string, type: 'bg' | 'fg' | 'strip', color: Col
 
 	let oldValue: any
 	switch (type) {
-		case 'bg':
+		case "bg":
 			oldValue = boardNodes[index].color
-			setStore('nodes', activeBoardId, index, 'color', color)
+			setStore("nodes", activeBoardId, index, "color", color)
 			break
-		case 'fg':
+		case "fg":
 			oldValue = boardNodes[index].textColor
-			setStore('nodes', activeBoardId, index, 'textColor', color)
+			setStore("nodes", activeBoardId, index, "textColor", color)
 			break
-		case 'strip':
+		case "strip":
 			oldValue = boardNodes[index].top_strip_color
-			setStore('nodes', activeBoardId, index, 'top_strip_color', color)
+			setStore("nodes", activeBoardId, index, "top_strip_color", color)
 			break
 	}
 	saveChanges()
@@ -632,28 +632,28 @@ const updateNodeColor = (nodeId: string, type: 'bg' | 'fg' | 'strip', color: Col
 	return {
 		undo() {
 			switch (type) {
-				case 'bg':
-					setStore('nodes', activeBoardId, index, 'color', oldValue)
+				case "bg":
+					setStore("nodes", activeBoardId, index, "color", oldValue)
 					break
-				case 'fg':
-					setStore('nodes', activeBoardId, index, 'textColor', oldValue)
+				case "fg":
+					setStore("nodes", activeBoardId, index, "textColor", oldValue)
 					break
-				case 'strip':
-					setStore('nodes', activeBoardId, index, 'top_strip_color', oldValue)
+				case "strip":
+					setStore("nodes", activeBoardId, index, "top_strip_color", oldValue)
 					break
 			}
 			saveChanges()
 		},
 		redo() {
 			switch (type) {
-				case 'bg':
-					setStore('nodes', activeBoardId, index, 'color', color)
+				case "bg":
+					setStore("nodes", activeBoardId, index, "color", color)
 					break
-				case 'fg':
-					setStore('nodes', activeBoardId, index, 'textColor', color)
+				case "fg":
+					setStore("nodes", activeBoardId, index, "textColor", color)
 					break
-				case 'strip':
-					setStore('nodes', activeBoardId, index, 'top_strip_color', color)
+				case "strip":
+					setStore("nodes", activeBoardId, index, "top_strip_color", color)
 					break
 			}
 			saveChanges()
@@ -668,7 +668,7 @@ const unsetStripColor = () => {
 
 		const index = boardNodes.findIndex((n) => n.id === nodeId)
 		if (index !== -1) {
-			setStore('nodes', activeBoardId, index, (prev) => ({
+			setStore("nodes", activeBoardId, index, (prev) => ({
 				...prev,
 				top_strip_color: undefined
 			}))
@@ -682,7 +682,7 @@ const changeToUrlNode = (nodeId: string, url: string) => {
 	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
 		const index = nodeList.findIndex((n) => n.id === nodeId)
 		if (index !== -1) {
-			setStore('nodes', parentId, index, (oldNote) => ({
+			setStore("nodes", parentId, index, (oldNote) => ({
 				...oldNote,
 				type: NodeType.Url,
 				url: url
@@ -699,16 +699,16 @@ const updateNodeTitle = (nodeId: string, newValue: string) => {
 		if (index !== -1) {
 			const oldTitle = nodeList[index].title
 
-			setStore('nodes', parentId, index, 'title', newValue)
+			setStore("nodes", parentId, index, "title", newValue)
 			saveChanges()
 
 			return {
 				undo() {
-					setStore('nodes', parentId, index, 'title', oldTitle)
+					setStore("nodes", parentId, index, "title", oldTitle)
 					saveChanges()
 				},
 				redo() {
-					setStore('nodes', parentId, index, 'title', newValue)
+					setStore("nodes", parentId, index, "title", newValue)
 					saveChanges()
 				}
 			}
@@ -724,16 +724,16 @@ const updateNodeDesc = (nodeId: string, newValue: string) => {
 		if (index !== -1) {
 			const oldDesc = nodeList[index].description
 
-			setStore('nodes', parentId, index, 'description', newValue)
+			setStore("nodes", parentId, index, "description", newValue)
 			saveChanges()
 
 			return {
 				undo() {
-					setStore('nodes', parentId, index, 'description', oldDesc)
+					setStore("nodes", parentId, index, "description", oldDesc)
 					saveChanges()
 				},
 				redo() {
-					setStore('nodes', parentId, index, 'description', newValue)
+					setStore("nodes", parentId, index, "description", newValue)
 					saveChanges()
 				}
 			}
@@ -749,10 +749,10 @@ const updateActivityCounter = (nodeId: string, date: string, newValue: number) =
 		const index = nodeList.findIndex((n) => n.id === nodeId)
 		if (index !== -1) {
 			setStore(
-				'nodes',
+				"nodes",
 				parentId,
 				index,
-				'progress',
+				"progress",
 				date,
 				// make go no less than 0
 				(prev) => (prev ?? 0) + newValue
@@ -765,7 +765,7 @@ const updateActivityCounter = (nodeId: string, date: string, newValue: number) =
 }
 
 const reorderTasks = (nodeId: string, tasks: Task[]) => {
-	console.log('reorder tasks')
+	console.log("reorder tasks")
 	for (const [parentId, nodes] of Object.entries(store.nodes)) {
 		const index = nodes.findIndex((n) => n.id === nodeId)
 		if (index === -1) continue
@@ -773,18 +773,18 @@ const reorderTasks = (nodeId: string, tasks: Task[]) => {
 		const oldTasks = [...(nodes[index].tasks ?? [])]
 		const newTasks = [...tasks]
 
-		setStore('nodes', parentId, index, 'tasks', tasks)
+		setStore("nodes", parentId, index, "tasks", tasks)
 		saveChanges()
 
 		return {
 			undo() {
-				console.log('task reorder undo', oldTasks)
-				setStore('nodes', parentId, index, 'tasks', oldTasks)
+				console.log("task reorder undo", oldTasks)
+				setStore("nodes", parentId, index, "tasks", oldTasks)
 				saveChanges()
 			},
 			redo() {
-				console.log('task reorder redo', newTasks)
-				setStore('nodes', parentId, index, 'tasks', newTasks)
+				console.log("task reorder redo", newTasks)
+				setStore("nodes", parentId, index, "tasks", newTasks)
 				saveChanges()
 			}
 		}
@@ -811,10 +811,10 @@ const newDocumentNode = (path: string, x: number, y: number) => {
 		y: snappedY,
 		index: 0,
 		path: path,
-		description: 'test'
+		description: "test"
 	}
 
-	setStore('nodes', activeBoardId, (nodes = []) => [...nodes, docNode])
+	setStore("nodes", activeBoardId, (nodes = []) => [...nodes, docNode])
 
 	saveChanges()
 }
@@ -838,7 +838,7 @@ function findNodeDeep(parentId: string, targetId: string): { parentId: string; i
 	return null
 }
 
-const updateBoardStyles = (nodeId: string, value: string, type: 'bg' | 'grid' | 'image') => {
+const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | "image") => {
 	const activeBoardId = store.activeBoards.at(-2)?.id
 	console.log(activeBoardId)
 	if (!activeBoardId) return
@@ -854,41 +854,41 @@ const updateBoardStyles = (nodeId: string, value: string, type: 'bg' | 'grid' | 
 
 	const boardNodes = store.nodes[parentId] ?? []
 
-	if (type == 'bg') {
-		oldValue = boardNodes[index]?.bgColor ?? ''
-		setStore('nodes', parentId, index, 'bgColor', value)
+	if (type == "bg") {
+		oldValue = boardNodes[index]?.bgColor ?? ""
+		setStore("nodes", parentId, index, "bgColor", value)
 		//? unsetting bgImage cuz it has priority
-		setStore('nodes', parentId, index, 'bgImagePath', '')
-	} else if (type == 'grid') {
-		oldValue = boardNodes[index]?.gridColor ?? ''
-		setStore('nodes', parentId, index, 'gridColor', value)
-	} else if (type == 'image') {
-		oldValue = boardNodes[index]?.bgImagePath ?? ''
-		setStore('nodes', parentId, index, 'bgImagePath', value)
+		setStore("nodes", parentId, index, "bgImagePath", "")
+	} else if (type == "grid") {
+		oldValue = boardNodes[index]?.gridColor ?? ""
+		setStore("nodes", parentId, index, "gridColor", value)
+	} else if (type == "image") {
+		oldValue = boardNodes[index]?.bgImagePath ?? ""
+		setStore("nodes", parentId, index, "bgImagePath", value)
 	}
 
 	saveChanges()
 
 	return {
 		undo() {
-			if (type == 'bg') {
-				setStore('nodes', parentId, index, 'bgColor', oldValue)
-				setStore('nodes', parentId, index, 'bgImagePath', '')
-			} else if (type == 'grid') {
-				setStore('nodes', parentId, index, 'gridColor', oldValue)
-			} else if (type == 'image') {
-				setStore('nodes', parentId, index, 'bgImagePath', oldValue)
+			if (type == "bg") {
+				setStore("nodes", parentId, index, "bgColor", oldValue)
+				setStore("nodes", parentId, index, "bgImagePath", "")
+			} else if (type == "grid") {
+				setStore("nodes", parentId, index, "gridColor", oldValue)
+			} else if (type == "image") {
+				setStore("nodes", parentId, index, "bgImagePath", oldValue)
 			}
 			saveChanges()
 		},
 		redo() {
-			if (type == 'bg') {
-				setStore('nodes', parentId, index, 'bgColor', value)
-				setStore('nodes', parentId, index, 'bgImagePath', '')
-			} else if (type == 'grid') {
-				setStore('nodes', parentId, index, 'gridColor', value)
-			} else if (type == 'image') {
-				setStore('nodes', parentId, index, 'bgImagePath', value)
+			if (type == "bg") {
+				setStore("nodes", parentId, index, "bgColor", value)
+				setStore("nodes", parentId, index, "bgImagePath", "")
+			} else if (type == "grid") {
+				setStore("nodes", parentId, index, "gridColor", value)
+			} else if (type == "image") {
+				setStore("nodes", parentId, index, "bgImagePath", value)
 			}
 			saveChanges()
 		}

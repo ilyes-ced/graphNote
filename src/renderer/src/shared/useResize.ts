@@ -1,4 +1,4 @@
-import { createSignal, onCleanup } from 'solid-js'
+import { createSignal, onCleanup } from "solid-js"
 
 export function useResize(
 	// undefined for activity type node
@@ -19,8 +19,8 @@ export function useResize(
 		}
 
 		const onUp = () => {
-			window.removeEventListener('pointermove', onMove)
-			window.removeEventListener('pointerup', onUp)
+			window.removeEventListener("pointermove", onMove)
+			window.removeEventListener("pointerup", onUp)
 
 			if (onResizeEnd) {
 				// round up to 10
@@ -29,13 +29,13 @@ export function useResize(
 			}
 		}
 
-		window.addEventListener('pointermove', onMove)
-		window.addEventListener('pointerup', onUp)
+		window.addEventListener("pointermove", onMove)
+		window.addEventListener("pointerup", onUp)
 	}
 
 	onCleanup(() => {
-		window.removeEventListener('pointermove', startResize)
-		window.removeEventListener('pointerup', startResize)
+		window.removeEventListener("pointermove", startResize)
+		window.removeEventListener("pointerup", startResize)
 	})
 
 	return {

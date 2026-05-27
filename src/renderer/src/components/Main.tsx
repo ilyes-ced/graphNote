@@ -1,32 +1,32 @@
-import { createEffect, onMount } from 'solid-js'
-import { setStore, store } from '../shared/store'
-import Wrapper from './core/Wrapper'
-import Settings from './core/Settings'
+import { createEffect, onMount } from "solid-js"
+import { setStore, store } from "../shared/store"
+import Wrapper from "./core/Wrapper"
+import Settings from "./core/Settings"
 
 const loadNodes = async () => {
 	await window.api.backUpSave()
 
 	try {
 		const data = await window.api.getNodes()
-		setStore('nodes', data ?? [])
+		setStore("nodes", data ?? [])
 	} catch (err) {
-		console.error('Failed to get nodes:', err)
+		console.error("Failed to get nodes:", err)
 	}
 
 	try {
 		const data = await window.api.getEdges()
-		setStore('edges', data ?? [])
+		setStore("edges", data ?? [])
 	} catch (err) {
-		console.error('Failed to get edges:', err)
+		console.error("Failed to get edges:", err)
 	}
 }
 
 export default () => {
 	onMount(async () => {
 		// make the grid pattern take all space
-		const size = document.getElementById('main')?.getBoundingClientRect()
+		const size = document.getElementById("main")?.getBoundingClientRect()
 		if (size) {
-			setStore('viewport', {
+			setStore("viewport", {
 				width: size.width / store.viewport.scale,
 				height: size.height / store.viewport.scale
 			})
@@ -35,7 +35,7 @@ export default () => {
 		try {
 			await loadNodes()
 		} catch (error) {
-			console.log('error loading nodes:')
+			console.log("error loading nodes:")
 			console.log(error)
 		}
 	})

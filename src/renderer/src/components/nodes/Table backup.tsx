@@ -1,21 +1,21 @@
-import { createSignal, For, JSX, Match, Show, Switch } from 'solid-js'
-import { Badge, BadgeRegistry, ColumnType, Table as TableNode } from '../../types'
-import { useDraggable } from '../../shared/nodeDrag'
-import { DataTable } from './table/data-table'
-import { Task, columns } from './table/columns'
-import { store } from '../../shared/store'
+import { createSignal, For, JSX, Match, Show, Switch } from "solid-js"
+import { Badge, BadgeRegistry, ColumnType, Table as TableNode } from "../../types"
+import { useDraggable } from "../../shared/nodeDrag"
+import { DataTable } from "./table/data-table"
+import { Task, columns } from "./table/columns"
+import { store } from "../../shared/store"
 type TableProps = TableNode & {
 	is_child?: boolean
 }
-import { Checkbox, CheckboxControl } from '../ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { IconDotsVertical, IconFilter, IconGraph, IconSortDescending } from '@tabler/icons-solidjs'
+import { Checkbox, CheckboxControl } from "../ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { IconDotsVertical, IconFilter, IconGraph, IconSortDescending } from "@tabler/icons-solidjs"
 
 export default (node: TableProps) => {
 	//TODO: change to string which is the badgeRegistry key to show the menu of the related badge type
 	// with a for loop to create a list for each type of badges used
 	// none for no menu showd
-	const [showBadgeSelectionMenu, setShowBadgeSelectionMenu] = createSignal<string>('none')
+	const [showBadgeSelectionMenu, setShowBadgeSelectionMenu] = createSignal<string>("none")
 	const [badgeSelectionMenuPos, setBadgeSelectionMenuPos] = createSignal<{
 		x: number
 		y: number
@@ -26,7 +26,7 @@ export default (node: TableProps) => {
 		// get column type here
 		let colType = node.columns.find((col) => col.key === key) ?? ColumnType.String
 
-		const isBadgeValue = typeof value === 'object' && value !== null && 'type' in value && 'label' in value
+		const isBadgeValue = typeof value === "object" && value !== null && "type" in value && "label" in value
 		const badge = isBadgeValue ? getBadge(value.type, value.label) : null
 
 		return (
@@ -56,8 +56,8 @@ export default (node: TableProps) => {
 			<div
 				class="badge-selection-menu z-50 transition-all duration-200 ease-in-out absolute top-4 left-4 [box-shadow:5px_5px_var(--color-primary)] bg-background"
 				style={{
-					top: badgeSelectionMenuPos().x + 'px',
-					left: badgeSelectionMenuPos().y + 'px'
+					top: badgeSelectionMenuPos().x + "px",
+					left: badgeSelectionMenuPos().y + "px"
 				}}
 			>
 				<div class="flex flex-col divide-accent divide-2 space-y-4 p-4">
@@ -67,12 +67,12 @@ export default (node: TableProps) => {
 								class="hover:bg-accent"
 								onClick={(e) => {
 									e.preventDefault()
-									console.log('000000000000000000000000000000000')
-									console.log('000000000000000000000000000000000')
-									console.log('000000000000000000000000000000000')
-									console.log('000000000000000000000000000000000')
+									console.log("000000000000000000000000000000000")
+									console.log("000000000000000000000000000000000")
+									console.log("000000000000000000000000000000000")
+									console.log("000000000000000000000000000000000")
 									//TODO: change badge logic here
-									setShowBadgeSelectionMenu('none')
+									setShowBadgeSelectionMenu("none")
 								}}
 							>
 								<BadgeComponent type={props.type} text={badge.label} color={badge.color} />
@@ -95,7 +95,7 @@ export default (node: TableProps) => {
 					setShowBadgeSelectionMenu(props.type)
 				}}
 				class="badge border-2 px-2 py-1  font-semibold flex items-center justify-center cursor-pointer"
-				style={{ background: props.color + '70', 'border-color': props.color }}
+				style={{ background: props.color + "70", "border-color": props.color }}
 			>
 				{props.text}
 			</div>
@@ -105,20 +105,20 @@ export default (node: TableProps) => {
 	// TODO: save later in file
 	const badgeRegistry: BadgeRegistry = {
 		status: [
-			{ id: 'badge_0', label: 'todo', color: '#999999' },
-			{ id: 'badge_1', label: 'in-progress', color: '#007bff' },
-			{ id: 'badge_2', label: 'done', color: '#28a745' },
-			{ id: 'badge_3', label: 'cancelled', color: '#dc3545' }
+			{ id: "badge_0", label: "todo", color: "#999999" },
+			{ id: "badge_1", label: "in-progress", color: "#007bff" },
+			{ id: "badge_2", label: "done", color: "#28a745" },
+			{ id: "badge_3", label: "cancelled", color: "#dc3545" }
 		],
 		priority: [
-			{ id: 'badge_4', label: 'low', color: '#28a745' },
-			{ id: 'badge_5', label: 'medium', color: '#ffc107' },
-			{ id: 'badge_6', label: 'high', color: '#dc3545' }
+			{ id: "badge_4", label: "low", color: "#28a745" },
+			{ id: "badge_5", label: "medium", color: "#ffc107" },
+			{ id: "badge_6", label: "high", color: "#dc3545" }
 		],
 		label: [
-			{ id: 'badge_7', label: 'bug', color: '#e74c3c' },
-			{ id: 'badge_8', label: 'feature', color: '#2980b9' },
-			{ id: 'badge_9', label: 'enhancement', color: '#2ecc71' }
+			{ id: "badge_7", label: "bug", color: "#e74c3c" },
+			{ id: "badge_8", label: "feature", color: "#2980b9" },
+			{ id: "badge_9", label: "enhancement", color: "#2ecc71" }
 		]
 	}
 
@@ -128,25 +128,25 @@ export default (node: TableProps) => {
 		if (badge) {
 			return badge
 		} else {
-			return { id: 'none', label: 'unknown', color: '#ffffff' }
+			return { id: "none", label: "unknown", color: "#ffffff" }
 		}
 	}
 
 	type TableCellValue = string | number | Badge
 
 	function isBadge(val: TableCellValue): val is Badge {
-		return typeof val === 'object' && 'label' in val && 'color' in val
+		return typeof val === "object" && "label" in val && "color" in val
 	}
 
 	return (
 		<div
-			onMouseLeave={() => setShowBadgeSelectionMenu('none')}
+			onMouseLeave={() => setShowBadgeSelectionMenu("none")}
 			onClick={
 				// maybe add if target is not badge or inside meny
 				(e) => {
-					if (!(e.target as HTMLElement).closest('.badge, .badge-selection-menu')) {
+					if (!(e.target as HTMLElement).closest(".badge, .badge-selection-menu")) {
 						// todo: reorder task items
-						setShowBadgeSelectionMenu('none')
+						setShowBadgeSelectionMenu("none")
 					}
 				}
 			}
@@ -164,7 +164,7 @@ export default (node: TableProps) => {
 					<div class="flex space-x-2 columnSelection">
 						<Select
 							class="rounded-none cursor-pointer"
-							options={['Apple', 'Banana', 'Blueberry', 'Grapes', 'Pineapple']}
+							options={["Apple", "Banana", "Blueberry", "Grapes", "Pineapple"]}
 							placeholder="Column filter"
 							itemComponent={(props) => <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>}
 						>
@@ -263,7 +263,7 @@ const TableCellCheckbox = (props: { children: JSX.Element }) => {
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-const paginationButtonsClasses = 'cursor-pointer hover:bg-muted px-4 py-1 border-y border-border'
+const paginationButtonsClasses = "cursor-pointer hover:bg-muted px-4 py-1 border-y border-border"
 const Pagination = () => {
 	return (
 		<div class="flex flex-row items-center justify-between pt-2">
@@ -280,7 +280,7 @@ const Pagination = () => {
 							class={paginationButtonsClasses}
 							classList={{
 								// active button color, change later
-								'bg-secondary': pageNum === 1
+								"bg-secondary": pageNum === 1
 							}}
 						>
 							{pageNum}
