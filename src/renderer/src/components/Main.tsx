@@ -41,7 +41,7 @@ export default () => {
 	})
 
 	return (
-		<div id="main" class="relative h-full w-[calc(100%-65px)] overflow-hidden ">
+		<div id="main" class="relative h-full w-full overflow-hidden ">
 			<Settings />
 			<Wrapper />
 		</div>

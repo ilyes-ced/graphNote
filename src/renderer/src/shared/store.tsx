@@ -19,7 +19,7 @@ onMount(async () => {
 			store.userConfig.cacheUrlData,
 			store.userConfig.pdfScale,
 			store.userConfig.gridStyle,
-			store.userConfig.showMiniMap,
+			store.userConfig.showNavigation,
 			store.userConfig.homeBoardStyle,
 			store.userConfig.homeBoardStyle.bgImagePath,
 			store.userConfig.homeBoardStyle.bgColor,
@@ -35,7 +35,7 @@ interface UserConfig {
 	cacheUrlData: boolean
 	pdfScale: number //? for pdf reader clarity, 1 is blurry 1.5 is decent any more takes very long to laod
 	gridStyle: "dots" | "grid"
-	showMiniMap: boolean
+	showNavigation: boolean
 	homeBoardStyle: {
 		bgImagePath?: string
 		bgColor?: string
@@ -137,7 +137,7 @@ const [store, setStore] = createStore<GlobalStore>({
 		cacheUrlData: true,
 		pdfScale: 1.5,
 		gridStyle: "grid",
-		showMiniMap: false,
+		showNavigation: false,
 		homeBoardStyle: {
 			bgImagePath: "",
 			bgColor: "",

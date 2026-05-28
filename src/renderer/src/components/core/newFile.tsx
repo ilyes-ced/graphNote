@@ -395,8 +395,8 @@ export default (props: any) => {
 					id="contextMenu"
 					class="absolute z-50 w-60 select-none"
 					style={{
-						top: `${(y ?? 0) - 50}px`,
-						left: `${(x ?? 0) - 65}px`
+						top: `${y ?? 0}px`,
+						left: `${x ?? 0}px`
 					}}
 				>
 					<div class="border border-border bg-card p-2 shadow-xl">

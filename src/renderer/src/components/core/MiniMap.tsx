@@ -1,6 +1,7 @@
 import { For, createSignal, onMount } from "solid-js"
 import { store } from "../../shared/store"
 import { getBoardBgColor } from "../../shared/utils"
+import Controls from "./Controls"
 
 export default (props: { wrapperRef: any }) => {
 	const aspectRatio = () => `${store.viewport.width} / ${store.viewport.height}`
@@ -60,41 +61,40 @@ export default (props: { wrapperRef: any }) => {
 	}
 
 	return (
-		<div
-			id="minimap"
-			class="absolute bottom-3.25 right-3.5 w-67.5 border border-primary p-2.5 z-1000 bg-background"
-			style={{ "aspect-ratio": aspectRatio() }}
-		>
-			<div class="relative size-full border-2 border-background z-1000" style={{ background: getBoardBgColor() }}>
-				<For each={nodesData()}>
-					{(node) => (
-						<div
-							style={{
-								position: "absolute",
-								left: `${node.x}%`,
-								top: `${node.y}%`,
-								width: `${node.w}%`,
-								height: `${node.h}%`,
-								background: node.color && node.color != "" ? node.color : "var(--color-card)",
-								border: `1px solid ${store.selectedNodes.has(node.id) ? "white" : "var(--color-background)"}`
-							}}
-						></div>
-					)}
-				</For>
-				<div
-					class="bg-primary/20 border border-primary"
-					style={{
-						position: "absolute",
-						left: `${posX()}%`,
-						top: `${posY()}%`,
-						width: `${width()}%`,
-						height: `${height()}%`
-					}}
-				>
-					{posX()}//
-					{posY()}//
-					{width()}//
-					{height()}//
+		<div class="absolute bottom-2.5 right-2.5 flex flex-row space-x-2.5 items-end z-100000 pointer-events-none">
+			<Controls />
+			<div id="minimap" class="w-50 border border-primary p-2.5 bg-background pointer-events-auto" style={{ "aspect-ratio": aspectRatio() }}>
+				<div class="relative size-full border-2 border-background z-1000" style={{ background: getBoardBgColor() }}>
+					<For each={nodesData()}>
+						{(node) => (
+							<div
+								style={{
+									position: "absolute",
+									left: `${node.x}%`,
+									top: `${node.y}%`,
+									width: `${node.w}%`,
+									height: `${node.h}%`,
+									background: node.color && node.color != "" ? node.color : "var(--color-card)",
+									border: `1px solid ${store.selectedNodes.has(node.id) ? "white" : "var(--color-background)"}`
+								}}
+							></div>
+						)}
+					</For>
+					<div
+						class="bg-primary/20 border border-primary"
+						style={{
+							position: "absolute",
+							left: `${posX()}%`,
+							top: `${posY()}%`,
+							width: `${width()}%`,
+							height: `${height()}%`
+						}}
+					>
+						{posX()}//
+						{posY()}//
+						{width()}//
+						{height()}//
+					</div>
 				</div>
 			</div>
 		</div>

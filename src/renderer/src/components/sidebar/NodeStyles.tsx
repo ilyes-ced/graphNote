@@ -67,7 +67,7 @@ export default () => {
 	}
 
 	return (
-		<div class="h-full overflow-hidden w-[65px] p-4 bg-card ">
+		<div class="overflow-hidden w-[65px] p-4 bg-transparent">
 			<div
 				class="flex group/hov flex-col space-y-4 overflow-x-visible relative transition duration-200 ease-out hover:translate-x-2 cursor-pointer "
 				onClick={() => setStore("showColorMenu", !store.showColorMenu)}

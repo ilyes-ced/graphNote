@@ -1,10 +1,8 @@
-import { For, Show, createEffect, createSignal, onMount } from "solid-js"
+import { For, createSignal, onMount } from "solid-js"
 import { Button } from "./ui/button"
 import { setStore, store } from "../shared/store"
-import { IconChevronsRight, IconDatabaseFilled, IconMoonFilled, IconSettings, IconUpload } from "@tabler/icons-solidjs"
-import { findNodeById, getActiveBoardId, updateBoardStyles } from "../shared/update"
-import iro from "@jaames/iro"
-import { getBoardBgColor, getBoardGridColor } from "../shared/utils"
+import { IconChevronsRight, IconDatabaseFilled, IconMoonFilled, IconSettings } from "@tabler/icons-solidjs"
+import NodeList from "./sidebar/NodeList"
 
 export default () => {
 	const [dataSize, setDataSize] = createSignal({
@@ -26,8 +24,8 @@ export default () => {
 	})
 
 	return (
-		<div id="topbar" class="h-[50px] border-b border-border flex flex-row justify-between items-center bg-card px-2">
-			<div id="breadcrumb" class="bg-card flex flex-row space-y-4 overflow-x-visible ">
+		<div id="topbar" class="z-100000 absolute w-full flex flex-row justify-between items-center bg-transparent p-2.5">
+			<div id="breadcrumb" class="bg-card flex flex-row space-y-4 overflow-x-visible">
 				<div class="flex flex-row">
 					<For each={store.activeBoards}>
 						{(breadcrumb, index) => {
@@ -59,7 +57,7 @@ export default () => {
 				</div>
 			</div>
 
-			<div class="flex justify-center items-center space-x-4">
+			<div class="flex justify-center items-center space-x-2">
 				<Button variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
 					<IconDatabaseFilled />
 				</Button>
@@ -74,7 +72,7 @@ export default () => {
 			</div>
 
 			<div
-				class={` z-50 transition-all duration-200 ease-in-out absolute top-[60px] right-[22px] [box-shadow:5px_5px_var(--color-primary)]
+				class={`z-50 transition-all duration-200 ease-in-out absolute top-[60px] right-[22px] [box-shadow:5px_5px_var(--color-primary)]
           ${store.showStorageMenu ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}
 			>
 				<div class="border border-border p-4 w-fit bg-card space-y-4">

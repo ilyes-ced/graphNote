@@ -99,8 +99,8 @@ export default (props: any) => {
 					// todo: gets mouse Pos in the window not in the canvas, if we pan to the right and double click the node is created on the left side of the viewport
 					newNode(
 						NodeType.Note,
-						(e.clientX - store.viewport.x - 65) / store.viewport.scale,
-						(e.clientY - store.viewport.y - 50) / store.viewport.scale
+						(e.clientX - store.viewport.x) / store.viewport.scale,
+						(e.clientY - store.viewport.y) / store.viewport.scale
 					)
 				}}
 				onMouseDown={(e) => {
@@ -110,21 +110,21 @@ export default (props: any) => {
 					setSelecting(true)
 
 					setStart({
-						x: (e.clientX - store.viewport.x - 65) / store.viewport.scale,
-						y: (e.clientY - store.viewport.y - 50) / store.viewport.scale
+						x: (e.clientX - store.viewport.x) / store.viewport.scale,
+						y: (e.clientY - store.viewport.y) / store.viewport.scale
 					})
 
 					setCurrent({
-						x: (e.clientX - store.viewport.x - 65) / store.viewport.scale,
-						y: (e.clientY - store.viewport.y - 50) / store.viewport.scale
+						x: (e.clientX - store.viewport.x) / store.viewport.scale,
+						y: (e.clientY - store.viewport.y) / store.viewport.scale
 					})
 				}}
 				onMouseMove={(e) => {
 					if (!selecting()) return
 
 					setCurrent({
-						x: (e.clientX - store.viewport.x - 65) / store.viewport.scale,
-						y: (e.clientY - store.viewport.y - 50) / store.viewport.scale
+						x: (e.clientX - store.viewport.x) / store.viewport.scale,
+						y: (e.clientY - store.viewport.y) / store.viewport.scale
 					})
 				}}
 				onMouseUp={() => {

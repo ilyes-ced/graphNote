@@ -18,7 +18,7 @@ possible settigns:
 const ToggleSettings: {
 	name: string
 	description: string
-	storeFieldName: "youtubeVidCache" | "cacheUrlData" | "showMiniMap"
+	storeFieldName: "youtubeVidCache" | "cacheUrlData" | "showNavigation"
 }[] = [
 	{
 		name: "Enable caching Youtube videos",
@@ -31,9 +31,9 @@ const ToggleSettings: {
 		storeFieldName: "cacheUrlData"
 	},
 	{
-		name: "Show MiniMap",
-		description: "Choose to show or not show the minimap of the canvas",
-		storeFieldName: "showMiniMap"
+		name: "Show Navigation",
+		description: "Choose to show or not show the navigation of the canvas",
+		storeFieldName: "showNavigation"
 	}
 ]
 const radioSettings: {
@@ -122,7 +122,7 @@ function SettingsItemToggle(props: {
 	name: string
 	description: string
 	value: boolean
-	storeFieldName: "youtubeVidCache" | "cacheUrlData" | "showMiniMap"
+	storeFieldName: "youtubeVidCache" | "cacheUrlData" | "showNavigation"
 }) {
 	const [accepted, setAccepted] = createSignal(props.value)
 
@@ -141,7 +141,7 @@ function SettingsItemToggle(props: {
 						console.log(!accepted())
 						setStore("userConfig", props.storeFieldName, !accepted())
 						setAccepted(!accepted())
-						console.log(store.userConfig.showMiniMap)
+						console.log(store.userConfig.showNavigation)
 					}}
 				/>
 			</div>

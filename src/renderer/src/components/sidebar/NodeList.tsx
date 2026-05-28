@@ -10,7 +10,7 @@ const icons = [
 	// basic blocks
 	{ name: "note", width: 32, height: 24 },
 	{ name: "todo", width: 32, height: 24 },
-	{ name: "comment", width: 32, height: 24 },
+	//{ name: "comment", width: 32, height: 24 },
 	{ name: "table", width: 32, height: 24 },
 	{ name: "url", width: 32, height: 24 },
 
@@ -20,13 +20,13 @@ const icons = [
 	{ name: "column", width: 32, height: 32 },
 
 	// text
-	{ name: "code", width: 24, height: 24 },
-	{ name: "document", width: 26, height: 32 },
-	{ name: "upload", width: 32, height: 32 },
+	// { name: "code", width: 24, height: 24 },
+	// { name: "document", width: 26, height: 32 },
+	// { name: "upload", width: 32, height: 32 },
 
 	// artistic maybe
-	{ name: "drawing", width: 32, height: 32 },
-	{ name: "sketch", width: 32, height: 24 },
+	// { name: "drawing", width: 32, height: 32 },
+	// { name: "sketch", width: 32, height: 24 },
 	{ name: "color", width: 28, height: 32 },
 	{ name: "image", width: 32, height: 32 },
 	{ name: "activity", width: 32, height: 32 }
@@ -53,8 +53,8 @@ const handleMouseMove = (e: MouseEvent) => {
 const handleMouseUp = () => {
 	newNode(
 		findType(cloneType() ?? ""),
-		(dragPos().x - store.viewport.x - 65) / store.viewport.scale,
-		(dragPos().y - store.viewport.y - 50) / store.viewport.scale
+		(dragPos().x - store.viewport.x) / store.viewport.scale,
+		(dragPos().y - store.viewport.y) / store.viewport.scale
 	)
 	setDragging(false)
 	setCloneType(null)
@@ -111,12 +111,12 @@ export default () => {
 
 	return (
 		<>
-			<div class="h-full overflow-hidden w-[65px] p-4 bg-card">
-				<div class="flex flex-col space-y-4 overflow-x-visible relative">
+			<div class="overflow-hidden bg-transparent flex items-center z-100000 absolute bottom-2.5 left-2.5 group">
+				<div class="flex flex-row space-x-4 overflow-x-visible relative items-center py-2">
 					<For each={icons} fallback={<div>Loading...</div>}>
 						{(icon) => (
 							<div
-								class="icon cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:translate-x-2 z-10"
+								class="icon cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:-translate-y-2 z-10 translate-y-[200%] group-hover:translate-y-0"
 								onMouseDown={startDragging(icon.name)}
 							>
 								<Svg width={icon.width} height={icon.height} classes="" icon_name={icon.name} />

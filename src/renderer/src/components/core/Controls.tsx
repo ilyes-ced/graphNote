@@ -2,7 +2,7 @@ import { saveChanges } from "../../shared/utils"
 import { setStore, store } from "../../shared/store"
 
 export default () => {
-	const classes = "cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2"
+	const classes = "cursor-pointer border border-border bg-card hover:bg-primary px-4 py-2 pointer-events-auto"
 
 	function Zoom(zoom: number) {
 		let scale = store.viewport.scale
@@ -22,7 +22,7 @@ export default () => {
 	}
 
 	return (
-		<div id="controls" class="flex flex-row items-center justify-center absolute left-2.5 bottom-2.5 z-50">
+		<div id="controls" class="flex flex-row items-center justify-center z-50">
 			<div onClick={() => Zoom(-1)} class={classes}>
 				-
 			</div>

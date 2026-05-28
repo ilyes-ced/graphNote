@@ -111,6 +111,11 @@
 - [ ] Good Idea: for deleted items add them to trash instead of deleting and keep their resources (images, cache etc), if the user empties the trash all the resources are then deleted
 - [ ] miniMap doesnt account for child nodes in columns
 - [ ] minimap when changing board items are displayed wrong
+- [ ] styles dont work for column children
+- [ ] empty image node should be a placeholder with an upload button
+- [ ] side styles tab:
+    - [ ] maybe we should make it appear as a modal near the last selected node
+    - [ ] the extra ones appear when you deselect nodes
 
 # extra features
 

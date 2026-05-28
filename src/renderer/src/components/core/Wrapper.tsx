@@ -9,6 +9,7 @@ import Zoom from "./Zoom"
 import { setStore, store } from "../../shared/store"
 import { updateArrowsPositions } from "../../shared/utils"
 import MiniMap from "./MiniMap"
+import NodeList from "../sidebar/NodeList"
 
 export default () => {
 	const [wrapperRef, setWrapperRef] = createSignal(null)
@@ -65,10 +66,10 @@ export default () => {
 							<Nodes />
 							<div id="edges"></div>
 						</ViewPort>
-						<Show when={store.userConfig.showMiniMap}>
+						<Show when={store.userConfig.showNavigation}>
 							<MiniMap wrapperRef={() => wrapperRef} />
 						</Show>
-						<Controls />
+						<NodeList />
 					</Pan>
 				</Zoom>
 			</EventHandler>
