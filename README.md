@@ -116,6 +116,7 @@
 - [ ] side styles tab:
     - [ ] maybe we should make it appear as a modal near the last selected node
     - [ ] the extra ones appear when you deselect nodes
+- [ ] make the user set the number of backups
 
 # extra features
 

@@ -1,6 +1,6 @@
-import { For, createSignal, onMount } from "solid-js"
+import { For, Show, createSignal, onMount } from "solid-js"
 import { store } from "../../shared/store"
-import { getBoardBgColor } from "../../shared/utils"
+import { getBoardBgColor, getBoardimage } from "../../shared/utils"
 import Controls from "./Controls"
 
 export default (props: { wrapperRef: any }) => {
@@ -90,10 +90,10 @@ export default (props: { wrapperRef: any }) => {
 							height: `${height()}%`
 						}}
 					>
-						{posX()}//
-						{posY()}//
-						{width()}//
-						{height()}//
+						{/* posX() */}
+						{/* posY() */}
+						{/* width() */}
+						{/* height() */}
 					</div>
 				</div>
 			</div>

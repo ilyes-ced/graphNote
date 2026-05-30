@@ -111,12 +111,12 @@ export default () => {
 
 	return (
 		<>
-			<div class="overflow-hidden bg-transparent flex items-center z-100000 absolute bottom-2.5 left-2.5 group">
-				<div class="flex flex-row space-x-4 overflow-x-visible relative items-center py-2">
+			<div class="overflow-hidden bg-transparent flex items-center z-100000 absolute bottom-0 left-0 group">
+				<div class="flex flex-row space-x-4 overflow-x-visible relative items-center py-2 p-2.5">
 					<For each={icons} fallback={<div>Loading...</div>}>
 						{(icon) => (
 							<div
-								class="icon cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:-translate-y-2 z-10 translate-y-[200%] group-hover:translate-y-0"
+								class="icon cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:-translate-y-2 z-10 translate-y-[200%] group-hover:translate-y-0 pointer-events-auto"
 								onMouseDown={startDragging(icon.name)}
 							>
 								<Svg width={icon.width} height={icon.height} classes="" icon_name={icon.name} />

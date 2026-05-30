@@ -6,6 +6,7 @@ import { store } from "../../shared/store"
 import Editor from "./Editor"
 import "@videojs/html/video/player"
 import "@videojs/html/video/skin"
+import { Portal } from "solid-js/web"
 
 type UrlProps = Url & {
 	is_child?: boolean

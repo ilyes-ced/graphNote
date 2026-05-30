@@ -74,7 +74,7 @@ export default () => {
 			>
 				{/* colors menu toggle */}
 				<div>
-					<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500">
+					<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500 pointer-events-auto">
 						<div class="flex flex-col size-full p-2">
 							<div class="border-b-0 h-1/6 w-full" style={{ background: color2() }}></div>
 							<div
@@ -98,7 +98,7 @@ export default () => {
 					onClick={toggleTitles}
 				>
 					<div>
-						<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500">
+						<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500 pointer-events-auto">
 							<div class="flex justify-center items-center size-full p-2"></div>
 						</div>
 						<p class="text-sm text-center">toggle title</p>
@@ -112,7 +112,7 @@ export default () => {
 					onClick={toggleDescs}
 				>
 					<div>
-						<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500">
+						<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500 pointer-events-auto">
 							<div class="flex justify-center items-center size-full p-2"></div>
 						</div>
 						<p class="text-sm text-center">toggle description</p>

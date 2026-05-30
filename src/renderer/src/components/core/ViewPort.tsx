@@ -22,7 +22,6 @@ export default (props: any) => {
 
 		if (getActiveBoardId() === "home") {
 			const style = store.userConfig.homeBoardStyle
-
 			if (style?.bgImagePath) {
 				isImage = true
 				imagePath = style.bgImagePath
@@ -33,16 +32,13 @@ export default (props: any) => {
 			}
 		} else {
 			const node = findNodeById(getActiveBoardId())
-
 			if (node?.bgImagePath) {
 				isImage = true
 				imagePath = node.bgImagePath
 				setBgType("image")
 			} else {
 				setBgType("color")
-
 				console.log("SETTING BG:", node?.bgColor)
-
 				setBg(node?.bgColor || "var(--color-background)")
 			}
 		}
@@ -72,7 +68,7 @@ export default (props: any) => {
 			}}
 		>
 			<Show when={bgType() == "image"}>
-				<img class="absolute inset-0 z-0 h-full w-full object-cover" src={imgSrc()} />
+				<img id="viewportBgImage" class="absolute inset-0 z-0 h-full w-full object-cover" src={imgSrc()} />
 			</Show>
 
 			<div
