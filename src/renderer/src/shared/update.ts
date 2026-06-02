@@ -55,6 +55,7 @@ const toggleTitle = (nodeId: string) => {
 		}
 	}
 }
+
 const toggleDesc = (nodeId: string) => {
 	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
 		const index = nodeList.findIndex((n) => n.id === nodeId)
@@ -605,58 +606,56 @@ const newImageNode = (img: string, x: number, y: number) => {
 
 //? update node colors, fg or bg or strip
 const updateNodeColor = (nodeId: string, type: "bg" | "fg" | "strip", color: ColorType) => {
-	const activeBoardId = store.activeBoards.at(-1)?.id
-	if (!activeBoardId) return
-
-	const boardNodes = store.nodes[activeBoardId] ?? []
-	const index = boardNodes.findIndex((n) => n.id === nodeId)
-	if (index === -1) return
-
-	let oldValue: any
-	switch (type) {
-		case "bg":
-			oldValue = boardNodes[index].color
-			setStore("nodes", activeBoardId, index, "color", color)
-			break
-		case "fg":
-			oldValue = boardNodes[index].textColor
-			setStore("nodes", activeBoardId, index, "textColor", color)
-			break
-		case "strip":
-			oldValue = boardNodes[index].top_strip_color
-			setStore("nodes", activeBoardId, index, "top_strip_color", color)
-			break
-	}
-	saveChanges()
-
-	return {
-		undo() {
+	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+		const index = nodeList.findIndex((n) => n.id === nodeId)
+		if (index !== -1) {
+			let oldValue: any
 			switch (type) {
 				case "bg":
-					setStore("nodes", activeBoardId, index, "color", oldValue)
+					oldValue = store.nodes[parentId][index].color
+					setStore("nodes", parentId, index, "color", color)
 					break
 				case "fg":
-					setStore("nodes", activeBoardId, index, "textColor", oldValue)
+					oldValue = store.nodes[parentId][index].textColor
+					setStore("nodes", parentId, index, "textColor", color)
 					break
 				case "strip":
-					setStore("nodes", activeBoardId, index, "top_strip_color", oldValue)
+					oldValue = store.nodes[parentId][index].top_strip_color
+					setStore("nodes", parentId, index, "top_strip_color", color)
 					break
 			}
 			saveChanges()
-		},
-		redo() {
-			switch (type) {
-				case "bg":
-					setStore("nodes", activeBoardId, index, "color", color)
-					break
-				case "fg":
-					setStore("nodes", activeBoardId, index, "textColor", color)
-					break
-				case "strip":
-					setStore("nodes", activeBoardId, index, "top_strip_color", color)
-					break
+
+			return {
+				undo() {
+					switch (type) {
+						case "bg":
+							setStore("nodes", parentId, index, "color", oldValue)
+							break
+						case "fg":
+							setStore("nodes", parentId, index, "textColor", oldValue)
+							break
+						case "strip":
+							setStore("nodes", parentId, index, "top_strip_color", oldValue)
+							break
+					}
+					saveChanges()
+				},
+				redo() {
+					switch (type) {
+						case "bg":
+							setStore("nodes", parentId, index, "color", color)
+							break
+						case "fg":
+							setStore("nodes", parentId, index, "textColor", color)
+							break
+						case "strip":
+							setStore("nodes", parentId, index, "top_strip_color", color)
+							break
+					}
+					saveChanges()
+				}
 			}
-			saveChanges()
 		}
 	}
 }

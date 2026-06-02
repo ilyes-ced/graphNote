@@ -24,7 +24,7 @@ export default (node: TableProps) => {
 	// for badges its selection
 	const getCellInput = (key: string, value: string | number | Badge) => {
 		// get column type here
-		let colType = node.columns.find((col) => col.key === key) ?? ColumnType.String
+		let colType = node.cols.find((col) => col.key === key) ?? ColumnType.String
 
 		const isBadgeValue = typeof value === "object" && value !== null && "type" in value && "label" in value
 		const badge = isBadgeValue ? getBadge(value.type, value.label) : null
@@ -185,7 +185,7 @@ export default (node: TableProps) => {
 							<TableCellCheckbox>
 								<CheckboxComponent />
 							</TableCellCheckbox>
-							<For each={node.columns}>{(header) => <TableHeaderCell>{header.title}</TableHeaderCell>}</For>
+							<For each={node.cols}>{(header) => <TableHeaderCell>{header.title}</TableHeaderCell>}</For>
 							<TableCellCheckbox> </TableCellCheckbox>
 						</TableHeaderRow>
 					</TableHead>

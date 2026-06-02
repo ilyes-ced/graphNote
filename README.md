@@ -90,7 +90,7 @@
 - [x] put images in thier own folder
 - [x] selection only works on the left top corner of nodes (calculating the w and h of each node would be expensive)
 - [x] set the urls description as the youtube video decription
-- [ ] selected child nodes: settings styles doesnt work
+- [x] selected child nodes: settings styles doesnt work
 - [ ] child nodes: when touched slightly it moves from position and the parent Column becomes opaque
 - [x] set board bgColor and grid coloor
     - [x] make it possible to use an image as a background for a board
@@ -111,7 +111,7 @@
 - [ ] Good Idea: for deleted items add them to trash instead of deleting and keep their resources (images, cache etc), if the user empties the trash all the resources are then deleted
 - [ ] miniMap doesnt account for child nodes in columns
 - [ ] minimap when changing board items are displayed wrong
-- [ ] styles dont work for column children
+- [x] styles dont work for column children
 - [ ] empty image node should be a placeholder with an upload button
 - [ ] side styles tab:
     - [ ] maybe we should make it appear as a modal near the last selected node
