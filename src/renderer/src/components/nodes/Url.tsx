@@ -1,12 +1,13 @@
 import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from "solid-js"
 import { Url } from "../../types"
-import { IconLink, IconPlayerPlayFilled, IconResize } from "@tabler/icons-solidjs"
+import { IconDownload, IconLink, IconPlayerPlayFilled, IconResize } from "@tabler/icons-solidjs"
 import { updateNodeDesc, updateURL } from "../../shared/update"
 import { store } from "../../shared/store"
 import Editor from "./Editor"
 import "@videojs/html/video/player"
 import "@videojs/html/video/skin"
 import { Portal } from "solid-js/web"
+import { BackgroundColor } from "@tiptap/extension-text-style"
 
 type UrlProps = Url & {
 	is_child?: boolean
@@ -25,7 +26,7 @@ export default (node: UrlProps) => {
 	let videoRef!: any
 
 	const [localVid, setLocalVid] = createSignal<string | null>(null)
-	const [downloading, Downloading] = createSignal(false)
+	const [downloadProgress, setDownloadProgress] = createSignal(0)
 	const [isPlaying, setIsPlaying] = createSignal(false)
 	const [srcImage, setSrcImage] = createSignal<string>("")
 	const [srcFav, setSrcFav] = createSignal<string>("")
@@ -58,28 +59,28 @@ export default (node: UrlProps) => {
 	const getMetaData = async (url: string): Promise<MetaData | null> => {
 		try {
 			const message = await window.api.scrapeUrl({ url: url, cache: store.userConfig.cacheUrlData })
+			let last = 0
 			window.api.onYoutubeDownloadProgress((data: any) => {
-				console.log("data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL")
-				console.log(data)
-				console.log(data.progress)
-				console.log("data.progress LLLLLLLLLLLLLLLLLLLLLLLLLLL")
+				if (data.progress < last) {
+					setDownloadProgress(50 + data.progress / 2)
+				} else {
+					setDownloadProgress(data.progress / 2)
+				}
+				last = data.progress
 			})
 
 			window.api.onYoutubeDownloadComplete(async (data: any) => {
-				getVidPath(data.vidId)
+				setDownloadProgress(100)
+				setTimeout(() => {
+					setDownloadProgress(0)
+				}, 3000)
+				//TODO: change from youtube vid to local vid
 			})
 			return message
 		} catch (error) {
 			console.error("Error scraping metadata:", error)
 			return null
 		}
-	}
-
-	const getVidPath = async (vidId: string) => {
-		// console.log(":KKKKKKKKKKKKKKKKKKKKKKKKK")
-		// var vidPath = await window.api.getLocalVideo(vidId);
-		// console.info(vidPath)
-		// setLocalVid(vidPath)
 	}
 
 	const fetchMetaData = (firstTime?: boolean) => {
@@ -92,10 +93,6 @@ export default (node: UrlProps) => {
 					setImageFromArrayBuffer(res.image, "image")
 					setImageFromArrayBuffer(res.favicon, "favicon")
 					if (firstTime || !node.description) {
-						console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-						console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-						console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-						console.log(node.id, res.description)
 						updateNodeDesc(
 							node.id,
 							`{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"${node.description}\"}]}]}`
@@ -108,8 +105,6 @@ export default (node: UrlProps) => {
 
 	onMount(async () => {
 		fetchMetaData()
-		// setImageFromArrayBuffer(metaData().image, "image")
-		// setImageFromArrayBuffer(metaData().favicon, "favicon")
 		if (store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url)) {
 			var cacheRes = await window.api.cacheYoutubeVid(node.url)
 			if (cacheRes.message == "file is already downloaded") {
@@ -151,11 +146,38 @@ export default (node: UrlProps) => {
 	//? "wait_load" class name is needed for elements that take time to load the assets like url images
 	return (
 		<div class="space-y-2">
-			<div
-				onClick={() => setExpand(!expand())}
-				class="z-50 extend_toggle cursor-pointer absolute top-0 right-0 aspect-square hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200 ease-in-out"
-			>
-				<IconResize size={16} />
+			<div class="absolute top-2 right-2 flex gap-1 z-50 opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200">
+				<div
+					onClick={() => setExpand(!expand())}
+					class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
+					style={{
+						background: `${node.textColor}22`,
+						border: `1px solid ${node.textColor}55`,
+						color: node.textColor,
+						"box-shadow": `0 0 12px ${node.textColor}22`
+					}}
+				>
+					<IconResize size={16} />
+				</div>
+
+				<div
+					onClick={async () => {
+						var cacheRes = await window.api.cacheYoutubeVid(node.url)
+						if (cacheRes.message == "file is already downloaded") {
+							const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
+							setLocalVid(videoFile)
+						}
+					}}
+					class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
+					style={{
+						background: `${node.textColor}22`,
+						border: `1px solid ${node.textColor}55`,
+						color: node.textColor,
+						"box-shadow": `0 0 12px ${node.textColor}22`
+					}}
+				>
+					<IconDownload size={16} />
+				</div>
 			</div>
 
 			<Switch
@@ -173,6 +195,29 @@ export default (node: UrlProps) => {
 							</div>
 						)}
 						<img class="wait_load url_thumbnail pointer-events-none" src={srcImage()} loading="eager" alt="" />
+
+						<Show when={downloadProgress() > 0}>
+							<div class="z-50 absolute left-1/2 -translate-x-1/2 bottom-2 w-1/2 flex flex-col items-center space-y-1">
+								<div
+									class="font-extrabold"
+									style={{
+										color: node.color,
+										background: node.textColor
+									}}
+								>
+									{downloadProgress()} % <Show when={downloadProgress() == 100}>Download Complete!</Show>
+								</div>
+								<div class="w-full h-2 overflow-hidden" style={{ background: node.color }}>
+									<div
+										class="h-full transition-all duration-300"
+										style={{
+											width: `${downloadProgress()}%`,
+											background: node.textColor
+										}}
+									/>
+								</div>
+							</div>
+						</Show>
 					</div>
 				}
 			>

@@ -43,7 +43,7 @@ const ignoredClasses = (
 			case NodeType.Image:
 				return { ids: ["secondaryEditor"] }
 			case NodeType.Url:
-				return { tags: ["video-player"], classes: ["url_input", "extend_toggle"], ids: ["secondaryEditor"] }
+				return { tags: ["video-player"], classes: ["url_input", "extend_toggle", "url_buttons"], ids: ["secondaryEditor"] }
 			case NodeType.Document:
 				return { classes: ["down_pdf", "open_pdf"], ids: ["secondaryEditor"] }
 			case NodeType.Table:

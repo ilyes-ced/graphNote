@@ -121,6 +121,8 @@
 - [ ] crop images when adding them
 - [ ] templates
 - [ ] make Youtube videos downloadable individually instead of downloading them all
+- [ ] moving nodes with arros doesnt account for bounds
+- [ ] Url node: make it clear when a video is already downloaded
 
 # extra features
 
