@@ -49,7 +49,8 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 		if (store.showColorMenu) setStore("showColorMenu", false)
 		//? at leastit helps with removing the ghost when dragging an image
 		//? other thatn that im not sure
-		if (node.type === NodeType.Image) e.preventDefault()
+		//? not needed any more when we use pointer-events-none because we need the rest of the node to be clickable
+		//if (node.type === NodeType.Image) e.preventDefault()
 
 		// dont accept middle mouse click, as well as ctrl click
 		if (e.button !== 0 || e.ctrlKey) return
@@ -102,6 +103,10 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 			// fast DOM update
 			if (element) {
 				element.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`
+			}
+
+			if (store.selectedNodes.size > 1) {
+				// here we want to move other selected items with the same movements as the controlled item which is element
 			}
 		} else {
 			updateChildPosition(node.id, x, y)

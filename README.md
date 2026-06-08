@@ -117,6 +117,10 @@
     - [ ] maybe we should make it appear as a modal near the last selected node
     - [ ] the extra ones appear when you deselect nodes
 - [ ] make the user set the number of backups
+- [ ] when moving a node, move all selected nodes with it
+- [ ] crop images when adding them
+- [ ] templates
+- [ ] make Youtube videos downloadable individually instead of downloading them all
 
 # extra features
 

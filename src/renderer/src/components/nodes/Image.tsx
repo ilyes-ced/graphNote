@@ -20,8 +20,7 @@ export default (node: ImageProps) => {
 
 	return (
 		<div>
-			<img style={{ width: "100%" }} src={imgSrc()} alt={node.path} />
-
+			<img class="pointer-events-none" style={{ width: "100%" }} src={imgSrc()} alt={node.path} />
 			<Show when={node.showDescription}>
 				<div class="p-5">
 					<Editor id={node.id} desc={node.description ?? ""} />

@@ -126,7 +126,9 @@ export default (node: nodeProps) => {
 					background: node.node.color ?? "var(--color-card)" //? if this doesnt exist, .node in App.css will take care of it
 				}}
 			>
-				<div class="absolute z-1000">{padding()}</div>
+				<div class="absolute z-1000">
+					{padding()}ll{node.node.x}-{node.node.y}
+				</div>
 				{/* width() */}
 				{/* node.isChildNode ? "100%" : width() ? `${width()}px` : "fit-content" */}
 				<Show when={node.node.top_strip_color}>

@@ -99,13 +99,7 @@ const TableHead = (props: { cols: Column[]; startResize: (e: MouseEvent, index: 
 
 						{/* resize handle */}
 						<div
-							class="
-                absolute right-0 top-0
-                h-full w-2
-                cursor-col-resize
-                hover:bg-primary
-                transition-colors
-              "
+							class="absolute right-0 top-0 h-full w-2 cursor-col-resize hover:bg-primary transition-colors"
 							onMouseDown={(e) => props.startResize(e, index())}
 						/>
 					</th>
@@ -124,15 +118,7 @@ const TableRow = (props: { row: Row; cols: Column[] }) => {
 		<tr>
 			<For each={props.cols}>
 				{(col) => (
-					<td
-						contentEditable
-						class="
-              border px-3 py-2
-              overflow-hidden
-              
-              outline-none
-            "
-					>
+					<td contentEditable class="border px-3 py-2 overflow-hidden outline-none">
 						{props.row[col.key]}
 					</td>
 				)}

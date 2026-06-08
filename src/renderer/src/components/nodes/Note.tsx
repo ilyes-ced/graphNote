@@ -17,6 +17,7 @@ type NoteProps = Note & {
 export default (node: NoteProps) => {
 	let editorRef!: HTMLDivElement
 	const [toolbar, setToolbar] = createSignal(false)
+	const [editable, setEditable] = createSignal(false)
 
 	const updateText = debounce((newValue: string) => {
 		updateNote(node.id, newValue)
@@ -24,7 +25,7 @@ export default (node: NoteProps) => {
 
 	const editor = createTiptapEditor(() => ({
 		element: editorRef!,
-		editable: true,
+		editable: editable(),
 		onFocus() {
 			updateZIndex(node.id)
 		},
@@ -39,7 +40,16 @@ export default (node: NoteProps) => {
 				updateText(JSON.stringify(editor.getJSON()))
 			}
 		},
-		extensions: [StarterKit, Highlight, Typography, TextStyle, TextAlign],
+		extensions: [
+			StarterKit,
+			Highlight,
+			Typography,
+			TextStyle,
+			TextAlign,
+			TextAlign.configure({
+				types: ["heading", "paragraph"]
+			})
+		],
 		//? take the value from the store but make it none reactive because we than edit it manually and the same changes are saved to file, the reason for unbinding the reactivity is because when we are focused and make changes those same changes that are written are saved to file/store and are refreshed as if they are new values (bad behaviour)
 		content: JSON.parse(untrack(() => node.text))
 		//? but we need tracked for the undo/redo functionality (the undo/redo func was changed so i dont think is needed anymore)
@@ -302,7 +312,15 @@ export default (node: NoteProps) => {
 				<Toolbar></Toolbar>
 			</Show>
 
-			<div id="editor" class="border p-2" ref={editorRef}></div>
+			<div
+				id="editor"
+				class="border p-2"
+				style={{
+					"border-color": editable() ? "" : "transparent"
+				}}
+				onDblClick={() => setEditable(true)}
+				ref={editorRef}
+			></div>
 		</div>
 	)
 }
