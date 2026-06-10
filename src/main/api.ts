@@ -616,3 +616,55 @@ ipcMain.handle("selectFile", async () => {
 
 	return path.join("image", finalName)
 })
+
+ipcMain.handle("deletecacheedYoutubeVid", async (event, url: string) => {
+	const vidId = getYouTubeVideoId(url)
+	if (!vidId) {
+		return {
+			success: false,
+			message: "failed to get id from youtube url"
+		}
+	}
+	//TODO: check the file doesnt exist first
+	const files = readdirSync(`${basePath}/cache/youtube/`)
+	const file = files.find((file) => file.startsWith(vidId)) ? files.find((file) => file.startsWith(vidId)) : null
+	if (file) {
+		console.log("deleting file:", path.join(`${basePath}/cache/youtube/`, file))
+		await fs.unlink(path.join(`${basePath}/cache/youtube/`, file))
+		// TODO: here we delete the file
+		return {
+			success: true,
+			message: "file is deleted"
+		}
+	}
+
+	return {
+		success: true,
+		message: "file was not found"
+	}
+})
+
+ipcMain.handle("checkCacheYoutubeVidExists", async (event, url: string) => {
+	const vidId = getYouTubeVideoId(url)
+	if (!vidId) {
+		return {
+			success: false,
+			message: "failed to get id from youtube url"
+		}
+	}
+	//TODO: check the file doesnt exist first
+	const files = readdirSync(`${basePath}/cache/youtube/`)
+	const file = files.find((file) => file.startsWith(vidId)) ? files.find((file) => file.startsWith(vidId)) : null
+	if (file) {
+		return {
+			success: true,
+			fileName: file,
+			message: "file exists"
+		}
+	} else {
+		return {
+			success: false,
+			message: "file was not found"
+		}
+	}
+})

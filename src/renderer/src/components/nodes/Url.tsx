@@ -1,6 +1,6 @@
 import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from "solid-js"
 import { Url } from "../../types"
-import { IconDownload, IconLink, IconPlayerPlayFilled, IconResize } from "@tabler/icons-solidjs"
+import { IconDownload, IconLink, IconPlayerPlayFilled, IconResize, IconTrash } from "@tabler/icons-solidjs"
 import { updateNodeDesc, updateURL } from "../../shared/update"
 import { store } from "../../shared/store"
 import Editor from "./Editor"
@@ -105,11 +105,20 @@ export default (node: UrlProps) => {
 
 	onMount(async () => {
 		fetchMetaData()
-		if (store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url)) {
-			var cacheRes = await window.api.cacheYoutubeVid(node.url)
-			if (cacheRes.message == "file is already downloaded") {
-				const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
-				setLocalVid(videoFile)
+		if (matchYoutubeUrl(node.url)) {
+			if (store.userConfig.youtubeVidCache) {
+				var cacheRes = await window.api.cacheYoutubeVid(node.url)
+				if (cacheRes.message == "file is already downloaded") {
+					const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
+					setLocalVid(videoFile)
+				}
+			} else {
+				var cacheRes = await window.api.checkCacheYoutubeVidExists(node.url)
+				console.log(cacheRes)
+				if (cacheRes.success) {
+					const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
+					setLocalVid(videoFile)
+				}
 			}
 		}
 	})
@@ -146,46 +155,61 @@ export default (node: UrlProps) => {
 	//? "wait_load" class name is needed for elements that take time to load the assets like url images
 	return (
 		<div class="space-y-2">
-			<div class="absolute top-2 right-2 flex gap-1 z-50 opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200">
-				<div
-					onClick={() => setExpand(!expand())}
-					class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
-					style={{
-						background: `${node.textColor}22`,
-						border: `1px solid ${node.textColor}55`,
-						color: node.textColor,
-						"box-shadow": `0 0 12px ${node.textColor}22`
-					}}
-				>
-					<IconResize size={16} />
-				</div>
+			<Show when={matchYoutubeUrl(node.url)}>
+				<div class="absolute top-2 right-2 flex gap-1 z-50 opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200">
+					<div
+						onClick={async () => window.api.deletecacheedYoutubeVid(node.url)}
+						class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
+						style={{
+							background: `${node.textColor}22`,
+							border: `1px solid ${node.textColor}55`,
+							color: node.textColor,
+							"box-shadow": `0 0 12px ${node.textColor}22`
+						}}
+					>
+						<IconTrash size={16} />
+					</div>
 
-				<div
-					onClick={async () => {
-						var cacheRes = await window.api.cacheYoutubeVid(node.url)
-						if (cacheRes.message == "file is already downloaded") {
-							const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
-							setLocalVid(videoFile)
-						}
-					}}
-					class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
-					style={{
-						background: `${node.textColor}22`,
-						border: `1px solid ${node.textColor}55`,
-						color: node.textColor,
-						"box-shadow": `0 0 12px ${node.textColor}22`
-					}}
-				>
-					<IconDownload size={16} />
+					<div
+						onClick={() => setExpand(!expand())}
+						class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
+						style={{
+							background: `${node.textColor}22`,
+							border: `1px solid ${node.textColor}55`,
+							color: node.textColor,
+							"box-shadow": `0 0 12px ${node.textColor}22`
+						}}
+					>
+						<IconResize size={16} />
+					</div>
+
+					<div
+						onClick={async () => {
+							var cacheRes = await window.api.cacheYoutubeVid(node.url)
+							if (cacheRes.message == "file is already downloaded") {
+								const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
+								setLocalVid(videoFile)
+							}
+						}}
+						class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
+						style={{
+							background: `${node.textColor}22`,
+							border: `1px solid ${node.textColor}55`,
+							color: node.textColor,
+							"box-shadow": `0 0 12px ${node.textColor}22`
+						}}
+					>
+						<IconDownload size={16} />
+					</div>
 				</div>
-			</div>
+			</Show>
 
 			<Switch
 				fallback={
 					<div class="relative flex items-center justify-center">
 						{matchYoutubeUrl(node.url) && (
 							<div
-								class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center"
+								class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center youtube_play_button"
 								onClick={() => {
 									setIsPlaying(true)
 									videoRef.play()
@@ -227,7 +251,7 @@ export default (node: UrlProps) => {
 						<input
 							type="text"
 							placeholder="input your URL here"
-							class="url_input p-5 size-full outline-0 border"
+							class="url_input p-5 size-full outline-0"
 							onBlur={transformUrl}
 							onKeyDown={(e) => {
 								if (e.key === "Enter") transformUrl(e)
@@ -235,7 +259,7 @@ export default (node: UrlProps) => {
 						/>
 					</div>
 				</Match>
-				<Match when={store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url) && localVid() != null && isPlaying()}>
+				<Match when={matchYoutubeUrl(node.url) && localVid() != null && isPlaying()}>
 					<video-player
 						style={{
 							"--media-border-radius": "0rem",
@@ -247,7 +271,7 @@ export default (node: UrlProps) => {
 						</video-skin>
 					</video-player>
 				</Match>
-				<Match when={!store.userConfig.youtubeVidCache && matchYoutubeUrl(node.url) && isPlaying()}>
+				<Match when={matchYoutubeUrl(node.url) && isPlaying()}>
 					<div
 						style={{
 							position: "relative",

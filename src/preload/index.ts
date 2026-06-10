@@ -39,6 +39,10 @@ const api = {
 
 	cacheYoutubeVid: (data: any) => ipcRenderer.invoke("cacheYoutubeVid", data),
 
+	deletecacheedYoutubeVid: (data: any) => ipcRenderer.invoke("deletecacheedYoutubeVid", data),
+
+	checkCacheYoutubeVidExists: (data: any) => ipcRenderer.invoke("checkCacheYoutubeVidExists", data),
+
 	onYoutubeDownloadProgress: (callback) => ipcRenderer.on("youtube-download-progress", (_, data) => callback(data)),
 
 	onYoutubeDownloadComplete: (callback) => ipcRenderer.on("youtube-download-complete", (_, data) => callback(data)),

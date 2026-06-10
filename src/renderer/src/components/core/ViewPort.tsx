@@ -160,12 +160,7 @@ export default (props: any) => {
 							? `linear-gradient(to right, ${getBoardGridColor()} 1px, transparent 1px), linear-gradient(to bottom, ${getBoardGridColor()} 1px, transparent 1px)`
 							: `radial-gradient(${getBoardGridColor()} 1px, transparent 0)`,
 
-					transform: `translate3d(${store.viewport.x}px, ${store.viewport.y}px, 0)
-            scale3d(
-            ${store.viewport.scale},
-            ${store.viewport.scale},
-            1
-          )`,
+					transform: `translate3d(${store.viewport.x}px, ${store.viewport.y}px, 0) scale3d(${store.viewport.scale},${store.viewport.scale},1)`,
 
 					transition: "transform 0.05s linear",
 					"will-change": "transform",

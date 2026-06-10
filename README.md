@@ -123,6 +123,9 @@
 - [ ] make Youtube videos downloadable individually instead of downloading them all
 - [ ] moving nodes with arros doesnt account for bounds
 - [ ] Url node: make it clear when a video is already downloaded
+- [ ] Url node: add ability to delete video file
+- [ ] Arrow logic: copy from reactFlow or leaderLine
+- [ ] pasting url to canvas create a Url node
 
 # extra features
 

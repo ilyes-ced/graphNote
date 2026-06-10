@@ -43,7 +43,11 @@ const ignoredClasses = (
 			case NodeType.Image:
 				return { ids: ["secondaryEditor"] }
 			case NodeType.Url:
-				return { tags: ["video-player"], classes: ["url_input", "extend_toggle", "url_buttons"], ids: ["secondaryEditor"] }
+				return {
+					tags: ["video-player"],
+					classes: ["url_input", "extend_toggle", "url_buttons", "youtube_play_button"],
+					ids: ["secondaryEditor"]
+				}
 			case NodeType.Document:
 				return { classes: ["down_pdf", "open_pdf"], ids: ["secondaryEditor"] }
 			case NodeType.Table:
@@ -135,14 +139,14 @@ export default (node: nodeProps) => {
 					<div class="absolute top-0 left-0 top_strip h-1 w-full z-2" style={{ background: node.node.top_strip_color }}></div>
 				</Show>
 
-				<div class="" style={{ "padding-bottom": `${padding() / 2}px` }}></div>
+				<div class="padding_div" style={{ "padding-bottom": `${padding() / 2}px` }}></div>
 				<div class="child_div" ref={el}>
 					{/* padding(): this padding is maybe best given to the child to decide its position based on the node for better appearance and more consistency */}
 					{/* give to child: {padding()} */}
 					{node.children}
 				</div>
 				{/*TODO: this is better inside each node so we can set wherre it goes inside each node */}
-				<div class="" style={{ "padding-bottom": `${padding() / 2}px` }}></div>
+				<div class="padding_div" style={{ "padding-bottom": `${padding() / 2}px` }}></div>
 
 				<Show when={!node.isChildNode}>
 					<ResizeHandle startResizeFunction={startResize} />

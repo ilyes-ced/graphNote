@@ -9,6 +9,7 @@ import { TextStyle } from "@tiptap/extension-text-style"
 import TextAlign from "@tiptap/extension-text-align"
 import { Show, createSignal, onCleanup, untrack } from "solid-js"
 import { IconEdit } from "@tabler/icons-solidjs"
+import { TrailingNode } from "@tiptap/extensions"
 
 type NoteProps = Note & {
 	is_child?: boolean
@@ -48,6 +49,11 @@ export default (node: NoteProps) => {
 			TextAlign,
 			TextAlign.configure({
 				types: ["heading", "paragraph"]
+			}),
+			//! doesnt work idk why
+			TrailingNode.configure({
+				node: "paragraph",
+				notAfter: ["heading"]
 			})
 		],
 		//? take the value from the store but make it none reactive because we than edit it manually and the same changes are saved to file, the reason for unbinding the reactivity is because when we are focused and make changes those same changes that are written are saved to file/store and are refreshed as if they are new values (bad behaviour)
@@ -318,7 +324,10 @@ export default (node: NoteProps) => {
 				style={{
 					"border-color": editable() ? "" : "transparent"
 				}}
-				onDblClick={() => setEditable(true)}
+				onDblClick={() => {
+					setEditable(true)
+					editor()?.commands.focus("end")
+				}}
 				ref={editorRef}
 			></div>
 		</div>

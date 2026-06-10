@@ -21,6 +21,8 @@ declare global {
 			backUpSave: () => Promise<any>
 			downloadImgUrl: (string) => Promise<any>
 			cacheUrl: (url: string) => Promise<string>
+			deletecacheedYoutubeVid: (url: string) => Promise<any>
+			checkCacheYoutubeVidExists: (url: string) => Promise<any>
 			cacheYoutubeVid: (url: string) => Promise<any>
 			onYoutubeDownloadProgress: (callback: any) => Promise<any>
 			onYoutubeDownloadComplete: (callback: any) => Promise<any>

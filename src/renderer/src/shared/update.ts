@@ -473,7 +473,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				columns: [],
 				rows: [],
 				title: "",
-				description: ""
+				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 			} satisfies Table
 
 		case NodeType.Url:
@@ -481,7 +481,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				...base,
 				url: "",
 				showDescription: true,
-				description: ""
+				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 			} satisfies Url
 
 		case NodeType.Board:
@@ -502,7 +502,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				...base,
 				path: "", // TODO: in the Document node; when the user creates a new one make it a file upload
 				showDescription: false,
-				description: ""
+				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 			} satisfies Document
 
 		case NodeType.Color:
@@ -510,7 +510,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				...base,
 				colorValue: "#ffffff", //TODO: randomize it
 				showDescription: true,
-				description: "color name maybe goes here"
+				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 			} satisfies Color
 
 		case NodeType.Image:
@@ -518,7 +518,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				...base,
 				path: "",
 				showDescription: false,
-				description: ""
+				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 			} satisfies Image
 
 		case NodeType.Activity:
