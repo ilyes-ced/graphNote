@@ -3,7 +3,7 @@ import { store, setStore } from "./store"
 import { NodeType, type NodeUnion } from "../types"
 import { addSelected, saveChanges } from "./utils"
 import moveNode from "./moveNode"
-import { updateChildPosition, updatePosition, updateZIndex } from "./update"
+import { findNodeById, getActiveBoardId, updateChildPosition, updatePosition, updateZIndex } from "./update"
 
 function isOverlapping(mouseX: number, mouseY: number, targetEl: Element) {
 	const rect = targetEl.getBoundingClientRect()
@@ -105,8 +105,19 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 				element.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`
 			}
 
+			//? move selected nodes with the moved node
 			if (store.selectedNodes.size > 1) {
 				// here we want to move other selected items with the same movements as the controlled item which is element
+				const primaryNode = findNodeById(node.id)
+				const dx = (primaryNode?.x ?? 0) - currentX
+				const dy = (primaryNode?.y ?? 0) - currentY
+				store.selectedNodes.forEach((n) => {
+					if (n != node.id) {
+						const nn = findNodeById(n)
+						//@ts-ignore
+						document.getElementById(n).style.transform = `translate3d(${nn.x - dx}px, ${nn.y - dy}px, 0)`
+					}
+				})
 			}
 		} else {
 			updateChildPosition(node.id, x, y)
@@ -211,6 +222,30 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 				const snappedY = Math.round((currentY ?? 0) / gy) * gy
 				console.info(snappedX, snappedY)
 				updatePosition(node.id, snappedX, snappedY)
+
+				console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL000000")
+				//? move selected nodes with the moved node
+				if (store.selectedNodes.size > 1) {
+					console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL111111")
+					// here we want to move other selected items with the same movements as the controlled item which is element
+					const primaryNode = findNodeById(node.id)
+					const dx = (primaryNode?.x ?? 0) - currentX
+					const dy = (primaryNode?.y ?? 0) - currentY
+					store.selectedNodes.forEach((n) => {
+						console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL222222")
+						if (n != node.id) {
+							console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL333333")
+							const nn = findNodeById(n)
+							//@ts-ignore
+							const snappedX = Math.round((nn.x - dx) / gx) * gx
+							//@ts-ignore
+							const snappedY = Math.round((nn.y - dy) / gy) * gy
+							console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL333333")
+							console.info(n, snappedX, snappedY)
+							updatePosition(n, snappedX, snappedY)
+						}
+					})
+				}
 			}
 		}
 

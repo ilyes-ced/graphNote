@@ -274,7 +274,9 @@ ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }
 
 		const res = await fetch(url, {
 			headers: {
-				"User-Agent": "Mozilla/5.0 (compatible; URLPreviewBot/1.0)"
+				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " + "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+				Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+				"Accept-Language": "en-US,en;q=0.9"
 			}
 		})
 
@@ -338,6 +340,8 @@ ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }
 		//TODO: change to return the buffer data for image not urls
 		return { title, description, image: new ArrayBuffer(10), favicon: new ArrayBuffer(10) }
 	} catch (err) {
+		console.error("scrapeUrl failed:", url, err)
+
 		return {
 			title: "placeholder",
 			description: "placeholder",

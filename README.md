@@ -126,9 +126,13 @@
 - [ ] Url node: add ability to delete video file
 - [ ] Arrow logic: copy from reactFlow or leaderLine
 - [ ] pasting url to canvas create a Url node
+- [ ] pdf: might be better to use the systen default pdf reader
+- [ ] Notes: add URLs
+- [ ] scrape reddit posts data (title, images ...)
 
 # extra features
 
+- [ ] pin a certain node to one of the 4 corners
 - [ ] add another type of Note node, using typst as an external library
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas
@@ -140,6 +144,7 @@
 - [x] right click menu
 - [ ] daily tasks node (or set the recurring period)
 - [ ] extend Url node to take full screen, display the video and the its description to the side
+- [ ] show list of all nodes of a certain type
 
 # encryption
 

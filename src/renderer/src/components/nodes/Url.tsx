@@ -39,6 +39,16 @@ export default (node: UrlProps) => {
 		favicon: new ArrayBuffer(0)
 	})
 
+	function isRedditUrl(url: string): boolean {
+		try {
+			const hostname = new URL(url).hostname.toLowerCase()
+
+			return hostname === "reddit.com" || hostname === "www.reddit.com" || hostname.endsWith(".reddit.com")
+		} catch {
+			return false
+		}
+	}
+
 	const setImageFromArrayBuffer = (buffer: ArrayBuffer, type: "image" | "favicon") => {
 		console.log(buffer)
 		const blob = new Blob([buffer], { type: "image/png" }) // or jpeg/webp
@@ -245,6 +255,9 @@ export default (node: UrlProps) => {
 					</div>
 				}
 			>
+				{/*
+					<Match when={isRedditUrl(node.url)}>test</Match>
+					 */}
 				<Match when={node.url === ""}>
 					<div class="flex items-center space-x-2 px-5">
 						<IconLink />
