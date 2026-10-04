@@ -40,13 +40,11 @@ function isTextLikeElementFocused(): boolean {
 	return false
 }
 
-type ImageReference = { type: "url"; value: string } | { type: "local"; value: string } | null
+type ImageReference = { type: "local" | "html_url" | "http_url"; value: string } | null
 
 function extractImageReference(text: string): ImageReference {
 	//? might need more in the future not sure if there are more formats
 	const IMG_TAG_REGEX = /<img\s+[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/i
-	const IMA_URL_REGEX = /(https?:\/\/[^\s"'<>]+?\.(?:png|jpg|jpeg|gif|webp|svg|bmp|avif|tiff))(?:\?[^\s"'<>]*)?/i
-
 	const LOCAL_PATH_REGEX = /^(\/(?:[^\/]+\/)*[^\/]+\.(png|jpg|jpeg|gif|webp|bmp|svg))$/i
 
 	text = text.trim()
@@ -56,14 +54,12 @@ function extractImageReference(text: string): ImageReference {
 	const imgMatch = text.match(IMG_TAG_REGEX)
 	console.log("url", imgMatch)
 	if (imgMatch) {
-		return { type: "url", value: imgMatch[1] }
+		return { type: "html_url", value: imgMatch[1] }
 	}
 
 	// https image URLs
-	const imgUrlMatch = text.match(IMA_URL_REGEX)
-	console.log("https url", imgUrlMatch)
-	if (imgUrlMatch) {
-		return { type: "url", value: imgUrlMatch[1] }
+	if (text.startsWith("http")) {
+		return { type: "http_url", value: text }
 	}
 
 	// Local file path
@@ -185,7 +181,7 @@ export default (props: any) => {
 								// check if any text is selecte, if not check if its an image
 								if (!isTextLikeElementFocused()) {
 									//? here is for those when you copy an image a link is copied instead of the actual binary data
-									//? here means the pasted was not nodes, and scince we know its pasted into text inputs because of !isTextLikeElementFocused(), its either an iamge or nothing we should care about
+									//? here means the pasted was not nodes, and since we know its pasted into text inputs because of !isTextLikeElementFocused(), its either an iamge or nothing we should care about
 									console.log("+=============================================== here means the pasted was not nodes")
 									console.log(content)
 									console.log()
@@ -204,21 +200,28 @@ export default (props: any) => {
 											console.log(new TextEncoder().encode(imgRef.value).length)
 											//copy using tauri copyfile
 											console.log(Image.split("/").pop() ?? "image.png")
-											const res = await window.api.writeFile({
-												name: Image.split("/").pop() ?? "image.png",
-												data: new TextEncoder().encode(imgRef.value),
-												type: "image"
+											const res = await window.api.copyFile({
+												src: imgRef.value
 											})
+											console.log("recieved the copied image data")
+											console.log(res)
 											if (res.path) {
 												//TODO: fix x,y to be as the mouse
 												newImageNode(res.path, 0, 0)
 											} else {
 												console.error("failed to save file:", res.path)
 											}
-										} else if (imgRef.type === "url") {
+										} else if (imgRef.type === "html_url" || "http_url") {
 											//TODO: download image to our save folder and create the image node
 											//await downloadImage(imgRef.value);
-											const res = await window.api.downloadImgUrl(imgRef.value)
+											const res = await window.api.downloadUrlImage({ url: imgRef.value })
+
+											if (res.path) {
+												//TODO: fix x,y to be as the mouse
+												newImageNode(res.path, 0, 0)
+											} else {
+												console.error("failed to save file:", res.path)
+											}
 											console.log(res)
 										}
 									})
@@ -227,9 +230,8 @@ export default (props: any) => {
 						} catch (e) {
 							console.warn("the pasted was not a text", e)
 						}
-
+						//? binary data image pasting
 						try {
-							console.log("fwoiejfpowiejf")
 							const possibleBinImgsData = await navigator.clipboard.read()
 							for (const item of possibleBinImgsData) {
 								for (const type of item.types) {
@@ -660,7 +662,7 @@ const extraOptions = () => {
 
 const Option = (text: string) => {
 	return (
-		<button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer" onclick={() => {}}>
+		<button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer" onclick={() => { }}>
 			<div class="flex items-center">{text}</div>
 		</button>
 	)

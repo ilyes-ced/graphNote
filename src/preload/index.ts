@@ -21,6 +21,10 @@ const api = {
 
 	writeFile: (data: any) => ipcRenderer.invoke("writeFile", data),
 
+	copyFile: (data: any) => ipcRenderer.invoke("copyFile", data),
+
+	downloadUrlImage: (data: any) => ipcRenderer.invoke("downloadUrlImage", data),
+
 	getAvailableFilePath: (data: any) => ipcRenderer.invoke("getAvailableFilePath", data),
 
 	copyFileUnique: (data: any) => ipcRenderer.invoke("copyFileUnique", data),

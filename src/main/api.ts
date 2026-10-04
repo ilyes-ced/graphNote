@@ -4,12 +4,20 @@ import path from "path"
 import fs from "fs/promises"
 import * as cheerio from "cheerio"
 import { createHash } from "crypto"
-import { constants, copyFileSync, existsSync, mkdirSync, readdirSync } from "fs"
+import { constants, existsSync, mkdirSync, readdirSync } from "fs"
 import youtubedl from "youtube-dl-exec"
 import express from "express"
+import os from "node:os";
+import pp from "node:path";
 
-const basePath = "/home/clippy/Documents/GraphNote"
-const baseDir = "/home/clippy/Documents"
+
+
+
+// const basePath = "/home/clippy/Documents/GraphNote"
+// const baseDir = "/home/clippy/Documents"
+
+const basePath = pp.join(os.homedir(), "Documents/GraphNote")
+const baseDir = pp.join(os.homedir(), "Documents");
 const nodesPath = `${basePath}/nodes.json`
 const edgesPath = `${basePath}/edges.json`
 const settingsPath = `${basePath}/settings.json`
@@ -144,6 +152,7 @@ ipcMain.handle("readFile", async (_, { folderPath, filePath }) => {
 })
 
 ipcMain.handle("writeFile", async (_, { name, data, type }) => {
+	console.log("writeFile", name, data, type)
 	const fullFile = path.join(basePath, type, name)
 
 	if (!fullFile.startsWith(basePath)) {
@@ -180,6 +189,119 @@ ipcMain.handle("writeFile", async (_, { name, data, type }) => {
 		path: path.join(type, finalName)
 	}
 })
+
+ipcMain.handle("copyFile", async (_, { src }) => {
+	console.log("copying file", src)
+
+
+	let name = src.split("/").pop() ?? "image.png"
+	let counter = 0
+	let finalName = ""
+	let finalPath = ""
+
+	console.log(name)
+
+	// Determine unique file name
+	while (true) {
+		finalName = counter === 0 ? name : getNextName(name, counter)
+		finalPath = path.join(basePath, "image", finalName)
+
+		try {
+			await fs.access(finalPath)
+			counter++
+		} catch {
+			break
+		}
+	}
+
+	console.log(finalName)
+	console.log(finalPath)
+
+	await fs.copyFile(src, finalPath)
+
+
+	console.log("--------------------------------")
+	console.log(finalName)
+	console.log(finalPath)
+	return {
+		success: true,
+		path: path.join("image", finalName)
+	}
+})
+
+ipcMain.handle("downloadUrlImage", async (_, { url }) => {
+	console.log("downloading image file from", url);
+
+	let src = ""
+	if (url.startsWith("http")) {
+		src = url
+	} else if (url.startsWith("<meta")) {
+		const match = url.match(/<img[^>]+src=["']([^"']+)["']/i);
+		const src = match?.[1];
+		console.log("lllllllllllllllllll meta tag src:", src);
+	} else {
+		throw new Error(`unexpected url type ${url}`);
+	}
+	console.log("??????????????????????0000")
+
+	const response = await fetch(src);
+	if (!response.ok) {
+		throw new Error(`HTTP ${response.status}`);
+	}
+	console.log("??????????????????????1111")
+
+	const contentType = response.headers
+		.get("content-type")
+		?.split(";")[0]
+		.toLowerCase();
+	const extensions = {
+		"image/jpeg": ".jpg",
+		"image/png": ".png",
+		"image/webp": ".webp",
+		"image/gif": ".gif",
+		"image/bmp": ".bmp",
+		"image/svg+xml": ".svg",
+	};
+	const extension = extensions[contentType ?? "image/jpeg"] || ".jpg";
+	console.log("??????????????????????2222")
+
+	const name = `download_image${extension}`;
+	let counter = 0;
+	let finalName;
+	let finalPath;
+	console.log("??????????????????????3333")
+
+	while (true) {
+		finalName =
+			counter === 0
+				? name
+				: getNextName(name, counter);
+		finalPath = path.join(
+			basePath,
+			"image",
+			finalName
+		);
+		try {
+			await fs.access(finalPath);
+			counter++;
+		} catch {
+			break;
+		}
+	}
+	console.log("??????????????????????4444")
+
+	console.log("??????????????????????5555")
+	console.log("??????????????????????6666")
+	console.log("??????????????????????7777")
+	console.log(finalName)
+	console.log(finalPath)
+	const buffer = Buffer.from(await response.arrayBuffer());
+	await fs.writeFile(finalPath, buffer);
+	return {
+		success: true,
+		path: path.join("image", finalName),
+	};
+});
 
 ipcMain.handle("getAvailableFilePath", async (_, { path: inputPath }) => {
 	const folderPath = "GraphNote"

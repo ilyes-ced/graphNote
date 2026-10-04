@@ -31,11 +31,16 @@
 - [x] fix the selection on NoteType
 - [x] scroll becomes finniky when zoom is used, change zoom target to an outside element
 - [x] fix copy paste (copying other components should copy thier data structure and on paste check if its correct and create the corrosponding nodes, other wise if its text create a note, if its a url create a Url node)
-    - [ ] finish the image copy pasting
+    - [x] finish the image copy pasting
         - [x] binary data iamges
         - [x] local image paths
-        - [ ] images URLs
-        - [ ] add and test other file types too
+        - [x] images URLs (works with <meta> tag image copies, and http/https image copies)
+        ```
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"><img class="img-fluid isTransparent" src="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/sds-windows11-laptop-fy24?scl=1&amp;fmt=png-alpha" loading="lazy" alt="" data-automation-test-id="image-uida01c">
+
+        https://lh3.googleusercontent.com/grass-cs/ACvplmMrzy_poFPZl8UUQ7nzUlA7lm9ughQcT_1JBaW6EesSIEGguRr0AqPJtpe22fqPiUoFc127L5Tp6aRbuIQDIaKwPEtyp7LlHK5WzfTGS_5fOpqauclmEA7K_ecuRkcfE0CB_NKK=w426-h240-k-no
+        ```
+    - [ ] add and test other file types too
 - [ ] redo + undo (or git versioning system/actions systems where each action is recorded: adding a node, editing a node, deleting a node . . . . .)
     - [ ] fix:
         - [x] updatePosition (when letting go 2 different positions are recorded)
@@ -74,13 +79,13 @@
 - [x] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
 - [ ] the new snap to grid is not working properly (not consistent)
 - [ ] when note node is focused disable the arrows to move the node
-- [ ] in nodes.tsx settimeout to wait for url nodes to load needs to go
-- [ ] cache URL nodes
+- [ ] in nodes.tsx set timeout to wait for url nodes to load needs to go
+- [x] cache URL nodes
 - [x] arrows stay in the same position like absolute when you move the canvas
 - [x] update arrows when you zoom and move the canvas
 - [ ] load arrows once both nodes are ready
 - [ ] todo node sometimes doesnt save changed text
-- [ ] when zooming, make it point to or from the mouse cursor
+- [x] when zooming, make it point to or from the mouse cursor
 - [ ] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
 - [ ] for todo make the title optional
 - [x] infinite loop resizing: disable the observer after the first fire, for urls, update once the resource is loaded, when width is changed also do the observe once more

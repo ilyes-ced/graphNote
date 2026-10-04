@@ -13,6 +13,8 @@ declare global {
 			readGraph: () => Promise<any>
 			readFile: (data: { folderPath: string; filePath: string }) => Promise<{ text: string }>
 			writeFile: (data: { name: string; data: Uint8Array; type: string }) => Promise<{ success: boolean; path: string }>
+			copyFile: (data: { src: string }) => Promise<any>
+			downloadUrlImage: (data: { url: string }) => Promise<any>
 			getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>
 			copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>
 			readImage: (string) => Promise<Buffer>
