@@ -146,11 +146,11 @@ interface Activity extends Node, ChildNode {
 	progress: Record<string, number>
 }
 
-interface Arrow extends Node, ChildNode {}
-interface Code extends Node, ChildNode {}
-interface Upload extends Node, ChildNode {}
-interface Drawing extends Node, ChildNode {}
-interface Sketch extends Node, ChildNode {}
+interface Arrow extends Node, ChildNode { }
+interface Code extends Node, ChildNode { }
+interface Upload extends Node, ChildNode { }
+interface Drawing extends Node, ChildNode { }
+interface Sketch extends Node, ChildNode { }
 interface Document extends Node, ChildNode {
 	path: string
 	showDescription: boolean

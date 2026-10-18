@@ -12,7 +12,6 @@
 - [x] cache url scrapping (backend)
 - [x] stop writing to file when moving nodes
 - [x] test animejs and neodrag again their animations were smoother (the issue was tauri not which DnD library was used, in electron all DnD libraries are the same smoothness, even my custom implementation)
-
 - [ ] remove all unneeded imports and functions and comments
 - [ ] refactor the backend code to be more readable and coherent
 
@@ -87,7 +86,9 @@
 - [ ] todo node sometimes doesnt save changed text
 - [x] when zooming, make it point to or from the mouse cursor
 - [ ] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
-- [ ] for todo make the title optional
+  - [ ] a better option could be to have a button that clears unused resources
+  - [ ] or search for unused resources and delete them on startup
+- [x] for todo make the title optional
 - [x] infinite loop resizing: disable the observer after the first fire, for urls, update once the resource is loaded, when width is changed also do the observe once more
 - [ ] recomended width for new Note nodes is 580
 - [ ] Note editor buttons not settings is-active class correctly but are working just fine
@@ -136,7 +137,6 @@
 - [ ] scrape reddit posts data (title, images ...)
 
 # extra features
-
 - [ ] pin a certain node to one of the 4 corners
 - [ ] add another type of Note node, using typst as an external library
 - [ ] add ability to pin certain nodes
@@ -152,7 +152,6 @@
 - [ ] show list of all nodes of a certain type
 
 # encryption
-
 leave the encryption feature to last because once its implemented we cant manipulate the data as we want
 
 - [ ] for enxryption maybe encrypt each file indivudually and load them when needed
