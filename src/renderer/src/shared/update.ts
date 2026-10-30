@@ -1,4 +1,4 @@
-import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document } from "../types"
+import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList } from "../types"
 import { setStore, store } from "./store"
 import { saveChanges } from "./utils"
 import { actionsMiddleware } from "./actions"
@@ -282,33 +282,33 @@ const updateChildPosition = (nodeId: string, x: number, y: number) => {
   if (!activeBoardId) return;
 
   outerLoop: for (const parentNode of store.nodes[activeBoardId] ?? []) {
-    if (parentNode.type !== NodeType.Column) continue;
+	if (parentNode.type !== NodeType.Column) continue;
 
-    const childNodes = store.nodes[parentNode.id] ?? [];
-    for (let i = 0; i < childNodes.length; i++) {
-      const node = childNodes[i];
-      if (node.id === nodeId) {
-        const oldX = node.x;
-        const oldY = node.y;
+	const childNodes = store.nodes[parentNode.id] ?? [];
+	for (let i = 0; i < childNodes.length; i++) {
+	  const node = childNodes[i];
+	  if (node.id === nodeId) {
+		const oldX = node.x;
+		const oldY = node.y;
 
-        setStore("nodes", parentNode.id, i, "x", x);
-        setStore("nodes", parentNode.id, i, "y", y);
-        saveChanges();
+		setStore("nodes", parentNode.id, i, "x", x);
+		setStore("nodes", parentNode.id, i, "y", y);
+		saveChanges();
 
-        return {
-          undo() {
-            setStore("nodes", parentNode.id, i, "x", oldX);
-            setStore("nodes", parentNode.id, i, "y", oldY);
-            saveChanges();
-          },
-          redo() {
-            setStore("nodes", parentNode.id, i, "x", x);
-            setStore("nodes", parentNode.id, i, "y", y);
-            saveChanges();
-          },
-        };
-      }
-    }
+		return {
+		  undo() {
+			setStore("nodes", parentNode.id, i, "x", oldX);
+			setStore("nodes", parentNode.id, i, "y", oldY);
+			saveChanges();
+		  },
+		  redo() {
+			setStore("nodes", parentNode.id, i, "x", x);
+			setStore("nodes", parentNode.id, i, "y", y);
+			saveChanges();
+		  },
+		};
+	  }
+	}
   }
 };
 */
@@ -388,10 +388,10 @@ const addNode = (
   targetNodeId?: string
 ) => {
   if (targetNodeId) {
-    setStore("nodes", targetNodeId, (nodes = []) => [...nodes, newNode]);
+	setStore("nodes", targetNodeId, (nodes = []) => [...nodes, newNode]);
   } else {
-    const activeBoardId = getActiveBoardId();
-    setStore("nodes", activeBoardId, (nodes = []) => [...nodes, newNode]);
+	const activeBoardId = getActiveBoardId();
+	setStore("nodes", activeBoardId, (nodes = []) => [...nodes, newNode]);
   }
 
   saveChanges();
@@ -528,6 +528,44 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				width: undefined,
 				progress: {}
 			} as Activity
+
+		case NodeType.TierList:
+			return {
+				...base,
+				// TODO: Fill once you define what TierList contains
+				data: [
+					{
+						tier: "S",
+						color: "#ff7f7f",
+						data: [""],
+					},
+					{
+						tier: "A",
+						color: "#ffbf7f",
+						data: [""],
+					},
+					{
+						tier: "B",
+						color: "#ffdf7f",
+						data: [""],
+					},
+					{
+						tier: "C",
+						color: "#ffff7f",
+						data: [""],
+					},
+					{
+						tier: "D",
+						color: "#bfff7f",
+						data: [""],
+					},
+					{
+						tier: "F",
+						color: "#7fff7f",
+						data: [""],
+					},
+				]
+			} as TierList
 
 		default:
 			throw new Error(`Unsupported node type: ${type}`)

@@ -29,7 +29,9 @@ const icons = [
 	// { name: "sketch", width: 32, height: 24 },
 	{ name: "color", width: 28, height: 32 },
 	{ name: "image", width: 32, height: 32 },
-	{ name: "activity", width: 32, height: 32 }
+
+	{ name: "activity", width: 32, height: 24 },
+	{ name: "tierList", width: 32, height: 24 }
 ]
 
 const startDragging = (type: string) => (e: MouseEvent) => {
@@ -98,6 +100,8 @@ const findType = (type: string): NodeType => {
 			return NodeType.Image
 		case "activity":
 			return NodeType.Activity
+		case "tierList":
+			return NodeType.TierList
 		default:
 			throw new Error(`Unsupported node type: ${type}`)
 	}

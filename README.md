@@ -15,7 +15,7 @@
 - [ ] remove all unneeded imports and functions and comments
 - [ ] refactor the backend code to be more readable and coherent
 
-# fixes
+# bugs
 
 - [x] make Todo widget more usable
     - [x] reorder items

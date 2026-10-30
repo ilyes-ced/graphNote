@@ -12,6 +12,11 @@ interface Payload {
 }
 
 type Task = { text: string; check: boolean; nestLevel: number }
+type Tier = {
+	tier: string;
+	color: string;
+	data: string[]; //? image paths
+};
 
 enum NodeType {
 	Note = "Note",
@@ -20,6 +25,7 @@ enum NodeType {
 	Table = "Table",
 	Url = "Url",
 	Activity = "Activity",
+	TierList = "TierList",
 
 	Arrow = "Arrow",
 	Board = "Board",
@@ -145,6 +151,11 @@ interface Activity extends Node, ChildNode {
 	// ! pain in the ass to implment it to handle other date formats
 	progress: Record<string, number>
 }
+interface TierList extends Node, ChildNode {
+	title: string
+	desciption: string
+	data: Tier[]
+}
 
 interface Arrow extends Node, ChildNode { }
 interface Code extends Node, ChildNode { }
@@ -216,6 +227,7 @@ export type {
 	BadgeRegistry,
 	Color,
 	Activity,
+	TierList,
 	ColorType,
 	Edge,
 	Payload,

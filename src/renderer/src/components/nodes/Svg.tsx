@@ -1,41 +1,41 @@
 export default (props: any) => {
-	type IconName =
-		| "note"
-		| "todo"
-		| "arrow"
-		| "board"
-		| "column"
-		| "comment"
-		| "table"
-		| "code"
-		| "color"
-		| "document"
-		| "drawing"
-		| "sketch"
-		| "upload"
-		| "image"
-		| "url"
-		| "collapse"
+    type IconName =
+        | "note"
+        | "todo"
+        | "arrow"
+        | "board"
+        | "column"
+        | "comment"
+        | "table"
+        | "code"
+        | "color"
+        | "document"
+        | "drawing"
+        | "sketch"
+        | "upload"
+        | "image"
+        | "url"
+        | "collapse"
 
-	let width = props.width || 32
-	let height = props.height || 32
-	let icon_name: IconName = props.icon_name
-	let classes = props.classes
+    let width = props.width || 32
+    let height = props.height || 32
+    let icon_name: IconName = props.icon_name
+    let classes = props.classes
 
-	const getCSSVar = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+    const getCSSVar = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 
-	let icon_bg = getCSSVar("--color-background")
-	let icon_txt = getCSSVar("--color-foreground")
-	let icon_hint1 = getCSSVar("--color-primary")
-	let icon_hint2 = getCSSVar("--color-border")
-	let icon_hint3 = getCSSVar("--color-secondary")
-	let icon_hint4 = getCSSVar("--color-destructive")
+    let icon_bg = getCSSVar("--color-background")
+    let icon_txt = getCSSVar("--color-foreground")
+    let icon_hint1 = getCSSVar("--color-primary")
+    let icon_hint2 = getCSSVar("--color-border")
+    let icon_hint3 = getCSSVar("--color-secondary")
+    let icon_hint4 = getCSSVar("--color-destructive")
 
-	let icons = {
-		note: {
-			width: width,
-			height: height,
-			svg: `
+    let icons = {
+        note: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                     <path fill="${icon_txt}"
@@ -43,12 +43,12 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
+        },
 
-		todo: {
-			width: width,
-			height: height,
-			svg: `
+        todo: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                     <path fill="${icon_txt}"
@@ -56,21 +56,21 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
-		arrow: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        arrow: {
+            width: width,
+            height: height,
+            svg: `
                 <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                 <path fill="${icon_txt}" fill-rule="evenodd"
                     d="m30.385 0-3 8-1.793-1.793-21.5 21.5a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414L24.177 4.792 22.385 3l8-3z">
                 </path>
             `
-		},
-		board: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        board: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="32" height="32" fill="${icon_hint1}" rx="8"></rect>
                     <rect width="7" height="7" x="8" y="8" fill="#FFF" rx="2"></rect>
@@ -79,11 +79,11 @@ export default (props: any) => {
                     <rect width="7" height="7" x="17" y="17" fill="#FFF" fill-opacity="0.5" rx="2"></rect>
                 </g>
             `
-		},
-		column: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        column: {
+            width: width,
+            height: height,
+            svg: `
                 <defs>
                     <filter id="ElementColumnIcon__a" width="131.2%" height="131.2%" x="-15.6%" y="-12.5%"
                         filterUnits="objectBoundingBox">
@@ -100,11 +100,11 @@ export default (props: any) => {
                     <rect width="18" height="1.5" x="7" y="4" fill="${icon_hint4}" rx="0.75"></rect>
                 </g>
             `
-		},
-		comment: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        comment: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <path fill="${icon_hint3}"
                         d="M2.002 22A1.995 1.995 0 0 1 0 20.009V1.99C0 .891.89 0 2.002 0h27.996C31.104 0 32 .89 32 1.991V20.01c0 1.1-.89 1.991-2.002 1.991H20l-4 4-4-4H2.002z">
@@ -114,11 +114,11 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
-		table: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        table: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <path fill="#3D3D3D" d="M2 0h28a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"></path>
                     <path fill="#4D4D4D" d="M2 0h28a2 2 0 0 1 2 2v3H0V2a2 2 0 0 1 2-2z"></path>
@@ -127,22 +127,22 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
-		code: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        code: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="${icon_bg}" rx="2"></rect>
                     <path d="M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16" stroke="${icon_txt}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
                     </path>
                 </g>
             `
-		},
-		color: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        color: {
+            width: width,
+            height: height,
+            svg: `
                 <defs>
                     <filter id="ElementColorSwatchIcon__b" width="155.6%" height="143.5%" x="-27.8%" y="-17.4%"
                         filterUnits="objectBoundingBox">
@@ -182,11 +182,11 @@ export default (props: any) => {
                     </g>
                 </g>
             `
-		},
-		document: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        document: {
+            width: width,
+            height: height,
+            svg: `
                 <defs>
                     <filter id="ElementDocumentIcon__b" width="138.5%" height="131.2%" x="-19.2%" y="-12.5%"
                         filterUnits="objectBoundingBox">
@@ -232,11 +232,11 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
-		drawing: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        drawing: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="4"></rect>
                     <g fill="#F2F2F2" fill-rule="nonzero">
@@ -249,11 +249,11 @@ export default (props: any) => {
                     </g>
                 </g>
             `
-		},
-		sketch: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        sketch: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="2"></rect>
                     <path fill="#E6E6E6"
@@ -261,21 +261,21 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
-		upload: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        upload: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="4"></rect>
                     <path fill="#E6E6E6" d="M18.586 6a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V24a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h8.586zM17 7.5h-7a.5.5 0 0 0-.5.5v16a.5.5 0 0 0 .5.5h12a.5.5 0 0 0 .5-.5V13h-4.75a.75.75 0 0 1-.743-.648L17 12.25V7.5zm5.379 4L18.5 7.622V11.5h3.879z"></path>
                 </g>
             `
-		},
-		image: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        image: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="32" height="32" fill="#3D3D3D" rx="4"></rect>
                     <path fill="#E6E6E6"
@@ -283,11 +283,11 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
-		url: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        url: {
+            width: width,
+            height: height,
+            svg: `
                 <g fill="none" fill-rule="evenodd">
                     <rect width="${width}" height="${height}" fill="#3D3D3D" rx="2"></rect>
                     <path fill="#E6E6E6" fill-rule="nonzero"
@@ -295,18 +295,18 @@ export default (props: any) => {
                     </path>
                 </g>
             `
-		},
-		collapse: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        collapse: {
+            width: width,
+            height: height,
+            svg: `
                 <path fill="#fff" fill-opacity="1" fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1 0-1h7a.5.5 0 0 1 .5.5z"></path>
             `
-		},
-		pdf: {
-			width: width,
-			height: height,
-			svg: `
+        },
+        pdf: {
+            width: width,
+            height: height,
+            svg: `
                 <svg height="${height}px" width="${width}px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                     viewBox="0 0 309.267 309.267" xml:space="preserve">
                 <g>
@@ -325,21 +325,35 @@ export default (props: any) => {
                 </g>
                 </svg>
             `
-		}
-	}
+        },
+        activity: {
+            width: width,
+            height: height,
+            svg: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 32 24"><g fill="none" fill-rule="evenodd"><rect width="32" height="24" fill="${icon_bg}" rx="2"/><rect fill="${icon_bg}" width="1.905" height="1.87" x="2" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="2" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="2" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="3.963" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="2" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="3.963" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="2" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="2" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="3.963" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="3.963" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="2" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="2" ry=".344" style="fill:#ff205660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="3.963" ry=".344" style="fill:#ff2056;stroke-width:.376445"/><rect width="1.905" height="1.87" x="2" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="2" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="7.39" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="9.353" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="9.353" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="9.353" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="7.39" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="9.353" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="7.39" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="7.39" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="7.39" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="7.39" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="9.353" ry=".344" style="fill:#00bc7d;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="9.353" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="7.39" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="9.353" ry=".344" style="fill:#00bc7d60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="2" y="12.778" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="2" y="14.741" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="12.778" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="14.741" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="14.741" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="14.741" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="12.778" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="12.778" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="14.741" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="12.778" ry=".344" style="fill:#1447e660;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="12.778" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="14.741" ry=".344" style="fill:#1447e6;stroke-width:.376445"/><rect width="1.905" height="1.87" x="2" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="2" y="20.13" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="18.168" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="4" y="20.13" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="18.168" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="6" y="20.13" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="8" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="10" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="12" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="14" y="20.13" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="16" y="20.13" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="18" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="20" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="22" y="20.13" ry=".344" style="fill:#ad46ff60;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="24" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="26" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="18.168" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/><rect width="1.905" height="1.87" x="28.095" y="20.13" ry=".344" style="fill:#ad46ff;stroke-width:.376445"/></g></svg>
+            `
+        },
+        tierList: {
+            width: width,
+            height: height,
+            svg: `
+               <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height} "viewBox="0 0 32 24" fill="${icon_bg}"><g fill="${icon_bg}" fill-rule="evenodd"><rect width="32" height="24" rx="2"/><rect width="5.149" height="4.56" x="2" y="2" ry=".839" style="fill:#ff2056;stroke-width:.966648"/><rect width="5.149" height="4.56" x="2" y="7.13" ry=".839" style="fill:#f54a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="2" y="12.26" ry=".839" style="fill:#fd9a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="2" y="17.391" ry=".839" style="fill:#00bc7d;stroke-width:.966694"/><rect width="5.149" height="4.56" x="7.713" y="2" ry=".839" style="fill:#ff2056;stroke-width:.966648"/><rect width="5.149" height="4.56" x="7.713" y="7.13" ry=".839" style="fill:#f54a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="7.713" y="12.26" ry=".839" style="fill:#fd9a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="7.713" y="17.391" ry=".839" style="fill:#00bc7d;stroke-width:.966694"/><rect width="5.149" height="4.56" x="13.425" y="1.958" ry=".839" style="fill:#3D3D3D;stroke-width:.966648"/><rect width="5.149" height="4.56" x="13.425" y="7.088" ry=".839" style="fill:#f54a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="13.425" y="12.218" ry=".839" style="fill:#fd9a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="13.425" y="17.348" ry=".839" style="fill:#3D3D3D;stroke-width:.966694"/><rect width="5.149" height="4.56" x="19.138" y="1.958" ry=".839" style="fill:#3D3D3D;stroke-width:.966648"/><rect width="5.149" height="4.56" x="19.138" y="7.088" ry=".839" style="fill:#f54a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="19.138" y="12.218" ry=".839" style="fill:#3D3D3D;stroke-width:.966694"/><rect width="5.149" height="4.56" x="19.138" y="17.348" ry=".839" style="fill:#3D3D3D;stroke-width:.966694"/><rect width="5.149" height="4.56" x="24.851" y="1.951" ry=".839" style="fill:#3D3D3D;stroke-width:.966648"/><rect width="5.149" height="4.56" x="24.851" y="7.081" ry=".839" style="fill:#f54a00;stroke-width:.966694"/><rect width="5.149" height="4.56" x="24.851" y="12.211" ry=".839" style="fill:#3D3D3D;stroke-width:.966694"/><rect width="5.149" height="4.56" x="24.851" y="17.342" ry=".839" style="fill:#3D3D3D;stroke-width:.966694"/></g></svg>
+            `
+        },
+    }
 
-	let display_icon = icons[icon_name]
-	if (!display_icon) {
-		return <div>Invalid icon name</div>
-	}
+    let display_icon = icons[icon_name]
+    if (!display_icon) {
+        return <div>Invalid icon name</div>
+    }
 
-	return (
-		<svg
-			width={display_icon.width}
-			height={display_icon.height}
-			class={classes}
-			viewBox={`0 0 ${display_icon.width} ${display_icon.height}`}
-			innerHTML={display_icon.svg}
-		></svg>
-	)
+    return (
+        <svg
+            width={display_icon.width}
+            height={display_icon.height}
+            class={classes}
+            viewBox={`0 0 ${display_icon.width} ${display_icon.height}`}
+            innerHTML={display_icon.svg}
+        ></svg>
+    )
 }
