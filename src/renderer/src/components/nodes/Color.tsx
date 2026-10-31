@@ -31,9 +31,7 @@ export default (node: ColorProps) => {
 			</div>
 
 			<Show when={node.showDescription}>
-				<div class="p-5">
-					<Editor id={node.id} desc={node.description ?? ""} />
-				</div>
+				<Editor id={node.id} desc={node.description ?? ""} />
 			</Show>
 		</div>
 	)

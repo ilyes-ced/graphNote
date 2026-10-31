@@ -53,12 +53,12 @@
         - [ ] newDocumentNode
         - [ ] child nodes moves
         - [ ] changing Note to Url
-- [ ] make child nodes selectable
+- [x] make child nodes selectable
 - [x] Board node becomes invisible when dragged (started when moving to electron)
 - [x] Column node doesnt become invisible when dragging board node
 - [x] color selector sometimes changes automatically (rbg(25, 25, 25)) (doesnt seem to remain a problem in electron) (seems to only happen when a node is selected and code is edited and saved)
 - [x] youtube videos not working ==> download them with yt-dlp and display them as video (they work on electron as embedded)
-- [ ] taskLists when writing in one of them they always start writing in another one, the same between them all (started when switching to electron)
+- [x] taskLists when writing in one of them they always start writing in another one, the same between them all (started when switching to electron)
 - [x] reset viewport data on board change (reset x,y , not zoom)
 - [ ] maybe dont delete (from memory/store) other used boards when changing (because when going back it causes a refresh (bad UX))
 - [x] copy pasting nodes when focused on text pastes both on text and on nodes
@@ -77,7 +77,7 @@
     - [x] give the user the option to use embedded youtube video or locally download the videos
 - [x] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
 - [ ] the new snap to grid is not working properly (not consistent)
-- [ ] when note node is focused disable the arrows to move the node
+- [x] when note node is focused disable the arrows to move the node
 - [ ] in nodes.tsx set timeout to wait for url nodes to load needs to go
 - [x] cache URL nodes
 - [x] arrows stay in the same position like absolute when you move the canvas
@@ -90,9 +90,8 @@
   - [ ] or search for unused resources and delete them on startup
 - [x] for todo make the title optional
 - [x] infinite loop resizing: disable the observer after the first fire, for urls, update once the resource is loaded, when width is changed also do the observe once more
-- [ ] recomended width for new Note nodes is 580
 - [ ] Note editor buttons not settings is-active class correctly but are working just fine
-- [ ] image text edit is not focusable
+- [x] image text edit is not focusable
 - [x] put images in thier own folder
 - [x] selection only works on the left top corner of nodes (calculating the w and h of each node would be expensive)
 - [x] set the urls description as the youtube video decription
@@ -135,6 +134,8 @@
 - [ ] pdf: might be better to use the systen default pdf reader
 - [ ] Notes: add URLs
 - [ ] scrape reddit posts data (title, images ...)
+- [ ] All nodes: add fullscreen editing
+- [ ] EventHandler: add ctrl+x for cut
 
 # extra features
 - [ ] pin a certain node to one of the 4 corners
@@ -154,7 +155,7 @@
 # encryption
 leave the encryption feature to last because once its implemented we cant manipulate the data as we want
 
-- [ ] for enxryption maybe encrypt each file indivudually and load them when needed
+- [ ] for encryption maybe encrypt each file indivudually and load them when needed
 
 ---
 

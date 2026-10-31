@@ -532,7 +532,10 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 		case NodeType.TierList:
 			return {
 				...base,
-				// TODO: Fill once you define what TierList contains
+				title: "Title",
+				description: "Description",
+				showTitle: true,
+				showDescription: true,
 				data: [
 					{
 						tier: "S",

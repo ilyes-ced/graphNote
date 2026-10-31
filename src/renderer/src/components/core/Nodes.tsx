@@ -12,6 +12,7 @@ import Color from "../nodes/Color"
 import Activity from "../nodes/Activity"
 import Document from "../nodes/Document"
 import NodeWrapper from "./NodeWrapper"
+import TierList from "../nodes/TierList"
 
 export default () => {
 	onMount(() => {
@@ -78,6 +79,9 @@ export default () => {
 									</Match>
 									<Match when={node.type === NodeType.Document}>
 										<Document {...node} />
+									</Match>
+									<Match when={node.type === NodeType.TierList}>
+										<TierList {...node} />
 									</Match>
 								</Switch>
 							</NodeWrapper>

@@ -153,7 +153,9 @@ interface Activity extends Node, ChildNode {
 }
 interface TierList extends Node, ChildNode {
 	title: string
-	desciption: string
+	description: string
+	showTitle: boolean
+	showDescription: boolean
 	data: Tier[]
 }
 

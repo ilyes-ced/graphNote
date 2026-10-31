@@ -21,17 +21,17 @@ export default (props: { id: string; desc: string }) => {
 			updateZIndex(props.id)
 		},
 		// onBlur({ event }) { },
-		onSelectionUpdate() {},
+		onSelectionUpdate() { },
 		onUpdate({ editor }) {
 			updateText(JSON.stringify(editor.getJSON()))
 		},
 		extensions: [StarterKit, Highlight, Typography, TextStyle, TextAlign],
-		content: JSON.parse(untrack(() => props.desc))
+		content: JSON.parse(untrack(() => props.desc)) ?? "test"
 	}))
 
 	onCleanup(() => {
 		editor()?.destroy()
 	})
 
-	return <div id="secondaryEditor" class="" ref={editorRef}></div>
+	return <div id="secondaryEditor" class="p-5" ref={editorRef}></div>
 }

@@ -326,7 +326,7 @@ const SortableItem = (props: SortableItemProps) => {
 
 	return (
 		<div
-			use:sortable
+			use: sortable
 			class="sortable group/taskitem flex justify-between"
 			classList={{
 				"opacity-25": sortable.isActiveDraggable,
