@@ -1,9 +1,9 @@
-import { createSignal, For, Show } from "solid-js"
-import { DragDropProvider, DragDropSensors, DragOverlay, SortableProvider, createSortable, closestCenter } from "@thisbeyond/solid-dnd"
-import { useDragDropContext } from "@thisbeyond/solid-dnd"
+// had many issues fixed by Claude
+import { batch, For, onCleanup, Show, untrack } from "solid-js"
+import { createStore, produce, unwrap } from "solid-js/store"
+import { DragDropProvider, DragDropSensors, SortableProvider, createSortable, closestCenter, useDragDropContext } from "@thisbeyond/solid-dnd"
 import { Task, Todo as TodoType } from "../../types"
 import { reorderTasks, updateTask } from "../../shared/update"
-import { debounce } from "../../shared/utils"
 import { IconMenu2 } from "@tabler/icons-solidjs"
 import EditableTitle from "./EditableTitle"
 
@@ -15,272 +15,303 @@ type TodoProps = TodoType & {
 
 type TaskWithId = Task & { _id: string }
 
+type KeyHandler = (e: KeyboardEvent, id: string) => void
+type PasteHandler = (e: ClipboardEvent, id: string) => void
+
 type SortableItemProps = {
 	task: TaskWithId
-	id: string
-	nodeId: string
-	index: number
-	handleKeyDown: Function
-	handlePaste: Function
+	onKeyDown: KeyHandler
+	onPaste: PasteHandler
+	onInput: (id: string, text: string) => void
+	onToggle: (id: string, checked: boolean) => void
 }
 
-type TaskItemProps = TaskWithId & {
-	nodeId: string
-	index: number
-	handleKeyDown: Function
-	handlePaste: Function
-}
+type TaskItemProps = SortableItemProps
 
+// === Helpers ===
 const generateId = (() => {
 	let counter = 0
 	return () => `task-id-${counter++}`
 })()
 
-const updateTaskDebounce = debounce((nodeId: string, index: number, value: string | boolean) => {
-	updateTask(nodeId, value, index)
-}, 300)
+/** Start/end character offsets of the current selection inside `el`. */
+const getSelectionOffsets = (el: HTMLElement): [number, number] => {
+	const sel = window.getSelection()
+	if (!sel || sel.rangeCount === 0 || !el.contains(sel.anchorNode)) {
+		const len = el.textContent?.length ?? 0
+		return [len, len]
+	}
+	const range = sel.getRangeAt(0)
+	const pre = range.cloneRange()
+	pre.selectNodeContents(el)
+	pre.setEnd(range.startContainer, range.startOffset)
+	const start = pre.toString().length
+	return [start, start + range.toString().length]
+}
 
-const handleTaskChange = (nodeId: string, index: number, value: string | boolean) => {
-	updateTaskDebounce(nodeId, index, value)
+/** Focus `el` and put the caret at `offset` (or at the end when omitted). */
+const placeCaret = (el: HTMLElement, offset?: number) => {
+	el.focus()
+	const sel = window.getSelection()
+	if (!sel) return
+	const range = document.createRange()
+	const textNode = el.firstChild
+	if (offset === undefined || !textNode) {
+		range.selectNodeContents(el)
+		range.collapse(false)
+	} else {
+		range.setStart(textNode, Math.min(offset, textNode.textContent?.length ?? 0))
+		range.collapse(true)
+	}
+	sel.removeAllRanges()
+	sel.addRange(range)
 }
 
 export default (node: TodoProps) => {
 	let containerRef!: HTMLDivElement
-	// Wrap tasks with local _id
-	const wrapTasksWithIds = (tasks: Task[]): TaskWithId[] => tasks.map((task) => ({ ...task, _id: generateId() }))
 
-	const [items, setItems] = createSignal<TaskWithId[]>(wrapTasksWithIds(node.tasks))
-	const [activeId, setActiveId] = createSignal<string | null>(null)
+	// A store (instead of a signal) so text/check/nestLevel edits update in place:
+	// rows are not re-created, so focus and caret survive, and the data stays
+	// in sync with what is on screen.
+	const [store, setStore] = createStore<{ tasks: TaskWithId[] }>({
+		tasks: node.tasks.map((task) => ({ ...task, _id: generateId() }))
+	})
 
-	const ids = () => items().map((task) => task._id)
+	const ids = () => store.tasks.map((task) => task._id)
+	const indexOf = (id: string) => store.tasks.findIndex((task) => task._id === id)
+	const snapshot = () => unwrap(store.tasks).map(({ _id, ...keepAttrs }) => keepAttrs)
 
-	const onDragStart = ({ draggable }) => {
-		setActiveId(draggable.id)
-	}
+	// === Persistence ===
+	// Text edits are debounced per task (and resolved to an index at fire time,
+	// so structural changes can't make them hit the wrong task).
+	const pending = new Map<string, { timer: number; run: () => void }>()
 
-	const onDragEnd = ({ draggable, droppable }) => {
-		if (draggable && droppable) {
-			const fromIndex = ids().indexOf(draggable.id)
-			const toIndex = ids().indexOf(droppable.id)
-
-			let itemsAfter = 0
-			let count = 1
-			while (true) {
-				if (fromIndex + count > items().length - 1) break
-				if (items()[fromIndex + count].nestLevel === 0) break
-				count++
-				itemsAfter++
-			}
-
-			if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
-				const updated = [...items()]
-				const moved = updated.splice(fromIndex, 1 + itemsAfter)
-				console.log(moved)
-				for (let index = 0; index < moved.length; index++) {
-					updated.splice(toIndex + index, 0, moved[index])
-				}
-				setItems(updated)
-			}
+	const scheduleTextSave = (id: string) => {
+		const existing = pending.get(id)
+		if (existing) clearTimeout(existing.timer)
+		const run = () => {
+			pending.delete(id)
+			const index = indexOf(id)
+			if (index === -1) return
+			updateTask(node.id, store.tasks[index].text, index)
 		}
-
-		const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
-		reorderTasks(node.id, newArray)
-
-		setActiveId(null)
+		pending.set(id, { timer: window.setTimeout(run, 300), run })
 	}
-	const handleKeyDown = (e: KeyboardEvent, index: number) => {
-		const target = e.currentTarget as HTMLElement
-		const text = target.textContent?.trim() ?? ""
 
-		const selection = window.getSelection()
-		const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null
-		const caretOffset = range ? range.startOffset : 0
+	const cancelPending = () => {
+		pending.forEach((p) => clearTimeout(p.timer))
+		pending.clear()
+	}
 
-		if (["Tab", "Backspace", "Enter", "ArrowUp", "ArrowDown"].includes(e.key)) {
-			if (e.key === "Enter") {
+	const flushPending = () => {
+		const runs = [...pending.values()]
+		cancelPending()
+		runs.forEach((p) => p.run())
+	}
+
+	// Don't lose the last keystrokes when the component unmounts.
+	onCleanup(flushPending)
+
+	// Structural change: the store already holds the latest text, so a full save
+	// supersedes any pending per-task save.
+	const persistStructure = () => {
+		cancelPending()
+		reorderTasks(node.id, snapshot())
+	}
+
+	// === Focus ===
+	const focusTask = (id: string, offset?: number) => {
+		queueMicrotask(() => {
+			const el = containerRef.querySelector<HTMLElement>(`[data-task-id="${id}"] .taskitem-text`)
+			if (el) placeCaret(el, offset)
+		})
+	}
+
+	// === Nesting ===
+	// End (exclusive) of the item at `index` plus all its nested children.
+	const subtreeEnd = (index: number) => {
+		const level = store.tasks[index].nestLevel
+		let end = index + 1
+		while (end < store.tasks.length && store.tasks[end].nestLevel > level) end++
+		return end
+	}
+
+	const shiftLevel = (index: number, delta: number) => {
+		const end = subtreeEnd(index)
+		batch(() => {
+			for (let i = index; i < end; i++) {
+				setStore("tasks", i, "nestLevel", (level) => level + delta)
+			}
+		})
+	}
+
+	// === Item events ===
+	const handleInput = (id: string, text: string) => {
+		const index = indexOf(id)
+		if (index === -1) return
+		setStore("tasks", index, "text", text)
+		scheduleTextSave(id)
+	}
+
+	const handleToggle = (id: string, checked: boolean) => {
+		const index = indexOf(id)
+		if (index === -1) return
+		setStore("tasks", index, "check", checked)
+		updateTask(node.id, checked, index)
+	}
+
+	const handleKeyDown: KeyHandler = (e, id) => {
+		const index = indexOf(id)
+		if (index === -1) return
+		const el = e.currentTarget as HTMLElement
+
+		switch (e.key) {
+			case "Enter": {
+				if (e.isComposing) return // IME confirmation, not a new task
 				e.preventDefault()
-				setItems((prev) => {
-					const updated = [...prev]
-					const current = prev[index]
-					const newTask: TaskWithId = {
-						_id: generateId(),
-						text: "",
-						check: false,
-						nestLevel: current.nestLevel
-					}
-					updated.splice(index + 1, 0, newTask)
-					return updated
-				})
 
-				const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
-				reorderTasks(node.id, newArray)
+				// Split at the caret: text after it moves to the new task
+				const text = el.textContent ?? ""
+				const [start, end] = getSelectionOffsets(el)
+				const before = text.slice(0, start)
+				const after = text.slice(end)
+				const newTask: TaskWithId = {
+					_id: generateId(),
+					text: after,
+					check: false,
+					nestLevel: store.tasks[index].nestLevel
+				}
 
-				queueMicrotask(() => {
-					const editableElements = containerRef.querySelectorAll(".taskitem-text")
-					const newTarget = editableElements[index + 1] as HTMLElement
-					if (newTarget) newTarget.focus()
+				batch(() => {
+					el.textContent = before
+					setStore("tasks", index, "text", before)
+					setStore("tasks", produce((tasks) => void tasks.splice(index + 1, 0, newTask)))
 				})
+				persistStructure()
+				focusTask(newTask._id, 0)
 				return
 			}
 
-			if (e.key === "Backspace") {
-				const currentText = target.textContent?.trim() ?? ""
+			case "Backspace": {
+				if ((el.textContent ?? "").trim() !== "") return // normal editing
 
-				if (currentText === "" && items()[index].nestLevel > 0) {
-					setItems((prev) => prev.map((task, i) => (i === index ? { ...task, text: currentText, nestLevel: task.nestLevel - 1 } : task)))
-
-					const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
-					reorderTasks(node.id, newArray)
-
-					queueMicrotask(() => {
-						const editableElements = containerRef.querySelectorAll(".taskitem-text")
-						const newTarget = editableElements[index] as HTMLElement
-						if (newTarget) {
-							newTarget.focus()
-							const sel = window.getSelection()
-							const range = document.createRange()
-							range.selectNodeContents(newTarget)
-							range.collapse(false)
-							sel?.removeAllRanges()
-							sel?.addRange(range)
-						}
-					})
+				// Empty nested task: outdent
+				if (store.tasks[index].nestLevel > 0) {
+					e.preventDefault()
+					shiftLevel(index, -1)
+					persistStructure()
 					return
 				}
 
-				if (currentText === "" && items()[index].nestLevel === 0 && items().length > 1) {
-					setItems((prev) => {
-						const updated = [...prev]
-						updated.splice(index, 1)
-						return updated
-					})
-
-					const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
-					reorderTasks(node.id, newArray)
-
-					queueMicrotask(() => {
-						const editableElements = containerRef.querySelectorAll(".taskitem-text")
-						const newTarget = (editableElements[index - 1] as HTMLElement) || editableElements[0]
-						if (newTarget) {
-							newTarget.focus()
-							const sel = window.getSelection()
-							const range = document.createRange()
-							range.selectNodeContents(newTarget)
-							range.collapse(false)
-							sel?.removeAllRanges()
-							sel?.addRange(range)
-						}
-					})
-					return
+				// Empty top-level task: delete it (keep at least one)
+				if (store.tasks.length > 1) {
+					e.preventDefault() // otherwise the default delete hits the newly focused task
+					const focusId = store.tasks[index > 0 ? index - 1 : 1]._id
+					setStore("tasks", produce((tasks) => void tasks.splice(index, 1)))
+					persistStructure()
+					focusTask(focusId)
 				}
-
-				const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null
-				if (range?.startOffset === 0 && currentText !== "") {
-					return
-				}
-			}
-
-			if (e.key === "Tab") {
-				e.preventDefault()
-
-				const currentText = target.textContent || ""
-				setItems((prev) => prev.map((task, i) => (i === index ? { ...task, text: currentText, nestLevel: task.nestLevel + 1 } : task)))
-
-				const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
-				reorderTasks(node.id, newArray)
-
-				queueMicrotask(() => {
-					const editableElements = containerRef.querySelectorAll(".taskitem-text")
-					const newTarget = editableElements[index] as HTMLElement
-					if (newTarget) {
-						newTarget.focus()
-						const sel = window.getSelection()
-						const range = document.createRange()
-						range.setStart(newTarget.firstChild || newTarget, caretOffset)
-						range.collapse(true)
-						sel?.removeAllRanges()
-						sel?.addRange(range)
-					}
-				})
 				return
 			}
 
-			if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+			case "Tab": {
+				if (e.ctrlKey || e.metaKey || e.altKey) return
 				e.preventDefault()
 
-				const editableElements = Array.from(containerRef.querySelectorAll<HTMLElement>(".taskitem-text"))
-
-				const currentIndex = index
-				let newIndex = currentIndex
-
-				if (e.key === "ArrowUp" && currentIndex > 0) {
-					newIndex = currentIndex - 1
-				} else if (e.key === "ArrowDown" && currentIndex < editableElements.length - 1) {
-					newIndex = currentIndex + 1
+				if (e.shiftKey) {
+					if (store.tasks[index].nestLevel === 0) return
+					shiftLevel(index, -1)
+				} else {
+					// Can only nest one level deeper than the task above
+					if (index === 0 || store.tasks[index].nestLevel > store.tasks[index - 1].nestLevel) return
+					shiftLevel(index, 1)
 				}
+				persistStructure()
+				return
+			}
 
-				const newTarget = editableElements[newIndex]
-				if (newTarget) {
-					newTarget.focus()
-					const sel = window.getSelection()
-					const range = document.createRange()
-					range.selectNodeContents(newTarget)
-					range.collapse(false)
-					sel?.removeAllRanges()
-					sel?.addRange(range)
-				}
+			case "ArrowUp":
+			case "ArrowDown": {
+				if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return // keep selection / shortcuts working
+				e.preventDefault()
+
+				const target = store.tasks[e.key === "ArrowUp" ? index - 1 : index + 1]
+				if (target) focusTask(target._id)
 				return
 			}
 		}
 	}
 
-	const handlePaste = (e: ClipboardEvent, index: number) => {
+	const handlePaste: PasteHandler = (e, id) => {
 		e.preventDefault()
+		const index = indexOf(id)
+		if (index === -1) return
 
-		const clipboardData = e.clipboardData.getData("text")
-		const lines = clipboardData.split(/\r?\n/).filter(Boolean)
-
+		const lines = (e.clipboardData?.getData("text") ?? "").split(/\r?\n/).filter((line) => line.length > 0)
 		if (lines.length === 0) return
 
-		setItems((prev) => {
-			const updated = [...prev]
+		const el = e.currentTarget as HTMLElement
+		const text = el.textContent ?? ""
+		const [start, end] = getSelectionOffsets(el)
+		const before = text.slice(0, start)
+		const after = text.slice(end)
+		const level = store.tasks[index].nestLevel
 
-			// Update current task with first line
-			updated[index] = {
-				...updated[index],
-				text: lines[0]
-			}
+		let focusId = id
+		let caret = 0
 
-			// Insert new lines as new tasks after current
-			const newTasks: TaskWithId[] = lines.slice(1).map((line) => ({
+		if (lines.length === 1) {
+			// Single line: insert at the caret like a normal paste
+			const merged = before + lines[0] + after
+			batch(() => {
+				el.textContent = merged
+				setStore("tasks", index, "text", merged)
+			})
+			caret = before.length + lines[0].length
+			scheduleTextSave(id)
+		} else {
+			const first = before + lines[0]
+			const lastIndex = lines.length - 1
+			const newTasks: TaskWithId[] = lines.slice(1).map((line, i) => ({
 				_id: generateId(),
-				text: line,
+				text: i === lastIndex - 1 ? line + after : line, // text after the caret ends up behind the last pasted line
 				check: false,
-				nestLevel: updated[index].nestLevel // preserve nest level
+				nestLevel: level
 			}))
 
-			updated.splice(index + 1, 0, ...newTasks)
+			batch(() => {
+				el.textContent = first
+				setStore("tasks", index, "text", first)
+				setStore("tasks", produce((tasks) => void tasks.splice(index + 1, 0, ...newTasks)))
+			})
+			focusId = newTasks[newTasks.length - 1]._id
+			caret = lines[lastIndex].length
+			persistStructure()
+		}
 
-			return updated
-		})
+		focusTask(focusId, caret)
+	}
 
-		const newArray = items().map(({ _id, ...keepAttrs }) => keepAttrs)
-		reorderTasks(node.id, newArray)
+	// === Drag & drop ===
+	const onDragEnd = ({ draggable, droppable }: any) => {
+		if (!draggable || !droppable) return
 
-		queueMicrotask(() => {
-			// Focus last pasted task
-			const editableElements = containerRef.querySelectorAll<HTMLElement>(".taskitem-text")
-			const newTarget = editableElements[index + lines.length - 1]
-			if (newTarget) {
-				newTarget.focus()
-				const sel = window.getSelection()
-				const range = document.createRange()
-				range.selectNodeContents(newTarget)
-				range.collapse(false)
-				sel?.removeAllRanges()
-				sel?.addRange(range)
-			}
-		})
+		const from = indexOf(draggable.id)
+		const to = indexOf(droppable.id)
+		if (from === -1 || to === -1 || from === to) return
+
+		// Move the dragged task together with its nested children
+		const end = subtreeEnd(from)
+		if (to > from && to < end) return // can't drop a task inside its own children
+
+		const updated = [...unwrap(store.tasks)]
+		const moved = updated.splice(from, end - from)
+		// Moving down: the target index shifted by the removed block
+		const insertAt = to > from ? to - moved.length + 1 : to
+		updated.splice(insertAt, 0, ...moved)
+
+		setStore("tasks", updated)
+		persistStructure()
 	}
 
 	return (
@@ -291,29 +322,24 @@ export default (node: TodoProps) => {
 				</div>
 			</Show>
 
-			<DragDropProvider onDragStart={onDragStart} onDragEnd={onDragEnd} collisionDetector={closestCenter}>
+			<DragDropProvider onDragEnd={onDragEnd} collisionDetector={closestCenter}>
 				<DragDropSensors />
 
 				<SortableProvider ids={ids()}>
 					<div class="flex flex-col gap-2">
-						<For each={items()}>
-							{(task, i) => (
+						<For each={store.tasks}>
+							{(task) => (
 								<SortableItem
 									task={task}
-									id={task._id}
-									nodeId={node.id}
-									index={i()}
-									handleKeyDown={handleKeyDown}
-									handlePaste={handlePaste}
+									onKeyDown={handleKeyDown}
+									onPaste={handlePaste}
+									onInput={handleInput}
+									onToggle={handleToggle}
 								/>
 							)}
 						</For>
 					</div>
 				</SortableProvider>
-
-				<DragOverlay>
-					<div class="sortable hidden bg-red-700 p-4 rounded shadow z-50">{activeId()}/tt</div>
-				</DragOverlay>
 			</DragDropProvider>
 		</div>
 	)
@@ -321,20 +347,27 @@ export default (node: TodoProps) => {
 
 // === Sortable Wrapper ===
 const SortableItem = (props: SortableItemProps) => {
-	const sortable = createSortable(props.id)
-	const [state] = useDragDropContext()
+	const sortable = createSortable(props.task._id)
+	const [state] = useDragDropContext()!
 
 	return (
 		<div
-			use: sortable
+			ref={sortable.ref}
+			data-task-id={props.task._id}
 			class="sortable group/taskitem flex justify-between"
 			classList={{
 				"opacity-25": sortable.isActiveDraggable,
 				"transition-transform": !!state.active.draggable
 			}}
 		>
-			<TaskItem {...props.task} index={props.index} nodeId={props.nodeId} handleKeyDown={props.handleKeyDown} handlePaste={props.handlePaste} />
-			<IconMenu2 class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100 " />
+			<TaskItem {...props} />
+			{/* Only the handle starts a drag, so selecting text with the mouse doesn't drag the task */}
+			<div
+				class="tasklist_handle cursor-grab mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100"
+				{...sortable.dragActivators}
+			>
+				<IconMenu2 class="size-4" />
+			</div>
 		</div>
 	)
 }
@@ -345,22 +378,22 @@ const TaskItem = (props: TaskItemProps) => {
 		<div
 			class="w-full flex items-center"
 			style={{
-				"margin-left": `${props.nestLevel * 18}px`
+				"margin-left": `${props.task.nestLevel * 18}px`
 			}}
 		>
 			<div class="flex items-start justify-between w-full">
 				<div class="flex space-x-2 w-full items-start">
-					<Checkbox {...props} />
+					<Checkbox checked={props.task.check} onToggle={(checked) => props.onToggle(props.task._id, checked)} />
 					<span
 						class="taskitem-text cursor-text outline-0 overflow-hidden text-ellipsis text-pretty wrap-break-word leading-4 w-full"
 						contentEditable={true}
-						onKeyDown={(e) => props.handleKeyDown(e, props.index)}
-						onInput={(e) => {
-							handleTaskChange(props.nodeId, props.index, e.currentTarget.textContent || "")
-						}}
-						onPaste={(e) => props.handlePaste(e, props.index)}
+						onKeyDown={(e) => props.onKeyDown(e, props.task._id)}
+						onInput={(e) => props.onInput(props.task._id, e.currentTarget.textContent || "")}
+						onPaste={(e) => props.onPaste(e, props.task._id)}
 					>
-						{props.text}
+						{/* Rendered once: the DOM owns the text while editing. Re-binding it on every
+						    keystroke makes Solid overwrite the text node and the caret jumps. */}
+						{untrack(() => props.task.text)}
 					</span>
 				</div>
 			</div>
@@ -368,13 +401,13 @@ const TaskItem = (props: TaskItemProps) => {
 	)
 }
 
-const Checkbox = (props: TaskItemProps) => {
+const Checkbox = (props: { checked: boolean; onToggle: (checked: boolean) => void }) => {
 	return (
 		<label class="checkbox-check flex items-center cursor-pointer relative">
 			<input
 				type="checkbox"
-				checked={props.check}
-				onInput={() => handleTaskChange(props.nodeId, props.index, !props.check)}
+				checked={props.checked}
+				onChange={(e) => props.onToggle(e.currentTarget.checked)}
 				class="peer size-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border checked:bg-primary/80 checked:border-primary"
 			/>
 			<span class="absolute opacity-0 peer-checked:opacity-100 flex items-center justify-center ">

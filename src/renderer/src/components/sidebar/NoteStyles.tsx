@@ -2,8 +2,6 @@ import { store } from "../../shared/store"
 import { Editor } from "@tiptap/core"
 import { For } from "solid-js"
 import {
-	IconArrowBackUp,
-	IconArrowForwardUp,
 	IconBlockquote,
 	IconBold,
 	IconCode,

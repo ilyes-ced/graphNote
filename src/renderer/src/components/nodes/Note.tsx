@@ -8,7 +8,6 @@ import Typography from "@tiptap/extension-typography"
 import { TextStyle } from "@tiptap/extension-text-style"
 import TextAlign from "@tiptap/extension-text-align"
 import { Show, createSignal, onCleanup, untrack } from "solid-js"
-import { IconEdit } from "@tabler/icons-solidjs"
 import { TrailingNode } from "@tiptap/extensions"
 
 type NoteProps = Note & {
@@ -31,7 +30,7 @@ export default (node: NoteProps) => {
 			updateZIndex(node.id)
 		},
 		// onBlur({ event }) { },
-		onSelectionUpdate() {},
+		onSelectionUpdate() { },
 		onUpdate({ editor }) {
 			const text = editor.getText().trim()
 			const urlRegex = /^(https?:\/\/[^\s]+)$/
@@ -307,12 +306,16 @@ export default (node: NoteProps) => {
 
 	return (
 		<div class="p-5">
+
+			{/*
+
 			<div
 				onClick={() => setToolbar(!toolbar())}
 				class="z-50 edit_toggle cursor-pointer absolute top-0 right-0 aspect-square hover:bg-background/40 border border-transparent hover:border-border opacity-0 group-hover/edit:opacity-100 pointer-events-none group-hover/edit:pointer-events-auto transition-all duration-200 ease-in-out"
 			>
 				<IconEdit size={16} />
 			</div>
+			 */}
 
 			<Show when={toolbar()}>
 				<Toolbar></Toolbar>

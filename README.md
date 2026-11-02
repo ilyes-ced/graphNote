@@ -67,7 +67,8 @@
     - [ ] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
     - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down
 - [x] when a board or column is deleted, in nodes.json delete their object
-- [ ] when deleting nodes, if they have resources (images, files . . .) delete them
+- [ ] when deleting nodes, if they have resources (images, files . . .) delete them 
+  - [ ] a better option might be to give the user a purge options, keep those resources as backup incase they are needed but give the user a button to delete all unused resources, easier and safer
 - [x] when deleting nodes the styles sidebar should be hidden
 - [x] when adding new images, increase thier z index
 - [x] Url node: when url is blank allow user to write it down

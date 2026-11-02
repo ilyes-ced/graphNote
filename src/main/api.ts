@@ -123,7 +123,6 @@ ipcMain.handle("saveEdges", async (_, edges) => {
 })
 
 ipcMain.handle("saveSettings", async (_, settings) => {
-	console.log(settings)
 	return { success: await writeJSON(settingsPath, settings) }
 })
 

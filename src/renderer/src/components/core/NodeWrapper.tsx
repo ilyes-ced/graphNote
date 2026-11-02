@@ -4,6 +4,7 @@ import { useDraggable } from "../../shared/nodeDrag"
 import { useResize } from "../../shared/useResize"
 import { getActiveBoardId, updateNodeWidth } from "../../shared/update"
 import ResizeHandle from "../nodes/resizeHandle"
+import FullscreenHandle from "../nodes/FullscreenHadle"
 import { store } from "../../shared/store"
 
 interface nodeProps {
@@ -154,7 +155,11 @@ export default (node: nodeProps) => {
 				<Show when={!node.isChildNode}>
 					<ResizeHandle startResizeFunction={startResize} />
 				</Show>
+
+				<Show when={!node.isChildNode && node.node.type !== NodeType.Column}>
+					<FullscreenHandle startResizeFunction={startResize} />
+				</Show>
 			</div>
-		</div>
+		</div >
 	)
 }

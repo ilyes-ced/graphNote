@@ -69,7 +69,7 @@ export default (node: BoardProps) => {
 						? `${node.color}20`
 						: "color-mix(in oklab, var(--color-primary) 20%, transparent)"
 					: "transparent",
-				border: node.is_child ? `2px solid ${node.color ? node.color : "var(--color-primary)"}` : "",
+				border: `2px solid ${node.color ? node.color : "var(--color-primary)"}`,
 				width: node.is_child ? "100%" : "60px",
 				"z-index": node.zIndex,
 				//"border-radius": node.is_child ? "" : "15px",

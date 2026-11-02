@@ -2,7 +2,6 @@ import { app, shell, BrowserWindow, ipcMain } from "electron"
 import { join } from "path"
 import { electronApp, optimizer, is } from "@electron-toolkit/utils"
 import icon from "../../resources/icon.png?asset"
-import "./api"
 import { registerApi } from "./api"
 
 function createWindow(): void {
