@@ -4,7 +4,8 @@ import { For, Show, splitProps, Accessor, createSignal } from "solid-js"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { TextField, TextFieldRoot } from "@/components/ui/textfield"
 import { Button } from "@/components/ui/button"
-import { IconArrowLeft, IconArrowRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-solidjs"
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'solid-icons/ai'
+import { FaSolidChevronLeft, FaSolidChevronRight } from 'solid-icons/fa'
 
 type Props<TData, TValue> = {
 	columns: ColumnDef<TData, TValue>[]
@@ -113,10 +114,10 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
 
 				<div class="flex items-center space-x-1">
 					<Button variant="outline" size="sm" onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
-						<IconChevronsLeft />
+						<FaSolidChevronLeft />
 					</Button>
 					<Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-						<IconArrowLeft />
+						<AiOutlineArrowLeft />
 					</Button>
 					<div class="px-2">
 						page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
@@ -127,7 +128,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
 						onClick={() => table.setPageIndex(table.getPageCount() - 1)}
 						disabled={!table.getCanNextPage()}
 					>
-						<IconArrowRight />
+						<AiOutlineArrowRight />
 					</Button>
 					<Button
 						variant="outline"
@@ -135,7 +136,7 @@ export const DataTable = <TData, TValue>(props: Props<TData, TValue>) => {
 						onClick={() => table.setPageIndex(table.getPageCount() - 1)}
 						disabled={!table.getCanNextPage()}
 					>
-						<IconChevronsRight />
+						<FaSolidChevronRight />
 					</Button>
 				</div>
 			</div>

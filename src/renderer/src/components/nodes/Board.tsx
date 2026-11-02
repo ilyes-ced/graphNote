@@ -2,7 +2,7 @@ import { Board } from "../../types"
 import { defaultViewportZoom, setStore, store } from "../../shared/store"
 import { useDraggable } from "../../shared/nodeDrag"
 import { findNodeById } from "../../shared/update"
-import { IconCode } from "@tabler/icons-solidjs"
+import { VsCode } from 'solid-icons/vs'
 import EditableTitle from "./EditableTitle"
 
 type BoardProps = Board & {
@@ -90,7 +90,7 @@ export default (node: BoardProps) => {
 					// "border-radius": node.is_child ? "10px" : "15px",
 				}}
 			>
-				<IconCode class="size-full p-2" />
+				<VsCode class="size-full p-2" />
 			</div>
 			<div class="text_container flex flex-col justify-center items-center" style={{ color: node.textColor ?? "var(--color-foreground)" }}>
 				<div

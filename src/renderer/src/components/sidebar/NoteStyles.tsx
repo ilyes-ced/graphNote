@@ -1,51 +1,41 @@
 import { store } from "../../shared/store"
 import { Editor } from "@tiptap/core"
 import { For } from "solid-js"
-import {
-	IconBlockquote,
-	IconBold,
-	IconCode,
-	IconH1,
-	IconH2,
-	IconH3,
-	IconH4,
-	IconH5,
-	IconH6,
-	IconItalic,
-	IconList,
-	IconListNumbers,
-	IconPilcrow,
-	IconSpacingVertical,
-	IconStrikethrough,
-	IconUnderline,
-	IconAlignLeft,
-	IconAlignCenter,
-	IconAlignRight,
-	IconAlignJustified
-} from "@tabler/icons-solidjs"
+
+
+
+import { BsBlockquoteLeft } from 'solid-icons/bs'
+import { FaSolidBold, FaSolidItalic, FaSolidStrikethrough, FaSolidUnderline } from 'solid-icons/fa'
+import { VsCode } from 'solid-icons/vs'
+import { BsTypeH1, BsTypeH2, BsTypeH3, BsTypeH4, BsTypeH5, BsTypeH6 } from 'solid-icons/bs'
+import { AiOutlineUnorderedList, AiOutlineOrderedList } from 'solid-icons/ai'
+import { ImPilcrow } from 'solid-icons/im'
+import { TbOutlineSpacingVertical } from 'solid-icons/tb'
+import { AiOutlineAlignCenter, AiOutlineAlignLeft, AiOutlineAlignRight } from 'solid-icons/ai'
+import { FaSolidAlignJustify } from 'solid-icons/fa'
 
 const stylesIcons = [
-	{ name: "bold", icon: IconBold },
-	{ name: "italic", icon: IconItalic },
-	{ name: "underline", icon: IconUnderline },
-	{ name: "strike", icon: IconStrikethrough },
-	{ name: "paragraph", icon: IconPilcrow },
-	{ name: "header 1", icon: IconH1, attrs: { level: 1 } },
-	{ name: "header 2", icon: IconH2, attrs: { level: 2 } },
-	{ name: "header 3", icon: IconH3, attrs: { level: 3 } },
-	{ name: "header 4", icon: IconH4, attrs: { level: 4 } },
-	{ name: "header 5", icon: IconH5, attrs: { level: 5 } },
-	{ name: "header 6", icon: IconH6, attrs: { level: 6 } },
-	{ name: "list", icon: IconList },
-	{ name: "numberedList", icon: IconListNumbers },
-	{ name: "codeBlock", icon: IconCode },
-	{ name: "blockQuote", icon: IconBlockquote },
-	{ name: "verticalRule", icon: IconSpacingVertical },
+	{ name: "bold", icon: FaSolidBold },
+	{ name: "italic", icon: FaSolidUnderline },
+	{ name: "underline", icon: FaSolidItalic },
+	{ name: "strike", icon: FaSolidStrikethrough },
+	{ name: "paragraph", icon: ImPilcrow },
+	{ name: "header 1", icon: BsTypeH1, attrs: { level: 1 } },
+	{ name: "header 2", icon: BsTypeH2, attrs: { level: 2 } },
+	{ name: "header 3", icon: BsTypeH3, attrs: { level: 3 } },
+	{ name: "header 4", icon: BsTypeH4, attrs: { level: 4 } },
+	{ name: "header 5", icon: BsTypeH5, attrs: { level: 5 } },
+	{ name: "header 6", icon: BsTypeH6, attrs: { level: 6 } },
+	{ name: "list", icon: AiOutlineUnorderedList },
+	{ name: "numberedList", icon: AiOutlineOrderedList },
+	{ name: "codeBlock", icon: VsCode },
+	{ name: "blockQuote", icon: BsBlockquoteLeft },
+	{ name: "verticalRule", icon: TbOutlineSpacingVertical },
 
-	{ name: "alignLeft", icon: IconAlignLeft },
-	{ name: "alignCenter", icon: IconAlignCenter },
-	{ name: "alignRight", icon: IconAlignRight },
-	{ name: "alignJustify", icon: IconAlignJustified }
+	{ name: "alignLeft", icon: AiOutlineAlignLeft },
+	{ name: "alignCenter", icon: AiOutlineAlignCenter },
+	{ name: "alignRight", icon: AiOutlineAlignRight },
+	{ name: "alignJustify", icon: FaSolidAlignJustify }
 ]
 
 export default () => {

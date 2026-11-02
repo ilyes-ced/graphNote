@@ -5,7 +5,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Checkbox, CheckboxControl } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Match, Switch } from "solid-js"
-import { IconDotsVertical, IconSortAscending, IconSortDescending } from "@tabler/icons-solidjs"
+import { BsThreeDotsVertical } from 'solid-icons/bs'
+import { FaSolidSortAmountUpAlt, FaSolidSortAmountDown } from 'solid-icons/fa'
 
 // This type is used to define the shape of our data.
 // You can use a Zod or Validbot schema here if you want.
@@ -21,12 +22,12 @@ const sorterComponent = function (name: string, column: Column<Task, unknown>) {
 	return (
 		<Button variant="table" size={"table"} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
 			{name}
-			<Switch fallback={<IconSortDescending class="ml-2" size={16} />}>
+			<Switch fallback={<FaSolidSortAmountDown class="ml-2" size={16} />}>
 				<Match when={column.getIsSorted() === "asc"}>
-					<IconSortDescending class="ml-2" size={16} />
+					<FaSolidSortAmountDown class="ml-2" size={16} />
 				</Match>
 				<Match when={column.getIsSorted() === "desc"}>
-					<IconSortAscending class="ml-2" size={16} />
+					<FaSolidSortAmountUpAlt class="ml-2" size={16} />
 				</Match>
 			</Switch>
 		</Button>
@@ -102,7 +103,7 @@ export const columns: ColumnDef<Task>[] = [
 			<DropdownMenu placement="bottom-end">
 				<DropdownMenuTrigger class="flex items-center justify-center">
 					<Button variant="ghost" size="icon">
-						<IconDotsVertical class="cursor-pointer" />
+						<BsThreeDotsVertical class="cursor-pointer" />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>

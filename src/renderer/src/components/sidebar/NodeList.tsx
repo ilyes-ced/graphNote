@@ -4,8 +4,7 @@ import { newNode } from "../../shared/update"
 import { NodeType } from "../../types"
 import { Portal } from "solid-js/web"
 import { store } from "../../shared/store"
-import { IconMenu2 } from "@tabler/icons-solidjs"
-
+import { MdFillDrag_handle } from 'solid-icons/md'
 const icons = [
 	// basic blocks
 	{ name: "note", width: 32, height: 24 },
@@ -206,7 +205,7 @@ const Todo = () => {
 						</div>
 					</div>
 				</div>
-				<IconMenu2 class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100 " />
+				<MdFillDrag_handle class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100 " />
 			</div>
 		</div>
 	)

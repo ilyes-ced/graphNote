@@ -1,6 +1,8 @@
 import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from "solid-js"
 import { Url } from "../../types"
-import { IconDownload, IconLink, IconPlayerPlayFilled, IconResize, IconTrash } from "@tabler/icons-solidjs"
+import { AiOutlineDownload, AiOutlineLink } from 'solid-icons/ai'
+import { FaSolidPlay, FaSolidTrashAlt } from 'solid-icons/fa'
+import { TbOutlineResize } from 'solid-icons/tb'
 import { updateNodeDesc, updateURL } from "../../shared/update"
 import { store } from "../../shared/store"
 import Editor from "./Editor"
@@ -177,7 +179,7 @@ export default (node: UrlProps) => {
 							"box-shadow": `0 0 12px ${node.textColor}22`
 						}}
 					>
-						<IconTrash size={16} />
+						<FaSolidTrashAlt size={16} />
 					</div>
 
 					<div
@@ -190,7 +192,7 @@ export default (node: UrlProps) => {
 							"box-shadow": `0 0 12px ${node.textColor}22`
 						}}
 					>
-						<IconResize size={16} />
+						<TbOutlineResize size={16} />
 					</div>
 
 					<div
@@ -209,7 +211,7 @@ export default (node: UrlProps) => {
 							"box-shadow": `0 0 12px ${node.textColor}22`
 						}}
 					>
-						<IconDownload size={16} />
+						<AiOutlineDownload size={16} />
 					</div>
 				</div>
 			</Show>
@@ -225,7 +227,7 @@ export default (node: UrlProps) => {
 									videoRef.play()
 								}}
 							>
-								<IconPlayerPlayFilled />
+								<FaSolidPlay />
 							</div>
 						)}
 						<img class="wait_load url_thumbnail pointer-events-none" src={srcImage()} loading="eager" alt="" />
@@ -260,7 +262,7 @@ export default (node: UrlProps) => {
 					 */}
 				<Match when={node.url === ""}>
 					<div class="flex items-center space-x-2 px-5">
-						<IconLink />
+						<AiOutlineLink />
 						<input
 							type="text"
 							placeholder="input your URL here"

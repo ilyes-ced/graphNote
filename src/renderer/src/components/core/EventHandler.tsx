@@ -1,7 +1,23 @@
 import { onMount, onCleanup, Show, createSignal } from "solid-js"
 import { setStore, store } from "../../shared/store"
-import { NodeType, NodeUnion } from "../../types"
+import { NodeUnion } from "../../types"
 import { getBoardBgColor, getBoardGridColor, isTextInputFocused, recieveDragNDropFile } from "../../shared/utils"
+import {
+	addNode,
+	findNodeById,
+	generateNewId,
+	getActiveBoardId,
+	incrementSelectedNodesPositions,
+	newImageNode,
+	removeNodeById,
+	updateBoardStyles
+} from "../../shared/update"
+import { redo, undo } from "../../shared/actions"
+import { AiFillCaretRight } from 'solid-icons/ai'
+import { TbOutlineGrid4x4 } from 'solid-icons/tb'
+import { AiOutlineUpload } from 'solid-icons/ai'
+import { TbOutlineGridDots } from 'solid-icons/tb'
+import iro from "@jaames/iro"
 
 type NodesCopyPaste = {
 	id: string
@@ -71,20 +87,6 @@ function extractImageReference(text: string): ImageReference {
 
 	return null
 }
-
-import {
-	addNode,
-	findNodeById,
-	generateNewId,
-	getActiveBoardId,
-	incrementSelectedNodesPositions,
-	newImageNode,
-	removeNodeById,
-	updateBoardStyles
-} from "../../shared/update"
-import { redo, undo } from "../../shared/actions"
-import { IconCaretRightFilled, IconGrid4x4, IconGridDots, IconUpload } from "@tabler/icons-solidjs"
-import iro from "@jaames/iro"
 
 export default (props: any) => {
 	//TODO replace this tauri logic with normal web stuff
@@ -492,7 +494,7 @@ export default (props: any) => {
 						<div class="relative group">
 							<button class="flex w-full items-center justify-between px-3 py-2 hover:bg-background transition-colors">
 								<span>Board styles</span>
-								<IconCaretRightFilled class="text-sm opacity-70" />
+								<AiFillCaretRight class="text-sm opacity-70" />
 							</button>
 
 							{/* Submenu */}
@@ -540,7 +542,7 @@ export default (props: any) => {
 									}}
 								>
 									<div class="aspect-video w-10 flex justify-center">
-										<IconUpload />
+										<AiOutlineUpload />
 									</div>
 
 									<div class="flex items-center">Set Board Background Image</div>
@@ -558,7 +560,7 @@ export default (props: any) => {
 									}}
 								>
 									<div class="aspect-video w-10 flex justify-center">
-										<IconGrid4x4 />
+										<TbOutlineGrid4x4 />
 									</div>
 
 									<div class="flex items-center">Set Board Grid to Grid</div>
@@ -574,7 +576,7 @@ export default (props: any) => {
 									}}
 								>
 									<div class="aspect-video w-10 flex justify-center">
-										<IconGridDots />
+										<TbOutlineGridDots />
 									</div>
 
 									<div class="flex items-center">Set Board Grid to dots</div>

@@ -1,4 +1,4 @@
-import { IconX } from "@tabler/icons-solidjs"
+import { AiOutlineClose } from 'solid-icons/ai'
 import { setStore, store } from "../shared/store"
 import * as pdfjsLib from "pdfjs-dist"
 import { Show, createEffect, createSignal } from "solid-js"
@@ -64,7 +64,7 @@ export default () => {
 					class="border border-transparent hover:border-primary hover:bg-primary/20 transition-color duration-200 ease-in-out cursor-pointer"
 					onClick={() => setStore("pdfFile", null)}
 				>
-					<IconX />
+					<AiOutlineClose />
 				</div>
 			</div>
 

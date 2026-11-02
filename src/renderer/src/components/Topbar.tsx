@@ -1,7 +1,11 @@
 import { For, createSignal, onMount } from "solid-js"
 import { Button } from "./ui/button"
 import { setStore, store } from "../shared/store"
-import { IconChevronsRight, IconDatabaseFilled, IconMoonFilled, IconSettings } from "@tabler/icons-solidjs"
+
+import { FiChevronsRight } from 'solid-icons/fi'
+import { FaSolidDatabase } from 'solid-icons/fa'
+import { AiFillMoon } from 'solid-icons/ai'
+import { IoSettingsSharp } from 'solid-icons/io'
 
 export default () => {
 	const [dataSize, setDataSize] = createSignal({
@@ -44,7 +48,7 @@ export default () => {
 									</div>
 									{!(index() === store.activeBoards.length - 1) && (
 										<span class="self-center mx-1 my-0 ">
-											<IconChevronsRight />
+											<FiChevronsRight />
 										</span>
 									)}
 								</>
@@ -56,15 +60,15 @@ export default () => {
 
 			<div class="flex justify-center items-center space-x-2">
 				<Button class="pointer-events-auto" variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
-					<IconDatabaseFilled />
+					<FaSolidDatabase />
 				</Button>
 
 				<Button class="pointer-events-auto" variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
-					<IconSettings />
+					<IoSettingsSharp />
 				</Button>
 
 				<Button class="pointer-events-auto" variant={"secondary"}>
-					<IconMoonFilled />
+					<AiFillMoon />
 				</Button>
 			</div>
 

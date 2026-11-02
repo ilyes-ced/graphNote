@@ -9,7 +9,10 @@ type TableProps = TableNode & {
 }
 import { Checkbox, CheckboxControl } from "../ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { IconDotsVertical, IconFilter, IconGraph, IconSortDescending } from "@tabler/icons-solidjs"
+import { BsThreeDotsVertical } from 'solid-icons/bs'
+import { AiFillFilter } from 'solid-icons/ai'
+import { VsGraphLine } from 'solid-icons/vs'
+import { FaSolidSortAmountDesc } from 'solid-icons/fa'
 
 export default (node: TableProps) => {
 	//TODO: change to string which is the badgeRegistry key to show the menu of the related badge type
@@ -175,7 +178,7 @@ export default (node: TableProps) => {
 						</Select>
 
 						<button class="cursor-pointer px-4 py-1 border border-border hover:bg-red-500 w-fit">
-							<IconGraph size={16} />
+							<VsGraphLine size={16} />
 						</button>
 					</div>
 				</div>
@@ -189,7 +192,6 @@ export default (node: TableProps) => {
 							<TableCellCheckbox> </TableCellCheckbox>
 						</TableHeaderRow>
 					</TableHead>
-
 					<TableBody>
 						<For each={node.rows}>
 							{(row) => (
@@ -201,7 +203,7 @@ export default (node: TableProps) => {
 										<TableCell>{getCellInput(key, value)}</TableCell>
 									))}
 									<TableCellButton>
-										<IconDotsVertical />
+										<BsThreeDotsVertical />
 									</TableCellButton>
 								</TableRow>
 							)}
@@ -234,7 +236,7 @@ const TableHeaderCell = (props: { children: JSX.Element }) => {
 		<th class="">
 			<div class="px-2 py-1 flex items-center w-full cursor-pointer hover:bg-red-400">
 				{props.children}
-				<IconSortDescending class="ml-2" size={16} />
+				<FaSolidSortAmountDesc class="ml-2" size={16} />
 			</div>
 		</th>
 	)
@@ -296,7 +298,7 @@ const Pagination = () => {
 const Filter = () => {
 	return (
 		<div class="flex px-4 py-1 border border-border items-center">
-			<IconFilter class="text-foreground" />
+			<AiFillFilter class="text-foreground" />
 			<input type="text" name="" placeholder="filter here" id="" class="pl-4" />
 		</div>
 	)

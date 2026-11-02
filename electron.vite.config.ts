@@ -11,9 +11,6 @@ export default defineConfig({
 				"@renderer": resolve("src/renderer/src")
 			}
 		},
-		optimizeDeps: {
-			include: ["@tabler/icons-react"]
-		},
 		plugins: [solid()]
 	}
 })

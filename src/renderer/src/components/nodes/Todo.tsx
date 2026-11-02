@@ -4,7 +4,7 @@ import { createStore, produce, unwrap } from "solid-js/store"
 import { DragDropProvider, DragDropSensors, SortableProvider, createSortable, closestCenter, useDragDropContext } from "@thisbeyond/solid-dnd"
 import { Task, Todo as TodoType } from "../../types"
 import { reorderTasks, updateTask } from "../../shared/update"
-import { IconMenu2 } from "@tabler/icons-solidjs"
+import { MdFillDrag_handle } from 'solid-icons/md'
 import EditableTitle from "./EditableTitle"
 
 // === Types ===
@@ -366,7 +366,7 @@ const SortableItem = (props: SortableItemProps) => {
 				class="tasklist_handle cursor-grab mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100"
 				{...sortable.dragActivators}
 			>
-				<IconMenu2 class="size-4" />
+				<MdFillDrag_handle class="size-4" />
 			</div>
 		</div>
 	)
