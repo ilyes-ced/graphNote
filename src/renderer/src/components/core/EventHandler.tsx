@@ -102,6 +102,8 @@ export default (props: any) => {
 	document.addEventListener("drop", async (event: DragEvent) => {
 		event.preventDefault()
 		if (!event.dataTransfer) return
+		const row = (event.target as Element).closest?.(".tierlist_row")
+		if (row) return
 
 		const files = Array.from(event.dataTransfer.files)
 
@@ -613,12 +615,12 @@ const extraOptions = () => {
 	const selectedNodes = store.nodes[getActiveBoardId()].filter((user) => selected.has(user.id))
 	if (selectedNodes.length > 0) {
 		if (selectedNodes.every((node) => node.type === selectedNodes[0].type)) {
-			return (
-				<div>
-					<div class="border-b-2 border-border my-2"></div>
-					{Option(`options for ${selectedNodes[0].type} nodes`)}
-				</div>
-			)
+			//return (
+			//	<div>
+			//		<div class="border-b-2 border-border my-2"></div>
+			//		{Option(`options for ${selectedNodes[0].type} nodes`)}
+			//	</div>
+			//)
 
 			//? this node type options
 			console.log(selectedNodes[0])
@@ -633,6 +635,14 @@ const extraOptions = () => {
 				case "Table":
 					break
 				case "Url":
+					return (
+						<div>
+							<div class="border-b-2 border-border my-2"></div>
+							{Option(`Copy URL`, () => {
+								console.log(selectedNodes[0].url)
+							})}
+						</div>
+					)
 					break
 				case "Activity":
 					break
@@ -648,7 +658,15 @@ const extraOptions = () => {
 					break
 
 				default:
-					return <div>options for that type of node</div>
+					//TODO: make it available for all nodes
+					return (
+						<div>
+							<div class="border-b-2 border-border my-2"></div>
+							{Option(`Delete Node`, () => {
+								removeNodeById(selectedNodes[0].id)
+							})}
+						</div>
+					)
 			}
 		} else {
 			//? all node types options
@@ -662,10 +680,10 @@ const extraOptions = () => {
 	}
 }
 
-const Option = (text: string) => {
+const Option = (text: string, func: Function = () => { }) => {
 	return (
-		<button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer" onclick={() => { }}>
+		<button class="w-full px-3 py-2 text-left hover:bg-background flex items-stretch gap-3 cursor-pointer" onclick={() => { func() }}>
 			<div class="flex items-center">{text}</div>
-		</button>
+		</button >
 	)
 }

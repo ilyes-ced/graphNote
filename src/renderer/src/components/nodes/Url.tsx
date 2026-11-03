@@ -8,8 +8,6 @@ import { store } from "../../shared/store"
 import Editor from "./Editor"
 import "@videojs/html/video/player"
 import "@videojs/html/video/skin"
-import { Portal } from "solid-js/web"
-import { BackgroundColor } from "@tiptap/extension-text-style"
 
 type UrlProps = Url & {
 	is_child?: boolean
@@ -33,6 +31,7 @@ export default (node: UrlProps) => {
 	const [srcImage, setSrcImage] = createSignal<string>("")
 	const [srcFav, setSrcFav] = createSignal<string>("")
 	const [expand, setExpand] = createSignal(false)
+	const [ytVidDownloaded, setYtVidDownloaded] = createSignal(false)
 
 	const [metaData, setMetaData] = createSignal<MetaData>({
 		title: "placeholder",
@@ -63,8 +62,14 @@ export default (node: UrlProps) => {
 		onCleanup(() => URL.revokeObjectURL(url))
 	}
 
-	function matchYoutubeUrl(url: string): boolean {
+	async function isYoutubeUrl(url: string): Promise<boolean> {
 		const pattern = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/.+$/
+		if (pattern.test(url)) {
+			const fileExists = await window.api.checkCacheYoutubeVidExists(url)
+			if (fileExists.success) {
+				setYtVidDownloaded(true)
+			}
+		}
 		return pattern.test(url)
 	}
 
@@ -73,20 +78,31 @@ export default (node: UrlProps) => {
 			const message = await window.api.scrapeUrl({ url: url, cache: store.userConfig.cacheUrlData })
 			let last = 0
 			window.api.onYoutubeDownloadProgress((data: any) => {
-				if (data.progress < last) {
-					setDownloadProgress(50 + data.progress / 2)
-				} else {
-					setDownloadProgress(data.progress / 2)
+				if (getYouTubeVideoId(node.url) == data.vidId) {
+					if (data.progress < last) {
+						setDownloadProgress(50 + data.progress / 2)
+					} else {
+						setDownloadProgress(data.progress / 2)
+					}
+					last = data.progress
 				}
-				last = data.progress
 			})
 
 			window.api.onYoutubeDownloadComplete(async (data: any) => {
-				setDownloadProgress(100)
-				setTimeout(() => {
-					setDownloadProgress(0)
-				}, 3000)
-				//TODO: change from youtube vid to local vid
+				if (getYouTubeVideoId(node.url) == data.vidId) {
+					setDownloadProgress(100)
+					setTimeout(async () => {
+						setDownloadProgress(0)
+
+						//? once a vid is downloaded it turns from youtube vid to local vid
+						var cacheRes = await window.api.checkCacheYoutubeVidExists(node.url)
+						if (cacheRes.success) {
+							const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
+							setLocalVid(videoFile)
+						}
+					}, 3000)
+					//TODO: change from youtube vid to local vid
+				}
 			})
 			return message
 		} catch (error) {
@@ -95,10 +111,15 @@ export default (node: UrlProps) => {
 		}
 	}
 
+
+	//? this needs to be done when the url is first created not everytime is initiated
+	//TODO: it runs when url is created from url node but not from a note node.
 	const fetchMetaData = (firstTime?: boolean) => {
 		// Defer to next microtask to avoid blocking render
 		queueMicrotask(() => {
 			getMetaData(node.url).then((res) => {
+				console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[res]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
+				console.log(res)
 				if (res) {
 					console.log(res)
 					setMetaData(res)
@@ -117,7 +138,7 @@ export default (node: UrlProps) => {
 
 	onMount(async () => {
 		fetchMetaData()
-		if (matchYoutubeUrl(node.url)) {
+		if (isYoutubeUrl(node.url)) {
 			if (store.userConfig.youtubeVidCache) {
 				var cacheRes = await window.api.cacheYoutubeVid(node.url)
 				if (cacheRes.message == "file is already downloaded") {
@@ -137,9 +158,7 @@ export default (node: UrlProps) => {
 
 	createEffect(() => {
 		const src = localVid()
-
 		if (!src || !videoRef) return
-
 		videoRef.load()
 	})
 
@@ -167,69 +186,74 @@ export default (node: UrlProps) => {
 	//? "wait_load" class name is needed for elements that take time to load the assets like url images
 	return (
 		<div class="space-y-2">
-			<Show when={matchYoutubeUrl(node.url)}>
-				<div class="absolute top-2 right-2 flex gap-1 z-50 opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200">
-					<div
-						onClick={async () => window.api.deletecacheedYoutubeVid(node.url)}
-						class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
-						style={{
-							background: `${node.textColor}22`,
-							border: `1px solid ${node.textColor}55`,
-							color: node.textColor,
-							"box-shadow": `0 0 12px ${node.textColor}22`
-						}}
-					>
-						<FaSolidTrashAlt size={16} />
-					</div>
-
-					<div
-						onClick={() => setExpand(!expand())}
-						class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
-						style={{
-							background: `${node.textColor}22`,
-							border: `1px solid ${node.textColor}55`,
-							color: node.textColor,
-							"box-shadow": `0 0 12px ${node.textColor}22`
-						}}
-					>
-						<TbOutlineResize size={16} />
-					</div>
-
-					<div
-						onClick={async () => {
-							var cacheRes = await window.api.cacheYoutubeVid(node.url)
-							if (cacheRes.message == "file is already downloaded") {
-								const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
-								setLocalVid(videoFile)
-							}
-						}}
-						class="cursor-pointer p-2 backdrop-blur-sm url_buttons"
-						style={{
-							background: `${node.textColor}22`,
-							border: `1px solid ${node.textColor}55`,
-							color: node.textColor,
-							"box-shadow": `0 0 12px ${node.textColor}22`
-						}}
-					>
-						<AiOutlineDownload size={16} />
-					</div>
-				</div>
-			</Show>
-
 			<Switch
 				fallback={
 					<div class="relative flex items-center justify-center">
-						{matchYoutubeUrl(node.url) && (
-							<div
-								class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center youtube_play_button"
-								onClick={() => {
-									setIsPlaying(true)
-									videoRef.play()
-								}}
-							>
-								<FaSolidPlay />
+						<Show when={isYoutubeUrl(node.url)}>
+							<div class="absolute bottom-2 right-2 flex gap-1 z-50 opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200">
+								<div
+									onClick={async () => window.api.deleteCachedYoutubeVid(node.url)}
+									class="cursor-pointer p-2 url_buttons"
+									classList={{
+										"bg-primary/50 hover:bg-primary transition-colors": ytVidDownloaded(),
+									}}
+									style={{
+										border: `1px solid var(--color-primary)`,
+										color: node.textColor,
+										"box-shadow": `0 0 12px ${node.textColor}22`
+									}}
+								>
+									<FaSolidTrashAlt size={16} />
+								</div>
+
+								<div
+									onClick={() => setExpand(!expand())}
+									class="cursor-pointer p-2 url_buttons bg-primary/50 hover:bg-primary transition-colors"
+									style={{
+										border: `1px solid var(--color-primary)`,
+										color: node.textColor,
+										"box-shadow": `0 0 12px ${node.textColor}22`
+									}}
+								>
+									<TbOutlineResize size={16} />
+								</div>
+
+								<div
+									onClick={async () => {
+										var cacheRes = await window.api.cacheYoutubeVid(node.url)
+										if (cacheRes.message == "file is already downloaded") {
+											const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
+											setLocalVid(videoFile)
+										}
+									}}
+									class="cursor-pointer p-2 url_buttons"
+									classList={{
+										"bg-primary/50 hover:bg-primary transition-colors": !ytVidDownloaded(),
+									}}
+									style={{
+										border: `1px solid var(--color-primary)`,
+										color: node.textColor,
+										"box-shadow": `0 0 12px ${node.textColor}22`
+									}}
+								>
+									<AiOutlineDownload size={16} />
+								</div>
 							</div>
-						)}
+						</Show>
+
+						{
+							isYoutubeUrl(node.url) && (
+								<div
+									class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center youtube_play_button"
+									onClick={() => {
+										setIsPlaying(true)
+										videoRef.play()
+									}}
+								>
+									<FaSolidPlay />
+								</div>
+							)
+						}
 						<img class="wait_load url_thumbnail pointer-events-none" src={srcImage()} loading="eager" alt="" />
 
 						<Show when={downloadProgress() > 0}>
@@ -254,13 +278,13 @@ export default (node: UrlProps) => {
 								</div>
 							</div>
 						</Show>
-					</div>
+					</div >
 				}
 			>
 				{/*
 					<Match when={isRedditUrl(node.url)}>test</Match>
 					 */}
-				<Match when={node.url === ""}>
+				< Match when={node.url === ""} >
 					<div class="flex items-center space-x-2 px-5">
 						<AiOutlineLink />
 						<input
@@ -273,8 +297,8 @@ export default (node: UrlProps) => {
 							}}
 						/>
 					</div>
-				</Match>
-				<Match when={matchYoutubeUrl(node.url) && localVid() != null && isPlaying()}>
+				</Match >
+				<Match when={isYoutubeUrl(node.url) && localVid() != null && isPlaying()}>
 					<video-player
 						style={{
 							"--media-border-radius": "0rem",
@@ -286,7 +310,7 @@ export default (node: UrlProps) => {
 						</video-skin>
 					</video-player>
 				</Match>
-				<Match when={matchYoutubeUrl(node.url) && isPlaying()}>
+				<Match when={isYoutubeUrl(node.url) && isPlaying()}>
 					<div
 						style={{
 							position: "relative",
@@ -308,7 +332,7 @@ export default (node: UrlProps) => {
 						></iframe>
 					</div>
 				</Match>
-			</Switch>
+			</Switch >
 
 			<Show when={node.url != ""}>
 				<div class="text_container p-4 space-y-2 overflow-hidden text-ellipsis m-0">
@@ -332,6 +356,6 @@ export default (node: UrlProps) => {
 					</Show>
 				</div>
 			</Show>
-		</div>
+		</div >
 	)
 }

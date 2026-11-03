@@ -2,6 +2,9 @@ import { For, Show } from "solid-js"
 import { TierList } from "../../types"
 import Editor from "./Editor"
 import EditableTitle from "./EditableTitle"
+import { FaSolidChevronDown, FaSolidChevronUp } from 'solid-icons/fa'
+import { IoSettingsSharp } from 'solid-icons/io'
+import TierRow from "./TierRow"
 
 type TierListProps = TierList & {
     is_child?: boolean
@@ -18,25 +21,24 @@ export default (node: TierListProps) => {
                 </div>
             </Show>
 
-
-            <div class="divide-2 divide-amber-800">
-
+            <div class="divide-y-2 divide-amber-800">
                 <For each={node.data}>
                     {(tier, index) => (
-                        <div class="flex flex-row">
-                            <div class="p-10" style={{ background: tier.color }}>
-                                {tier.tier}
-                            </div>
-                            <div class="w-full" style={{ background: index() % 2 === 0 ? "#111111" : "#080808" }}>
-                            </div>
-                        </div>
+                        <TierRow
+                            tier={tier}
+                            index={index()}
+                            onDropFiles={(files) => addImages(node.id, index(), files)}
+                            onMoveUp={() => moveTier(node.id, index(), -1)}
+                            onMoveDown={() => moveTier(node.id, index(), 1)}
+                            onSettings={() => openTierSettings(node.id, index())}
+                        />
                     )}
-                </For >
-            </div >
+                </For>
+            </div>
 
 
             <Show when={node.showDescription}>
-                <Editor id={node.id} desc={node.description ?? ""} />
+                <Editor id={node.id} desc={node.description ?? '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'} />
             </Show>
         </div >
     )

@@ -43,7 +43,7 @@ const api = {
 
 	cacheYoutubeVid: (data: any) => ipcRenderer.invoke("cacheYoutubeVid", data),
 
-	deletecacheedYoutubeVid: (data: any) => ipcRenderer.invoke("deletecacheedYoutubeVid", data),
+	deleteCachedYoutubeVid: (data: any) => ipcRenderer.invoke("deleteCachedYoutubeVid", data),
 
 	checkCacheYoutubeVidExists: (data: any) => ipcRenderer.invoke("checkCacheYoutubeVidExists", data),
 

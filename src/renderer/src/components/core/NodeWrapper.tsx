@@ -53,11 +53,14 @@ const ignoredClasses = (
 				return { classes: ["down_pdf", "open_pdf"], ids: ["secondaryEditor"] }
 			case NodeType.Table:
 				return { tags: ["table", "td"], classes: ["mainTable"] }
+			case NodeType.TierList:
+				return {
+					classes: ["tier_list_settings", "tier_list_chevron"]
+				}
 			default:
 				return {}
 		}
 	})()
-
 	// Ensure "resize_handle" is always present
 	return {
 		...baseResult,

@@ -557,9 +557,21 @@ function getYouTubeVideoId(url) {
 	}
 }
 
+function cleanYoutubeUrl(url: string): string | null {
+	try {
+		const parsed = new URL(url)
+		const v = parsed.searchParams.get("v")
+		if (!v) return null
+		return `https://www.youtube.com/watch?v=${v}`
+	} catch {
+		return null // invalid URL
+	}
+}
+
 export function registerApi(mainWindow: BrowserWindow) {
 	ipcMain.handle("cacheYoutubeVid", async (event, url: string) => {
 		console.log("download started")
+		console.log(url)
 		createDir("cache/youtube")
 		const vidId = getYouTubeVideoId(url)
 		if (!vidId) {
@@ -584,13 +596,18 @@ export function registerApi(mainWindow: BrowserWindow) {
 			}
 		}
 
-		const subprocess = youtubedl.exec(url, {
+		// https://www.youtube.com/watch?v=VDdLF1YubI0&list=RDVDdLF1YubI0&start_radio=1
+		//? clean url
+		const clearUrl = cleanYoutubeUrl(url)
+		if (!clearUrl) return {
+			success: false,
+			message: "the url is invalid"
+		}
+		const subprocess = youtubedl.exec(clearUrl, {
 			noCheckCertificates: true,
 			noWarnings: true,
 			preferFreeFormats: true,
-
 			addHeader: ["referer:youtube.com", "user-agent:googlebot"],
-
 			output: `${basePath}/cache/youtube/${vidId}.%(ext)s`,
 			newline: true
 		})
@@ -733,7 +750,7 @@ ipcMain.handle("selectFile", async () => {
 	return path.join("image", finalName)
 })
 
-ipcMain.handle("deletecacheedYoutubeVid", async (event, url: string) => {
+ipcMain.handle("deleteCachedYoutubeVid", async (event, url: string) => {
 	const vidId = getYouTubeVideoId(url)
 	if (!vidId) {
 		return {

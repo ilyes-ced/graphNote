@@ -83,7 +83,7 @@
 		"tinymce-solid": "^0.0.10",
 		"video.js": "^8.23.7",
 		"vite": "^7.1.4",
-		"youtube-dl-exec": "^3.1.7",
+		"youtube-dl-exec": "^3.1.19",
 		"youtubei.js": "^17.0.1"
 	},
 	"devDependencies": {

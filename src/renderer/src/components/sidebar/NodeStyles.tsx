@@ -17,7 +17,7 @@ export default () => {
 	const [color2, setColor2] = createSignal("#8B5CF6")
 	const [color3, setColor3] = createSignal("#8B5CF6")
 
-	const [showTodoToggle, setShowTodoToggle] = createSignal(false)
+	const [showTitleToggle, setShowTitleToggle] = createSignal(false)
 	const [showDescToggle, setShowDescToggle] = createSignal(false)
 
 	const setColors = () => {
@@ -43,12 +43,13 @@ export default () => {
 		createEffect(() => {
 			const selected = store.selectedNodes
 			const selectedNodes = store.nodes[getActiveBoardId()].filter((user) => selected.has(user.id))
-			setShowTodoToggle(false)
+			setShowTitleToggle(false)
 			setShowDescToggle(false)
 
-			if (selectedNodes.every((node) => node.type === NodeType.Todo)) {
-				setShowTodoToggle(true)
-			} else if (selectedNodes.every((node) => [NodeType.Url, NodeType.Image, NodeType.Color, NodeType.Document].includes(node.type))) {
+			if (selectedNodes.every((node) => [NodeType.Todo, NodeType.TierList].includes(node.type))) {
+				setShowTitleToggle(true)
+			}
+			if (selectedNodes.every((node) => [NodeType.Url, NodeType.Image, NodeType.Color, NodeType.Document, NodeType.TierList].includes(node.type))) {
 				setShowDescToggle(true)
 			}
 		})
@@ -92,14 +93,21 @@ export default () => {
 				</div>
 			</div>
 
-			<Show when={showTodoToggle()}>
+			<Show when={showTitleToggle()}>
 				<div
 					class="flex group/hov flex-col space-y-4 overflow-x-visible relative transition duration-200 ease-out hover:translate-x-2 cursor-pointer "
 					onClick={toggleTitles}
 				>
 					<div>
 						<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500 pointer-events-auto">
-							<div class="flex justify-center items-center size-full p-2"></div>
+							<div class="flex flex-col size-full p-2">
+								<div class="border-b-0 h-1/6 w-full" ></div>
+								<div
+									class="h-5/6 w-full flex items-center justify-center"
+								>
+									T
+								</div>
+							</div>
 						</div>
 						<p class="text-sm text-center">toggle title</p>
 					</div>
@@ -113,7 +121,14 @@ export default () => {
 				>
 					<div>
 						<div class="icon flex flex-col justify-center items-center z-10 bg-accent aspect-square group-hover/hov:bg-red-500 pointer-events-auto">
-							<div class="flex justify-center items-center size-full p-2"></div>
+							<div class="flex flex-col size-full p-2">
+								<div class="border-b-0 h-1/6 w-full" ></div>
+								<div
+									class="h-5/6 w-full flex items-center justify-center"
+								>
+									D
+								</div>
+							</div>
 						</div>
 						<p class="text-sm text-center">toggle description</p>
 					</div>

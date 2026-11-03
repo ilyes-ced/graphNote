@@ -45,7 +45,7 @@
         - [x] updatePosition (when letting go 2 different positions are recorded)
         - [x] addNode (when putting child in coolumn and doing undo, it goes out of parent but not back to canvas, also the opposite doesnt work)
         - [x] updateTask (does nothing)
-        - [ ] reorderTasks (does nothing)
+        - [x] reorderTasks (does nothing)
         - [ ] editable Title (on column and TODO), works on COlumn but not on TODO
     - [ ] not done yet:
         - [x] newNode
@@ -84,7 +84,7 @@
 - [x] arrows stay in the same position like absolute when you move the canvas
 - [x] update arrows when you zoom and move the canvas
 - [ ] load arrows once both nodes are ready
-- [ ] todo node sometimes doesnt save changed text
+- [x] todo node sometimes doesnt save changed text
 - [x] when zooming, make it point to or from the mouse cursor
 - [ ] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
   - [ ] a better option could be to have a button that clears unused resources
@@ -123,7 +123,7 @@
     - [ ] maybe we should make it appear as a modal near the last selected node
     - [ ] the extra ones appear when you deselect nodes
 - [ ] make the user set the number of backups
-- [ ] when moving a node, move all selected nodes with it
+- [x] when moving a node, move all selected nodes with it
 - [ ] crop images when adding them
 - [ ] templates
 - [ ] make Youtube videos downloadable individually instead of downloading them all
@@ -137,6 +137,12 @@
 - [ ] scrape reddit posts data (title, images ...)
 - [ ] All nodes: add fullscreen editing
 - [ ] EventHandler: add ctrl+x for cut
+- [x] URL node: 
+  - [x] when a video is downloaded change the download button color
+  - [x] indicate wether the video is downloaded or not
+  - [x] youtube playlist urls downloads all items
+  - [x] when a vid is cached play it locally not from youtube
+  - [x] fix the download notification
 
 # extra features
 - [ ] pin a certain node to one of the 4 corners
@@ -155,7 +161,6 @@
 
 # encryption
 leave the encryption feature to last because once its implemented we cant manipulate the data as we want
-
 - [ ] for encryption maybe encrypt each file indivudually and load them when needed
 
 ---
@@ -211,3 +216,10 @@ GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 NO_STRIP=true pnpm tauri build
 # running
 
 GDK_BACKEND=x11 WEBKIT_DISABLE_COMPOSITING_MODE=1 ./src-tauri/target/release/bundle/appimage/graphnote_0.1.0_amd64.AppImage
+
+
+# yt-dlp
+must run this command sometimes when deleting node modules:
+```
+node node_modules/youtube-dl-exec/scripts/postinstall.js
+```

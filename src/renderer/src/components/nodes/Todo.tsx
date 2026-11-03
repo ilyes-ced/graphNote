@@ -1,5 +1,5 @@
 // had many issues fixed by Claude
-import { batch, For, onCleanup, Show, untrack } from "solid-js"
+import { batch, For, onCleanup, Show, untrack, createEffect } from "solid-js"
 import { createStore, produce, unwrap } from "solid-js/store"
 import { DragDropProvider, DragDropSensors, SortableProvider, createSortable, closestCenter, useDragDropContext } from "@thisbeyond/solid-dnd"
 import { Task, Todo as TodoType } from "../../types"
@@ -28,11 +28,20 @@ type SortableItemProps = {
 
 type TaskItemProps = SortableItemProps
 
+const sameTasks = (a: Task[], b: Task[]) =>
+	a.length === b.length &&
+	a.every((t, i) => {
+		const u = b[i] as any
+		const keys = new Set([...Object.keys(t), ...Object.keys(u)])
+		return [...keys].every((k) => (t as any)[k] === u[k])
+	})
+
 // === Helpers ===
 const generateId = (() => {
 	let counter = 0
 	return () => `task-id-${counter++}`
 })()
+
 
 /** Start/end character offsets of the current selection inside `el`. */
 const getSelectionOffsets = (el: HTMLElement): [number, number] => {
@@ -69,6 +78,25 @@ const placeCaret = (el: HTMLElement, offset?: number) => {
 
 export default (node: TodoProps) => {
 	let containerRef!: HTMLDivElement
+
+	createEffect(() => {
+		const external = node.tasks.map((t) => ({ ...t })) // reads every field -> tracked
+		if (sameTasks(external, untrack(snapshot))) return // untrack: don't re-run on local edits
+
+		untrack(() => {
+			const row = document.activeElement?.closest<HTMLElement>("[data-task-id]")
+			const focusedIndex = row && containerRef.contains(row) ? indexOf(row.dataset.taskId!) : -1
+
+			cancelPending() // a stale debounced save must not overwrite the undo
+			const fresh = external.map((t) => ({ ...t, _id: generateId() }))
+			setStore("tasks", fresh) // new ids -> rows are recreated, so the text is re-rendered
+
+			if (focusedIndex !== -1) {
+				const target = fresh[Math.min(focusedIndex, fresh.length - 1)]
+				if (target) focusTask(target._id)
+			}
+		})
+	})
 
 	// A store (instead of a signal) so text/check/nestLevel edits update in place:
 	// rows are not re-created, so focus and caret survive, and the data stays

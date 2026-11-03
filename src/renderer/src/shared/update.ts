@@ -2,33 +2,66 @@ import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Ac
 import { setStore, store } from "./store"
 import { saveChanges } from "./utils"
 import { actionsMiddleware } from "./actions"
+import { unwrap } from "solid-js/store"
 
-const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) => {
+const cloneTasks = (tasks: Task[]): Task[] => unwrap(tasks).map((t) => ({ ...t }))
+
+const locateNode = (nodeId: string) => {
 	for (const [parentId, nodes] of Object.entries(store.nodes)) {
-		const nodeIndex = nodes.findIndex((n) => n.id === nodeId)
-		if (nodeIndex === -1) continue
-
-		const node = nodes[nodeIndex]
-		if (!("tasks" in node) || !Array.isArray(node.tasks) || !node.tasks[taskIndex]) continue
-
-		const oldValue = node.tasks[taskIndex][typeof value === "boolean" ? "check" : "text"]
-		const key = typeof value === "boolean" ? "check" : "text"
-
-		setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, value)
-		saveChanges()
-
-		return {
-			undo() {
-				setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, oldValue)
-				saveChanges()
-			},
-			redo() {
-				setStore("nodes", parentId, nodeIndex, "tasks", taskIndex, key, value)
-				saveChanges()
-			}
-		}
+		const index = nodes.findIndex((n) => n.id === nodeId)
+		if (index !== -1) return { parentId, index }
 	}
 }
+
+const reorderTasks = (nodeId: string, tasks: Task[]) => {
+	const loc = locateNode(nodeId)
+	if (!loc) return
+
+	const oldTasks = cloneTasks((store.nodes[loc.parentId][loc.index] as any).tasks ?? [])
+	const newTasks = cloneTasks(tasks)
+
+	// Resolve the node at call time and always store a fresh copy
+	const apply = (value: Task[]) => {
+		const l = locateNode(nodeId)
+		if (!l) return
+		setStore("nodes", l.parentId, l.index, "tasks", cloneTasks(value))
+		saveChanges()
+	}
+
+	apply(newTasks)
+
+	return {
+		undo: () => apply(oldTasks),
+		redo: () => apply(newTasks)
+	}
+}
+
+const updateTask = (nodeId: string, value: string | boolean, taskIndex: number) => {
+	const loc = locateNode(nodeId)
+	if (!loc) return
+
+	const node = store.nodes[loc.parentId][loc.index] as any
+	if (!Array.isArray(node.tasks) || !node.tasks[taskIndex]) return
+
+	const key = typeof value === "boolean" ? "check" : "text"
+	const oldValue = node.tasks[taskIndex][key]
+	if (oldValue === value) return // nothing changed -> no history entry
+
+	const apply = (v: string | boolean) => {
+		const l = locateNode(nodeId)
+		if (!l) return
+		setStore("nodes", l.parentId, l.index, "tasks", taskIndex, key, v)
+		saveChanges()
+	}
+
+	apply(value)
+
+	return {
+		undo: () => apply(oldValue),
+		redo: () => apply(value)
+	}
+}
+
 
 const toggleTitle = (nodeId: string) => {
 	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
@@ -533,9 +566,10 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 			return {
 				...base,
 				title: "Title",
-				description: "Description",
+				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}',
 				showTitle: true,
 				showDescription: true,
+				width: 1000,
 				data: [
 					{
 						tier: "S",
@@ -804,32 +838,6 @@ const updateActivityCounter = (nodeId: string, date: string, newValue: number) =
 	saveChanges()
 }
 
-const reorderTasks = (nodeId: string, tasks: Task[]) => {
-	console.log("reorder tasks")
-	for (const [parentId, nodes] of Object.entries(store.nodes)) {
-		const index = nodes.findIndex((n) => n.id === nodeId)
-		if (index === -1) continue
-
-		const oldTasks = [...(nodes[index].tasks ?? [])]
-		const newTasks = [...tasks]
-
-		setStore("nodes", parentId, index, "tasks", tasks)
-		saveChanges()
-
-		return {
-			undo() {
-				console.log("task reorder undo", oldTasks)
-				setStore("nodes", parentId, index, "tasks", oldTasks)
-				saveChanges()
-			},
-			redo() {
-				console.log("task reorder redo", newTasks)
-				setStore("nodes", parentId, index, "tasks", newTasks)
-				saveChanges()
-			}
-		}
-	}
-}
 
 const newDocumentNode = (path: string, x: number, y: number) => {
 	const activeBoardId = getActiveBoardId()
