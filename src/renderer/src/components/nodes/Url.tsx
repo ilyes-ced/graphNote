@@ -1,4 +1,4 @@
-import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from "solid-js"
+import { Match, Show, Switch, createEffect, createSignal, on, onCleanup, onMount } from "solid-js"
 import { Url } from "../../types"
 import { AiOutlineDownload, AiOutlineLink } from 'solid-icons/ai'
 import { FaSolidPlay, FaSolidTrashAlt } from 'solid-icons/fa'
@@ -160,6 +160,15 @@ export default (node: UrlProps) => {
 		const src = localVid()
 		if (!src || !videoRef) return
 		videoRef.load()
+
+
+		on(
+			() => node.url,
+			(url, prev) => {
+				if (!url) return
+				fetchMetaData(prev === "") // firstTime = url just went from empty to set
+			}
+		)
 	})
 
 	const transformUrl = (e: any) => {
@@ -177,6 +186,7 @@ export default (node: UrlProps) => {
 			input.placeholder = "invalid URL, try again"
 		}
 	}
+
 	function getYouTubeVideoId(url: string) {
 		const regex = /(?:youtube\.com\/.*v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/
 		const match = url.match(regex)

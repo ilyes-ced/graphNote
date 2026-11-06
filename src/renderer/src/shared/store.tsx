@@ -90,6 +90,8 @@ interface GlobalStore {
 	pdfFile: String | null
 
 	userConfig: UserConfig
+
+	nodeViewerNodeId: string
 }
 
 const [store, setStore] = createStore<GlobalStore>({
@@ -143,7 +145,9 @@ const [store, setStore] = createStore<GlobalStore>({
 			bgColor: "",
 			gridColor: ""
 		}
-	}
+	},
+
+	nodeViewerNodeId: "",
 })
 
 export { store, setStore }

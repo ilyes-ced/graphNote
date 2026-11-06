@@ -5,7 +5,7 @@ import { useResize } from "../../shared/useResize"
 import { getActiveBoardId, updateNodeWidth } from "../../shared/update"
 import ResizeHandle from "../nodes/resizeHandle"
 import FullscreenHandle from "../nodes/FullscreenHadle"
-import { store } from "../../shared/store"
+import { setStore, store } from "../../shared/store"
 
 interface nodeProps {
 	node: NodeUnion
@@ -79,6 +79,10 @@ export default (node: nodeProps) => {
 	const { width, startResize } = useResize(initWidth, (newWidth: number) => {
 		updateNodeWidth(node.node.id, newWidth)
 	})
+	const nodeViewer = () => {
+		console.log("tttttttttttttttttt")
+		setStore("nodeViewerNodeId", node.node.id)
+	}
 
 	//TODO: fix each node type classname, and the ignored classes in the drag
 	let el!: HTMLDivElement
@@ -160,7 +164,7 @@ export default (node: nodeProps) => {
 				</Show>
 
 				<Show when={!node.isChildNode && node.node.type !== NodeType.Column}>
-					<FullscreenHandle startResizeFunction={startResize} />
+					<FullscreenHandle startNodeViewer={nodeViewer} />
 				</Show>
 			</div>
 		</div >

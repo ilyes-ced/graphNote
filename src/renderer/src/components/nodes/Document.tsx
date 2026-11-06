@@ -93,12 +93,14 @@ export default (node: DocumentProps) => {
 					<div class="flex flex-row space-x-2">
 						<div class="down_pdf underline cursor-pointer hover:text-primary transition-colors duration-200">Download</div>
 						<div
-							onClick={() => setStore("pdfFile", node.path)}
+							//onClick={() => setStore("pdfFile", node.path)}
+							onClick={() => setStore("nodeViewerNodeId", node.id)}
 							class="open_pdf underline cursor-pointer hover:text-primary transition-colors duration-200"
 						>
 							Open
 						</div>
 						<div>11 MB</div>
+						//{store.nodeViewerNodeId}
 					</div>
 				</div>
 			</div>

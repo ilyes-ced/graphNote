@@ -61,7 +61,7 @@ export default (props: { wrapperRef: any }) => {
 	}
 
 	return (
-		<div class="absolute bottom-2.5 right-2.5 flex flex-row space-x-2.5 items-end z-100000 pointer-events-none">
+		<div class="absolute bottom-2.5 right-2.5 flex flex-row space-x-2.5 items-end z-50 pointer-events-none">
 			<Controls />
 			<div id="minimap" class="w-50 border border-primary p-2.5 bg-background pointer-events-auto" style={{ "aspect-ratio": aspectRatio() }}>
 				<div class="relative size-full border-2 border-background z-1000" style={{ background: getBoardBgColor() }}>

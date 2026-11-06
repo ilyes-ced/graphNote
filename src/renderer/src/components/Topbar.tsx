@@ -25,7 +25,7 @@ export default () => {
 	})
 
 	return (
-		<div id="topbar" class="z-100000 absolute w-full flex flex-row justify-between items-center bg-transparent p-2.5 pointer-events-none">
+		<div id="topbar" class="z-50 absolute w-full flex flex-row justify-between items-center bg-transparent p-2.5 pointer-events-none">
 			<div id="breadcrumb" class="flex flex-row space-y-4 overflow-x-visible">
 				<div class="flex flex-row">
 					<For each={store.activeBoards}>

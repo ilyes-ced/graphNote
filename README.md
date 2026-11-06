@@ -128,7 +128,7 @@
 - [ ] templates
 - [ ] make Youtube videos downloadable individually instead of downloading them all
 - [ ] moving nodes with arros doesnt account for bounds
-- [ ] Url node: make it clear when a video is already downloaded
+- [x] Url node: make it clear when a video is already downloaded
 - [ ] Url node: add ability to delete video file
 - [ ] Arrow logic: copy from reactFlow or leaderLine
 - [ ] pasting url to canvas create a Url node
@@ -143,6 +143,11 @@
   - [x] youtube playlist urls downloads all items
   - [x] when a vid is cached play it locally not from youtube
   - [x] fix the download notification
+- [ ] creating URL node from Note node create an unexpected image node with th html of the url as its content
+
+
+
+
 
 # extra features
 - [ ] pin a certain node to one of the 4 corners
