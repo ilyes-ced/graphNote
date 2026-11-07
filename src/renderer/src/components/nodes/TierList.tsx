@@ -2,8 +2,6 @@ import { For, Show } from "solid-js"
 import { TierList } from "../../types"
 import Editor from "./Editor"
 import EditableTitle from "./EditableTitle"
-import { FaSolidChevronDown, FaSolidChevronUp } from 'solid-icons/fa'
-import { IoSettingsSharp } from 'solid-icons/io'
 import TierRow from "./TierRow"
 
 type TierListProps = TierList & {
@@ -12,6 +10,9 @@ type TierListProps = TierList & {
 }
 
 export default (node: TierListProps) => {
+    const addImages = () => {
+
+    }
 
     return (
         <div class="flex flex-col">

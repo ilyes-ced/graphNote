@@ -57,7 +57,10 @@ const api = {
 
 	getSizes: () => ipcRenderer.invoke("getSizes"),
 
-	selectFile: () => ipcRenderer.invoke("selectFile")
+	selectFile: () => ipcRenderer.invoke("selectFile"),
+
+	deleteUnusedFiles: () => ipcRenderer.invoke("deleteUnusedFiles")
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -6,6 +6,7 @@ import { FiChevronsRight } from 'solid-icons/fi'
 import { FaSolidDatabase } from 'solid-icons/fa'
 import { AiFillMoon } from 'solid-icons/ai'
 import { IoSettingsSharp } from 'solid-icons/io'
+import { FaSolidTrashAlt } from 'solid-icons/fa'
 
 export default () => {
 	const [dataSize, setDataSize] = createSignal({
@@ -59,16 +60,20 @@ export default () => {
 			</div>
 
 			<div class="flex justify-center items-center space-x-2">
-				<Button class="pointer-events-auto" variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
-					<FaSolidDatabase />
+				<Button class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
+					<FaSolidDatabase class="size-full" />
 				</Button>
 
-				<Button class="pointer-events-auto" variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
-					<IoSettingsSharp />
+				<Button class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
+					<IoSettingsSharp class="size-full" />
 				</Button>
 
-				<Button class="pointer-events-auto" variant={"secondary"}>
-					<AiFillMoon />
+				<Button class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"}>
+					<AiFillMoon class="size-full" />
+				</Button>
+
+				<Button onClick={() => { window.api.deleteUnusedFiles() }} class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"}>
+					<FaSolidTrashAlt class="size-full" />
 				</Button>
 			</div>
 

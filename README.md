@@ -91,7 +91,7 @@
   - [ ] or search for unused resources and delete them on startup
 - [x] for todo make the title optional
 - [x] infinite loop resizing: disable the observer after the first fire, for urls, update once the resource is loaded, when width is changed also do the observe once more
-- [ ] Note editor buttons not settings is-active class correctly but are working just fine
+- [x] Note editor buttons not settings is-active class correctly but are working just fine
 - [x] image text edit is not focusable
 - [x] put images in thier own folder
 - [x] selection only works on the left top corner of nodes (calculating the w and h of each node would be expensive)
@@ -118,7 +118,7 @@
 - [ ] miniMap doesnt account for child nodes in columns
 - [ ] minimap when changing board items are displayed wrong
 - [x] styles dont work for column children
-- [ ] empty image node should be a placeholder with an upload button
+- [x] empty image node should be a placeholder with an upload button
 - [ ] side styles tab:
     - [ ] maybe we should make it appear as a modal near the last selected node
     - [ ] the extra ones appear when you deselect nodes
@@ -126,8 +126,8 @@
 - [x] when moving a node, move all selected nodes with it
 - [ ] crop images when adding them
 - [ ] templates
-- [ ] make Youtube videos downloadable individually instead of downloading them all
-- [ ] moving nodes with arros doesnt account for bounds
+- [x] make Youtube videos downloadable individually instead of downloading them all
+- [ ] moving nodes with arrows doesnt account for bounds
 - [x] Url node: make it clear when a video is already downloaded
 - [ ] Url node: add ability to delete video file
 - [ ] Arrow logic: copy from reactFlow or leaderLine
@@ -144,6 +144,11 @@
   - [x] when a vid is cached play it locally not from youtube
   - [x] fix the download notification
 - [ ] creating URL node from Note node create an unexpected image node with th html of the url as its content
+- [ ] fullscreen node viewer doesnt update the text
+- [ ] Url node description: 
+  - [ ] description doesnt appear when you transfrom from note node
+  - [ ] youtube description are not full but truncated
+- [ ] multi node drag doesnt work correctly
 
 
 
@@ -161,7 +166,7 @@
 - [ ] opening URLs: dont open the url in the electron app send it to the default browser
 - [x] right click menu
 - [ ] daily tasks node (or set the recurring period)
-- [ ] extend Url node to take full screen, display the video and the its description to the side
+- [x] extend Url node to take full screen, display the video and the its description to the side
 - [ ] show list of all nodes of a certain type
 - [ ] cache Document first page 
 

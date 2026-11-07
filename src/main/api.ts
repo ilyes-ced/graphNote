@@ -808,3 +808,10 @@ ipcMain.handle("openFileDefault", async (event, filePath: string) => {
 	const error = await shell.openPath(path.join(basePath, filePath))
 	if (error) throw new Error(error)
 })
+
+
+ipcMain.handle("deleteUnusedFiles", async (event) => {
+	// search the nodes.json file for all used files
+	// then list all files and delete all that is not included in that list
+	// nodes with files: Url, Tierlist, Board, Document, Image
+})

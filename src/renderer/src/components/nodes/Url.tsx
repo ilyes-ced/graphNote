@@ -51,26 +51,25 @@ export default (node: UrlProps) => {
 	}
 
 	const setImageFromArrayBuffer = (buffer: ArrayBuffer, type: "image" | "favicon") => {
-		console.log(buffer)
-		const blob = new Blob([buffer], { type: "image/png" }) // or jpeg/webp
-		const url = URL.createObjectURL(blob)
-		if (type === "image") {
-			setSrcImage(url)
-		} else if (type === "favicon") {
-			setSrcFav(url)
-		}
-		onCleanup(() => URL.revokeObjectURL(url))
+		if (!buffer?.byteLength) return
+		const url = URL.createObjectURL(new Blob([buffer]))
+		const [get, set] = type === "image" ? [srcImage, setSrcImage] : [srcFav, setSrcFav]
+		if (get()) URL.revokeObjectURL(get())
+		set(url)
 	}
 
-	async function isYoutubeUrl(url: string): Promise<boolean> {
-		const pattern = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/.+$/
-		if (pattern.test(url)) {
-			const fileExists = await window.api.checkCacheYoutubeVidExists(url)
-			if (fileExists.success) {
-				setYtVidDownloaded(true)
-			}
-		}
-		return pattern.test(url)
+	onCleanup(() => {
+		URL.revokeObjectURL(srcImage())
+		URL.revokeObjectURL(srcFav())
+	})
+
+	const YT = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/.+$/
+	const isYoutubeUrl = () => YT.test(node.url)
+
+	const checkCache = async () => {
+		if (!isYoutubeUrl()) return
+		const res = await window.api.checkCacheYoutubeVidExists(node.url)
+		setYtVidDownloaded(!!res.success)
 	}
 
 	const getMetaData = async (url: string): Promise<MetaData | null> => {
@@ -126,10 +125,13 @@ export default (node: UrlProps) => {
 					setImageFromArrayBuffer(res.image, "image")
 					setImageFromArrayBuffer(res.favicon, "favicon")
 					if (firstTime || !node.description) {
-						updateNodeDesc(
-							node.id,
-							`{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"${node.description}\"}]}]}`
-						)
+						updateNodeDesc(node.id, JSON.stringify({
+							type: "doc",
+							content: [{
+								type: "paragraph", content: res.description
+									? [{ type: "text", text: res.description }] : []
+							}],
+						}))
 					}
 				}
 			})
@@ -138,7 +140,7 @@ export default (node: UrlProps) => {
 
 	onMount(async () => {
 		fetchMetaData()
-		if (isYoutubeUrl(node.url)) {
+		if (isYoutubeUrl()) {
 			if (store.userConfig.youtubeVidCache) {
 				var cacheRes = await window.api.cacheYoutubeVid(node.url)
 				if (cacheRes.message == "file is already downloaded") {
@@ -157,19 +159,14 @@ export default (node: UrlProps) => {
 	})
 
 	createEffect(() => {
-		const src = localVid()
-		if (!src || !videoRef) return
-		videoRef.load()
-
-
-		on(
-			() => node.url,
-			(url, prev) => {
-				if (!url) return
-				fetchMetaData(prev === "") // firstTime = url just went from empty to set
-			}
-		)
+		if (localVid()) videoRef?.load()
 	})
+
+	createEffect(on(() => node.url, (url, prev) => {
+		if (!url) return
+		fetchMetaData(prev === "")
+		checkCache()
+	}, { defer: true }))
 
 	const transformUrl = (e: any) => {
 		const input = e.target as HTMLInputElement
@@ -199,7 +196,7 @@ export default (node: UrlProps) => {
 			<Switch
 				fallback={
 					<div class="relative flex items-center justify-center">
-						<Show when={isYoutubeUrl(node.url)}>
+						<Show when={isYoutubeUrl()}>
 							<div class="absolute bottom-2 right-2 flex gap-1 z-50 opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200">
 								<div
 									onClick={async () => window.api.deleteCachedYoutubeVid(node.url)}
@@ -252,7 +249,7 @@ export default (node: UrlProps) => {
 						</Show>
 
 						{
-							isYoutubeUrl(node.url) && (
+							isYoutubeUrl() && (
 								<div
 									class="size-10 rounded-full bg-black border-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center youtube_play_button"
 									onClick={() => {
@@ -308,7 +305,7 @@ export default (node: UrlProps) => {
 						/>
 					</div>
 				</Match >
-				<Match when={isYoutubeUrl(node.url) && localVid() != null && isPlaying()}>
+				<Match when={isYoutubeUrl() && localVid() != null && isPlaying()}>
 					<video-player
 						style={{
 							"--media-border-radius": "0rem",
@@ -320,7 +317,7 @@ export default (node: UrlProps) => {
 						</video-skin>
 					</video-player>
 				</Match>
-				<Match when={isYoutubeUrl(node.url) && isPlaying()}>
+				<Match when={isYoutubeUrl() && isPlaying()}>
 					<div
 						style={{
 							position: "relative",

@@ -11,213 +11,132 @@ import { For, untrack } from "solid-js"
 import { debounce } from "../../shared/utils"
 import { createEditorTransaction } from "solid-tiptap"
 
-export const Toolbar = (props: { node: any, editor: any }) => {
+import type { JSX } from "solid-js"
 
-    const isActive = (name: string | object, attrs?: object) =>
-        createEditorTransaction(
-            () => props.editor(),
-            (ed) => (ed ? ed.isActive(name as any, attrs) : false)
-        )
+import {
+    MdFillFormat_bold, MdFillFormat_italic, MdFillStrikethrough_s, MdFillCode_off,
+    MdFillFormat_list_bulleted, MdFillFormat_list_numbered, MdFillFormat_quote,
+    MdFillFormat_align_left, MdOutlineFormat_align_center, MdFillFormat_align_right, MdOutlineFormat_align_justify,
+    MdFillHorizontal_rule, MdFillKeyboard_return, MdFillClear,
+    MdFillUndo, MdFillRedo,
+} from "solid-icons/md"
+import { FaRegularFileCode } from 'solid-icons/fa'
 
-    const Btn = (p: { editor: any; node: any; label: string; run: (c: any) => any; active?: () => boolean }) => (
-        <button
-            onClick={() => p.run(p.editor()?.chain().focus()).run()}
-            class={p.active?.() ? "is-active" : ""}
-            style={{ "--hover-bg": p.node.textColor, "--hover-fg": p.node.color }}
-        >
-            {p.label}
-        </button>
+type Item = {
+    label: string
+    icon: (p: { size?: number }) => JSX.Element
+    run: (chain: any) => any
+    active?: [name: string | object, attrs?: object]
+    disabled?: (ed: any) => boolean
+}
+
+const GROUPS: Item[][] = [
+    [
+        { label: "Bold", icon: MdFillFormat_bold, run: (c) => c.toggleBold(), active: ["bold"] },
+        { label: "Italic", icon: MdFillFormat_italic, run: (c) => c.toggleItalic(), active: ["italic"] },
+        { label: "Strikethrough", icon: MdFillStrikethrough_s, run: (c) => c.toggleStrike(), active: ["strike"] },
+        { label: "Inline code", icon: MdFillCode_off, run: (c) => c.toggleCode(), active: ["code"] },
+    ],
+    [
+        { label: "Bullet list", icon: MdFillFormat_list_bulleted, run: (c) => c.toggleBulletList(), active: ["bulletList"] },
+        { label: "Ordered list", icon: MdFillFormat_list_numbered, run: (c) => c.toggleOrderedList(), active: ["orderedList"] },
+        { label: "Blockquote", icon: MdFillFormat_quote, run: (c) => c.toggleBlockquote(), active: ["blockquote"] },
+        { label: "Code block", icon: FaRegularFileCode, run: (c) => c.toggleCodeBlock(), active: ["codeBlock"] },
+    ],
+    [
+        { label: "Align left", icon: MdFillFormat_align_left, run: (c) => c.setTextAlign("left"), active: [{ textAlign: "left" }] },
+        { label: "Align center", icon: MdOutlineFormat_align_center, run: (c) => c.setTextAlign("center"), active: [{ textAlign: "center" }] },
+        { label: "Align right", icon: MdFillFormat_align_right, run: (c) => c.setTextAlign("right"), active: [{ textAlign: "right" }] },
+        { label: "Justify", icon: MdOutlineFormat_align_justify, run: (c) => c.setTextAlign("justify"), active: [{ textAlign: "justify" }] },
+    ],
+    [
+        { label: "Horizontal rule", icon: MdFillHorizontal_rule, run: (c) => c.setHorizontalRule() },
+        { label: "Hard break", icon: MdFillKeyboard_return, run: (c) => c.setHardBreak() },
+        { label: "Clear formatting", icon: MdFillClear, run: (c) => c.unsetAllMarks().clearNodes() },
+    ],
+    [
+        { label: "Undo", icon: MdFillUndo, run: (c) => c.undo(), disabled: (ed) => !ed.can().undo() },
+        { label: "Redo", icon: MdFillRedo, run: (c) => c.redo(), disabled: (ed) => !ed.can().redo() },
+    ],
+]
+
+const Divider = () => <div class="w-px h-5 bg-border mx-1 shrink-0" />
+
+const ToolBtn = (p: { item: Item; editor: () => any }) => {
+    const active = createEditorTransaction(
+        () => p.editor(),
+        (ed) => (ed && p.item.active ? ed.isActive(...(p.item.active as [any, any])) : false)
     )
-
+    const disabled = createEditorTransaction(
+        () => p.editor(),
+        (ed) => (!ed ? true : p.item.disabled ? p.item.disabled(ed) : false)
+    )
 
     return (
-        <div class="toolbar flex flex-wrap gap-2">
-            <div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleBold().run()}
-                    class={props.editor()?.isActive("bold") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Bold
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleItalic().run()}
-                    class={props.editor()?.isActive("italic") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Italic
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleStrike().run()}
-                    class={props.editor()?.isActive("strike") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Strike
-                </button>
-            </div>
-
-            <div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
-                <For each={[1, 2, 3, 4, 5, 6]}>
-                    {(level) => (
-                        <Btn
-                            editor={props.editor}
-                            node={props.node}
-                            label={`H${level}`}
-                            run={(c) => c.toggleHeading({ level })}
-                            active={isActive("heading", { level })}
-                        />
-                    )}
-                </For>
-            </div>
-
-            <div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleBulletList().run()}
-                    class={props.editor()?.isActive("bulletList") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Bullet list
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleOrderedList().run()}
-                    class={props.editor()?.isActive("orderedList") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Ordered list
-                </button>
-            </div>
-
-            <div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleCode().run()}
-                    class={props.editor()?.isActive("code") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Code
-                </button>
-                <button onClick={() => props.editor()?.chain().focus().unsetAllMarks().run()}>Clear marks</button>
-                <button onClick={() => props.editor()?.chain().focus().clearNodes().run()}>Clear nodes</button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().setParagraph().run()}
-                    class={props.editor()?.isActive("paragraph") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Paragraph
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleCodeBlock().run()}
-                    class={props.editor()?.isActive("codeBlock") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Code block
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().toggleBlockquote().run()}
-                    class={props.editor()?.isActive("blockquote") ? "is-active" : ""}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Blockquote
-                </button>
-            </div>
-
-            <div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
-                <button
-                    onClick={() => props.editor()?.chain().focus().setHorizontalRule().run()}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Horizontal rule
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().setHardBreak().run()}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Hard break
-                </button>
-            </div>
-
-            <div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
-                <button
-                    onClick={() => props.editor()?.chain().focus().undo().run()}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Undo
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().redo().run()}
-                    style={{
-                        "--hover-bg": props.node.textColor,
-                        "--hover-fg": props.node.color
-                    }}
-                >
-                    Redo
-                </button>
-            </div>
-
-            <div class="button-group w-fit flex flex-wrap gap-2 p-1 border">
-                <button
-                    onClick={() => props.editor()?.chain().focus().setTextAlign("left").run()}
-                    class={props.editor()?.isActive({ textAlign: "left" }) ? "is-active" : ""}
-                >
-                    Left
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().setTextAlign("center").run()}
-                    class={props.editor()?.isActive({ textAlign: "center" }) ? "is-active" : ""}
-                >
-                    Center
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().setTextAlign("right").run()}
-                    class={props.editor()?.isActive({ textAlign: "right" }) ? "is-active" : ""}
-                >
-                    Right
-                </button>
-                <button
-                    onClick={() => props.editor()?.chain().focus().setTextAlign("justify").run()}
-                    class={props.editor()?.isActive({ textAlign: "justify" }) ? "is-active" : ""}
-                >
-                    Justify
-                </button>
-            </div>
-        </div>
+        <button
+            type="button"
+            title={p.item.label}
+            aria-label={p.item.label}
+            aria-pressed={p.item.active ? active() : undefined}
+            disabled={disabled()}
+            // keep the editor's selection and focus when clicking toolbar buttons
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => p.item.run(p.editor()?.chain().focus()).run()}
+            class="flex items-center justify-center size-7 cursor-pointer transition-colors
+                   text-foreground/70 hover:bg-primary/15 hover:text-foreground
+                   disabled:opacity-30 disabled:pointer-events-none"
+            classList={{ "bg-primary/25 text-foreground": active() }}
+        >
+            <p.item.icon size={16} />
+        </button>
     )
 }
+
+const HeadingSelect = (p: { editor: () => any }) => {
+    const value = createEditorTransaction(
+        () => p.editor(),
+        (ed) => {
+            if (!ed) return "p"
+            for (let l = 1; l <= 6; l++) if (ed.isActive("heading", { level: l })) return String(l)
+            return "p"
+        }
+    )
+
+    return (
+        <select
+            title="Text style"
+            value={value()}
+            onChange={(e) => {
+                const v = e.currentTarget.value
+                const chain = p.editor()?.chain().focus()
+                if (!chain) return
+                v === "p" ? chain.setParagraph().run() : chain.setHeading({ level: Number(v) }).run()
+            }}
+            class="h-7 border border-border bg-transparent px-1.5 text-sm outline-none
+                   cursor-pointer hover:bg-primary/15 focus:border-primary"
+        >
+            <option value="p">Paragraph</option>
+            <For each={[1, 2, 3, 4, 5, 6]}>{(l) => <option class="bg-black active:bg-red-400" value={String(l)}>Heading {l}</option>}</For>
+        </select>
+    )
+}
+
+export const Toolbar = (props: { node?: any; editor: () => any }) => (
+    <div class="toolbar flex flex-wrap items-center gap-y-1 border border-border bg-background/60 p-1 backdrop-blur-sm">
+        <HeadingSelect editor={props.editor} />
+
+        <For each={GROUPS}>
+            {(group) => (
+                <>
+                    <Divider />
+                    <div class="flex items-center gap-0.5">
+                        <For each={group}>{(item) => <ToolBtn item={item} editor={props.editor} />}</For>
+                    </div>
+                </>
+            )}
+        </For>
+    </div>
+)
 
 const updateText = debounce((newValue: string, nodeId: string) => {
     updateNote(nodeId, newValue)

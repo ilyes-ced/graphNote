@@ -32,6 +32,7 @@ declare global {
 			getLocalVideo: (vidName: any) => Promise<any>
 			getSizes: () => Promise<any>
 			selectFile: () => Promise<any>
+			deleteUnusedFiles: () => Promise<any>
 		}
 	}
 }

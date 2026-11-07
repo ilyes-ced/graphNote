@@ -943,6 +943,32 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
 	}
 }
 
+
+//? update Note text content
+const updateImgPath = (nodeId: string, newPath: string) => {
+	console.log("999999999999999999999999999999999999")
+	console.log(nodeId, newPath)
+	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+		const index = nodeList.findIndex((n) => n.id === nodeId)
+		if (index !== -1) {
+			const oldPath = store.nodes[parentId][index].path
+			setStore("nodes", parentId, index, "path", newPath)
+			saveChanges()
+
+			return {
+				undo() {
+					setStore("nodes", parentId, index, "path", oldPath)
+					saveChanges()
+				},
+				redo() {
+					setStore("nodes", parentId, index, "path", newPath)
+					saveChanges()
+				}
+			}
+		}
+	}
+}
+
 // export {
 //   updateNote,
 //   updateZIndex,
@@ -995,6 +1021,7 @@ const wrappedUpdateActivityCounter = actionsMiddleware(updateActivityCounter)
 const wrappedReorderTasks = actionsMiddleware(reorderTasks)
 const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode)
 const wrappedUpdateBoardStyles = actionsMiddleware(updateBoardStyles)
+const wrappedUpdateImgPath = actionsMiddleware(updateImgPath)
 
 export {
 	wrappedUpdateNote as updateNote,
@@ -1024,5 +1051,6 @@ export {
 	wrappedUpdateActivityCounter as updateActivityCounter,
 	wrappedReorderTasks as reorderTasks,
 	wrappedNewDocumentNode as newDocumentNode,
-	wrappedUpdateBoardStyles as updateBoardStyles
+	wrappedUpdateBoardStyles as updateBoardStyles,
+	wrappedUpdateImgPath as updateImgPath
 }
