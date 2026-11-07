@@ -2,7 +2,6 @@ import "./App.css"
 import TopBar from "./components/Topbar"
 import Main from "./components/Main"
 import Sidebar from "./components/sidebar/Sidebar"
-import PdfFIleSide from "./components/PdfFIleSide"
 import NodeViewer from "./components/core/NodeViewer"
 
 function App() {
@@ -12,9 +11,6 @@ function App() {
 			<div id="center" class="flex flex-row size-full overflow-hidden">
 				<Sidebar />
 				<Main />
-				{/*
-				<PdfFIleSide />
-				*/}
 				<NodeViewer />
 			</div>
 		</div>

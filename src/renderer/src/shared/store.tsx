@@ -137,6 +137,7 @@ const [store, setStore] = createStore<GlobalStore>({
 		pdfReaderType: "modal",
 		youtubeVidCache: true,
 		cacheUrlData: true,
+		//? the quality of rendered pdfs too low the pdf is blurry, too high and the pdf becomes over sharp and pxielated
 		pdfScale: 1.5,
 		gridStyle: "grid",
 		showNavigation: false,

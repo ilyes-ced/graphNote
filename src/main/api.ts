@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, ipcMain } from "electron"
+import { BrowserWindow, dialog, ipcMain, shell } from "electron"
 import { access, mkdir } from "fs/promises"
 import path from "path"
 import fs from "fs/promises"
@@ -800,4 +800,11 @@ ipcMain.handle("checkCacheYoutubeVidExists", async (event, url: string) => {
 			message: "file was not found"
 		}
 	}
+})
+
+
+ipcMain.handle("openFileDefault", async (event, filePath: string) => {
+	console.log(path.join(basePath, filePath))
+	const error = await shell.openPath(path.join(basePath, filePath))
+	if (error) throw new Error(error)
 })

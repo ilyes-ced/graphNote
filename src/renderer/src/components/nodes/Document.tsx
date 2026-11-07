@@ -22,37 +22,6 @@ function toArrayBuffer(buffer: Buffer): ArrayBuffer {
 
 export default (node: DocumentProps) => {
 	onMount(async () => {
-		//const DocBuffer: ArrayBuffer = toArrayBuffer(await window.api.readImage(node.path));
-		//console.log(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
-		//console.log(DocBuffer)
-		//if (!DocBuffer) return;
-
-		//let doc = await pdfjsLib.getDocument(DocBuffer).promise
-		//const page = await doc.getPage(1);
-
-		//const viewport = page.getViewport({ scale: 0.4 });
-
-		//const canvas = document.createElement('canvas');
-		//const context = canvas.getContext('2d');
-
-		//var outputScale = window.devicePixelRatio || 1;
-		//canvas.width = Math.floor(viewport.width * outputScale);
-		//canvas.height = Math.floor(viewport.height * outputScale);
-		//canvas.style.width = Math.floor(viewport.width) + "px";
-		//canvas.style.height = Math.floor(viewport.height) + "px";
-
-		//var transform = outputScale !== 1
-		//  ? [outputScale, 0, 0, outputScale, 0, 0]
-		//  : null;
-
-		//var renderContext = {
-		//  canvasContext: context,
-		//  transform: transform,
-		//  viewport: viewport
-		//};
-
-		//let gg = page.render(renderContext);
-		// setThumb(image);
 		renderPdf()
 	})
 
@@ -94,7 +63,7 @@ export default (node: DocumentProps) => {
 						<div class="down_pdf underline cursor-pointer hover:text-primary transition-colors duration-200">Download</div>
 						<div
 							//onClick={() => setStore("pdfFile", node.path)}
-							onClick={() => setStore("nodeViewerNodeId", node.id)}
+							onClick={() => window.api.openFileDefault(node.path).catch((e) => console.error(e))}
 							class="open_pdf underline cursor-pointer hover:text-primary transition-colors duration-200"
 						>
 							Open

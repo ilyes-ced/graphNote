@@ -26,6 +26,7 @@ declare global {
 			cacheYoutubeVid: (url: string) => Promise<any>
 			deleteCachedYoutubeVid: (url: string) => Promise<any>
 			checkCacheYoutubeVidExists: (url: string) => Promise<any>
+			openFileDefault: (path: string) => Promise<any>
 			onYoutubeDownloadProgress: (callback: any) => Promise<any>
 			onYoutubeDownloadComplete: (callback: any) => Promise<any>
 			getLocalVideo: (vidName: any) => Promise<any>

@@ -163,6 +163,7 @@
 - [ ] daily tasks node (or set the recurring period)
 - [ ] extend Url node to take full screen, display the video and the its description to the side
 - [ ] show list of all nodes of a certain type
+- [ ] cache Document first page 
 
 # encryption
 leave the encryption feature to last because once its implemented we cant manipulate the data as we want
