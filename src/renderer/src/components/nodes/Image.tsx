@@ -1,4 +1,4 @@
-import { onMount, createSignal, Show, createEffect } from "solid-js"
+import { onMount, createSignal, Show } from "solid-js"
 import { Image } from "../../types"
 import Editor from "./Editor"
 import { readImage } from "../../shared/utils"
@@ -19,24 +19,21 @@ export default (node: ImageProps) => {
 			setImgSrc(await readImage("image/placeholder.png"))
 		}
 	}
+
 	onMount(async () => {
 		await loadImage()
 	})
 
-
-
 	const pickFile = async () => {
 		const path = await window.api.selectFile()
-		//TODO: here update the image path
 		updateImgPath(node.id, path)
-
 		loadImage()
 	}
 
 	return (
 		<div>
 			<Show when={node.path === ""}>
-				<div onClick={() => { console.log("JJJJJJJJJJJJJJJJJJJJ"); pickFile() }} class="w-full aspect-video flex items-center justify-center cursor-pointer">
+				<div onClick={() => { pickFile() }} class="w-full aspect-video flex items-center justify-center cursor-pointer">
 					<MdFillCloud_upload class="size-1/3" />
 				</div>
 			</Show>

@@ -2,7 +2,7 @@ import { setStore, store } from "./store"
 import { saveEdgesJSON, saveNodesJSON } from "./save"
 import { Payload } from "../types"
 import saveFile from "./saveFile"
-import { findNodeById, getActiveBoardId, newDocumentNode, newImageNode } from "./update"
+import { findNodeById, getActiveBoardId, newDocumentNode, newImageNode, tierListAddImg } from "./update"
 
 const addSelected = (e: MouseEvent, nodeId: string) => {
 	// if click is on child dont do it
@@ -124,6 +124,27 @@ const recieveDragNDropFile = (payload: Payload) => {
 		}
 	})
 }
+const recieveDragNDropFileTierlist = (files: Payload["files"], rowId: string) => {
+	console.log(files)
+	console.log(rowId)
+
+	files.forEach(async (fileData, index) => {
+		const result = await saveFile({
+			name: fileData.name,
+			data: fileData.data,
+			type: "image"
+		})
+		if (result.res) {
+			//todo here we change the tierlist data
+			console.log("file type:", result.path)
+			const ids = rowId.split("-")
+			tierListAddImg(ids[0], Number(ids[1]), result.path)
+		} else {
+			console.error("failed to save file:", result.path)
+		}
+	})
+}
+
 
 const updateArrowsPositions = () => {
 	//? to keep update thier positions during the animation
@@ -251,5 +272,6 @@ export {
 	getBoardimage,
 	getBoardBgColor,
 	getBoardGridColor,
-	isTextInputFocused
+	isTextInputFocused,
+	recieveDragNDropFileTierlist
 }

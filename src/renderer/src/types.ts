@@ -13,9 +13,10 @@ interface Payload {
 
 type Task = { text: string; check: boolean; nestLevel: number }
 type Tier = {
+	id: number;
 	tier: string;
 	color: string;
-	data: string[]; //? image paths
+	imgPaths: string[]; //? image paths
 };
 
 enum NodeType {
@@ -156,7 +157,7 @@ interface TierList extends Node, ChildNode {
 	description: string
 	showTitle: boolean
 	showDescription: boolean
-	data: Tier[]
+	tiers: Tier[]
 }
 
 interface Arrow extends Node, ChildNode { }
@@ -233,7 +234,8 @@ export type {
 	ColorType,
 	Edge,
 	Payload,
-	Document
+	Document,
+	Tier
 }
 
 /*

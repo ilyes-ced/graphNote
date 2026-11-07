@@ -570,36 +570,42 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				showTitle: true,
 				showDescription: true,
 				width: 1000,
-				data: [
+				tiers: [
 					{
+						id: 0,
 						tier: "S",
 						color: "#ff7f7f",
-						data: [""],
+						imgPaths: [],
 					},
 					{
+						id: 1,
 						tier: "A",
 						color: "#ffbf7f",
-						data: [""],
+						imgPaths: [],
 					},
 					{
+						id: 2,
 						tier: "B",
 						color: "#ffdf7f",
-						data: [""],
+						imgPaths: [],
 					},
 					{
+						id: 3,
 						tier: "C",
 						color: "#ffff7f",
-						data: [""],
+						imgPaths: [],
 					},
 					{
+						id: 4,
 						tier: "D",
 						color: "#bfff7f",
-						data: [""],
+						imgPaths: [],
 					},
 					{
+						id: 5,
 						tier: "F",
 						color: "#7fff7f",
-						data: [""],
+						imgPaths: [],
 					},
 				]
 			} as TierList
@@ -944,10 +950,7 @@ const updateBoardStyles = (nodeId: string, value: string, type: "bg" | "grid" | 
 }
 
 
-//? update Note text content
 const updateImgPath = (nodeId: string, newPath: string) => {
-	console.log("999999999999999999999999999999999999")
-	console.log(nodeId, newPath)
 	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
 		const index = nodeList.findIndex((n) => n.id === nodeId)
 		if (index !== -1) {
@@ -966,6 +969,57 @@ const updateImgPath = (nodeId: string, newPath: string) => {
 				}
 			}
 		}
+	}
+}
+
+
+const tierListAddImg = (nodeId: string, rowId: number, imgPath: string) => {
+	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+		const index = nodeList.findIndex((n) => n.id === nodeId)
+		if (index !== -1) {
+			const tierList = nodeList[index] as TierList
+			console.log(tierList)
+			const tierIndex = tierList.tiers.findIndex((t) => t.id === rowId)
+			console.log(tierIndex)
+			if (tierIndex === -1) return
+
+			const oldPaths = [...tierList.tiers[tierIndex].imgPaths]
+			console.log(oldPaths)
+			const newPaths = [...oldPaths, imgPath]
+			console.log(newPaths)
+
+			const apply = (paths: string[]) => {
+				setStore("nodes", parentId, index, "tiers", tierIndex, "imgPaths", paths)
+				saveChanges()
+			}
+
+			apply(newPaths)
+
+			return {
+				undo: () => apply(oldPaths),
+				redo: () => apply(newPaths),
+			}
+		}
+	}
+}
+
+
+import { reconcile, unwrap } from "solid-js/store"
+import { Tier } from "../types"
+
+const clone = <T,>(x: T): T => structuredClone(unwrap(x))
+
+const setTiers = (nodeId: string, tiers: Tier[]) => {
+	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
+		const index = nodeList.findIndex((n) => n.id === nodeId)
+		if (index === -1) continue
+
+		setStore(
+			"nodes", parentId, index, "tiers",
+			reconcile(tiers, { key: "id" })   // match tiers by id, update in place
+		)
+		saveChanges()
+		return
 	}
 }
 
@@ -1022,6 +1076,8 @@ const wrappedReorderTasks = actionsMiddleware(reorderTasks)
 const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode)
 const wrappedUpdateBoardStyles = actionsMiddleware(updateBoardStyles)
 const wrappedUpdateImgPath = actionsMiddleware(updateImgPath)
+const wrappedTierListAddImg = actionsMiddleware(tierListAddImg)
+
 
 export {
 	wrappedUpdateNote as updateNote,
@@ -1052,5 +1108,7 @@ export {
 	wrappedReorderTasks as reorderTasks,
 	wrappedNewDocumentNode as newDocumentNode,
 	wrappedUpdateBoardStyles as updateBoardStyles,
-	wrappedUpdateImgPath as updateImgPath
+	wrappedUpdateImgPath as updateImgPath,
+	wrappedTierListAddImg as tierListAddImg,
+	setTiers, clone
 }

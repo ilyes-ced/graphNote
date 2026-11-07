@@ -55,7 +55,7 @@ const ignoredClasses = (
 				return { tags: ["table", "td"], classes: ["mainTable"] }
 			case NodeType.TierList:
 				return {
-					classes: ["tier_list_settings", "tier_list_chevron"]
+					classes: ["tier_list_settings", "tier_list_chevron", "tierRowImage"]
 				}
 			default:
 				return {}

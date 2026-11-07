@@ -1,7 +1,7 @@
 import { onMount, onCleanup, Show, createSignal } from "solid-js"
 import { setStore, store } from "../../shared/store"
 import { NodeUnion } from "../../types"
-import { getBoardBgColor, getBoardGridColor, isTextInputFocused, recieveDragNDropFile } from "../../shared/utils"
+import { getBoardBgColor, getBoardGridColor, isTextInputFocused, recieveDragNDropFile, recieveDragNDropFileTierlist } from "../../shared/utils"
 import {
 	addNode,
 	findNodeById,
@@ -103,7 +103,7 @@ export default (props: any) => {
 		event.preventDefault()
 		if (!event.dataTransfer) return
 		const row = (event.target as Element).closest?.(".tierlist_row")
-		if (row) return
+
 
 		const files = Array.from(event.dataTransfer.files)
 
@@ -124,11 +124,18 @@ export default (props: any) => {
 				data: new Uint8Array(buffer)
 			})
 		}
-		// send the data to the backend to save it
-		recieveDragNDropFile({
-			files: filesData,
-			position: { x: event.x, y: event.y }
-		})
+
+		if (row) {
+			recieveDragNDropFileTierlist(filesData, row.id)
+			return
+			//todo: here we add to the tierlist
+		} else {
+			// send the data to the backend to save it
+			recieveDragNDropFile({
+				files: filesData,
+				position: { x: event.x, y: event.y }
+			})
+		}
 	})
 
 	// todo: use later to add some styles
