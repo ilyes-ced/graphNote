@@ -37,27 +37,19 @@ export default (props: { wrapperRef: any }) => {
 
 	const nodesData = () => {
 		const nodes = store.nodes[store.activeBoards.at(-1)?.id ?? "home"]
-		let nodesData: {
-			id: string
-			x: number
-			y: number
-			color: string
-			w: number
-			h: number
-		}[] = []
 		if (!nodes) return
-		nodes.forEach((n) => {
-			const el = document.getElementById(n.id)?.getBoundingClientRect()
-			nodesData.push({
+
+		return nodes.map((n) => {
+			const el = document.getElementById(n.id)
+			return {
 				id: n.id,
-				x: (n.x / store.viewport.width / store.viewport.scale) * 100,
-				y: (n.y / store.viewport.width / store.viewport.scale) * 100,
+				x: (n.x / store.viewport.width) * 100,
+				y: (n.y / store.viewport.height) * 100,   // was viewport.width
 				color: n.color ?? "",
-				w: ((el?.width ?? 0) / store.viewport.width / store.viewport.scale) * 100,
-				h: ((el?.height ?? 0) / store.viewport.width / store.viewport.scale) * 100
-			})
+				w: ((el?.offsetWidth ?? 0) / store.viewport.width) * 100,
+				h: ((el?.offsetHeight ?? 0) / store.viewport.height) * 100  // was viewport.width
+			}
 		})
-		return nodesData
 	}
 
 	return (

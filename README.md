@@ -148,7 +148,7 @@
 - [ ] Url node description: 
   - [ ] description doesnt appear when you transfrom from note node
   - [ ] youtube description are not full but truncated
-- [ ] multi node drag doesnt work correctly
+- [x] multi node drag doesnt work correctly
 
 
 

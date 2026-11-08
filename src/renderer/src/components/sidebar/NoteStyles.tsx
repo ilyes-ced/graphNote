@@ -40,7 +40,7 @@ const stylesIcons = [
 
 export default () => {
 	return (
-		<div class="h-full overflow-hidden w-[65px] py-4 flex justify-center bg-card">
+		<div class="h-full overflow-hidden w-[65px] py-4 flex justify-center">
 			<div class="flex flex-col space-y-4 relative">
 				<div class="h-full overflow-hidden space-y-2">
 					<For each={stylesIcons} fallback={<div>Loading...</div>}>

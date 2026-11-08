@@ -92,7 +92,7 @@ export default function TierRow(props: {
                             <div
                                 draggable={true}
                                 class="cursor-grab"
-                                classList={{ "outline outline-2 outline-sky-400": props.selected.includes(i()) }}
+                                classList={{ "outline outline-2 outline-primary": props.selected.includes(i()) }}
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     props.onSelect(i(), e.ctrlKey || e.metaKey || e.shiftKey)

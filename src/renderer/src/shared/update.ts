@@ -1,8 +1,8 @@
-import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList } from "../types"
+import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList, Tier } from "../types"
 import { setStore, store } from "./store"
 import { saveChanges } from "./utils"
 import { actionsMiddleware } from "./actions"
-import { unwrap } from "solid-js/store"
+import { reconcile, unwrap } from "solid-js/store"
 
 const cloneTasks = (tasks: Task[]): Task[] => unwrap(tasks).map((t) => ({ ...t }))
 
@@ -1004,8 +1004,6 @@ const tierListAddImg = (nodeId: string, rowId: number, imgPath: string) => {
 }
 
 
-import { reconcile, unwrap } from "solid-js/store"
-import { Tier } from "../types"
 
 const clone = <T,>(x: T): T => structuredClone(unwrap(x))
 

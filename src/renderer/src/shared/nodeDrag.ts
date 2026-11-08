@@ -24,11 +24,11 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 	const ignoredSelectors =
 		(ignoredElements?.classes?.length || 0) > 0 || (ignoredElements?.ids?.length || 0) > 0 || (ignoredElements?.tags?.length || 0) > 0
 			? [
-					".child_node",
-					...(ignoredElements?.classes || []).map((cls) => `.${cls}`),
-					...(ignoredElements?.ids || []).map((id) => `#${id}`),
-					...(ignoredElements?.tags || [])
-				].join(", ")
+				".child_node",
+				...(ignoredElements?.classes || []).map((cls) => `.${cls}`),
+				...(ignoredElements?.ids || []).map((id) => `#${id}`),
+				...(ignoredElements?.tags || [])
+			].join(", ")
 			: ".child_node"
 
 	const startDrag = (e: PointerEvent) => {
@@ -211,40 +211,31 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 				})
 				//TODO: snap to grid
 			} else {
-				//? snap to grid if it is defined
 				const [gx, gy] = store.snapGrid ? store.snapGrid : [1, 1]
-				const scale = store.viewport?.scale ?? 1
-				let x = (e.clientX - store.viewport.x) / scale - startX
-				let y = (e.clientY - store.viewport.y) / scale - startY
-				currentX = Math.max(0, x)
-				currentY = Math.max(0, y)
-				const snappedX = Math.round((currentX ?? 0) / gx) * gx
-				const snappedY = Math.round((currentY ?? 0) / gy) * gy
-				console.info(snappedX, snappedY)
-				updatePosition(node.id, snappedX, snappedY)
-
-				console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL000000")
 				//? move selected nodes with the moved node
 				if (store.selectedNodes.size > 1) {
-					console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL111111")
 					// here we want to move other selected items with the same movements as the controlled item which is element
 					const primaryNode = findNodeById(node.id)
 					const dx = (primaryNode?.x ?? 0) - currentX
 					const dy = (primaryNode?.y ?? 0) - currentY
 					store.selectedNodes.forEach((n) => {
-						console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL222222")
-						if (n != node.id) {
-							console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL333333")
-							const nn = findNodeById(n)
-							//@ts-ignore
-							const snappedX = Math.round((nn.x - dx) / gx) * gx
-							//@ts-ignore
-							const snappedY = Math.round((nn.y - dy) / gy) * gy
-							console.info(":LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL333333")
-							console.info(n, snappedX, snappedY)
-							updatePosition(n, snappedX, snappedY)
-						}
+						const nn = findNodeById(n)
+						//@ts-ignore
+						const snappedX = Math.round((nn.x - dx) / gx) * gx
+						//@ts-ignore
+						const snappedY = Math.round((nn.y - dy) / gy) * gy
+						updatePosition(n, snappedX, snappedY)
 					})
+				} else {
+					//? snap to grid if it is defined
+					const scale = store.viewport?.scale ?? 1
+					let x = (e.clientX - store.viewport.x) / scale - startX
+					let y = (e.clientY - store.viewport.y) / scale - startY
+					currentX = Math.max(0, x)
+					currentY = Math.max(0, y)
+					const snappedX = Math.round((currentX ?? 0) / gx) * gx
+					const snappedY = Math.round((currentY ?? 0) / gy) * gy
+					updatePosition(node.id, snappedX, snappedY)
 				}
 			}
 		}

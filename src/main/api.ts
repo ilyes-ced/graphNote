@@ -814,4 +814,33 @@ ipcMain.handle("deleteUnusedFiles", async (event) => {
 	// search the nodes.json file for all used files
 	// then list all files and delete all that is not included in that list
 	// nodes with files: Url, Tierlist, Board, Document, Image
+
+	const json = await readJSON(nodesPath)
+	const nodes = Object.values(json).flat()
+
+	let used_files = []
+
+	nodes.forEach((n: any) => {
+		switch (n.type) {
+			case "Url":
+				// if website cache, if youtube in youtube folder
+				// cache/url/hash/* (keep the entire folder)
+				// cache/youtube/vidId.xxx
+				break;
+			case "TierList":
+				// images in tiers
+				break;
+			case "Board":
+				//bg and icon
+				break;
+			case "Document":
+				// doc file
+				break;
+			case "Image":
+				// img
+				break;
+			default:
+				break;
+		}
+	})
 })

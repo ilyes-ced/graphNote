@@ -114,12 +114,37 @@ export default () => {
 
 	return (
 		<>
-			<div class="overflow-hidden bg-transparent flex items-center z-100000 absolute bottom-0 left-0 group">
-				<div class="flex flex-row space-x-4 overflow-x-visible relative items-center py-2 p-2.5">
+			<div class="overflow-hidden bg-transparent flex items-center z-100000 absolute bottom-0 left-0 group p-2">
+				<div class="absolute bottom-0 left-1/2 -translate-x-1/2 z-100 group flex flex-col items-center cursor-pointer select-none px-6 pt-1 pb-1">
+					{/* handle */}
+					<svg
+						class="size-4 text-primary group-hover:animate-none group-hover:opacity-0 transition-opacity duration-200"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M6 15l6-6 6 6" />
+					</svg>
+					<div class="w-10 h-1.5 rounded-full bg-primary/50 group-hover:bg-primary group-hover:w-14 transition-all duration-200" />
+
+					{/* panel wrapper: handles centering, so the inner element can use translate-y freely */}
+					<div class="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none group-hover:pointer-events-auto">
+						<div class="flex flex-row space-x-4 items-center py-2 px-2.5 bg-background border-2 border-primary
+                translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100
+                transition duration-200 ease-out">
+							{/* your buttons */}
+						</div>
+					</div>
+				</div>
+
+				<div class="flex flex-row space-x-4 overflow-x-visible relative items-center py-2 p-2.5 translate-y-[200%] group-hover:translate-y-0 transition duration-200 ease-out bg-background border-2 border-primary">
 					<For each={icons} fallback={<div>Loading...</div>}>
 						{(icon) => (
 							<div
-								class="icon cursor-pointer flex flex-col justify-center items-center transition duration-200 ease-out hover:-translate-y-2 z-10 translate-y-[200%] group-hover:translate-y-0 pointer-events-auto"
+								class="icon cursor-pointer flex flex-col justify-center items-center  z-10  pointer-events-auto"
 								onMouseDown={startDragging(icon.name)}
 							>
 								<Svg width={icon.width} height={icon.height} classes="" icon_name={icon.name} />
