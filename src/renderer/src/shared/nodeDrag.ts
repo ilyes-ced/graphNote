@@ -80,6 +80,8 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 		initialMouseX = e.clientX
 		initialMouseY = e.clientY
 
+		setStore("selectedNodes", new Set())
+
 		window.addEventListener("pointermove", onMove)
 		window.addEventListener("pointerup", onUp)
 	}

@@ -358,6 +358,43 @@ ipcMain.handle("readImage", async (_event, filePath: string) => {
 	return data
 })
 
+
+function extractYouTubeDescription(html: string): string | null {
+	// Grab the JSON assigned to ytInitialPlayerResponse
+	const marker = "ytInitialPlayerResponse = "
+	const start = html.indexOf(marker)
+	if (start === -1) return null
+
+	const jsonStart = start + marker.length
+	// Walk braces to find the end of the JSON object (regex is unreliable here)
+	let depth = 0
+	let inString = false
+	let escaped = false
+	for (let i = jsonStart; i < html.length; i++) {
+		const c = html[i]
+		if (inString) {
+			if (escaped) escaped = false
+			else if (c === "\\") escaped = true
+			else if (c === '"') inString = false
+			continue
+		}
+		if (c === '"') inString = true
+		else if (c === "{") depth++
+		else if (c === "}") {
+			depth--
+			if (depth === 0) {
+				try {
+					const data = JSON.parse(html.slice(jsonStart, i + 1))
+					return data?.videoDetails?.shortDescription ?? null
+				} catch {
+					return null
+				}
+			}
+		}
+	}
+	return null
+}
+
 ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }): Promise<MetaData> => {
 	const { url, cache } = data
 	try {
@@ -419,6 +456,15 @@ ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }
 			$("link[rel='apple-touch-icon']").attr("href") ||
 			"placeholder.png"
 
+		const hostname = new URL(url).hostname.replace(/^www\./, "")
+		if (hostname === "youtube.com" || hostname === "m.youtube.com" || hostname === "youtu.be") {
+			const full = extractYouTubeDescription(html)
+			console.log("extractYouTubeDescriptionextractYouTubeDescriptionextractYouTubeDescription")
+			console.log(full)
+			if (full) description = full
+		}
+
+
 		// Normalize relative URLs
 		const baseUrl = new URL(url)
 
@@ -450,6 +496,13 @@ ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }
 		}
 
 		//TODO: change to return the buffer data for image not urls
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log(description)
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
 		return { title, description, image: new ArrayBuffer(10), favicon: new ArrayBuffer(10) }
 	} catch (err) {
 		console.error("scrapeUrl failed:", url, err)

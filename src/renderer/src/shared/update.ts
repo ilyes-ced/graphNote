@@ -1,4 +1,4 @@
-import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList, Tier } from "../types"
+import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList, Tier, ColumnType } from "../types"
 import { setStore, store } from "./store"
 import { saveChanges } from "./utils"
 import { actionsMiddleware } from "./actions"
@@ -495,7 +495,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 		case NodeType.Todo:
 			return {
 				...base,
-				showTitle: true,
+				showTitle: false,
 				title: "Title",
 				tasks: [{ text: "", check: false, nestLevel: 0 }]
 			} satisfies Todo
@@ -513,7 +513,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 			return {
 				...base,
 				url: "",
-				showDescription: true,
+				showDescription: false,
 				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 			} satisfies Url
 
@@ -542,7 +542,7 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 			return {
 				...base,
 				colorValue: "#ffffff", //TODO: randomize it
-				showDescription: true,
+				showDescription: false,
 				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 			} satisfies Color
 
@@ -567,8 +567,8 @@ const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
 				...base,
 				title: "Title",
 				description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}',
-				showTitle: true,
-				showDescription: true,
+				showTitle: false,
+				showDescription: false,
 				width: 1000,
 				tiers: [
 					{
@@ -1108,5 +1108,5 @@ export {
 	wrappedUpdateBoardStyles as updateBoardStyles,
 	wrappedUpdateImgPath as updateImgPath,
 	wrappedTierListAddImg as tierListAddImg,
-	setTiers, clone
+	setTiers, clone,
 }

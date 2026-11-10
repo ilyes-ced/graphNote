@@ -19,6 +19,7 @@ import { AiOutlineUpload } from 'solid-icons/ai'
 import { TbOutlineGridDots } from 'solid-icons/tb'
 import iro from "@jaames/iro"
 
+
 type NodesCopyPaste = {
 	id: string
 	nodes: NodeUnion[]
@@ -646,7 +647,8 @@ const extraOptions = () => {
 						<div>
 							<div class="border-b-2 border-border my-2"></div>
 							{Option(`Copy URL`, () => {
-								console.log(selectedNodes[0].url)
+								navigator.clipboard.writeText(selectedNodes[0].url)
+								setStore("contextMenuModal", false)
 							})}
 						</div>
 					)

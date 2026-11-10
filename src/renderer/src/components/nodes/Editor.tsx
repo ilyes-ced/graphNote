@@ -6,13 +6,28 @@ import Highlight from "@tiptap/extension-highlight"
 import Typography from "@tiptap/extension-typography"
 import { TextStyle } from "@tiptap/extension-text-style"
 import TextAlign from "@tiptap/extension-text-align"
-import { onCleanup, untrack } from "solid-js"
+import { createEffect, onCleanup, untrack } from "solid-js"
 
 export default (props: { id: string; desc: string }) => {
 	let editorRef!: HTMLDivElement
 	const updateText = debounce((newValue: string) => {
 		updateNodeDesc(props.id, newValue)
 	}, 300)
+
+
+	//? needed for when Url is created, the description is loaded 
+	createEffect(() => {
+		const incoming = props.desc
+		const ed = editor()
+		if (!ed || !incoming) return
+
+		const next = typeof incoming === "string" ? JSON.parse(incoming) : incoming
+		const current = ed.getJSON()
+
+		if (JSON.stringify(current) !== JSON.stringify(next)) {
+			ed.commands.setContent(next, false)
+		}
+	})
 
 	const editor = createTiptapEditor(() => ({
 		element: editorRef!,

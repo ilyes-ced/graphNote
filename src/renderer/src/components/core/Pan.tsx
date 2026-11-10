@@ -41,7 +41,7 @@ export default (props: any) => {
 		// Middle mouse OR ctrl + left
 		if (e.button === 1 || (e.button === 0 && e.ctrlKey)) {
 			e.preventDefault()
-			;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+				; (e.target as HTMLElement).setPointerCapture(e.pointerId)
 			setIsDragging(true)
 			lastMouse = { x: e.clientX, y: e.clientY }
 		}
