@@ -9,6 +9,7 @@ import { store } from "../../shared/store"
 import { updateArrowsPositions } from "../../shared/utils"
 import MiniMap from "./MiniMap"
 import NodeList from "../sidebar/NodeList"
+import Edges from "./Edges"
 
 export default () => {
 	const [wrapperRef, setWrapperRef] = createSignal(null)
@@ -63,6 +64,7 @@ export default () => {
 					<Pan>
 						<ViewPort wrapperRef={setWrapperRef}>
 							<Nodes />
+							<Edges />
 							<div id="edges"></div>
 						</ViewPort>
 						<Show when={store.userConfig.showNavigation}>

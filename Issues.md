@@ -151,6 +151,7 @@
 - [x] multi node drag doesnt work correctly
 - [ ] mouse side button to navigate active boards
 - [x] when nodes are selected dragging another node drags them too
+- [ ] make board nodes borders similar to other nodes in terms of sizing
 
 
 

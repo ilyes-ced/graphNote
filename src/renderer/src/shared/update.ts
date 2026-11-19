@@ -1,4 +1,4 @@
-import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList, Tier, ColumnType } from "../types"
+import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList, Tier, ColumnType, Edge } from "../types"
 import { setStore, store } from "./store"
 import { saveChanges } from "./utils"
 import { actionsMiddleware } from "./actions"
@@ -352,6 +352,15 @@ const findNodeById = (nodeId: string): NodeUnion | undefined => {
 		if (found) return found
 	}
 }
+
+const findEdgeById = (edgeId: string): Edge | undefined => {
+	for (const edges of Object.values(store.edges)) {
+		const found = edges.find((n) => n.id === edgeId)
+		if (found) return found
+	}
+}
+
+
 
 const findParentIdByNodeId = (nodeId: string): string | null => {
 	for (const [parentId, childNodes] of Object.entries(store.nodes)) {
@@ -1088,7 +1097,7 @@ export {
 	wrappedIncrementSelectedNodesPositions as incrementSelectedNodesPositions,
 	wrappedUpdateChildPosition as updateChildPosition,
 	getActiveBoardId,
-	findNodeById,
+	findNodeById, findEdgeById,
 	findParentIdByNodeId,
 	wrappedRemoveNodeById as removeNodeById,
 	wrappedAddNode as addNode,
@@ -1108,5 +1117,5 @@ export {
 	wrappedUpdateBoardStyles as updateBoardStyles,
 	wrappedUpdateImgPath as updateImgPath,
 	wrappedTierListAddImg as tierListAddImg,
-	setTiers, clone,
+	setTiers, clone
 }

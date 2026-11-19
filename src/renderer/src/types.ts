@@ -185,6 +185,8 @@ interface Edge {
 	id: string
 	srcNodeId: string
 	distNodeId: string
+	srcPoint?: { x: number; y: number }
+	distPoint?: { x: number; y: number }
 	color?: string // default foreground
 	stroke?: number // default 2
 	label?: string // default none

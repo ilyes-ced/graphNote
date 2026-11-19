@@ -3,14 +3,6 @@ import { findNodeById, getActiveBoardId, toggleDesc, toggleTitle } from "../../s
 import { Show, createEffect, createSignal, onMount } from "solid-js"
 import { NodeType } from "../../types"
 
-createEffect(() => {
-	console.log(store.selectedNodes)
-	if (store.selectedNodes.size === 0) {
-		setStore("activeSidebar", "nodes")
-	} else {
-		setStore("activeSidebar", "nodeStyles")
-	}
-})
 
 export default () => {
 	const [color1, setColor1] = createSignal("#EC4899")
@@ -66,6 +58,8 @@ export default () => {
 			toggleDesc(node)
 		})
 	}
+
+
 
 	return (
 		<div class="p-2">

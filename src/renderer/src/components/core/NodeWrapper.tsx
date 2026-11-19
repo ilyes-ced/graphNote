@@ -112,7 +112,7 @@ export default (node: nodeProps) => {
 	return (
 		<div
 			onPointerDown={startDrag}
-			class={`${node.node.type.toLowerCase()} border-2 border-background`}
+			class={`${node.node.type.toLowerCase()} border-2 border-transparent`} // border-background
 			classList={{
 				child_node: node.isChildNode,
 				"node group/resize": !node.isChildNode,
@@ -129,7 +129,7 @@ export default (node: nodeProps) => {
 				background: "transparent",
 				"z-index": node.node.zIndex,
 				transform: `translate3d(${node.node.x}px, ${node.node.y}px, 0)`,
-				color: node.node.textColor ?? "var(--color-foreground)"
+				color: node.node.textColor ?? "var(--color-foreground)",
 			}}
 		>
 			<div

@@ -1,8 +1,23 @@
-import { store } from "../../shared/store"
 import NodeStyles from "./NodeStyles"
+import EdgeStyles from "./EdgeStyles"
+import { createEffect } from "solid-js"
+import { setStore, store } from "../../shared/store"
+
 
 export default () => {
-	const showingStyles = () => store.activeSidebar === "nodeStyles"
+	const showingStyles = () =>
+		store.activeSidebar === "nodeStyles" ||
+		store.activeSidebar === "edgeStyles"
+
+	createEffect(() => {
+		if (store.selectedNodes.size > 0) {
+			setStore("activeSidebar", "nodeStyles")
+		} else if (store.selectedEdge) {
+			setStore("activeSidebar", "edgeStyles")
+		} else {
+			setStore("activeSidebar", "nodes")
+		}
+	})
 
 	return (
 		<div class="absolute left-0 top-0 h-full z-[1000] w-[65px] pointer-events-none">
@@ -14,7 +29,8 @@ export default () => {
 						"translate-x-0": showingStyles()
 					}}
 				>
-					<NodeStyles />
+					{store.activeSidebar === "nodeStyles" && <NodeStyles />}
+					{store.activeSidebar === "edgeStyles" && <EdgeStyles />}
 				</div>
 			</div>
 		</div>

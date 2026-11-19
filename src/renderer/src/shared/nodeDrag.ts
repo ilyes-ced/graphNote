@@ -80,7 +80,6 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 		initialMouseX = e.clientX
 		initialMouseY = e.clientY
 
-		setStore("selectedNodes", new Set())
 
 		window.addEventListener("pointermove", onMove)
 		window.addEventListener("pointerup", onUp)
@@ -110,6 +109,11 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 			//? move selected nodes with the moved node
 			if (store.selectedNodes.size > 1) {
 				// here we want to move other selected items with the same movements as the controlled item which is element
+				//? make sure the dragged node is in the selected nodes to mass drag
+				if (!store.selectedNodes.has(node.id)) {
+					setStore("selectedNodes", new Set())
+					return
+				}
 				const primaryNode = findNodeById(node.id)
 				const dx = (primaryNode?.x ?? 0) - currentX
 				const dy = (primaryNode?.y ?? 0) - currentY

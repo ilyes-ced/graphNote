@@ -57,7 +57,7 @@ export default (node: BoardProps) => {
 	return (
 		<div
 			onPointerDown={startDrag}
-			class="board flex flex-col justify-center items-center border border-transparent"
+			class="board flex flex-col justify-center items-center outline outline-transparent -outline-offset-2"
 			classList={{
 				"node px-[40px] py-[10px] pb-[12px]": !node.is_child,
 				"child_node flex flex-row justify-start p-2 pl-2.5 ": node.is_child
@@ -69,7 +69,7 @@ export default (node: BoardProps) => {
 						? `${node.color}20`
 						: "color-mix(in oklab, var(--color-primary) 20%, transparent)"
 					: "transparent",
-				border: `2px solid ${node.color ? node.color : "var(--color-primary)"}`,
+				outline: `2px solid ${node.color ? node.color : "var(--color-primary)"}`,
 				width: node.is_child ? "100%" : "60px",
 				"z-index": node.zIndex,
 				//"border-radius": node.is_child ? "" : "15px",
