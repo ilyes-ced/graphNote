@@ -144,7 +144,7 @@ export default () => {
 		"flex items-center justify-center w-1/2 p-2 aspect-2/1 cursor-pointer transition-colors duration-200 ease-in-out hover:bg-primary"
 	return (
 		<div
-			class={`z-50 transition-all duration-200 ease-in-out absolute top-4 left-4 [box-shadow:5px_5px_var(--color-primary)]
+			class={`z-10000 transition-all duration-200 ease-in-out absolute top-2 left-2 [box-shadow:5px_5px_var(--color-primary)]
           ${store.showColorMenu ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}
 		>
 			<div id="colorSelectMenu" class="border border-border p-4 w-fit bg-card space-y-4">

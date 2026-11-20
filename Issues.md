@@ -83,7 +83,7 @@
 - [x] cache URL nodes
 - [x] arrows stay in the same position like absolute when you move the canvas
 - [x] update arrows when you zoom and move the canvas
-- [ ] load arrows once both nodes are ready
+- [x] load arrows once both nodes are ready
 - [x] todo node sometimes doesnt save changed text
 - [x] when zooming, make it point to or from the mouse cursor
 - [ ] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
@@ -127,7 +127,7 @@
 - [ ] crop images when adding them
 - [ ] templates
 - [x] make Youtube videos downloadable individually instead of downloading them all
-- [ ] moving nodes with arrows doesnt account for bounds
+- [x] moving nodes with arrows doesnt account for bounds
 - [x] Url node: make it clear when a video is already downloaded
 - [ ] Url node: add ability to delete video file
 - [ ] Arrow logic: copy from reactFlow or leaderLine

@@ -1,6 +1,6 @@
 import { createSignal, For, Match, onCleanup, Switch } from "solid-js"
 import Svg from "../nodes/Svg"
-import { newNode } from "../../shared/update"
+import { newEdge, newNode } from "../../shared/update"
 import { NodeType } from "../../types"
 import { Portal } from "solid-js/web"
 import { store } from "../../shared/store"
@@ -52,11 +52,19 @@ const handleMouseMove = (e: MouseEvent) => {
 }
 
 const handleMouseUp = () => {
-	newNode(
-		findType(cloneType() ?? ""),
-		(dragPos().x - store.viewport.x) / store.viewport.scale,
-		(dragPos().y - store.viewport.y) / store.viewport.scale
-	)
+	if (findType(cloneType() ?? "") == NodeType.Arrow) {
+		newEdge(
+			(dragPos().x - store.viewport.x) / store.viewport.scale,
+			(dragPos().y - store.viewport.y) / store.viewport.scale
+		)
+	} else {
+		newNode(
+			findType(cloneType() ?? ""),
+			(dragPos().x - store.viewport.x) / store.viewport.scale,
+			(dragPos().y - store.viewport.y) / store.viewport.scale
+		)
+	}
+
 	setDragging(false)
 	setCloneType(null)
 
@@ -158,39 +166,41 @@ export default () => {
 			</div>
 
 			<Portal>
-				<div
-					class="absolute bg-card z-50 pointer-events-none w-[300px] p-5"
-					style={{
-						display: dragging() ? "block" : "none",
-						top: `${dragPos().y}px`,
-						left: `${dragPos().x}px`,
-						transform: `scale(${store.viewport.scale})`,
-						"transform-origin": "top left"
-					}}
-				>
-					<Switch fallback={<div>Not Found</div>}>
-						<Match when={cloneType() === "note"}>
-							{dragPos().x} /// {dragPos().y}
-							New Note
-						</Match>
-						<Match when={cloneType() === "todo"}>{Todo()}</Match>
-
-						<Match when={cloneType() === "comment"}></Match>
-						<Match when={cloneType() === "table"}></Match>
-						<Match when={cloneType() === "url"}></Match>
-						<Match when={cloneType() === "arrow"}></Match>
-						<Match when={cloneType() === "board"}></Match>
-						<Match when={cloneType() === "column"}></Match>
-						<Match when={cloneType() === "code"}></Match>
-						<Match when={cloneType() === "document"}></Match>
-						<Match when={cloneType() === "upload"}></Match>
-						<Match when={cloneType() === "drawing"}></Match>
-						<Match when={cloneType() === "sketch"}></Match>
-						<Match when={cloneType() === "color"}></Match>
-						<Match when={cloneType() === "image"}></Match>
-						<Match when={cloneType() === "activity"}></Match>
-					</Switch>
-				</div>
+				<Switch fallback={
+					<div
+						class="absolute bg-card z-50 pointer-events-none w-[300px] p-5"
+						style={{
+							display: dragging() ? "block" : "none",
+							top: `${dragPos().y}px`,
+							left: `${dragPos().x}px`,
+							transform: `scale(${store.viewport.scale})`,
+							"transform-origin": "top left"
+						}}
+					>
+						<Switch fallback={<div>Not Found</div>}>
+							<Match when={cloneType() === "note"}>
+								{dragPos().x} /// {dragPos().y}
+								New Note
+							</Match>
+							<Match when={cloneType() === "todo"}>{Todo()}</Match>
+							<Match when={cloneType() === "comment"}>test comment</Match>
+							<Match when={cloneType() === "table"}>test table</Match>
+							<Match when={cloneType() === "url"}>test url</Match>
+							<Match when={cloneType() === "board"}>test board</Match>
+							<Match when={cloneType() === "column"}>test column</Match>
+							<Match when={cloneType() === "code"}>test code</Match>
+							<Match when={cloneType() === "document"}>test document</Match>
+							<Match when={cloneType() === "upload"}>test upload</Match>
+							<Match when={cloneType() === "drawing"}>test drawing</Match>
+							<Match when={cloneType() === "sketch"}>test sketch</Match>
+							<Match when={cloneType() === "color"}>test color</Match>
+							<Match when={cloneType() === "image"}>test image</Match>
+							<Match when={cloneType() === "activity"}>test activity</Match>
+						</Switch>
+					</div>
+				}>
+					<Match when={cloneType() === "arrow"}>{Arrow()}</Match>
+				</Switch>
 			</Portal>
 		</>
 	)
@@ -232,6 +242,48 @@ const Todo = () => {
 				</div>
 				<MdFillDrag_handle class="tasklist_handle size-4 cursor-pointer mt-1 transition-opacity duration-200 ease-out opacity-0 group-hover/taskitem:opacity-100 " />
 			</div>
+		</div>
+	)
+}
+
+
+const Arrow = () => {
+	return (
+		<div
+			class="absolute z-50 pointer-events-none w-[300px] p-5"
+			style={{
+				display: dragging() ? "block" : "none",
+				top: `${dragPos().y}px`,
+				left: `${dragPos().x}px`,
+				transform: `scale(${store.viewport.scale})`,
+				"transform-origin": "top left"
+			}}
+		>
+
+			<svg width="1" height="1" class="overflow-visible">
+				<g transform="translate(-220 -220)" data-edge-id="edge_1">
+					<path fill="none" stroke="transparent" style="pointer-events:stroke;cursor:pointer" d="M207.07106781186548 207.07106781186548L292.9289321881345 292.9289321881345" stroke-width="14">
+					</path>
+					<path fill="none" d="M207.07106781186548 207.07106781186548L292.9289321881345 292.9289321881345" stroke="#ffffff" stroke-width="2" stroke-linecap="butt">
+					</path>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M0 0L-10 -4L-10 4Z" transform="translate(200 200) rotate(-135)" fill="#ffffff" stroke="none" stroke-width="2">
+					</path>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M0 0L-10 -4L-10 4Z" transform="translate(300 300) rotate(45)" fill="#ffffff" stroke="none" stroke-width="2">
+					</path>
+					<g style="pointer-events:auto;cursor:grab">
+						<circle r="14" fill="transparent" cx="200" cy="200">
+						</circle>
+						<circle r="5.5" fill="var(--background)" stroke-width="2" cx="200" cy="200" stroke="#ffffff">
+						</circle>
+					</g>
+					<g style="pointer-events:auto;cursor:grab">
+						<circle r="14" fill="transparent" cx="300" cy="300">
+						</circle>
+						<circle r="5.5" fill="var(--background)" stroke-width="2" cx="300" cy="300" stroke="#ffffff">
+						</circle>
+					</g>
+				</g>
+			</svg>
 		</div>
 	)
 }

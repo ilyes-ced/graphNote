@@ -1,4 +1,4 @@
-import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList, Tier, ColumnType, Edge } from "../types"
+import { Board, Image, Color, Column, NodeType, NodeUnion, Note, Table, Task, Activity, Todo, Url, ColorType, Document, TierList, Tier, ColumnType, Edge, EdgeType } from "../types"
 import { setStore, store } from "./store"
 import { saveChanges } from "./utils"
 import { actionsMiddleware } from "./actions"
@@ -419,6 +419,30 @@ const removeNodeById = (nodeId: string, parentId?: string, deleteChildren: boole
 		}
 	}
 }
+const removeEdgeById = (edgeId: string) => {
+	const activeBoardId = store.activeBoards.at(-1)?.id
+	if (!activeBoardId) return
+
+	const currentEdges = store.edges[activeBoardId] ?? []
+	const index = currentEdges.findIndex((n) => n.id === edgeId)
+	if (index === -1) return
+
+	const updated = [...currentEdges.slice(0, index), ...currentEdges.slice(index + 1)]
+
+	setStore("edges", activeBoardId, updated)
+	saveChanges()
+
+	return {
+		undo() {
+			setStore("edges", activeBoardId, currentEdges)
+			saveChanges()
+		},
+		redo() {
+			setStore("edges", activeBoardId, updated)
+			saveChanges()
+		}
+	}
+}
 
 /*
 const addNode = (
@@ -427,7 +451,7 @@ const addNode = (
   // y: number,
   //* if is set to tru, node is sent to active board = canvas
   //* if it is set, node is sent to another node
-  targetNodeId?: string
+  targetEdgeId?: string
 ) => {
   if (targetNodeId) {
 	setStore("nodes", targetNodeId, (nodes = []) => [...nodes, newNode]);
@@ -476,6 +500,21 @@ const generateNewId = (): string => {
 	}
 
 	return `node_${maxId + 1}`
+}
+
+const generateNewEdgeId = (): string => {
+	const allEdges = Object.values(store.edges).flat()
+	let maxId = 0
+
+	for (const edge of allEdges) {
+		const match = edge.id.match(/^edge_(\d+)$/)
+		if (match) {
+			const num = parseInt(match[1], 10)
+			if (num > maxId) maxId = num
+		}
+	}
+
+	return `edge_${maxId + 1}`
 }
 
 const generateNewNode = (type: NodeType, x: number, y: number): NodeUnion => {
@@ -648,6 +687,47 @@ const newNode = (type: NodeType, x: number, y: number) => {
 		},
 		redo() {
 			setStore("nodes", activeBoardId, (nodes = []) => [...nodes, node])
+			saveChanges()
+		}
+	}
+}
+
+const newEdge = (x: number, y: number) => {
+	const activeBoardId = getActiveBoardId()
+
+	//todo: adjust the x and y to scale as well
+	console.log("creating a new node with coords : ", x, y)
+	let [snappedX, snappedY] = [x, y]
+	if (store.snapGrid) {
+		snappedX = Math.round(x / 10) * 10
+		snappedY = Math.round(y / 10) * 10
+	}
+
+	const edge = {
+		id: generateNewEdgeId(),
+		srcNodeId: "",
+		distNodeId: "",
+		srcPoint: { x: x, y: y },
+		distPoint: { x: x + 100, y: y + 100 },
+		color: "#ffffff",
+		stroke: 2,
+		label: "",
+		style: "solid",
+		type: EdgeType.straight,
+		srcArrowHead: "none",
+		DistArrowHead: "normal"
+	}
+
+	setStore("edges", activeBoardId, (edges = []) => [...edges, edge])
+	saveChanges()
+
+	return {
+		undo() {
+			setStore("edges", activeBoardId, (edges = []) => edges.filter((n) => n.id !== edge.id))
+			saveChanges()
+		},
+		redo() {
+			setStore("edges", activeBoardId, (edges = []) => [...edges, edge])
 			saveChanges()
 		}
 	}
@@ -1030,6 +1110,15 @@ const setTiers = (nodeId: string, tiers: Tier[]) => {
 	}
 }
 
+
+
+
+function updateEdge(id: string, patch: Partial<Edge>) {
+	const board = store.activeBoards.at(-1)?.id ?? "home"
+	setStore("edges", board, (e: Edge) => e.id === id, patch)
+	saveChanges()
+}
+
 // export {
 //   updateNote,
 //   updateZIndex,
@@ -1067,10 +1156,12 @@ const wrappedUpdatePosition = actionsMiddleware(updatePosition)
 const wrappedIncrementSelectedNodesPositions = actionsMiddleware(incrementSelectedNodesPositions)
 const wrappedUpdateChildPosition = actionsMiddleware(updateChildPosition)
 const wrappedRemoveNodeById = actionsMiddleware(removeNodeById)
+const wrappedRemoveEdgeById = actionsMiddleware(removeEdgeById)
 const wrappedAddNode = actionsMiddleware(addNode)
 const wrappedGenerateNewId = actionsMiddleware(generateNewId)
 const wrappedUpdateNodeWidth = actionsMiddleware(updateNodeWidth)
 const wrappedNewNode = actionsMiddleware(newNode)
+const wrappedNewEdge = actionsMiddleware(newEdge)
 const wrappedUpdateTask = actionsMiddleware(updateTask)
 const wrappedUpdateNodeColor = actionsMiddleware(updateNodeColor)
 const wrappedChangeToUrlNode = actionsMiddleware(changeToUrlNode)
@@ -1100,10 +1191,12 @@ export {
 	findNodeById, findEdgeById,
 	findParentIdByNodeId,
 	wrappedRemoveNodeById as removeNodeById,
+	wrappedRemoveEdgeById as removeEdgeById,
 	wrappedAddNode as addNode,
 	wrappedGenerateNewId as generateNewId,
 	wrappedUpdateNodeWidth as updateNodeWidth,
 	wrappedNewNode as newNode,
+	wrappedNewEdge as newEdge,
 	wrappedUpdateTask as updateTask,
 	wrappedUpdateNodeColor as updateNodeColor,
 	wrappedChangeToUrlNode as changeToUrlNode,
@@ -1117,5 +1210,5 @@ export {
 	wrappedUpdateBoardStyles as updateBoardStyles,
 	wrappedUpdateImgPath as updateImgPath,
 	wrappedTierListAddImg as tierListAddImg,
-	setTiers, clone
+	setTiers, clone, updateEdge
 }

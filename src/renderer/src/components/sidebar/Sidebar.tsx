@@ -21,7 +21,7 @@ export default () => {
 
 	return (
 		<div class="absolute left-0 top-0 h-full z-[1000] w-[65px] pointer-events-none">
-			<div class="relative h-full flex overflow-hidden pointer-events-none w-fit">
+			<div class="relative h-full flex pointer-events-none w-fit" style={{ "clip-path": "inset(0 -1000px 0 0)" }}>
 				<div
 					class="h-full transition-transform duration-300 ease-in-out pointer-events-none flex items-center"
 					classList={{

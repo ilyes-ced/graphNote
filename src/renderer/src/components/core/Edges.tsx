@@ -5,6 +5,7 @@ import { Edge, EdgeType } from "../../types"
 import { computeEdge, Pt } from "./edge-geometry.ts"
 import { rects, trackNodes, Rect } from "./node-rects.ts"
 import { saveChanges } from "../../shared/utils.ts"
+import { removeEdgeById } from "../../shared/update.ts"
 
 /* ---------- arrowheads: drawn with tip at (0,0) pointing +x ---------- */
 const headSize = (sw: number) => Math.max(10, sw * 4.5)
@@ -18,6 +19,7 @@ const HEADS: Record<string, { inset: (s: number) => number; path: (s: number) =>
 }
 
 const ALIASES: Record<string, string> = {
+	none: "none", "no-arrow": "none", no: "none", off: "none", hidden: "none",
 	normal: "arrow", arrow: "arrow", triangle: "arrow", default: "arrow", "arrow-head": "arrow", arrowhead: "arrow",
 	diamond: "diamond",
 	circle: "circle", dot: "circle",
@@ -30,7 +32,6 @@ function resolveHead(raw: string | undefined, fallback: string): string {
 	if (raw === undefined || raw === null) return fallback
 	const k = String(raw).trim().toLowerCase()
 	if (k === "") return fallback
-	if (k === "none") return "none"
 	const resolved = ALIASES[k]
 	if (!resolved) console.warn(`[edges] unknown arrowhead "${raw}", using arrow`)
 	return resolved ?? "arrow"
@@ -234,7 +235,30 @@ function EdgeView(props: { edge: Edge }) {
 				<Handle end="dist" />
 
 				<Show when={props.edge.label}>
-					{/* your existing label <foreignObject> block, unchanged */}
+					<foreignObject
+						x={g().mid.x}
+						y={g().mid.y}
+						width="1"
+						height="1"
+						style={{ overflow: "visible", "pointer-events": "none" }}
+					>
+						<div
+							style={{
+								display: "inline-block",
+								transform: "translate(-50%, -50%)",
+								background: color(),
+								color: "var(--background)",
+								padding: "2px 8px",
+								"font-size": "12px",
+								"font-weight": "500",
+								"line-height": "1.4",
+								"white-space": "nowrap",
+								"user-select": "none",
+							}}
+						>
+							{props.edge.label}
+						</div>
+					</foreignObject>
 				</Show>
 			</g>
 		</Show>
@@ -250,9 +274,16 @@ export default () => {
 
 		// capture phase so it still runs when other handlers stopPropagation
 		const down = (e: PointerEvent) => {
-			if (!(e.target as Element).closest?.("[data-edge-id]")) setStore("selectedEdge", null)
+			if (!(e.target as Element).closest?.("[data-edge-id], #edges_styles")) setStore("selectedEdge", null)
 		}
-		const key = (e: KeyboardEvent) => e.key === "Escape" && setStore("selectedEdge", null)
+		const key = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				setStore("selectedEdge", null)
+			} else if (e.key === "Delete") {
+				removeEdgeById(store.selectedEdge)
+				setStore("selectedEdge", null)
+			}
+		}
 		document.addEventListener("pointerdown", down, true)
 		document.addEventListener("keydown", key)
 		onCleanup(() => {
