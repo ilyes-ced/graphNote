@@ -64,29 +64,30 @@
 - [x] copy pasting nodes when focused on text pastes both on text and on nodes
 - [x] improve image loading performance
 - [x] make the height multiples of 10
-    - [ ] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
+    - [x] still not perfect, things look slightly off-center, and Image nodes have a small border at the bottom
     - [ ] the padding is on top and left, when writing or changing the content the node content keeps jumping up and down
 - [x] when a board or column is deleted, in nodes.json delete their object
-- [ ] when deleting nodes, if they have resources (images, files . . .) delete them 
+- [x] when deleting nodes, if they have resources (images, files . . .) delete them 
   - [ ] a better option might be to give the user a purge options, keep those resources as backup incase they are needed but give the user a button to delete all unused resources, easier and safer
 - [x] when deleting nodes the styles sidebar should be hidden
 - [x] when adding new images, increase thier z index
 - [x] Url node: when url is blank allow user to write it down
-- [ ] cant place nodes on the corner
-- [ ] when pasting url in a new note node, some issues happen when it transforms
+- [ ] cant place nodes on the corner and edges
+- [x] when pasting url in a new note node, some issues happen when it transforms
+  - [ ] the pasted url to the note node transforms nicely but it creates and image node with some html as its content
 - [x] for URL youtube Videos, make it download the video and use a custom video player
     - [x] give the user the option to use embedded youtube video or locally download the videos
 - [x] when starting the scale with less than 1 we find the viewport does not extend all the way as intended
-- [ ] the new snap to grid is not working properly (not consistent)
+- [x] the new snap to grid is not working properly (not consistent)
 - [x] when note node is focused disable the arrows to move the node
-- [ ] in nodes.tsx set timeout to wait for url nodes to load needs to go
+- [x] in nodes.tsx set timeout to wait for url nodes to load needs to go
 - [x] cache URL nodes
 - [x] arrows stay in the same position like absolute when you move the canvas
 - [x] update arrows when you zoom and move the canvas
 - [x] load arrows once both nodes are ready
 - [x] todo node sometimes doesnt save changed text
 - [x] when zooming, make it point to or from the mouse cursor
-- [ ] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
+- [x] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
   - [ ] a better option could be to have a button that clears unused resources
   - [ ] or search for unused resources and delete them on startup
 - [x] for todo make the title optional
@@ -130,10 +131,10 @@
 - [x] moving nodes with arrows doesnt account for bounds
 - [x] Url node: make it clear when a video is already downloaded
 - [ ] Url node: add ability to delete video file
-- [ ] Arrow logic: copy from reactFlow or leaderLine
+- [x] Arrow logic: copy from reactFlow or leaderLine
 - [ ] pasting url to canvas create a Url node
-- [ ] pdf: might be better to use the systen default pdf reader
-- [ ] Notes: add URLs
+- [x] pdf: might be better to use the systen default pdf reader
+- [x] Notes: add URLs
 - [ ] scrape reddit posts data (title, images ...)
 - [ ] All nodes: add fullscreen editing
 - [ ] EventHandler: add ctrl+x for cut
@@ -152,6 +153,8 @@
 - [ ] mouse side button to navigate active boards
 - [x] when nodes are selected dragging another node drags them too
 - [ ] make board nodes borders similar to other nodes in terms of sizing
+- [ ] Edges: when a node is deleted delete all related Edges
+- [ ] Edges: z-index probably should be the same as its related nodes (maybe the lower one of them)
 
 
 

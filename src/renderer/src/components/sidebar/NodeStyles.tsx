@@ -104,7 +104,7 @@ export default () => {
 									</div>
 								</div>
 							</div>
-							<p class="text-sm text-center">toggle title</p>
+							<p class="text-sm text-center">Title</p>
 						</div>
 					</div>
 				</Show>
@@ -125,7 +125,7 @@ export default () => {
 									</div>
 								</div>
 							</div>
-							<p class="text-sm text-center">toggle description</p>
+							<p class="text-sm text-center">Desc</p>
 						</div>
 					</div>
 				</Show>

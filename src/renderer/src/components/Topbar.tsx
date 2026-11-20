@@ -1,4 +1,4 @@
-import { For, createSignal, onMount } from "solid-js"
+import { For, Show, createSignal, onMount } from "solid-js"
 import { Button } from "./ui/button"
 import { setStore, store } from "../shared/store"
 
@@ -60,6 +60,13 @@ export default () => {
 			</div>
 
 			<div class="flex justify-center items-center space-x-2">
+				<Show when={store.selectedNodes.size > 0}>
+					<div class="px-2 flex space-x-2">
+						<p class="text-primary font-extrabold">{store.selectedNodes.size}</p>
+						<p>Nodes Selected</p>
+					</div>
+				</Show>
+
 				<Button class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
 					<FaSolidDatabase class="size-full" />
 				</Button>

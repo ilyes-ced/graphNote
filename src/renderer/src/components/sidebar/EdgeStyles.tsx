@@ -5,8 +5,9 @@ import { BsBorderWidth } from "solid-icons/bs"
 import { For, JSX, Match, Show, Switch, createEffect, createMemo, createSignal } from "solid-js"
 import { store } from "../../shared/store"
 import { findEdgeById, updateEdge } from "../../shared/update"
+import { EdgeType } from "../../types"
 
-type StyleKind = "Color" | "Start" | "End" | "Label" | "Style" | "Stroke"
+type StyleKind = "Color" | "Type" | "Start" | "End" | "Label" | "Style" | "Stroke"
 
 export default () => {
     let root!: HTMLDivElement
@@ -39,6 +40,12 @@ export default () => {
                 <ToolButton label="Label" onClick={pick("Label")}>T</ToolButton>
                 <ToolButton label="Style" onClick={pick("Style")}><CgBorderStyleDashed /></ToolButton>
                 <ToolButton label="Stroke" onClick={pick("Stroke")}><BsBorderWidth /></ToolButton>
+                <ToolButton label="Type" onClick={pick("Type")}>
+                    <svg width="22" height="18" viewBox="0 0 28 20" class="overflow-visible">
+                        <path d="M2 16C15 16 13 4 26 4" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" />
+                    </svg>
+                </ToolButton>
             </div>
 
             {/* outside the overflow-hidden box, always rendered */}
@@ -76,7 +83,7 @@ const COLORS = ["#EC4899", "#EF4444", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6"
 const HEADS = ["none", "arrow", "open", "diamond", "circle", "bar"]
 const LINE_STYLES = ["solid", "dashed", "dotted"]
 const STROKES = [1, 2, 3, 4, 6, 8]
-
+const EDGE_TYPES = [EdgeType.straight, EdgeType.arc, EdgeType.fluid, EdgeType.magnet, EdgeType.grid]
 /* head previews: tip at (0,0) pointing +x */
 const PREVIEW: Record<string, string> = {
     arrow: "M0 0L-9 -3.6L-9 3.6Z",
@@ -84,6 +91,13 @@ const PREVIEW: Record<string, string> = {
     circle: "M0 0A4.5 4.5 0 1 0 -9 0A4.5 4.5 0 1 0 0 0Z",
     open: "M-9 -4.5L0 0L-9 4.5",
     bar: "M0 -5.5L0 5.5",
+}
+const TYPE_PATH: Record<string, string> = {
+    straight: "M2 10H26",
+    arc: "M2 16Q14 -4 26 16",
+    fluid: "M2 16C15 16 13 4 26 4",
+    magnet: "M4 16L24 4",
+    grid: "M2 16H14V4H26",
 }
 const OUTLINED = new Set(["open", "bar"])
 
@@ -131,6 +145,23 @@ const StylesModal = (props: { style: null | StyleKind; top: number }) => {
             </svg>
         )
     }
+    function TypeIcon(props: { type: string }) {
+        return (
+            <svg width="28" height="20" viewBox="0 0 28 20" class="overflow-visible">
+                <path d={TYPE_PATH[props.type]} fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linejoin="miter" stroke-linecap="round" />
+                {/* the magnet type gets end dots so it reads differently from straight */}
+                {props.type === "magnet" && (
+                    <>
+                        <circle cx="4" cy="16" r="2.2" fill="currentColor" />
+                        <circle cx="24" cy="4" r="2.2" fill="currentColor" />
+                    </>
+                )}
+            </svg>
+        )
+    }
+
+
     return (
         <div
             class={`z-[10000] transition-all duration-200 ease-in-out absolute left-full ml-1 [box-shadow:5px_5px_var(--color-primary)]
@@ -160,6 +191,19 @@ const StylesModal = (props: { style: null | StyleKind; top: number }) => {
                             value={edge()?.color?.startsWith("#") ? edge()!.color! : "#444444"}
                             onInput={(e) => patch({ color: e.currentTarget.value })}
                         />
+                    </Match>
+
+                    <Match when={last() === "Type"}>
+                        <div class="flex gap-1">
+                            <For each={EDGE_TYPES}>
+                                {(t) => (
+                                    <IconOption title={t} active={(edge()?.type ?? EdgeType.fluid) === t}
+                                        onClick={() => patch({ type: t })}>
+                                        <TypeIcon type={t} />
+                                    </IconOption>
+                                )}
+                            </For>
+                        </div>
                     </Match>
 
                     <Match when={last() === "Start"}>

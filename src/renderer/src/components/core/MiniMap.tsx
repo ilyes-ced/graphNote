@@ -1,22 +1,25 @@
-import { For, Show, createSignal, onMount } from "solid-js"
+import { For, Show, createEffect, createSignal, onCleanup, onMount } from "solid-js"
 import { store } from "../../shared/store"
 import { getBoardBgColor, getBoardimage } from "../../shared/utils"
 import Controls from "./Controls"
+import { getActiveBoardId } from "../../shared/update"
 
 export default (props: { wrapperRef: any }) => {
 	const aspectRatio = () => `${store.viewport.width} / ${store.viewport.height}`
 
 	const posX = () => (-store.viewport.x / store.viewport.width / store.viewport.scale) * 100
-
 	const posY = () => (-store.viewport.y / store.viewport.height / store.viewport.scale) * 100
-
 	const width = () => (wrapperSize().width / store.viewport.width / store.viewport.scale) * 100
-
 	const height = () => (wrapperSize().height / store.viewport.height / store.viewport.scale) * 100
 
 	const [wrapperSize, setWrapperSize] = createSignal({
 		width: 0,
 		height: 0
+	})
+
+
+	createEffect(() => {
+		console.log(store.activeBoards.map(b => b.id))
 	})
 
 	onMount(() => {
@@ -33,6 +36,8 @@ export default (props: { wrapperRef: any }) => {
 		})
 
 		observer.observe(el)
+
+		onCleanup(() => observer.disconnect())
 	})
 
 	const nodesData = () => {
