@@ -90,21 +90,21 @@ export default () => {
 			>
 				<div class="border border-border p-4 w-fit bg-card space-y-4">
 					<div>
-						Total storage occupied: <span class="font-extrabold text-primary">{Math.round(dataSize().totalSize / 1000 / 1000)}MB</span> /{" "}
+						Total storage occupied: <span class="font-extrabold text-primary">{Math.round(dataSize().totalSize / 1000 / 1000)}MB</span> ||{" "}
 						<span class="font-extrabold text-primary">{Math.round(dataSize().totalSize / 1024 / 1024)}MiB</span>
 					</div>
 					<div>
-						Images storage occupied: <span class="font-extrabold text-primary">{Math.round(dataSize().imageSize / 1000 / 1000)}MB</span> /{" "}
+						Images storage occupied: <span class="font-extrabold text-primary">{Math.round(dataSize().imageSize / 1000 / 1000)}MB</span> ||{" "}
 						<span class="font-extrabold text-primary">{Math.round(dataSize().imageSize / 1024 / 1024)}MiB</span>
 					</div>
 					<div>
 						Youtube videos storage occupied:{" "}
-						<span class="font-extrabold text-primary">{Math.round(dataSize().youtubeCacheSize / 1000 / 1000)}MB</span> /{" "}
+						<span class="font-extrabold text-primary">{Math.round(dataSize().youtubeCacheSize / 1000 / 1000)}MB</span> ||{" "}
 						<span class="font-extrabold text-primary">{Math.round(dataSize().youtubeCacheSize / 1024 / 1024)}MiB</span>
 					</div>
 					<div>
 						Urls metadata storage occupied:{" "}
-						<span class="font-extrabold text-primary">{Math.round(dataSize().urlMetadataSize / 1000 / 1000)}MB</span> /{" "}
+						<span class="font-extrabold text-primary">{Math.round(dataSize().urlMetadataSize / 1000 / 1000)}MB</span> ||{" "}
 						<span class="font-extrabold text-primary">{Math.round(dataSize().urlMetadataSize / 1024 / 1024)}MiB</span>
 					</div>
 				</div>

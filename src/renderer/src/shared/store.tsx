@@ -53,6 +53,7 @@ interface GlobalStore {
 	snapGrid: [number, number] | null
 
 	activeBoards: { title: string; id: string }[]
+	oldActiveBoards: { title: string; id: string }[]
 	activeSidebar: "nodes" | "nodeStyles" | "edgeStyles"
 	showColorMenu: boolean
 	showStorageMenu: boolean
@@ -104,6 +105,7 @@ const [store, setStore] = createStore<GlobalStore>({
 	snapGrid: [10, 10],
 
 	activeBoards: [{ title: "home", id: "home" }],
+	oldActiveBoards: [],
 	activeSidebar: "nodes",
 	showColorMenu: false,
 	showStorageMenu: false,

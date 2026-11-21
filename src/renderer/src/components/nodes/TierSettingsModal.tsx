@@ -28,7 +28,7 @@ export default function TierSettingsModal(props: {
     return (
         <Portal>
             <div
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+                class="fixed inset-0 z-100000 flex items-center justify-center bg-black/60"
                 onClick={props.onClose}
             >
                 <div

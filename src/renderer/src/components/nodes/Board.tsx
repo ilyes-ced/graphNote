@@ -46,6 +46,10 @@ export default (node: BoardProps) => {
 		//? when changing workspace deselect selected nodes
 		setStore("selectedNodes", new Set([]))
 
+
+		//? has to do with the back/forward boards logic Pan.tsx, not sure if its effective
+		setStore("oldActiveBoards", []);
+
 		// reset viewport data
 		setStore("viewport", {
 			x: 0,

@@ -5,7 +5,7 @@
 - [x] paste nodes: pasted the current state of the nodes not the state at the time of the copy
 - [ ] add animations to all actions
 - [ ] make adding nodes to column control the position of the insert
-- [ ] reimplement leaderLine to suit our uses, like making it one of the items on the canvas so we dont need to update it when we move or zoom the canvas
+- [x] reimplement leaderLine to suit our uses, like making it one of the items on the canvas so we dont need to update it when we move or zoom the canvas
 
 # optimization
 
@@ -146,9 +146,9 @@
   - [x] fix the download notification
 - [ ] creating URL node from Note node create an unexpected image node with th html of the url as its content
 - [ ] fullscreen node viewer doesnt update the text
-- [ ] Url node description: 
-  - [ ] description doesnt appear when you transfrom from note node
-  - [ ] youtube description are not full but truncated
+- [x] Url node description: 
+  - [x] description doesnt appear when you transfrom from note node
+  - [x] youtube description are not full but truncated
 - [x] multi node drag doesnt work correctly
 - [ ] mouse side button to navigate active boards
 - [x] when nodes are selected dragging another node drags them too
@@ -161,6 +161,7 @@
 
 # extra features
 - [ ] pin a certain node to one of the 4 corners
+- [ ] trash nodes
 - [ ] add another type of Note node, using typst as an external library
 - [ ] add ability to pin certain nodes
 - [ ] search: search the entire json file and when a match is found get that node's id and hightlight it in the canvas

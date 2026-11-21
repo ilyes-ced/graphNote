@@ -117,8 +117,6 @@ export default (node: UrlProps) => {
 		// Defer to next microtask to avoid blocking render
 		queueMicrotask(() => {
 			getMetaData(node.url).then((res) => {
-				console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[res]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
-				console.log(res)
 				if (res) {
 					console.log(res)
 					setMetaData(res)

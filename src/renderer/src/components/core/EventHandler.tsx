@@ -89,14 +89,46 @@ function extractImageReference(text: string): ImageReference {
 	return null
 }
 
-export default (props: any) => {
-	//TODO replace this tauri logic with normal web stuff
-	// listen<payload>("tauri://drag-drop", (event) => {
-	//   // get mouse coords here
-	//   console.log(event);
-	//   recieveDragNDropFile(event);
-	// });
+function getImageUrlFromDrop(dt: DataTransfer): string | null {
+	// Prefer the <img src> from the HTML, since uri-list may be the *link* URL
+	const html = dt.getData("text/html")
+	if (html) {
+		const doc = new DOMParser().parseFromString(html, "text/html")
+		const img = doc.querySelector("img")
+		if (img?.src) return img.src
+	}
 
+	const uriList = dt.getData("text/uri-list")
+	if (uriList) {
+		const first = uriList.split("\n").find(l => l && !l.startsWith("#"))
+		if (first) return first.trim()
+	}
+
+	const text = dt.getData("text/plain")
+	if (/^https?:\/\//i.test(text)) return text.trim()
+
+	return null
+}
+
+async function urlToFileData(url: string) {
+	// data: URLs work with fetch too
+	const res = await fetch(url)
+	if (!res.ok) throw new Error(`HTTP ${res.status}`)
+	const buffer = await res.arrayBuffer()
+
+	let name = "image"
+	if (!url.startsWith("data:")) {
+		name = decodeURIComponent(new URL(url).pathname.split("/").pop() || "image")
+	}
+	if (!/\.[a-z0-9]+$/i.test(name)) {
+		const ext = (res.headers.get("content-type") || "image/png").split("/")[1]?.split(";")[0] || "png"
+		name += "." + ext
+	}
+
+	return { name, data: new Uint8Array(buffer) }
+}
+
+export default (props: any) => {
 	document.addEventListener("dragover", (event) => {
 		event.preventDefault()
 	})
@@ -107,26 +139,30 @@ export default (props: any) => {
 
 
 		const files = Array.from(event.dataTransfer.files)
+		console.log(event)
 
 		let filesData: {
 			name: string
 			data: Uint8Array
 		}[] = []
-		for (const file of files) {
-			const buffer = await file.arrayBuffer()
 
-			console.log("name:", file.name)
-			console.log("size:", file.size)
-			console.log("bytes:", buffer.byteLength)
 
-			filesData.push({
-				name: file.name,
-				// not sure if Uint8Array or Buffer is best for performance
-				data: new Uint8Array(buffer)
-			})
+		if (event.dataTransfer.files.length > 0) {
+			for (const file of files)
+				filesData.push({ name: file.name, data: new Uint8Array(await file.arrayBuffer()) })
+		} else {
+			const url = getImageUrlFromDrop(event.dataTransfer)
+			if (!url) return
+			try {
+				filesData.push(await urlToFileData(url))
+			} catch (err) {
+				console.error("Failed to fetch dropped URL", err)
+				return
+			}
 		}
 
 		if (row) {
+			console.log("TEWTWUEHF9O8WEHFWEF")
 			recieveDragNDropFileTierlist(filesData, row.id)
 			return
 			//todo: here we add to the tierlist
@@ -145,6 +181,34 @@ export default (props: any) => {
 	//listen("tauri://drag-leave", (event) => {});
 
 	onMount(() => {
+
+
+		//? back/forward boards
+		const handler = (e: MouseEvent) => {
+			if (e.button !== 3 && e.button !== 4) return;
+			e.preventDefault();
+			if (e.button === 3) {
+				// back
+				if (store.activeBoards.length > 1) {
+					const last = store.activeBoards.at(-1)!;
+					setStore("oldActiveBoards", (items) => [...items, last]);
+					setStore("activeBoards", (items) => items.slice(0, -1));
+				}
+			} else if (e.button === 4) {
+				// forward
+				if (store.oldActiveBoards.length > 0) {
+					const last = store.oldActiveBoards.at(-1)!;
+					setStore("activeBoards", (items) => [...items, last]);
+					setStore("oldActiveBoards", (items) => items.slice(0, -1));
+				}
+			}
+		};
+		window.addEventListener("mouseup", handler);
+		onCleanup(() => window.removeEventListener("mouseup", handler));
+
+
+
+
 		const handleKeyDown = async (e: KeyboardEvent) => {
 			// You can add logic here like:
 			if (e.ctrlKey) {
