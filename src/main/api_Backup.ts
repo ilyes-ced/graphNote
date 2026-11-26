@@ -1,0 +1,899 @@
+import { BrowserWindow, dialog, ipcMain, shell } from "electron"
+import { access, mkdir } from "fs/promises"
+import path from "path"
+import fs from "fs/promises"
+import * as cheerio from "cheerio"
+import { createHash } from "crypto"
+import { constants, existsSync, mkdirSync, readdirSync } from "fs"
+import youtubedl from "youtube-dl-exec"
+import express from "express"
+import os from "node:os";
+import pp from "node:path";
+
+
+
+
+// const basePath = "/home/clippy/Documents/GraphNote"
+// const baseDir = "/home/clippy/Documents"
+
+const basePath = pp.join(os.homedir(), "Documents/GraphNote")
+const baseDir = pp.join(os.homedir(), "Documents");
+const nodesPath = `${basePath}/nodes.json`
+const edgesPath = `${basePath}/edges.json`
+const settingsPath = `${basePath}/settings.json`
+
+//? video server
+const mediaServer = express()
+mediaServer.use("/videos", express.static(path.join(basePath, "cache", "youtube")))
+mediaServer.listen(3232, () => {
+	console.log("media server running")
+})
+
+// duplicated in Url.tsx in the frontend
+type MetaData = {
+	title: string
+	description: string
+	image: ArrayBuffer
+	favicon: ArrayBuffer
+}
+
+function getExtensionFromContentType(contentType: string | null): string {
+	if (!contentType) return ".jpg" // fallback
+
+	const map: Record<string, string> = {
+		"image/jpeg": ".jpg",
+		"image/png": ".png",
+		"image/webp": ".webp",
+		"image/gif": ".gif",
+		"image/bmp": ".bmp",
+		"image/svg+xml": ".svg"
+	}
+
+	return map[contentType.split(";")[0]] || ".jpg"
+}
+
+function getExtensionFromUrl(url: string): string | null {
+	const pathname = new URL(url).pathname
+	const ext = path.extname(pathname)
+	return ext || null
+}
+
+function getNextName(fileName: string, counter: number) {
+	const ext = path.extname(fileName)
+	const name = path.basename(fileName, ext)
+	return `${name}_${counter}${ext}`
+}
+
+async function ensureDir() {
+	await mkdir(basePath, { recursive: true })
+}
+
+async function createDir(folderName: string) {
+	await mkdir(`${basePath}/${folderName}`, { recursive: true })
+}
+
+async function readJSON(filePath: string) {
+	try {
+		await ensureDir()
+
+		try {
+			const text = await fs.readFile(filePath, "utf-8")
+			return JSON.parse(text)
+		} catch {
+			await fs.writeFile(filePath, JSON.stringify({}, null, 2))
+			return {}
+		}
+	} catch (err) {
+		console.error("Failed to read:", filePath, err)
+		return {}
+	}
+}
+
+async function writeJSON(filePath: string, data: any) {
+	try {
+		await ensureDir()
+		await fs.writeFile(filePath, JSON.stringify(data, null, 2))
+		return true
+	} catch (err) {
+		console.error("Failed to write:", filePath, err)
+		return false
+	}
+}
+
+/* ------------------- GRAPH ------------------- */
+
+ipcMain.handle("getNodes", async () => {
+	return await readJSON(nodesPath)
+})
+
+ipcMain.handle("getEdges", async () => {
+	return await readJSON(edgesPath)
+})
+
+ipcMain.handle("getSettings", async () => {
+	return await readJSON(settingsPath)
+})
+
+ipcMain.handle("saveNodes", async (_, nodes) => {
+	return { success: await writeJSON(nodesPath, nodes) }
+})
+
+ipcMain.handle("saveEdges", async (_, edges) => {
+	return { success: await writeJSON(edgesPath, edges) }
+})
+
+ipcMain.handle("saveSettings", async (_, settings) => {
+	return { success: await writeJSON(settingsPath, settings) }
+})
+
+ipcMain.handle("readGraph", async () => {
+	const nodes = await readJSON(nodesPath)
+	const edges = await readJSON(edgesPath)
+
+	return { nodes, edges }
+})
+
+ipcMain.handle("readFile", async (_, { folderPath, filePath }) => {
+	const fullFolder = `${baseDir}/${folderPath}`
+	const fullFile = `${baseDir}/${filePath}`
+
+	await mkdir(fullFolder, { recursive: true })
+
+	try {
+		await fs.access(fullFile)
+	} catch {
+		await fs.writeFile(fullFile, JSON.stringify({}, null, 2))
+	}
+
+	const text = await fs.readFile(fullFile, "utf-8")
+
+	return { text }
+})
+
+ipcMain.handle("writeFile", async (_, { name, data, type }) => {
+	console.log("writeFile", name, data, type)
+	const fullFile = path.join(basePath, type, name)
+
+	if (!fullFile.startsWith(basePath)) {
+		throw new Error("Invalid path")
+	}
+
+	const dir = path.dirname(fullFile)
+
+	await mkdir(dir, { recursive: true })
+
+	ensureDir()
+
+	let counter = 0
+	let finalName = ""
+	let finalPath = ""
+
+	// Determine unique file name
+	while (true) {
+		finalName = counter === 0 ? name : getNextName(name, counter)
+		finalPath = path.join(basePath, type, finalName)
+
+		try {
+			await fs.access(finalPath)
+			counter++
+		} catch {
+			break
+		}
+	}
+
+	await fs.writeFile(finalPath, data)
+
+	return {
+		success: true,
+		path: path.join(type, finalName)
+	}
+})
+
+ipcMain.handle("copyFile", async (_, { src }) => {
+	console.log("copying file", src)
+
+
+	let name = src.split("/").pop() ?? "image.png"
+	let counter = 0
+	let finalName = ""
+	let finalPath = ""
+
+	console.log(name)
+
+	// Determine unique file name
+	while (true) {
+		finalName = counter === 0 ? name : getNextName(name, counter)
+		finalPath = path.join(basePath, "image", finalName)
+
+		try {
+			await fs.access(finalPath)
+			counter++
+		} catch {
+			break
+		}
+	}
+
+	console.log(finalName)
+	console.log(finalPath)
+
+	await fs.copyFile(src, finalPath)
+
+
+	console.log("--------------------------------")
+	console.log(finalName)
+	console.log(finalPath)
+	return {
+		success: true,
+		path: path.join("image", finalName)
+	}
+})
+
+ipcMain.handle("downloadUrlImage", async (_, { url }) => {
+	console.log("downloading image file from", url);
+
+	let src = ""
+	if (url.startsWith("http")) {
+		src = url
+	} else if (url.startsWith("<meta")) {
+		const match = url.match(/<img[^>]+src=["']([^"']+)["']/i);
+		const src = match?.[1];
+	} else {
+		throw new Error(`unexpected url type ${url}`);
+	}
+
+	const response = await fetch(src);
+	if (!response.ok) {
+		throw new Error(`HTTP ${response.status}`);
+	}
+
+	const contentType = response.headers
+		.get("content-type")
+		?.split(";")[0]
+		.toLowerCase();
+	const extensions = {
+		"image/jpeg": ".jpg",
+		"image/png": ".png",
+		"image/webp": ".webp",
+		"image/gif": ".gif",
+		"image/bmp": ".bmp",
+		"image/svg+xml": ".svg",
+	};
+	const extension = extensions[contentType ?? "image/jpeg"] || ".jpg";
+
+	const name = `download_image${extension}`;
+	let counter = 0;
+	let finalName;
+	let finalPath;
+
+	while (true) {
+		finalName =
+			counter === 0
+				? name
+				: getNextName(name, counter);
+		finalPath = path.join(
+			basePath,
+			"image",
+			finalName
+		);
+		try {
+			await fs.access(finalPath);
+			counter++;
+		} catch {
+			break;
+		}
+	}
+
+	console.log(finalName)
+	console.log(finalPath)
+	const buffer = Buffer.from(await response.arrayBuffer());
+	await fs.writeFile(finalPath, buffer);
+	return {
+		success: true,
+		path: path.join("image", finalName),
+	};
+});
+
+ipcMain.handle("getAvailableFilePath", async (_, { path: inputPath }) => {
+	const folderPath = "GraphNote"
+
+	let counter = 0
+	let finalPath = ""
+
+	while (true) {
+		const originalFile = path.basename(inputPath)
+
+		const fileName = counter === 0 ? originalFile : getNextName(originalFile, counter)
+
+		const fullPath = path.join(baseDir, folderPath, fileName)
+
+		try {
+			await fs.access(fullPath)
+		} catch {
+			finalPath = path.join(folderPath, fileName)
+			break
+		}
+
+		counter++
+	}
+
+	return {
+		success: true,
+		path: finalPath
+	}
+})
+
+ipcMain.handle("writeNodeFile", async (_, { name, data, type }) => {
+	console.log(name, data, type)
+	ensureDir()
+
+	let counter = 0
+	let finalName = ""
+	let finalPath = ""
+
+	// Determine unique file name
+	while (true) {
+		finalName = counter === 0 ? name : getNextName(name, counter)
+		finalPath = path.join(basePath, type, finalName)
+		await mkdir(path.dirname(finalPath), { recursive: true })
+
+		try {
+			await fs.access(finalPath)
+			counter++
+		} catch {
+			break
+		}
+	}
+
+	await fs.writeFile(finalPath, data)
+
+	return {
+		res: true,
+		text: finalName,
+		path: path.join(type, finalName)
+	}
+})
+
+ipcMain.handle("readImage", async (_event, filePath: string) => {
+	const data = await fs.readFile(path.join(basePath, filePath))
+	return data
+})
+
+
+function extractYouTubeDescription(html: string): string | null {
+	// Grab the JSON assigned to ytInitialPlayerResponse
+	const marker = "ytInitialPlayerResponse = "
+	const start = html.indexOf(marker)
+	if (start === -1) return null
+
+	const jsonStart = start + marker.length
+	// Walk braces to find the end of the JSON object (regex is unreliable here)
+	let depth = 0
+	let inString = false
+	let escaped = false
+	for (let i = jsonStart; i < html.length; i++) {
+		const c = html[i]
+		if (inString) {
+			if (escaped) escaped = false
+			else if (c === "\\") escaped = true
+			else if (c === '"') inString = false
+			continue
+		}
+		if (c === '"') inString = true
+		else if (c === "{") depth++
+		else if (c === "}") {
+			depth--
+			if (depth === 0) {
+				try {
+					const data = JSON.parse(html.slice(jsonStart, i + 1))
+					return data?.videoDetails?.shortDescription ?? null
+				} catch {
+					return null
+				}
+			}
+		}
+	}
+	return null
+}
+
+ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }): Promise<MetaData> => {
+	const { url, cache } = data
+	try {
+		//TODO: before anything check if this url is alredy cached
+		const urlHashed = createHash("sha256").update(url).digest("hex").slice(0, 16)
+		const filePath = `${basePath}/cache/urls/${urlHashed}/${urlHashed}.json`
+		let exists = true
+		try {
+			await access(filePath, constants.F_OK)
+		} catch {
+			exists = false
+		}
+
+		if (exists) {
+			const json = JSON.parse(await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${urlHashed}.json`, "utf-8"))
+
+			const files = await fs.readdir(`${basePath}/cache/urls/${urlHashed}`)
+			const image = files.find((file) => path.parse(file).name === "image")
+			const favicon = files.find((file) => path.parse(file).name === "favicon")
+
+			const imageBuffer = image ? await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${image}`) : new ArrayBuffer(0)
+			const faviconBuffer = favicon ? await fs.readFile(`${basePath}/cache/urls/${urlHashed}/${favicon}`) : new ArrayBuffer(0)
+
+			return { title: json.title, description: json.description, image: imageBuffer, favicon: faviconBuffer }
+		}
+
+		const res = await fetch(url, {
+			headers: {
+				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " + "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+				Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+				"Accept-Language": "en-US,en;q=0.9"
+			}
+		})
+
+		if (!res.ok) throw new Error(`HTTP error: ${res.status}`)
+
+		const html = await res.text()
+		const $ = cheerio.load(html)
+
+		let title =
+			$("meta[property='og:title']").attr("content") || $("meta[name='twitter:title']").attr("content") || $("title").text() || "placeholder"
+
+		let description =
+			$("meta[property='og:description']").attr("content") ||
+			$("meta[name='twitter:description']").attr("content") ||
+			$("meta[name='description']").attr("content") ||
+			"placeholder"
+
+		let image =
+			$("meta[property='og:image']").attr("content") ||
+			$("meta[name='twitter:image']").attr("content") ||
+			$("link[rel='image_src']").attr("href") ||
+			$("img").first().attr("src") ||
+			"placeholder.png"
+
+		let favicon =
+			$("link[rel='icon']").attr("href") ||
+			$("link[rel='shortcut icon']").attr("href") ||
+			$("link[rel='apple-touch-icon']").attr("href") ||
+			"placeholder.png"
+
+		const hostname = new URL(url).hostname.replace(/^www\./, "")
+		if (hostname === "youtube.com" || hostname === "m.youtube.com" || hostname === "youtu.be") {
+			const full = extractYouTubeDescription(html)
+			console.log("extractYouTubeDescriptionextractYouTubeDescriptionextractYouTubeDescription")
+			console.log(full)
+			if (full) description = full
+		}
+
+
+		// Normalize relative URLs
+		const baseUrl = new URL(url)
+
+		if (image && !image.startsWith("http")) {
+			image = new URL(image, baseUrl).toString()
+		}
+		if (favicon && !favicon.startsWith("http")) {
+			favicon = new URL(favicon, baseUrl).toString()
+		}
+
+		if (cache) {
+			const urlHash = createHash("sha256").update(url).digest("hex").slice(0, 16)
+			const imagePath = await downloadCacheImage(image, image, urlHash, "image")
+			const faviconPath = await downloadCacheImage(favicon, favicon, urlHash, "favicon")
+			const json = JSON.stringify(
+				{
+					title: title,
+					description: description
+				},
+				null,
+				2
+			)
+			console.log(json)
+			await fs.writeFile(`${basePath}/cache/urls/${urlHash}/${urlHash}.json`, json, "utf-8")
+
+			const imageBuffer = imagePath != null ? await fs.readFile(imagePath) : new ArrayBuffer(10)
+			const faviconBuffer = faviconPath != null ? await fs.readFile(faviconPath) : new ArrayBuffer(10)
+			return { title, description, image: imageBuffer, favicon: faviconBuffer }
+		}
+
+		//TODO: change to return the buffer data for image not urls
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log(description)
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		console.log("pppppppppppppppppppppppppppppppppppppppppppppppp")
+		return { title, description, image: new ArrayBuffer(10), favicon: new ArrayBuffer(10) }
+	} catch (err) {
+		console.error("scrapeUrl failed:", url, err)
+
+		return {
+			title: "placeholder",
+			description: "placeholder",
+			image: new ArrayBuffer(10),
+			favicon: new ArrayBuffer(10)
+		}
+	}
+})
+
+ipcMain.handle("backUpSave", async () => {
+	const nodes = await readJSON(nodesPath)
+	const edges = await readJSON(edgesPath)
+
+	backup("nodes", JSON.stringify(nodes))
+	backup("edges", JSON.stringify(edges))
+})
+
+const backup = async (type: "nodes" | "edges", data: any) => {
+	const datetime = new Date().toISOString().replace(/[:.]/g, "-")
+	console.log(datetime)
+	const folderPath = `GraphNote/${type}Backup`
+	const filePath = `${folderPath}/${type}_${datetime}.json`
+	console.log(filePath)
+
+	const fullFile = path.join(baseDir, filePath)
+	if (!fullFile.startsWith(baseDir)) {
+		throw new Error("Invalid path")
+	}
+
+	const dir = path.dirname(fullFile)
+	await mkdir(dir, { recursive: true })
+
+	await fs.writeFile(fullFile, data)
+	return {
+		success: true,
+		path: fullFile
+	}
+}
+
+ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
+	console.log(imgUrl)
+	const res = await fetch(imgUrl)
+	console.log(res)
+	// maybe using wget is the best method
+
+	return {
+		success: true,
+		path: imgUrl
+	}
+})
+
+const downloadCacheImage = async (image: string, url: string, urlName: string, type: "image" | "favicon"): Promise<string | null> => {
+	try {
+		const res = await fetch(image)
+		if (!res.ok || !res.body) {
+			throw new Error(`Failed to download: ${res.status}`)
+		}
+		const contentType = res.headers.get("content-type")
+		let ext = getExtensionFromContentType(contentType)
+		// 2. Fallback to URL extension if needed
+		if (ext === ".jpg") {
+			const urlExt = getExtensionFromUrl(url)
+			if (urlExt) ext = urlExt
+		}
+		await createDir(`cache/urls/${urlName}`)
+		const buffer = Buffer.from(await res.arrayBuffer())
+		await fs.writeFile(`${basePath}/cache/urls/${urlName}/${type}${ext}`, buffer)
+		return `${basePath}/cache/urls/${urlName}/${type}${ext}`
+	} catch (e) {
+		console.log("failed to cache the image", e)
+		return null
+	}
+	return null
+}
+
+function getYouTubeVideoId(url) {
+	try {
+		const u = new URL(url)
+
+		// youtu.be/<id>
+		if (u.hostname.includes("youtu.be")) {
+			return u.pathname.slice(1)
+		}
+
+		// youtube.com/watch?v=<id>
+		if (u.searchParams.has("v")) {
+			return u.searchParams.get("v")
+		}
+
+		// youtube.com/embed/<id> or /shorts/<id>
+		const parts = u.pathname.split("/")
+		const index = parts.findIndex((p) => ["embed", "shorts"].includes(p))
+
+		if (index !== -1 && parts[index + 1]) {
+			return parts[index + 1]
+		}
+
+		return null
+	} catch {
+		return null
+	}
+}
+
+function cleanYoutubeUrl(url: string): string | null {
+	try {
+		const parsed = new URL(url)
+		const v = parsed.searchParams.get("v")
+		if (!v) return null
+		return `https://www.youtube.com/watch?v=${v}`
+	} catch {
+		return null // invalid URL
+	}
+}
+
+export function registerApi(mainWindow: BrowserWindow) {
+	ipcMain.handle("cacheYoutubeVid", async (event, url: string) => {
+		console.log("download started")
+		console.log(url)
+		createDir("cache/youtube")
+		const vidId = getYouTubeVideoId(url)
+		if (!vidId) {
+			return {
+				success: false,
+				message: "failed to get id from youtube url"
+			}
+		}
+
+		//TODO: check the file doesnt exist first
+		const files = readdirSync(`${basePath}/cache/youtube/`)
+		const file = files.find((file) => file.startsWith(vidId)) ? files.find((file) => file.startsWith(vidId)) : null
+		if (file) {
+			console.log("file is already downloaded")
+			event.sender.send("youtube-download-complete", {
+				vidId
+			})
+			return {
+				success: true,
+				fileName: file,
+				message: "file is already downloaded"
+			}
+		}
+
+		// https://www.youtube.com/watch?v=VDdLF1YubI0&list=RDVDdLF1YubI0&start_radio=1
+		//? clean url
+		const clearUrl = cleanYoutubeUrl(url)
+		if (!clearUrl) return {
+			success: false,
+			message: "the url is invalid"
+		}
+		const subprocess = youtubedl.exec(clearUrl, {
+			noCheckCertificates: true,
+			noWarnings: true,
+			preferFreeFormats: true,
+			addHeader: ["referer:youtube.com", "user-agent:googlebot"],
+			output: `${basePath}/cache/youtube/${vidId}.%(ext)s`,
+			newline: true
+		})
+
+		let lastSent = 0
+		let downloading = ""
+		subprocess.stdout?.on("data", (data) => {
+			const line = data.toString()
+			console.log(line)
+			const matchDownload = line.match(/(\d+(?:\.\d+)?)%/)
+			const matchFileName = line.match(/\[download\]\s+Destination:\s(.+)/)
+			if (matchFileName) {
+				downloading = matchFileName ? matchFileName[1].trim() : null
+			}
+			if (matchDownload) {
+				const now = Date.now()
+				if (now - lastSent < 500) return
+				lastSent = now
+
+				const progress = parseFloat(matchDownload[1])
+				console.log("progress:", progress)
+
+				event.sender.send("youtube-download-progress", {
+					downloading,
+					progress,
+					vidId
+				})
+
+				mainWindow.setProgressBar(progress / 100)
+			}
+		})
+
+		subprocess.stderr?.on("data", (data) => {
+			console.error(data.toString())
+		})
+
+		return new Promise((resolve, reject) => {
+			subprocess.on("close", () => {
+				console.log("Download complete")
+				mainWindow.setProgressBar(-1)
+				event.sender.send("youtube-download-complete", {
+					vidId
+				})
+				resolve({
+					success: true,
+					message: "download complete"
+				})
+			})
+
+			subprocess.on("error", (err) => {
+				console.error(err)
+				mainWindow.setProgressBar(-1)
+				reject({
+					success: false,
+					message: err.message
+				})
+			})
+		})
+	})
+}
+
+ipcMain.handle("getLocalVideo", async (_, vidName: string) => {
+	return `http://127.0.0.1:3232/videos/${encodeURIComponent(vidName)}`
+})
+
+async function getFolderSize(folderPath) {
+	let totalSize = 0
+
+	async function walk(dir) {
+		const files = await fs.readdir(dir)
+
+		for (const file of files) {
+			const fullPath = path.join(dir, file)
+			const stats = await fs.stat(fullPath)
+
+			if (stats.isDirectory()) {
+				await walk(fullPath)
+			} else {
+				totalSize += stats.size
+			}
+		}
+	}
+
+	await walk(folderPath)
+
+	return totalSize
+}
+
+ipcMain.handle("getSizes", async (_) => {
+	const totalSize = await getFolderSize(basePath)
+	const imageSize = await getFolderSize(path.join(basePath, "image"))
+	const youtubeCacheSize = await getFolderSize(path.join(basePath, "cache", "youtube"))
+	const urlMetadataSize = await getFolderSize(path.join(basePath, "cache", "urls"))
+
+	return {
+		totalSize,
+		imageSize,
+		youtubeCacheSize,
+		urlMetadataSize
+	}
+})
+
+ipcMain.handle("selectFile", async () => {
+	const result = await dialog.showOpenDialog({
+		properties: ["openFile"],
+		filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] }]
+	})
+
+	if (result.canceled) return null
+
+	const sourcePath = result.filePaths[0]
+	const ext = path.extname(sourcePath)
+	const name = path.basename(sourcePath, ext)
+
+	const destDir = path.join(basePath, "image")
+
+	if (!existsSync(destDir)) {
+		mkdirSync(destDir, { recursive: true })
+	}
+
+	let counter = 0
+	let finalName = ""
+	let finalPath = ""
+
+	while (true) {
+		finalName = counter === 0 ? `${name}${ext}` : `${name}_${counter}${ext}`
+
+		finalPath = path.join(destDir, finalName)
+
+		try {
+			await fs.access(finalPath)
+			counter++
+		} catch {
+			break
+		}
+	}
+
+	await fs.copyFile(sourcePath, finalPath)
+
+	return path.join("image", finalName)
+})
+
+ipcMain.handle("deleteCachedYoutubeVid", async (event, url: string) => {
+	const vidId = getYouTubeVideoId(url)
+	if (!vidId) {
+		return {
+			success: false,
+			message: "failed to get id from youtube url"
+		}
+	}
+	//TODO: check the file doesnt exist first
+	const files = readdirSync(`${basePath}/cache/youtube/`)
+	const file = files.find((file) => file.startsWith(vidId)) ? files.find((file) => file.startsWith(vidId)) : null
+	if (file) {
+		console.log("deleting file:", path.join(`${basePath}/cache/youtube/`, file))
+		await fs.unlink(path.join(`${basePath}/cache/youtube/`, file))
+		// TODO: here we delete the file
+		return {
+			success: true,
+			message: "file is deleted"
+		}
+	}
+
+	return {
+		success: true,
+		message: "file was not found"
+	}
+})
+
+ipcMain.handle("checkCacheYoutubeVidExists", async (event, url: string) => {
+	const vidId = getYouTubeVideoId(url)
+	if (!vidId) {
+		return {
+			success: false,
+			message: "failed to get id from youtube url"
+		}
+	}
+	//TODO: check the file doesnt exist first
+	const files = readdirSync(`${basePath}/cache/youtube/`)
+	const file = files.find((file) => file.startsWith(vidId)) ? files.find((file) => file.startsWith(vidId)) : null
+	if (file) {
+		return {
+			success: true,
+			fileName: file,
+			message: "file exists"
+		}
+	} else {
+		return {
+			success: false,
+			message: "file was not found"
+		}
+	}
+})
+
+
+ipcMain.handle("openFileDefault", async (event, filePath: string) => {
+	console.log(path.join(basePath, filePath))
+	const error = await shell.openPath(path.join(basePath, filePath))
+	if (error) throw new Error(error)
+})
+
+
+ipcMain.handle("deleteUnusedFiles", async (event) => {
+	// search the nodes.json file for all used files
+	// then list all files and delete all that is not included in that list
+	// nodes with files: Url, Tierlist, Board, Document, Image
+
+	const json = await readJSON(nodesPath)
+	const nodes = Object.values(json).flat()
+
+	let used_files = []
+
+	nodes.forEach((n: any) => {
+		switch (n.type) {
+			case "Url":
+				// if website cache, if youtube in youtube folder
+				// cache/url/hash/* (keep the entire folder)
+				// cache/youtube/vidId.xxx
+				break;
+			case "TierList":
+				// images in tiers
+				break;
+			case "Board":
+				//bg and icon
+				break;
+			case "Document":
+				// doc file
+				break;
+			case "Image":
+				// img
+				break;
+			default:
+				break;
+		}
+	})
+})

@@ -34,7 +34,7 @@ function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
 }
 
 const fileCategories = {
-	image: ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "tiff", "ico"],
+	image: ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "tiff", "ico", "avif"],
 	video: ["mp4", "mkv", "mov", "avi", "webm", "flv"],
 	music: ["mp3", "wav", "ogg", "flac", "m4a"],
 	document: ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv", "pdf"],

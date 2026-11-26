@@ -11,7 +11,6 @@ declare global {
 			saveEdges: (edges: any) => Promise<any>
 			saveSettings: (settings: any) => Promise<any>
 			readGraph: () => Promise<any>
-			readFile: (data: { folderPath: string; filePath: string }) => Promise<{ text: string }>
 			writeFile: (data: { name: string; data: Uint8Array; type: string }) => Promise<{ success: boolean; path: string }>
 			copyFile: (data: { src: string }) => Promise<any>
 			downloadUrlImage: (data: { url: string }) => Promise<any>

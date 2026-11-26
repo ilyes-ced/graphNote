@@ -2,7 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from "electron"
 import { join } from "path"
 import { electronApp, optimizer, is } from "@electron-toolkit/utils"
 import icon from "../../resources/icon.png?asset"
-import { registerApi } from "./api"
+import { registerAllIpc } from "./api"
+import { startMediaServer } from "./services/mediaServer"
 
 function createWindow(): void {
 	// Create the browser window.
@@ -20,7 +21,8 @@ function createWindow(): void {
 		}
 	})
 
-	registerApi(mainWindow)
+	startMediaServer();
+	registerAllIpc(mainWindow)
 
 	mainWindow.on("ready-to-show", () => {
 		mainWindow.show()
@@ -31,12 +33,29 @@ function createWindow(): void {
 		return { action: "deny" }
 	})
 
+	//? opens url in default browser
+	mainWindow.webContents.on("will-navigate", (e, url) => {
+		if (url !== mainWindow.webContents.getURL()) {
+			e.preventDefault();
+			if (isSafeExternalUrl(url)) shell.openExternal(url);
+		}
+	});
+
 	// HMR for renderer base on electron-vite cli.
 	// Load the remote URL for development or the local html file for production.
 	if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
 		mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"])
 	} else {
 		mainWindow.loadFile(join(__dirname, "../renderer/index.html"))
+	}
+}
+
+function isSafeExternalUrl(url: string) {
+	try {
+		const { protocol } = new URL(url);
+		return protocol === "https:" || protocol === "http:" || protocol === "mailto:";
+	} catch {
+		return false;
 	}
 }
 

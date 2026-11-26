@@ -148,7 +148,7 @@ function EdgeView(props: { edge: Edge }) {
 		const otherId = nodeId(otherEnd(end))
 		const nodeAt = (cx: number, cy: number): string | undefined => {
 			for (const n of document.elementsFromPoint(cx, cy)) {
-				const node = n.closest?.('[id^="node_"]')
+				const node = n.closest?.('[id^="node_"]:not(.child_node):not(.tierlist_row)')
 				if (node && node.id !== otherId) return node.id // no self-loops
 			}
 		}
@@ -261,7 +261,7 @@ function EdgeView(props: { edge: Edge }) {
 					</foreignObject>
 				</Show>
 			</g>
-		</Show>
+		</Show >
 	)
 }
 
@@ -295,7 +295,7 @@ export default () => {
 	const edges = () => store.edges[boardId()] ?? []
 
 	return (
-		<div id="edges" ref={el} class="pointer-events-none absolute left-0 top-0 z-10000">
+		<div id="edges" ref={el} class="pointer-events-none absolute left-0 top-0 z-1000000000">
 			<svg width="1" height="1" class="overflow-visible">
 				<For each={edges()}>{(edge) => <EdgeView edge={edge} />}</For>
 			</svg>

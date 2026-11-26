@@ -89,7 +89,6 @@
 - [x] when zooming, make it point to or from the mouse cursor
 - [x] for the redo undo system: deleting resources: once a node is deleted add thier resources names to a list .txt file and when the app launches delete those files and empty the text file
   - [ ] a better option could be to have a button that clears unused resources
-  - [ ] or search for unused resources and delete them on startup
 - [x] for todo make the title optional
 - [x] infinite loop resizing: disable the observer after the first fire, for urls, update once the resource is loaded, when width is changed also do the observe once more
 - [x] Note editor buttons not settings is-active class correctly but are working just fine
@@ -153,8 +152,10 @@
 - [ ] mouse side button to navigate active boards
 - [x] when nodes are selected dragging another node drags them too
 - [ ] make board nodes borders similar to other nodes in terms of sizing
-- [ ] Edges: when a node is deleted delete all related Edges
-- [ ] Edges: z-index probably should be the same as its related nodes (maybe the lower one of them)
+- [ ] Edges:
+  - [ ] z-index probably should be the same as its related nodes (maybe the lower one of them)
+  - [ ] when a node is deleted delete all related Edges (or let it clear along side purging resource, or just give it new coordinates without deleting it but this is a lazy solution)
+  - [x] wierd behaviour with child nodes and tierlist nodes (might need to restrict targets to nodes only)
 
 
 

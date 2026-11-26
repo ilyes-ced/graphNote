@@ -59,6 +59,10 @@ export default function moveNode(
 			return
 		}
 		if (!distNode) {
+			if (distNode === "home") {
+
+				return
+			}
 			console.warn("parent dist node to move to not found:", distNodeId)
 			return
 		}

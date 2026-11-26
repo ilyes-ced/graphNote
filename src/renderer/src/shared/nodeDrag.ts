@@ -185,7 +185,7 @@ export function useDraggable(node: NodeUnion, is_child: boolean = false, ignored
 		//? for transfering children to other nodes
 		let movedToOtherNode = false
 		const targets = document.querySelectorAll(
-			`.column:not(#${node.id}), .board:not(#${node.id})` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
+			`.column:not(#${node.id}), .board:not(#${node.id}), .breadcrumb` // exclud the dragged column from the search for overlapp (when dragging a column it leads to running the overlap logic on its self)
 		)
 		// todo: stop foreeach when finished
 		targets.forEach((target) => {

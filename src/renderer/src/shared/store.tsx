@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store"
 import { NodeUnion, Edge } from "../types"
-import { createEffect, onMount } from "solid-js"
+import { createEffect, on, onMount } from "solid-js"
 
 interface Command {
 	undo(): void
@@ -10,24 +10,29 @@ interface Command {
 export const defaultViewportZoom = 1
 
 onMount(async () => {
-	const data = await window.api.getSettings()
-	setStore("userConfig", data ?? {})
-	createEffect(async () => {
-		console.log(
-			store.userConfig.pdfReaderType,
-			store.userConfig.youtubeVidCache,
-			store.userConfig.cacheUrlData,
-			store.userConfig.pdfScale,
-			store.userConfig.gridStyle,
-			store.userConfig.showNavigation,
-			store.userConfig.homeBoardStyle,
-			store.userConfig.homeBoardStyle.bgImagePath,
-			store.userConfig.homeBoardStyle.bgColor,
-			store.userConfig.homeBoardStyle.gridColor
+	const data = await window.api.getSettings();
+	setStore("userConfig", data ?? {});
+
+	createEffect(
+		on(
+			() => [
+				store.userConfig.pdfReaderType,
+				store.userConfig.youtubeVidCache,
+				store.userConfig.cacheUrlData,
+				store.userConfig.pdfScale,
+				store.userConfig.gridStyle,
+				store.userConfig.showNavigation,
+				store.userConfig.homeBoardStyle?.bgImagePath,
+				store.userConfig.homeBoardStyle?.bgColor,
+				store.userConfig.homeBoardStyle?.gridColor,
+			],
+			async () => {
+				await window.api.saveSettings(JSON.parse(JSON.stringify(store.userConfig)));
+			},
+			{ defer: true }
 		)
-		await window.api.saveSettings(JSON.parse(JSON.stringify(store.userConfig)))
-	})
-})
+	);
+});
 
 interface UserConfig {
 	pdfReaderType: "side" | "modal" | "external"

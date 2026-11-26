@@ -100,7 +100,7 @@ export default (props: any) => {
 					)
 				}}
 				onMouseDown={(e) => {
-					if (e.button !== 1) return
+					if (e.button !== 0) return
 					if (e.target !== e.currentTarget) return
 
 					setSelecting(true)
