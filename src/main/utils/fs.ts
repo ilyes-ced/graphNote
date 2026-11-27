@@ -1,5 +1,5 @@
 import { mkdir } from "node:fs/promises";
-import { basePath } from "../config/paths"
+import { Paths, basePath } from "../config/paths"
 import path from "node:path";
 import fs from "node:fs/promises"
 
@@ -61,4 +61,9 @@ async function getFolderSize(folderPath) {
 }
 
 
-export { ensureDir, createDir, safeJoin, writeUnique, copyUnique, getFolderSize }
+async function importLocalImage(src: string) {
+    const name = await copyUnique(src, Paths.images)
+    return path.join("images", name)
+}
+
+export { ensureDir, createDir, safeJoin, writeUnique, copyUnique, getFolderSize, importLocalImage }

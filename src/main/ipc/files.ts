@@ -1,10 +1,9 @@
 import { dialog, ipcMain, shell } from "electron";
-import { Paths, baseDir, basePath } from "../config/paths";
-import { copyUnique, getFolderSize, safeJoin, writeUnique } from "../utils/fs";
+import { Paths, basePath } from "../config/paths";
+import { getFolderSize, importLocalImage, safeJoin, writeUnique } from "../utils/fs";
 import path from "path";
 import fs from "fs/promises"
-import { existsSync, mkdirSync } from "fs"
-import { getNextName, readJSON } from "../utils/nodes";
+import { readJSON } from "../utils/nodes";
 
 
 export function registerFilesIpc() {
@@ -29,64 +28,34 @@ export function registerFilesIpc() {
         }
     })
 
-    ipcMain.handle("copyFile", async (_, { src }) => {
-        const fileName = await copyUnique(src, Paths.images)
 
+    ipcMain.handle("copyFile", async (_, { src }) => {
         return {
             success: true,
-            path: path.join("images", fileName)
+            path: await importLocalImage(src)
         }
     })
 
-    ipcMain.handle("readImage", async (_event, filePath: string) => {
-        const data = await fs.readFile(path.join(basePath, filePath))
+    ipcMain.handle("readImage", async (_, filePath: string) => {
+        console.log(filePath)
+        console.log(safeJoin(basePath, filePath))
+        const data = await fs.readFile(safeJoin(basePath, filePath))
         return data
     })
 
     ipcMain.handle("selectFile", async () => {
         const result = await dialog.showOpenDialog({
             properties: ["openFile"],
-            filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] }]
+            filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp", "avif"] }]
         })
-
-        if (result.canceled) return null
-
-        const sourcePath = result.filePaths[0]
-        const ext = path.extname(sourcePath)
-        const name = path.basename(sourcePath, ext)
-
-        const destDir = path.join(basePath, "image")
-
-        if (!existsSync(destDir)) {
-            mkdirSync(destDir, { recursive: true })
-        }
-
-        let counter = 0
-        let finalName = ""
-        let finalPath = ""
-
-        while (true) {
-            finalName = counter === 0 ? `${name}${ext}` : `${name}_${counter}${ext}`
-
-            finalPath = path.join(destDir, finalName)
-
-            try {
-                await fs.access(finalPath)
-                counter++
-            } catch {
-                break
-            }
-        }
-
-        await fs.copyFile(sourcePath, finalPath)
-
-        return path.join("image", finalName)
+        return await importLocalImage(result.filePaths[0])
     })
 
 
     ipcMain.handle("getSizes", async (_) => {
+        //TODO: error handling for each one individually
         const totalSize = await getFolderSize(basePath)
-        const imageSize = await getFolderSize(path.join(basePath, "image"))
+        const imageSize = await getFolderSize(path.join(basePath, "images"))
         const youtubeCacheSize = await getFolderSize(path.join(basePath, "cache", "youtube"))
         const urlMetadataSize = await getFolderSize(path.join(basePath, "cache", "urls"))
 
@@ -98,10 +67,7 @@ export function registerFilesIpc() {
         }
     })
 
-
-
-
-    ipcMain.handle("downloadImgUrl", async (_event, imgUrl: string) => {
+    ipcMain.handle("downloadImgUrl", async (_, imgUrl: string) => {
         console.log(imgUrl)
         const res = await fetch(imgUrl)
         console.log(res)
@@ -114,50 +80,14 @@ export function registerFilesIpc() {
     })
 
 
-
-
-
-    ipcMain.handle("getAvailableFilePath", async (_, { path: inputPath }) => {
-        const folderPath = "GraphNote"
-
-        let counter = 0
-        let finalPath = ""
-
-        while (true) {
-            const originalFile = path.basename(inputPath)
-
-            const fileName = counter === 0 ? originalFile : getNextName(originalFile, counter)
-
-            const fullPath = path.join(baseDir, folderPath, fileName)
-
-            try {
-                await fs.access(fullPath)
-            } catch {
-                finalPath = path.join(folderPath, fileName)
-                break
-            }
-
-            counter++
-        }
-
-        return {
-            success: true,
-            path: finalPath
-        }
-    })
-
-
-
-
-    ipcMain.handle("openFileDefault", async (event, filePath: string) => {
-        console.log(path.join(basePath, filePath))
-        const error = await shell.openPath(path.join(basePath, filePath))
+    ipcMain.handle("openFileDefault", async (_, filePath: string) => {
+        const error = await shell.openPath(safeJoin(basePath, filePath))
         if (error) throw new Error(error)
     })
 
 
-
-    ipcMain.handle("deleteUnusedFiles", async (event) => {
+    //TODO
+    ipcMain.handle("deleteUnusedFiles", async (_) => {
         // search the nodes.json file for all used files
         // then list all files and delete all that is not included in that list
         // nodes with files: Url, Tierlist, Board, Document, Image
@@ -165,7 +95,7 @@ export function registerFilesIpc() {
         const json = await readJSON(Paths.nodes)
         const nodes = Object.values(json).flat()
 
-        let used_files = []
+        //let used_files = []
 
         nodes.forEach((n: any) => {
             switch (n.type) {

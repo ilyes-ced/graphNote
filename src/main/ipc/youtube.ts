@@ -1,6 +1,7 @@
 import fs from "fs/promises"
+import { access } from "fs/promises"
 import { BrowserWindow, ipcMain } from "electron";
-import { access, constants, readdirSync } from "fs"
+import { constants, readdirSync } from "fs"
 import { createHash } from "crypto"
 import { basePath } from "../config/paths";
 import path from "path";
@@ -18,7 +19,7 @@ export function registerYoutubeIpc(mainWindow: BrowserWindow) {
         favicon: ArrayBuffer
     }
 
-    ipcMain.handle("scrapeUrl", async (_event, data: { url: string; cache: boolean }): Promise<MetaData> => {
+    ipcMain.handle("scrapeUrl", async (_, data: { url: string; cache: boolean }): Promise<MetaData> => {
         const { url, cache } = data
         try {
             //TODO: before anything check if this url is alredy cached
@@ -240,7 +241,7 @@ export function registerYoutubeIpc(mainWindow: BrowserWindow) {
     })
 
 
-    ipcMain.handle("deleteCachedYoutubeVid", async (event, url: string) => {
+    ipcMain.handle("deleteCachedYoutubeVid", async (_, url: string) => {
         const vidId = getYouTubeVideoId(url)
         if (!vidId) {
             return {
@@ -268,7 +269,8 @@ export function registerYoutubeIpc(mainWindow: BrowserWindow) {
     })
 
 
-    ipcMain.handle("checkCacheYoutubeVidExists", async (event, url: string) => {
+    ipcMain.handle("checkCacheYoutubeVidExists", async (_, url: string) => {
+        createDir("cache/youtube")
         const vidId = getYouTubeVideoId(url)
         if (!vidId) {
             return {
@@ -278,7 +280,9 @@ export function registerYoutubeIpc(mainWindow: BrowserWindow) {
         }
         //TODO: check the file doesnt exist first
         const files = readdirSync(`${basePath}/cache/youtube/`)
+        console.log(`${basePath}/cache/youtube/`)
         const file = files.find((file) => file.startsWith(vidId)) ? files.find((file) => file.startsWith(vidId)) : null
+        console.log(files)
         if (file) {
             return {
                 success: true,

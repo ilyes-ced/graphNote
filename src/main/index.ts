@@ -22,6 +22,7 @@ function createWindow(): void {
 	})
 
 	startMediaServer();
+	//registerApi(mainWindow)
 	registerAllIpc(mainWindow)
 
 	mainWindow.on("ready-to-show", () => {

@@ -33,7 +33,7 @@ async function downloadImage(input: string) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const ext = getExtensionFromContentType(res.headers.get("content-type")) ?? ".jpg"
     const name = await writeUnique(Paths.images, `download_image${ext}`, Buffer.from(await res.arrayBuffer()))
-    return path.join("image", name)
+    return path.join("images", name)
 }
 
 export { resolveImageUrl, downloadImage }

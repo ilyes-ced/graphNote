@@ -1,10 +1,6 @@
 import { ipcMain } from "electron";
-import { backup, getNextName, readJSON, writeJSON } from "../utils/nodes";
-import { Paths, basePath } from "../config/paths";
-import { ensureDir } from "../utils/fs";
-import path from "path";
-import { mkdir } from "fs/promises";
-import fs from "fs/promises";
+import { backup, readJSON, writeJSON } from "../utils/nodes";
+import { Paths } from "../config/paths";
 
 export function registerNodesIpc() {
     ipcMain.handle("getNodes", async () => {
@@ -44,36 +40,4 @@ export function registerNodesIpc() {
         backup("nodes", JSON.stringify(nodes))
         backup("edges", JSON.stringify(edges))
     })
-
-    ipcMain.handle("writeNodeFile", async (_, { name, data, type }) => {
-        console.log(name, data, type)
-        ensureDir()
-
-        let counter = 0
-        let finalName = ""
-        let finalPath = ""
-
-        // Determine unique file name
-        while (true) {
-            finalName = counter === 0 ? name : getNextName(name, counter)
-            finalPath = path.join(basePath, type, finalName)
-            await mkdir(path.dirname(finalPath), { recursive: true })
-
-            try {
-                await fs.access(finalPath)
-                counter++
-            } catch {
-                break
-            }
-        }
-
-        await fs.writeFile(finalPath, data)
-
-        return {
-            res: true,
-            text: finalName,
-            path: path.join(type, finalName)
-        }
-    })
-
 }

@@ -321,7 +321,7 @@ export default (props: any) => {
 										// give name to image
 										// here send request to save image
 										try {
-											const res = await window.api.writeFile({ name: imgNameGen(type), data: uint8Array, type: "image" })
+											const res = await window.api.writeFile({ name: imgNameGen(type), data: uint8Array, fileType: "image" })
 											//TODO: fix x,y to be as the mouse
 											if (res.path) {
 												//TODO: fix x,y to be as the mouse

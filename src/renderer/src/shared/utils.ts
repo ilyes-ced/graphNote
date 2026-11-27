@@ -86,12 +86,18 @@ const recieveDragNDropFile = (payload: Payload) => {
 			}
 		}
 
+		console.log("|||||||||||||||||||||||")
+		console.log("|||||||||||||||||||||||")
+		console.log(fileType)
+		console.log("|||||||||||||||||||||||")
+		console.log("|||||||||||||||||||||||")
 		const result = await saveFile({
 			name: fileData.name,
 			data: fileData.data,
 			type: fileType
 		})
-		if (result.res) {
+
+		if (result.success) {
 			console.log("file type:", fileType)
 
 			switch (fileType) {
@@ -134,7 +140,7 @@ const recieveDragNDropFileTierlist = (files: Payload["files"], rowId: string) =>
 			data: fileData.data,
 			type: "image"
 		})
-		if (result.res) {
+		if (result.success) {
 			//todo here we change the tierlist data
 			console.log("file type:", result.path)
 			const ids = rowId.split("-")

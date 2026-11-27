@@ -11,16 +11,13 @@ declare global {
 			saveEdges: (edges: any) => Promise<any>
 			saveSettings: (settings: any) => Promise<any>
 			readGraph: () => Promise<any>
-			writeFile: (data: { name: string; data: Uint8Array; type: string }) => Promise<any>
+			writeFile: (data: { name: string; data: Uint8Array; fileType: string }) => Promise<any>
 			copyFile: (data: { src: string }) => Promise<any>
 			downloadUrlImage: (data: { url: string }) => Promise<any>
-			getAvailableFilePath: (data: { path: string }) => Promise<{ success: boolean; path: string }>
 			copyFileUnique: (data: { path: string }) => Promise<{ res: boolean; text: string }>
 			readImage: (filePath: string) => Promise<Buffer>
-			writeNodeFile: (data: { name: string; data: Uint8Array; type: string }) => Promise<any>
 			scrapeUrl: (data: { url: string; cache: boolean }) => Promise<any>
 			backUpSave: () => Promise<any>
-			downloadImgUrl: (imgUrl: string) => Promise<any>
 			cacheUrl: (url: string) => Promise<string>
 			cacheYoutubeVid: (url: string) => Promise<any>
 			deleteCachedYoutubeVid: (url: string) => Promise<any>
