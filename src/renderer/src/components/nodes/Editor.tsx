@@ -41,7 +41,7 @@ export default (props: { id: string; desc: string }) => {
 			updateText(JSON.stringify(editor.getJSON()))
 		},
 		extensions: [StarterKit, Highlight, Typography, TextStyle, TextAlign],
-		content: JSON.parse(untrack(() => props.desc)) ?? "test"
+		content: JSON.parse(untrack(() => props.desc)) ?? '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
 	}))
 
 	onCleanup(() => {

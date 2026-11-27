@@ -27,7 +27,7 @@ export default () => {
 	})
 
 	return (
-		<div id="topbar" class="z-50 absolute w-full flex flex-row justify-between items-center bg-transparent p-2.5 pointer-events-none">
+		<div id="topbar" class="z-50 absolute w-full flex flex-row justify-between items-center bg-transparent p-3.5 pointer-events-none">
 			<div id="breadcrumbContainer" class="flex flex-row space-y-4 overflow-x-visible">
 				<div class="flex flex-row">
 					<For each={store.activeBoards}>
@@ -36,7 +36,7 @@ export default () => {
 								<>
 									<div
 										id={`${breadcrumb.id}`}
-										class="p-[5px] border-2 border-border transition duration-100 ease-out pointer-events-auto bg-card"
+										class="p-[5px] border-2 border-border transition duration-100 ease-out pointer-events-auto bg-background"
 										classList={{
 											breadcrumb_path: true,
 											breadcrumb: !(index() === store.activeBoards.length - 1),
@@ -76,19 +76,19 @@ export default () => {
 					</div>
 				</Show>
 
-				<Button class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
+				<Button class="bg-background pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"} onClick={() => setStore("showStorageMenu", !store.showStorageMenu)}>
 					<FaSolidDatabase class="size-full" />
 				</Button>
 
-				<Button class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
+				<Button class="bg-background pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"} onClick={() => setStore("settingsModal", !store.settingsModal)}>
 					<IoSettingsSharp class="size-full" />
 				</Button>
 
-				<Button class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"}>
+				<Button class="bg-background pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"}>
 					<AiFillMoon class="size-full" />
 				</Button>
 
-				<Button onClick={() => { window.api.deleteUnusedFiles() }} class="pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"}>
+				<Button onClick={() => { window.api.deleteUnusedFiles() }} class="bg-background pointer-events-auto border border-transparent hover:border-primary" variant={"secondary"}>
 					<FaSolidTrashAlt class="size-full" />
 				</Button>
 			</div>

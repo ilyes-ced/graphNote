@@ -296,4 +296,10 @@ export function registerYoutubeIpc(mainWindow: BrowserWindow) {
             }
         }
     })
+
+
+
+    ipcMain.handle("getLocalVideo", async (_, vidName: string) => {
+        return `http://127.0.0.1:3232/videos/${encodeURIComponent(vidName)}`
+    })
 }

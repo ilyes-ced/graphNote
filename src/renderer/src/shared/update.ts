@@ -774,6 +774,82 @@ const newImageNode = (img: string, x: number, y: number) => {
 	}
 }
 
+
+const newNoteNode = (text: string, x: number, y: number) => {
+	const activeBoardId = getActiveBoardId()
+
+	let snappedX: number = x,
+		snappedY: number = y
+	if (store.snapGrid) {
+		snappedX = Math.round(x / 10) * 10
+		snappedY = Math.round(y / 10) * 10
+	}
+
+	const noteNode = {
+		id: generateNewId(),
+		type: NodeType.Note,
+		width: 300,
+		x: snappedX,
+		y: snappedY,
+		index: 0,
+		text: `{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null},"content":[{"type":"text","text":"${text}"}]}]}`,
+	}
+
+	setStore("nodes", activeBoardId, (nodes = []) => [...nodes, noteNode])
+	updateZIndex(noteNode.id)
+	saveChanges()
+
+	return {
+		undo() {
+			setStore("nodes", activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== noteNode.id))
+			saveChanges()
+		},
+		redo() {
+			setStore("nodes", activeBoardId, (nodes = []) => [...nodes, noteNode])
+			saveChanges()
+		}
+	}
+}
+
+
+const newUrlNode = (url: string, x: number, y: number) => {
+	const activeBoardId = getActiveBoardId()
+
+	let snappedX: number = x,
+		snappedY: number = y
+	if (store.snapGrid) {
+		snappedX = Math.round(x / 10) * 10
+		snappedY = Math.round(y / 10) * 10
+	}
+
+	const urlNode = {
+		id: generateNewId(),
+		type: NodeType.Url,
+		width: 300,
+		x: snappedX,
+		y: snappedY,
+		index: 0,
+		url: url,
+		showDescription: false,
+		description: '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}'
+	}
+
+	setStore("nodes", activeBoardId, (nodes = []) => [...nodes, urlNode])
+	updateZIndex(urlNode.id)
+	saveChanges()
+
+	return {
+		undo() {
+			setStore("nodes", activeBoardId, (nodes = []) => nodes.filter((n) => n.id !== urlNode.id))
+			saveChanges()
+		},
+		redo() {
+			setStore("nodes", activeBoardId, (nodes = []) => [...nodes, urlNode])
+			saveChanges()
+		}
+	}
+}
+
 //? update node colors, fg or bg or strip
 const updateNodeColor = (nodeId: string, type: "bg" | "fg" | "strip", color: ColorType) => {
 	for (const [parentId, nodeList] of Object.entries(store.nodes)) {
@@ -1113,6 +1189,8 @@ const setTiers = (nodeId: string, tiers: Tier[]) => {
 
 
 
+
+
 function updateEdge(id: string, patch: Partial<Edge>) {
 	const board = store.activeBoards.at(-1)?.id ?? "home"
 	setStore("edges", board, (e: Edge) => e.id === id, patch)
@@ -1169,6 +1247,8 @@ const wrappedUnsetStripColor = actionsMiddleware(unsetStripColor)
 const wrappedUpdateNodeTitle = actionsMiddleware(updateNodeTitle)
 const wrappedUpdateNodeDesc = actionsMiddleware(updateNodeDesc)
 const wrappedNewImageNode = actionsMiddleware(newImageNode)
+const wrappedNewNoteNode = actionsMiddleware(newNoteNode)
+const wrappedNewUrlNode = actionsMiddleware(newUrlNode)
 const wrappedUpdateActivityCounter = actionsMiddleware(updateActivityCounter)
 const wrappedReorderTasks = actionsMiddleware(reorderTasks)
 const wrappedNewDocumentNode = actionsMiddleware(newDocumentNode)
@@ -1204,6 +1284,8 @@ export {
 	wrappedUpdateNodeTitle as updateNodeTitle,
 	wrappedUpdateNodeDesc as updateNodeDesc,
 	wrappedNewImageNode as newImageNode,
+	wrappedNewNoteNode as newNoteNode,
+	wrappedNewUrlNode as newUrlNode,
 	wrappedUpdateActivityCounter as updateActivityCounter,
 	wrappedReorderTasks as reorderTasks,
 	wrappedNewDocumentNode as newDocumentNode,

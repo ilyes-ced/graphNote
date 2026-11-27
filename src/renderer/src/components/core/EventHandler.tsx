@@ -9,6 +9,8 @@ import {
 	getActiveBoardId,
 	incrementSelectedNodesPositions,
 	newImageNode,
+	newNoteNode,
+	newUrlNode,
 	removeNodeById,
 	updateBoardStyles
 } from "../../shared/update"
@@ -128,7 +130,26 @@ async function urlToFileData(url: string) {
 	return { name, data: new Uint8Array(buffer) }
 }
 
+function isImageUrl(url: string) {
+	try {
+		const { pathname } = new URL(url);
+		return /\.(jpe?g|png|gif|webp|avif|svg|bmp|ico)$/i.test(pathname);
+	} catch {
+		return false;
+	}
+}
+
+function isUrl(url: string) {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 export default (props: any) => {
+
 	document.addEventListener("dragover", (event) => {
 		event.preventDefault()
 	})
@@ -180,7 +201,13 @@ export default (props: any) => {
 	//listen("tauri://drag-enter", (event) => {});
 	//listen("tauri://drag-leave", (event) => {});
 
+	let mousePos = { x: 0, y: 0 };
 	onMount(() => {
+
+		//? keep track of mouse pos for creating nodes for copy-pastes
+		const onMove = (e: PointerEvent) => (mousePos = { x: e.clientX, y: e.clientY });
+		window.addEventListener("pointermove", onMove);
+		onCleanup(() => window.removeEventListener("pointermove", onMove));
 
 
 		//? back/forward boards
@@ -253,54 +280,70 @@ export default (props: any) => {
 									})
 								})
 							} catch (e) {
-								// nothing todo here (normal text was copied)
-								// check if any text is selecte, if not check if its an image
+								//? check if any text is selecte, if not check if its an image
 								if (!isTextLikeElementFocused()) {
 									//? here is for those when you copy an image a link is copied instead of the actual binary data
 									//? here means the pasted was not nodes, and since we know its pasted into text inputs because of !isTextLikeElementFocused(), its either an iamge or nothing we should care about
-									console.log("+=============================================== here means the pasted was not nodes")
+									console.log("+=============================================== here means the pasted was not nodes, its text could be a url")
 									console.log(content)
 									console.log()
-									content.split("\n").forEach(async (Image) => {
-										console.log(Image)
-										const imgRef = extractImageReference(Image)
-										console.log("imgRef")
-										console.log(imgRef)
-										if (!imgRef) throw new Error("not a valid img url")
-										console.log("imgRef")
+									if (isImageUrl(content)) {
+										content.split("\n").forEach(async (Image) => {
+											console.log(Image)
+											const imgRef = extractImageReference(Image)
+											console.log("imgRef")
+											console.log(imgRef)
+											if (!imgRef) throw new Error("not a valid img url")
+											console.log("imgRef")
 
-										if (imgRef.type === "local") {
-											// image file path name not binary data
-											console.log(imgRef.value)
-											console.log(new TextEncoder().encode(imgRef.value))
-											console.log(new TextEncoder().encode(imgRef.value).length)
-											//copy using tauri copyfile
-											console.log(Image.split("/").pop() ?? "image.png")
+											if (imgRef.type === "local") {
+												// image file path name not binary data
+												console.log(imgRef.value)
+												console.log(new TextEncoder().encode(imgRef.value))
+												console.log(new TextEncoder().encode(imgRef.value).length)
+												//copy using tauri copyfile
+												console.log(Image.split("/").pop() ?? "image.png")
+												const res = await window.api.copyFile({
+													src: imgRef.value
+												})
+												console.log("recieved the copied image data")
+												console.log(res)
+												if (res.path) {
+													newImageNode(res.path, mousePos.x / store.viewport.scale, mousePos.y / store.viewport.scale)
+												} else {
+													console.error("failed to save file:", res.path)
+												}
+											} else if (imgRef.type === "html_url" || "http_url") {
+												//TODO: download image to our save folder and create the image node
+												//await downloadImage(imgRef.value);
+												const res = await window.api.downloadUrlImage({ url: imgRef.value })
+												if (res.path) {
+													newImageNode(res.path, mousePos.x / store.viewport.scale, mousePos.y / store.viewport.scale)
+												} else {
+													console.error("failed to save file:", res.path)
+												}
+												console.log(res)
+											}
+										})
+									} else if (isUrl(content)) {
+										newUrlNode(content, mousePos.x / store.viewport.scale, mousePos.y / store.viewport.scale)
+									} else {
+										//? string could be a local file path
+										if (content.trim().startsWith("/")) {
 											const res = await window.api.copyFile({
-												src: imgRef.value
+												src: content
 											})
-											console.log("recieved the copied image data")
-											console.log(res)
 											if (res.path) {
-												//TODO: fix x,y to be as the mouse
-												newImageNode(res.path, 0, 0)
+												newImageNode(res.path, mousePos.x / store.viewport.scale, mousePos.y / store.viewport.scale)
 											} else {
 												console.error("failed to save file:", res.path)
 											}
-										} else if (imgRef.type === "html_url" || "http_url") {
-											//TODO: download image to our save folder and create the image node
-											//await downloadImage(imgRef.value);
-											const res = await window.api.downloadUrlImage({ url: imgRef.value })
-
-											if (res.path) {
-												//TODO: fix x,y to be as the mouse
-												newImageNode(res.path, 0, 0)
-											} else {
-												console.error("failed to save file:", res.path)
-											}
-											console.log(res)
+										} else {
+											//TODO: is text create a note node
+											newNoteNode(content, mousePos.x / store.viewport.scale, mousePos.y / store.viewport.scale)
 										}
-									})
+									}
+
 								}
 							}
 						} catch (e) {
@@ -325,7 +368,7 @@ export default (props: any) => {
 											//TODO: fix x,y to be as the mouse
 											if (res.path) {
 												//TODO: fix x,y to be as the mouse
-												newImageNode(res.path, 0, 0)
+												newImageNode(res.path, mousePos.x / store.viewport.scale, mousePos.y / store.viewport.scale)
 											} else {
 												console.error("failed to save file:", res.path)
 											}

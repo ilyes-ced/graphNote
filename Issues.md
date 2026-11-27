@@ -129,7 +129,7 @@
 - [x] make Youtube videos downloadable individually instead of downloading them all
 - [x] moving nodes with arrows doesnt account for bounds
 - [x] Url node: make it clear when a video is already downloaded
-- [ ] Url node: add ability to delete video file
+- [x] Url node: add ability to delete video file
 - [x] Arrow logic: copy from reactFlow or leaderLine
 - [ ] pasting url to canvas create a Url node
 - [x] pdf: might be better to use the systen default pdf reader
@@ -156,7 +156,7 @@
   - [ ] z-index probably should be the same as its related nodes (maybe the lower one of them)
   - [ ] when a node is deleted delete all related Edges (or let it clear along side purging resource, or just give it new coordinates without deleting it but this is a lazy solution)
   - [x] wierd behaviour with child nodes and tierlist nodes (might need to restrict targets to nodes only)
-
+- [ ] reddit URLs dont get any metadata
 
 
 

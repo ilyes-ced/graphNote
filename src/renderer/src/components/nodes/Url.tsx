@@ -69,7 +69,11 @@ export default (node: UrlProps) => {
 	const checkCache = async () => {
 		if (!isYoutubeUrl()) return
 		const res = await window.api.checkCacheYoutubeVidExists(node.url)
-		setYtVidDownloaded(!!res.success)
+		console.log(":::::::::::::::::::::::::::::::::::::::res.success")
+		console.log(":::::::::::::::::::::::::::::::::::::::res.success")
+		console.log(":::::::::::::::::::::::::::::::::::::::res.success")
+		console.log(res.success)
+		setYtVidDownloaded(res.success)
 	}
 
 	const getMetaData = async (url: string): Promise<MetaData | null> => {
@@ -92,12 +96,12 @@ export default (node: UrlProps) => {
 					setDownloadProgress(100)
 					setTimeout(async () => {
 						setDownloadProgress(0)
-
 						//? once a vid is downloaded it turns from youtube vid to local vid
 						var cacheRes = await window.api.checkCacheYoutubeVidExists(node.url)
 						if (cacheRes.success) {
 							const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
 							setLocalVid(videoFile)
+							setYtVidDownloaded(true)
 						}
 					}, 3000)
 					//TODO: change from youtube vid to local vid
@@ -144,6 +148,7 @@ export default (node: UrlProps) => {
 				if (cacheRes.message == "file is already downloaded") {
 					const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
 					setLocalVid(videoFile)
+					setYtVidDownloaded(true)
 				}
 			} else {
 				var cacheRes = await window.api.checkCacheYoutubeVidExists(node.url)
@@ -151,6 +156,7 @@ export default (node: UrlProps) => {
 				if (cacheRes.success) {
 					const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
 					setLocalVid(videoFile)
+					setYtVidDownloaded(true)
 				}
 			}
 		}
@@ -197,10 +203,17 @@ export default (node: UrlProps) => {
 						<Show when={isYoutubeUrl()}>
 							<div class="absolute bottom-2 right-2 flex gap-1 z-50 opacity-0 group-hover/extend:opacity-100 pointer-events-none group-hover/extend:pointer-events-auto transition-all duration-200">
 								<div
-									onClick={async () => window.api.deleteCachedYoutubeVid(node.url)}
-									class="cursor-pointer p-2 url_buttons"
+									onClick={async () => {
+										if (ytVidDownloaded()) {
+											//unset local vid
+											window.api.deleteCachedYoutubeVid(node.url)
+											setLocalVid(null)
+											setYtVidDownloaded(false)
+										}
+									}}
+									class="p-2 url_buttons"
 									classList={{
-										"bg-primary/50 hover:bg-primary transition-colors": ytVidDownloaded(),
+										"bg-primary/50 hover:bg-primary transition-colors cursor-pointer": ytVidDownloaded(),
 									}}
 									style={{
 										border: `1px solid var(--color-primary)`,
@@ -225,15 +238,17 @@ export default (node: UrlProps) => {
 
 								<div
 									onClick={async () => {
-										var cacheRes = await window.api.cacheYoutubeVid(node.url)
-										if (cacheRes.message == "file is already downloaded") {
-											const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
-											setLocalVid(videoFile)
+										if (!ytVidDownloaded()) {
+											var cacheRes = await window.api.cacheYoutubeVid(node.url)
+											if (cacheRes.message == "file is already downloaded") {
+												const videoFile = await window.api.getLocalVideo(cacheRes.fileName)
+												setLocalVid(videoFile)
+											}
 										}
 									}}
-									class="cursor-pointer p-2 url_buttons"
+									class="p-2 url_buttons"
 									classList={{
-										"bg-primary/50 hover:bg-primary transition-colors": !ytVidDownloaded(),
+										"bg-primary/50 hover:bg-primary transition-colors cursor-pointer": !ytVidDownloaded(),
 									}}
 									style={{
 										border: `1px solid var(--color-primary)`,
